@@ -38,16 +38,6 @@ module.exports = {
         let embed = tracker.existingCharacter();
         
         message.channel.send(embed);
-        if (!tracker.error) message.delete().catch(error => 
-        {
-            if (error instanceof Discord.DiscordAPIError && 
-                (error.code != 50003 && error.code != 50013)) 
-            {
-                // Error codes Missing permissings || In a DM channel
-                console.log(error)
-                throw error;
-            }
-        });
     }
 }
 

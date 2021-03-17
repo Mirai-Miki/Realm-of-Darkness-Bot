@@ -1,7 +1,7 @@
 const Discord = require("discord.js");
 const { getErrorMessage } = require('../getErrorMessage.js');
 
-module.exports.character5thEmbed = (char, tracker) =>
+module.exports.character5thEmbed = (char, tracker, unknownKeys) =>
 {
     let client = tracker.recvMess.client;
     let recvMess = tracker.recvMess;
@@ -78,6 +78,13 @@ module.exports.character5thEmbed = (char, tracker) =>
                 (hungerTracker(char.hunger.current, client) + 
                 hungerOverflow), false);
         }
+
+        if (tracker.notes) 
+            embed.addField("Notes", tracker.notes);
+
+        if (unknownKeys.length) 
+            embed.addField("Unknown Keys", unknownKeys.join(' | '));
+
         return embed;        
 }
 

@@ -44,7 +44,7 @@ module.exports =
                 return 'Handler Error: Default Case';
         }
         if (!tracker.error) serializeCharacter(character);
-        return character5thEmbed(character, tracker);
+        return character5thEmbed(character, tracker, unknownKeys);
     },
 
     getKeys()

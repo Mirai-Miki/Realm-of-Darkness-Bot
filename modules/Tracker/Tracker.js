@@ -32,6 +32,7 @@ module.exports = class Tracker
         this.dbGuild;          
         this.error;
         this.embed;
+        this.notes;
         
         if (message.member)
         {
@@ -72,8 +73,13 @@ module.exports = class Tracker
         //TODO implement multi word names
         let name = content.match(/^\s*\w+\s*/i)[0];
         this.name = name.replace(/\s+/g, '');
+        content = content.replace(name, '');
 
         let keyValues = content.match(/\w+\s*=\s*(\+|-)?\s*\w+/ig);
+        content = content.replace(/\w+\s*=\s*(\+|-)?\s*\w+/ig, '');
+        this.notes = content.match(/\w+(\s+\w+)*/);
+
+        if (this.notes) this.notes = this.notes[0];
         
         if (!keyValues && this.mode <= mode.set)
         {
@@ -206,7 +212,8 @@ module.exports = class Tracker
         } catch (error) {
             console.error(error);
             this.error = 1;
-            return "Error in Handler."
+            return `<@${this.recvMess.author.id}> ` +
+                `${getErrorMessage(errorType.handle)}`;
         }
     }
 }

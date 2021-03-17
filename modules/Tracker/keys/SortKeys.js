@@ -6,6 +6,7 @@ module.exports.sortKeys = (tracker, handler) =>
     let unknownKeys = [];
     tracker.keys.forEach((value, key, map) => 
     {
+        let iskey = false;
         for (let keyHelp of Object.values(handler.getKeys()))
         {
             if (keyHelp.keys.includes(key))
@@ -15,7 +16,7 @@ module.exports.sortKeys = (tracker, handler) =>
                 
                 if (keyHelp.returnType == 'int')
                 {
-                    if (isNaN(parseInt(value))) 
+                    if (value.match(/(?!^-|^\+)\D/g)) 
                     {
                         tracker.error = errorType.keyReturnNotInt;
                         break;
@@ -35,12 +36,11 @@ module.exports.sortKeys = (tracker, handler) =>
                     }
                 }
                 else keys[keyHelp.codeKey] = value;
-            }
-            else
-            {
-                unknownKeys.push(`${key} = ${value}`);
+                iskey = true;
             }
         }
+        if (!iskey) unknownKeys.push(`${key} = ${value}`);
     });
+
     return [keys, unknownKeys];
 }
