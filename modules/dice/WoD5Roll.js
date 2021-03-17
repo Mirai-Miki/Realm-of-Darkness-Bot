@@ -363,7 +363,8 @@ module.exports = class WoD5Roll
         .setTitle(title)
         .addField("Result", resultMessage, true)
         .addField("Dice", blackResult, true)
-        .setColor(color);
+        .setColor(color)
+        .setURL('https://discord.gg/Za738E6');
 
         if (this.hunger) embed.addField("Hunger", hungerResult, true);
 

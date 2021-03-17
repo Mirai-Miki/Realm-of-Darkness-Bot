@@ -4,7 +4,7 @@ const WoD5Roll = require('../../modules/dice/WoD5Roll.js');
 const Discord = require('discord.js');
 
 module.exports = {
-    name: 'WoD v5 Reroll',
+    name: 'Dice: WoD v5 Reroll',
     aliases: ['reroll', 'rr', 'vr'],
     description: 'Rerolls a previously made roll following the rules ' +
         'of WoD 5th edition',
