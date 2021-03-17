@@ -5,6 +5,7 @@ module.exports =
         name: "Version: World of Darkness 5th edition",
         codeKey: 'version',
         keys: ['version', 'v', 'ver'],
+        required: "When creating a new character",
         options: ['5', 'v5', '5th'],
         description: "The World of Darkness version this character " +
             "belongs in",
@@ -15,6 +16,7 @@ module.exports =
         name: "Humanity",
         codeKey: 'humanity',
         keys: ['hm', 'humanity'],
+        required: "When creating a new character",
         constraints: {min: 0, max: 10},
         description: "The amount of Humanity this character has." +
             "\nEnter the current amount of humanity you have.",
@@ -36,6 +38,7 @@ module.exports =
         name: "Willpower",
         codeKey: 'willpower',
         keys: ['w', 'wp', 'willpower'],
+        required: "When creating a new character",
         constraints: {min: 1, max: 15},
         description: "The total amount of undamaged willpower this" +
             " character has.\n Enter the total amount of willpower this" +
@@ -47,6 +50,7 @@ module.exports =
         name: "Health",
         codeKey: 'health',
         keys: ['d', 'health', 'damage'],
+        required: "When creating a new character",
         constraints: {min: 1, max: 15},
         description: "The total amount of undamaged Health this" +
         " character has.\n Enter the total amount of willpower this" +

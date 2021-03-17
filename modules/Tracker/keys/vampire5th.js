@@ -5,6 +5,7 @@ module.exports =
         name: "Splat: Vampire",
         codeKey: 'splat',
         keys: ['splat', 's', 'type', 't'],
+        required: "When creating a new character",
         options: ['v', 'vamp', 'vampire', 'lick'],
         description: "The World of Darkness splat (type of creature) " +
             "that this character is. Eg Vampire or Werewolf",

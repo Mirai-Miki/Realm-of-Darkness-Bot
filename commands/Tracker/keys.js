@@ -69,10 +69,11 @@ module.exports = {
         {
             help += `**${key.name}** \n\`\`\`yaml\n` +
                 `Keys: ${key.keys.join(', ')}\n`;
-            if (key.options) help += `Options: ${key.options.join(', ')}\n`
+            if (key.options) help += `Options: ${key.options.join(', ')}\n`;
+            if (key.required) help += `Required: ${key.required}\n`;
             if (key.constraints) help += 
                 `Constraints: Min Value ${key.constraints.min},` +
-                ` Max Value ${key.constraints.max}\n`
+                ` Max Value ${key.constraints.max}\n`;
                 
             help += `Description: ${key.description}\n\`\`\`ﾠ\n`;
         }
@@ -93,8 +94,7 @@ module.exports = {
 
 function getHelpMessage()
 {
-    return 'splatKey: The keys used for help specific to that spalt.' +
-        '\nNotes: ' +
+    return 'splatKey: can be found when using the /keys on its own.' +
         `\nExamples: ${prefix}keys` +
-        `\n${prefix}keys \n${prefix}keys`;
+        `\n${prefix}keys vampire5th`;
 }

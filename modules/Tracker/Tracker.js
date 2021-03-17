@@ -37,6 +37,16 @@ module.exports = class Tracker
         {
             this.guild = message.member.guild.id;
             this.admin = message.member.hasPermission("ADMINISTRATOR");
+
+            let db = new Database();
+            db.open('Permissions', 'Database');
+            let roles = db.find(this.guild);
+
+            for (let role of Object.values(roles))
+            {
+                let key = role.match(/\d+/)[0];
+                if (message.member.roles.cache.has(key)) this.ST = true;
+            }
         }
         else this.guild = message.author.id;      
     }
