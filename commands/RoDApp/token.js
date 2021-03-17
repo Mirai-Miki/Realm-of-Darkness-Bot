@@ -19,8 +19,6 @@ module.exports = {
 
         let db = new Database();
         db.open('TokenDatabase', 'Database');
-        console.log(db.isEmpty());
-        console.log(db.length());
         let list = db.find('authenticate')
 
         if (!list) 
