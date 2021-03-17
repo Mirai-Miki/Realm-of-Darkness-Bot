@@ -10,6 +10,7 @@ module.exports = class WoD5Roll
         this.temp = "";
         this.res = "";
         this.mech = "";
+        this.emo = "";
 
         this.colourMod = 0
         this.color = [0, 0, 0];
@@ -54,6 +55,7 @@ module.exports = class WoD5Roll
         if (this.resResult >= 9) 
         {
             this.res = "Sanguine";
+            this.emo = "Horny, Happy, Addicted,\nActive, Flighty, Enthusiastic";
 
             if (this.colourMod === 1) 
             {
@@ -65,12 +67,13 @@ module.exports = class WoD5Roll
 
             if (this.colourMod > 1)
             {
-                this.mech = "Blood Sorcery, Presence || Add +1 dice";
+                this.mech = "Blood Sorcery, Presence\nAdd +1 dice";
             }
         }
         else if (this.resResult >= 7) 
         {
             this.res = "Choleric";
+            this.emo = "Angry, Violent, Bullying,\nPassionate, Envious";
 
             if (this.colourMod === 1)
             {
@@ -82,12 +85,13 @@ module.exports = class WoD5Roll
 
             if (this.colourMod > 1)
             {
-                this.mech = "Celerity, Potence || Add +1 dice";
+                this.mech = "Celerity, Potence\nAdd +1 dice";
             }
         }
         else if (this.resResult >= 4) 
         {
             this.res = "Melancholy";
+            this.emo = "Sad, Scared, Intellectual,\nDepressed, Grounded";
 
             if (this.colourMod === 1) 
             {
@@ -99,13 +103,14 @@ module.exports = class WoD5Roll
 
             if (this.colourMod > 1)
             {
-                this.mech = "Fortitude, Obfuscate || Add +1 dice";
+                this.mech = "Fortitude, Obfuscate\nAdd +1 dice";
                 
             }
         }
         else 
         {
             this.res = "Phlegmatic";
+            this.emo = "Lazy, Apathetic, Calm,\nControlling, Sentimental";
 
             if (this.colourMod === 1) 
             {
@@ -117,7 +122,7 @@ module.exports = class WoD5Roll
 
             if (this.colourMod > 1)
             {
-                this.mech = "Auspex, Dominate || Add +1 dice";
+                this.mech = "Auspex, Dominate\nAdd +1 dice";
             }
         }
     }
@@ -142,7 +147,8 @@ module.exports = class WoD5Roll
         if (this.res) 
             embed.addField("Resonance", `\`\`\`${this.resResult}\`\`\``, true);
         
-        if (this.mech) embed.addField("Disciplines", this.mech);
+        if (this.mech) embed.addField("Disciplines", this.mech, true);
+        if (this.emo) embed.addField("Emotions", this.emo, true);
 
         if (notes) embed.addField("Notes", notes);
 
