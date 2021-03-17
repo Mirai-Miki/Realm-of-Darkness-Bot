@@ -184,7 +184,7 @@ module.exports = class Tracker
                 `${getErrorMessage(errorType.noPerm)}`;
         }
 
-        this.dbGuild[this.character.name] = undefined;
+        this.dbGuild[this.character.name.toLowerCase()] = undefined;
         this.db.add(this.guild, this.dbGuild);
         this.db.close();
         return `<@${this.recvMess.author.id}> Deleted ${this.character.name}`;

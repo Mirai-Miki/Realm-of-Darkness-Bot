@@ -21,7 +21,8 @@ module.exports = {
         }
 
         let roll = new WoD5Res();
-        let embed = roll.constructEmbed(message);
+        let notes = content.replace(/^\s+/, '');
+        let embed = roll.constructEmbed(message, notes);
 
         message.channel.send(embed);
 

@@ -9,6 +9,7 @@ module.exports = class WoD5Roll
         this.resResult = "";
         this.temp = "";
         this.res = "";
+        this.mech = "";
 
         this.colourMod = 0
         this.color = [0, 0, 0];
@@ -54,37 +55,74 @@ module.exports = class WoD5Roll
         {
             this.res = "Sanguine";
 
-            if (this.colourMod === 1) this.color = [150, 0, 143];
+            if (this.colourMod === 1) 
+            {
+                this.color = [150, 0, 143];
+                this.mech = "Blood Sorcery, Presence";
+            }
             else if (this.colourMod === 2) this.color = [200, 0, 192];
             else this.color = [255, 0, 242];
+
+            if (this.colourMod > 1)
+            {
+                this.mech = "Blood Sorcery, Presence || Add +1 dice";
+            }
         }
         else if (this.resResult >= 7) 
         {
             this.res = "Choleric";
 
-            if (this.colourMod === 1) this.color = [150, 0, 0];
+            if (this.colourMod === 1)
+            {
+                this.color = [150, 0, 0];
+                this.mech = "Celerity, Potence";
+            }
             else if (this.colourMod === 2) this.color = [200, 0, 0];
             else this.color = [255, 0, 0];
+
+            if (this.colourMod > 1)
+            {
+                this.mech = "Celerity, Potence || Add +1 dice";
+            }
         }
         else if (this.resResult >= 4) 
         {
             this.res = "Melancholy";
 
-            if (this.colourMod === 1) this.color = [0, 133, 150];
+            if (this.colourMod === 1) 
+            {
+                this.color = [0, 133, 150];
+                this.mech = "Fortitude, Obfuscate";
+            }
             else if (this.colourMod === 2) this.color = [0, 177, 200];
             else this.color = [0, 225, 255];
+
+            if (this.colourMod > 1)
+            {
+                this.mech = "Fortitude, Obfuscate || Add +1 dice";
+                
+            }
         }
         else 
         {
             this.res = "Phlegmatic";
 
-            if (this.colourMod === 1) this.color = [0, 150, 0];
+            if (this.colourMod === 1) 
+            {
+                this.color = [0, 150, 0];
+                this.mech = "Auspex, Dominate";
+            }
             else if (this.colourMod === 2) this.color = [0, 200, 0];
             else this.color = [0, 255, 0];
+
+            if (this.colourMod > 1)
+            {
+                this.mech = "Auspex, Dominate || Add +1 dice";
+            }
         }
     }
 
-    constructEmbed(message)
+    constructEmbed(message, notes)
     {
         let username;
         if (message.member) username = message.member.displayName;
@@ -103,8 +141,11 @@ module.exports = class WoD5Roll
 
         if (this.res) 
             embed.addField("Resonance", `\`\`\`${this.resResult}\`\`\``, true);
+        
+        if (this.mech) embed.addField("Disciplines", this.mech);
 
-        // Send it all back
+        if (notes) embed.addField("Notes", notes);
+
         return embed;
     }
 }
