@@ -24,6 +24,10 @@ module.exports = class Humanity5th
         if (amount < this.total) this.stains = 0;
         
         this.total = amount;
+        
+        if (this.total > 10) this.total = 10;
+        if (this.total < 0) this.total = 0;
+
         this.calculateStainsOverflow();        
     }
 

@@ -1,11 +1,12 @@
 const Discord = require("discord.js");
-const { getErrorMessage } = require('../error.js');
+const { getErrorMessage } = require('../getErrorMessage.js');
 
 module.exports.character5thEmbed = (char, tracker) =>
 {
     let client = tracker.recvMess.client;
     let recvMess = tracker.recvMess;
-    if (tracker.error) return getErrorMessage(tracker.error);
+    if (tracker.error) return `<@${recvMess.author.id}> ` +
+        `${getErrorMessage(tracker.error)}`;
 
     let name;
     if (recvMess.member) name = recvMess.member.displayName;

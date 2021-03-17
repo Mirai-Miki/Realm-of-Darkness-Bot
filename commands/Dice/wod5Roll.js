@@ -5,7 +5,7 @@ const WoD5Roll = require('../../modules/dice/WoD5Roll.js');
 const generalRoll = require('./generalRoll.js');
 
 module.exports = {
-    name: 'WoD v5 Roll',
+    name: 'Dice: WoD v5 Roll',
     aliases: ['v5', 'v'],
     description: 'Rolls dice following the rules of WoD 5th edition',
     usage: `${prefix}v5 pool {hunger} {difficulty} {reason}`,

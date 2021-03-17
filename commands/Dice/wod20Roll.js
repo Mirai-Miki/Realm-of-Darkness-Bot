@@ -7,7 +7,7 @@ const wod20Init = require('./wod20Init.js');
 const WoD20Roll = require('../../modules/dice/WoD20Roll.js');
 
 module.exports = {
-    name: 'WoD v20 Roll',
+    name: 'Dice: WoD v20 Roll',
     aliases: ['v20', 'd', 'w20'],
     description: 'Rolls dice following the rules of WoD 20th edition',
     usage: `${prefix}v20 dice@diff {+/- modifier}{spec}{normalOnes} {reason}`,

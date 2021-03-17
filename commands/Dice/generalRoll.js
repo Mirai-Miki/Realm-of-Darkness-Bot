@@ -5,7 +5,7 @@ const Help = require('../../modules/util/Help.js');
 const GeneralRoll = require('../../modules/dice/GeneralRoll.js');
 
 module.exports = {
-    name: 'General Roll',
+    name: 'Dice: General Roll',
     aliases: ['roll', 'r'],
     description: 'Roll as many X sided dice you can think of',
     usage: `${prefix}roll dice {+/- dice} {+/- modifier} {@ difficulty} {reason}`,

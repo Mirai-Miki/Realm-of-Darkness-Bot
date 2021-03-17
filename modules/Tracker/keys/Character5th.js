@@ -4,16 +4,18 @@ module.exports =
     {
         name: "Version: World of Darkness 5th edition",
         codeKey: 'version',
-        keys: ['5', 'v5', '5th'],
+        keys: ['version', 'v', 'ver'],
+        options: ['5', 'v5', '5th'],
         description: "The World of Darkness version this character " +
             "belongs in",
-        returnType: "string"
+        returnType: "version"
     },
     humanity:
     {
         name: "Humanity",
         codeKey: 'humanity',
         keys: ['hm', 'humanity'],
+        constraints: {min: 0, max: 10},
         description: "The amount of Humanity this character has." +
             "\nEnter the current amount of humanity you have.",
         returnType: "int"
@@ -23,6 +25,7 @@ module.exports =
         name: "Stains",
         codeKey: 'stains',
         keys: ['s', 'stain', 'stains'],
+        constraints: {min: -100, max: 100},
         description: "The current amount of stains this character has.\n" +
             "Enter the amount the value has changed. Eg +/- 1." +
             " Entering 0 will remove all stains.",
@@ -33,6 +36,7 @@ module.exports =
         name: "Willpower",
         codeKey: 'willpower',
         keys: ['w', 'wp', 'willpower'],
+        constraints: {min: 1, max: 15},
         description: "The total amount of undamaged willpower this" +
             " character has.\n Enter the total amount of willpower this" +
             " character has.",
@@ -43,6 +47,7 @@ module.exports =
         name: "Health",
         codeKey: 'health',
         keys: ['d', 'health', 'damage'],
+        constraints: {min: 1, max: 15},
         description: "The total amount of undamaged Health this" +
         " character has.\n Enter the total amount of willpower this" +
         " character has.",
@@ -53,6 +58,7 @@ module.exports =
         name: "Superficial Willpower Damage",
         codeKey: 'superficialWillpower',
         keys: ['sw', 'swp', 'superficialwillpower'],
+        constraints: {min: -100, max: 100},
         description: "The current amount of Superficial Willpower damage" +
         " this character has.\n" +
         "Enter the amount the value has changed. Eg +/- 1." +
@@ -64,6 +70,7 @@ module.exports =
         name: "Aggravated Health Damage",
         codeKey: 'aggWillpower',
         keys: ['aw', 'aggw', 'aggwp', 'aggwillpower', 'aggravatedwillpower'],
+        constraints: {min: -100, max: 100},
         description: "The current amount of Aggravated Willpower damage" +
         " this character has.\n" +
         "Enter the amount the value has changed. Eg +/- 1." +
@@ -75,6 +82,7 @@ module.exports =
         name: "Superficial Health Damage",
         codeKey: 'superficialHealth',
         keys: ['sh', 'sd', 'superficialhealth', 'superficialdamage'],
+        constraints: {min: -100, max: 100},
         description: "The current amount of Superficial Health damage" +
         " this character has.\n" +
         "Enter the amount the value has changed. Eg +/- 1." +
@@ -86,6 +94,7 @@ module.exports =
         name: "Aggravated Health Damage",
         codeKey: 'aggHealth',
         keys: ['ah', 'ad', 'aggd', 'aggh', 'agghealth', 'aggdamage'],
+        constraints: {min: -100, max: 100},
         description: "The current amount of Aggravated Health damage" +
         " this character has.\n" +
         "Enter the amount the value has changed. Eg +/- 1." +

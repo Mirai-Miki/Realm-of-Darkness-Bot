@@ -15,7 +15,7 @@ module.exports =
     name: 'Vampire 5th Edition',
     version: 'v5',
     splat: 'Vampire',
-    keyHelp: '/keys vampire5th',    
+    keyHelp: 'vampire5th',    
 
     handle(tracker)
     {
@@ -35,6 +35,9 @@ module.exports =
                 break;
             case mode.set:
                 character = setCharacter(tracker, keys)
+                break;
+            case mode.find:
+                character = findCharacter(tracker)
                 break;
             default:
                 console.error("Hit default case in handler");
@@ -101,7 +104,7 @@ function updateCharacter(tracker, keys)
     char.deserilize(tracker.character);
     char = modifyCharacter(keys, char);
     char = modifyMaxValues(keys, char);
-    console.log(char);
+    
     return char;
 }
 
@@ -136,4 +139,12 @@ function setCharacter(tracker, keys)
     if (tracker.error) return;
     // set character
     // same as above but on consumable max values
+}
+
+function findCharacter(tracker)
+{
+    let char = new Vampire5th();
+    char.deserilize(tracker.character);
+
+    return  char;
 }

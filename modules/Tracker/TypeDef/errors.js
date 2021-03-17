@@ -13,5 +13,6 @@ module.exports =
     missingSplat: 11,
     incorrectSplatOrVer: 12,
     keyReturnNotInt: 13,
-    missingPermission: 14,
+    exceededMinValue: 14,
+    exceededMaxValue: 15,
 }

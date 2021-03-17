@@ -15,12 +15,24 @@ module.exports.sortKeys = (tracker, handler) =>
                 
                 if (keyHelp.returnType == 'int')
                 {
-                    if (parseInt(value) === NaN) 
+                    if (isNaN(parseInt(value))) 
                     {
                         tracker.error = errorType.keyReturnNotInt;
                         break;
                     }
                     keys[keyHelp.codeKey] = parseInt(value);
+
+                    if (keyHelp.constraints && value < keyHelp.constraints.min)
+                    {
+                        tracker.error = errorType.exceededMinValue;
+                        break;
+                    }
+                    else if (keyHelp.constraints && 
+                        value > keyHelp.constraints.max)
+                    {
+                        tracker.error = errorType.exceededMaxValue;
+                        break;
+                    }
                 }
                 else keys[keyHelp.codeKey] = value;
             }

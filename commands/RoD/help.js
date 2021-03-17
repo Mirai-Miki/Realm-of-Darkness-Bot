@@ -42,6 +42,7 @@ module.exports = {
                         'you have DMs disabled?');
             	});
         }
+        
         const name = args[0].toLowerCase();
         const command = commands.find(
             cmd => cmd.aliases && cmd.aliases.includes(name));

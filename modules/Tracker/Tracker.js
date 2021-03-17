@@ -3,7 +3,7 @@ const Database = require('../util/Database.js');
 const mode = require('./TypeDef/mode.js');
 const errorType = require('./TypeDef/errors.js');
 const Discord = require('discord.js');
-const { getErrorMessage } = require('./error.js');
+const { getErrorMessage } = require('./getErrorMessage.js');
 const universalKeys = require('./keys/universal.js');
 
 handlers = new Discord.Collection();
@@ -94,7 +94,8 @@ module.exports = class Tracker
 
     newCharacter()
     {
-        if (this.character) return getErrorMessage(errorType.dupChar);
+        if (this.character) return `<@${this.recvMess.author.id}> ` +
+            `${getErrorMessage(errorType.dupChar)}`;
         
         let version;
         let splat;
@@ -116,35 +117,52 @@ module.exports = class Tracker
         
         if (!this.error && !version) this.error = errorType.missingVer;
         if (!this.error && !splat) this.error = errorType.missingSplat;        
-        if (this.error) return getErrorMessage(this.error);
+        if (this.error) return `<@${this.recvMess.author.id}> ` +
+            `${getErrorMessage(this.error)}`;
 
         return this.handle(version, splat);
     }
 
     existingCharacter()
     {
-        if (!this.character) // no Character
-
-        if (!this.character) return getErrorMessage(errorType.noChar);
+        if (!this.character) return `<@${this.recvMess.author.id}> ` +
+            `${getErrorMessage(errorType.noChar)}`;
 
         if (this.character.owner != this.recvMess.author.id &&
             !this.admin && !this.ST)
         {
-            // Permission Denied.
-            // Not the creator or an Admin or an ST
+            return `<@${this.recvMess.author.id}> ` +
+                `${getErrorMessage(errorType.noPerm)}`;
         }
         
         return this.handle(this.character.version, this.character.splat);
     }
 
-    deleteCharacter()
+    find()
     {
-        if (!this.character) return getErrorMessage(errorType.noChar);
+        if (!this.character) return `<@${this.recvMess.author.id}> ` +
+            `${getErrorMessage(errorType.noChar)}`;
 
         if (this.character.owner != this.recvMess.author.id &&
             !this.admin && !this.ST)
         {
-            return getErrorMessage(errorType.missingPermission)
+            return `<@${this.recvMess.author.id}> ` +
+                `${getErrorMessage(errorType.noPerm)}`;
+        }
+
+        return this.handle(this.character.version, this.character.splat);
+    }
+
+    deleteCharacter()
+    {
+        if (!this.character) return `<@${this.recvMess.author.id}> ` +
+            `${getErrorMessage(errorType.noChar)}`;
+
+        if (this.character.owner != this.recvMess.author.id &&
+            !this.admin && !this.ST)
+        {
+            return `<@${this.recvMess.author.id}> ` +
+                `${getErrorMessage(errorType.noPerm)}`;
         }
 
         this.dbGuild[this.character.name] = undefined;
@@ -164,12 +182,13 @@ module.exports = class Tracker
     handle(version, splat)
     {
         const handler = handlers.find(
-            hdr => hdr.getKeys().version && 
-                hdr.getKeys().version.keys.includes(version.toLowerCase()) &&
-                hdr.getKeys().splat && 
-                hdr.getKeys().splat.keys.includes(splat.toLowerCase()));
+            hdr => hdr.getKeys().version && hdr.getKeys().version.options && 
+                hdr.getKeys().version.options.includes(version.toLowerCase()) &&
+                hdr.getKeys().splat && hdr.getKeys().splat.options &&
+                hdr.getKeys().splat.options.includes(splat.toLowerCase()));
                 
-        if (!handler) return getErrorMessage(errorType.incorrectSplatOrVer);
+        if (!handler) return `<@${this.recvMess.author.id}> ` +
+            `${getErrorMessage(errorType.incorrectSplatOrVer)}`;
         
         try 
         {
