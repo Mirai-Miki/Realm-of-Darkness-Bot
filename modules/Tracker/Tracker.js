@@ -43,7 +43,7 @@ module.exports = class Tracker
             db.open('Permissions', 'Database');
             let roles = db.find(this.guild);
 
-            if (roles)
+            if (roles != undefined && roles != null)
             {
                 for (let role of Object.values(roles))
                 {

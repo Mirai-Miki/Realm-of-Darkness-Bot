@@ -65,6 +65,10 @@ module.exports = {
         const splat = splats.find(
             splat => splat.keyHelp && splat.keyHelp == name);
         
+        if (!splat) return message.reply("Sorry that is not a valid" +
+            ' KeyHelp command.\n' +
+            'Please type `/keys` for a list of all KeyHelp commands.');
+
         for (let key of Object.values(splat.getKeys()))
         {
             help += `**${key.name}** \n\`\`\`yaml\n` +
