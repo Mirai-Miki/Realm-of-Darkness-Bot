@@ -25,7 +25,9 @@ module.exports = {
             });            
             
             help += (`You can send \`${prefix}help [command name]\` ` +
-                `to get info on a specific command!`);
+                `to get info on a specific command!\n` +
+                'If you are having trouble using /command try using' +
+                '\\command instead.');
 
             if (content.match(/--force/i))
                 return message.channel.send(help, { split: true });

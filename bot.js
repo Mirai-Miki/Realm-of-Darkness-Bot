@@ -61,7 +61,9 @@ client.on('presenceUpdate', (oldPresence, newPresence) => {
 
 client.on('message', (mess) => {
     const prefix = config.prefix;    
-    if (!mess.content.startsWith(prefix) || mess.author.bot)  { return };
+    if ((!mess.content.startsWith(prefix) 
+        && !mess.content.startsWith('\\'))
+        || mess.author.bot)  { return };
 
     const args = mess.content.slice(prefix.length).trim().split(/ +/);
     const commandName = args.shift().toLowerCase();
