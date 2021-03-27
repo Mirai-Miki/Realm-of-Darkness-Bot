@@ -71,13 +71,20 @@ module.exports = {
 
         for (let key of Object.values(splat.getKeys()))
         {
-            help += `**${key.name}** \n\`\`\`yaml\n` +
+            if (key.consumable) help += `**${key.name} (Consumable)**`;
+            else help += `**${key.name}**`;
+            
+            help += `\n\`\`\`yaml\n` +
                 `Keys: ${key.keys.join(', ')}\n`;
             if (key.options) help += `Options: ${key.options.join(', ')}\n`;
             if (key.required) help += `Required: ${key.required}\n`;
             if (key.constraints) help += 
                 `Constraints: Min Value ${key.constraints.min},` +
                 ` Max Value ${key.constraints.max}\n`;
+            if (key.setConstraints) help += 
+                `Set Constraints: Min Value ${key.setConstraints.min},` +
+                ` Max Value ${key.constraints.max}\n`;
+            if (key.consumable) help += `Consumable: ${key.consumable}\n`
                 
             help += `Description: ${key.description}\n\`\`\`ﾠ\n`;
         }

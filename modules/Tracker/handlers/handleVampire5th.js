@@ -3,12 +3,11 @@ const errorType = require('../TypeDef/errors.js');
 const Vampire = require('../characters/Vampire5th.js');
 const { serializeCharacter } = require('../util/serilizeCharacter.js');
 // Key handling
-const Character5thKeys = require('../keys/Character5th.js');
-const Vampire5thKeys = require('../keys/vampire5th.js');
+const Character5thKeys = require('../keys/Character5thKeys.js');
+const Vampire5thKeys = require('../keys/vampire5thKeys.js');
 const { sortKeys } = require('../keys/SortKeys.js');
 // Create Embed
 const { character5thEmbed } = require('../embed/character5thEmbed.js');
-const Vampire5th = require('../characters/Vampire5th.js');
 
 module.exports =
 {
@@ -96,11 +95,7 @@ function newKeyCheck(tracker, keys)
 function updateCharacter(tracker, keys)
 {
     if (tracker.error) return;
-    // update character
-    // take character
-    // update with keys
-
-    let char = new Vampire5th();
+    let char = new Vampire();
     char.deserilize(tracker.character);
     char = modifyCharacter(keys, char);
     char = modifyMaxValues(keys, char);
@@ -143,8 +138,7 @@ function setCharacter(tracker, keys)
 
 function findCharacter(tracker)
 {
-    let char = new Vampire5th();
+    let char = new Vampire();
     char.deserilize(tracker.character);
-
     return  char;
 }

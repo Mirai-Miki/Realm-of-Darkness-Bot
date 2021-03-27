@@ -1,4 +1,4 @@
-const MAX = 7;
+const MAX_DAMAGE = 7;
 
 module.exports = class DamageTracker20th
 {
@@ -7,61 +7,66 @@ module.exports = class DamageTracker20th
         this.bashing = 0;
         this.lethal = 0;
         this.aggravated = 0;
+        this.overflow = 0;
     }
 
-    takeBashing(amount)
+    resetOverflow()
     {
-
+        this.overflow = 0;
     }
 
-    takeLethal(amount)
+    updateBashing(amount)
     {
+        if (amount === 0) this.bashing = 0;
+        this.bashing += amount;
 
+        if (this.bashing < 0) this.bashing = 0;
+        let total = this.getTotal()
+        if (total > MAX_DAMAGE) 
+            this.bashing = this.bashing - (total - MAX_DAMAGE);
     }
 
-    takeAgg(amount)
+    updateLethal(amount)
     {
+        if (amount === 0) this.lethal = 0;
+        this.lethal += amount;
 
+        if (this.lethal < 0) this.lethal = 0;
+        let total = this.getTotal()
+        if (total > MAX_DAMAGE) 
+            this.lethal = this.lethal - (total - MAX_DAMAGE);
     }
 
-    healBashing(amount)
+    updateAgg(amount)
     {
+        if (amount === 0) this.aggravated = 0;
+        this.aggravated += amount;
 
+        if (this.aggravated < 0) this.aggravated = 0;
+        let total = this.getTotal()
+        if (total > MAX_DAMAGE) 
+            this.aggravated = this.aggravated - (total - MAX_DAMAGE);
     }
 
-    healLethal(amount)
+    setBashing(amount)
     {
-
-    }
-
-    healAgg(amount)
-    {
-
-    }
-
-    setBashing(amoung)
-    {
-
+        this.bashing = amount;
     }
 
     setLethal(amount)
     {
-
+        this.lethal = amount;
     }
 
     setAgg(amount)
     {
-        
+        this.aggravated = amount;
     }
 
-    print()
+    getTotal()
     {
-        
-    }
-
-    toSerializable()
-    {
-        return {bashing: this.bashing, lethal: this.lethal, 
-            aggravated: this.aggravated};
+        let total = this.bashing + this.lethal + this.aggravated;
+        if (total > MAX_DAMAGE) this.overflow += total - MAX_DAMAGE;
+        return total
     }
 }

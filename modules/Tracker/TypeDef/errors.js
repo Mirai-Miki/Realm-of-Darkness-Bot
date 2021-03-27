@@ -15,4 +15,7 @@ module.exports =
     keyReturnNotInt: 13,
     exceededMinValue: 14,
     exceededMaxValue: 15,
+    exceededSetMinValue: 16,
+    exceededSetMaxValue: 17,
+    missingBlood: 18,
 }

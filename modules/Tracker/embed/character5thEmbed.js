@@ -79,6 +79,9 @@ module.exports.character5thEmbed = (char, tracker, unknownKeys) =>
                 hungerOverflow), false);
         }
 
+        if (char.exp.total) embed.addField("Experiance", consumableTracker(
+            char.exp.current, char.exp.total, 0, client, true), false);
+
         if (tracker.notes) 
             embed.addField("Notes", tracker.notes);
 
@@ -158,6 +161,38 @@ function hungerTracker(hunger, client) {
         }
         else tracker += emptyDot;
                 
+    }
+    tracker += 'ﾠ';
+    return tracker;
+}
+
+function consumableTracker(current, max, color, client, noEmoji=false) {
+    let bloodDot = client.emojis.resolve("817642148794335253").toString();
+    let purpleDot = client.emojis.resolve("820913320378236939").toString();
+    let emptyDot = client.emojis.resolve("817641377826471936").toString();
+
+    let tracker = "";
+
+    if (max > 15 || noEmoji)
+    {
+        tracker = `\`\`\`q\n[${current}/${max}]\n\`\`\``
+        return tracker;
+    }
+
+    for (let i = 0; i < max; i++) {
+        if (i < current) 
+        {
+            switch (color)
+            {
+                case 0:
+                    tracker += bloodDot;
+                    break;
+                case 1:
+                    tracker += purpleDot;
+                    break;
+            }
+        }
+        else tracker += emptyDot;                
     }
     tracker += 'ﾠ';
     return tracker;

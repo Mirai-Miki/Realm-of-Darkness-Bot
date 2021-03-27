@@ -50,31 +50,28 @@ module.exports = class Consumable
         }
     }
 
-    addTotal(amount)
-    {
-        this.resetOverflow();
-        this.total += amount;
-    }
-
-    removeTotal(amount)
-    {
-        this.resetOverflow();
-        this.total -= amount;
-    }
-
     setTotal(amount)
     {
         this.resetOverflow();
         this.total = amount;
+        if (this.current > this.total) this.current = this.total;
     }
 
-    print()
+    updateTotal(amount)
     {
-        // Might get rid of this
+        this.resetOverflow();
+        let offset = amount - this.total;
+        if (offset < 0) offset = 0;
+        this.total = amount;
+        if (offset > 0) this.modifiyCurrent(offset);
+        if (this.current > this.total) this.current = this.total;
     }
 
-    toSerializable()
+    incTotal(amount)
     {
-        return {total: this.total, current: this.current};
+        this.resetOverflow();
+        this.total += amount;
+        if (amount > 0) this.modifiyCurrent(amount);
+        if (this.current > this.total) this.current = this.total;
     }
 }

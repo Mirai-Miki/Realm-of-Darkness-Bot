@@ -1,3 +1,5 @@
+const Consumable = require("../structures/Consumable");
+
 module.exports = class Character 
 {
     constructor() 
@@ -6,6 +8,7 @@ module.exports = class Character
         this.owner;
         this.guild;
         this.updateDate;
+        this.exp = new Consumable(0);
         this.colour = [
             Math.floor(Math.random() * 256),
             Math.floor(Math.random() * 256),
@@ -40,5 +43,7 @@ module.exports = class Character
         this.owner = char.owner;
         this.guild = char.guild;
         this.updateDate = char.updateDate;
+        this.exp.setTotal(char.exp.total);
+        this.exp.setCurrent(char.exp.current);
     }
 }
