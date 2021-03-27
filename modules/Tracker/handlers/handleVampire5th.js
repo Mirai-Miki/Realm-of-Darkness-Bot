@@ -3,6 +3,7 @@ const errorType = require('../TypeDef/errors.js');
 const Vampire = require('../characters/Vampire5th.js');
 const { serializeCharacter } = require('../util/serilizeCharacter.js');
 // Key handling
+const CharacterKeys = require('../keys/CharacterKeys.js');
 const Character5thKeys = require('../keys/Character5thKeys.js');
 const Vampire5thKeys = require('../keys/vampire5thKeys.js');
 const { sortKeys } = require('../keys/SortKeys.js');
@@ -48,7 +49,7 @@ module.exports =
 
     getKeys()
     {
-        return {...Character5thKeys, ...Vampire5thKeys};
+        return {...Character5thKeys, ...Vampire5thKeys, ...CharacterKeys};
     }
 }
 
@@ -68,7 +69,7 @@ function newCharacter(tracker, keys)
     char.setOwner(tracker.recvMess.author.id);
     char.setGuild(tracker.guild);
     char = modifyCharacter(keys, char);
-    
+    if (keys.exp != undefined) char.exp.updateTotal(keys.exp);
     return char;
 }
 
@@ -99,8 +100,28 @@ function updateCharacter(tracker, keys)
     char.deserilize(tracker.character);
     char = modifyCharacter(keys, char);
     char = modifyMaxValues(keys, char);
-    
+    if (keys.exp != undefined) char.exp.modifiyCurrent(keys.exp);
     return char;
+}
+
+
+
+function setCharacter(tracker, keys)
+{
+    if (tracker.error) return;
+    let char = new Vampire();
+    char.deserilize(tracker.character);
+    if (keys.exp != undefined) char.exp.incTotal(keys.exp);
+    char = modifyCharacter(keys, char);
+    char = modifyMaxValues(keys, char);
+    return char;
+}
+
+function findCharacter(tracker)
+{
+    let char = new Vampire();
+    char.deserilize(tracker.character);
+    return  char;
 }
 
 function modifyCharacter(keys, char)
@@ -127,18 +148,4 @@ function modifyMaxValues(keys, char)
     if (keys.willpower != undefined) char.willpower.setTotal(keys.willpower);
     if (keys.health != undefined) char.health.setTotal(keys.health);
     return char;
-}
-
-function setCharacter(tracker, keys)
-{
-    if (tracker.error) return;
-    // set character
-    // same as above but on consumable max values
-}
-
-function findCharacter(tracker)
-{
-    let char = new Vampire();
-    char.deserilize(tracker.character);
-    return  char;
 }
