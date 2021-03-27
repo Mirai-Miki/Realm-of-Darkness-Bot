@@ -14,9 +14,6 @@ module.exports = class WoD5Roll
 
         this.colourMod = 0
         this.color = [0, 0, 0];
-
-        this.rollTemp()
-        if (this.temp != "Negligible") this.rollRes();
     }
 
     rollTemp()
@@ -32,17 +29,20 @@ module.exports = class WoD5Roll
             if (temp <= 8)
             {
                 this.temp = "Intense";
+                this.color = [180, 180, 180];
                 this.colourMod = 2;
             }
             else
             {
                 this.temp = "Acute";
+                this.color = [254, 254, 254];
                 this.colourMod = 3;
             }
         }
         else if (temp >= 6)
         {
             this.temp = "Fleeting";
+            this.color = [125, 125, 125];
             this.colourMod = 1;
         }
         else this.temp = "Negligible";
@@ -50,7 +50,8 @@ module.exports = class WoD5Roll
 
     rollRes()
     {
-        this.resResult = Roll.single(10).toString();
+        if (this.temp == 'Negligible') return;
+        if (!this.resResult) this.resResult = Roll.single(10).toString();
         
         if (this.resResult >= 9) 
         {
@@ -127,6 +128,16 @@ module.exports = class WoD5Roll
         }
     }
 
+    addRes(content)
+    {
+        if (content.match(/Phlegmatic/i)) this.resResult = 1;
+        else if (content.match(/Melancholy/i)) this.resResult = 4;
+        else if (content.match(/Choleric/i)) this.resResult = 7;
+        else if (content.match(/Sanguine/i)) this.resResult = 9;
+
+        if (this.resResult) this.rollRes();
+    }
+    
     constructEmbed(message, notes)
     {
         let username;

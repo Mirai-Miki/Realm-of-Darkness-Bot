@@ -56,6 +56,18 @@ module.exports.getErrorMessage = (code) =>
 
     error[errorType.exceededMaxValue] = 'Looks like you have exeeded the' +
     ' Maximum value for one of the keys.\n' +
+    'For more information on key constraints please use the /keys command';
+
+    error[errorType.exceededSetMinValue] = 'Looks like you have exeeded the' +
+    ' Minimum Set value for one of the Consumable keys.\n' +
+    'For more information on key constraints please use the /keys command';
+
+    error[errorType.exceededSetMaxValue] = 'Looks like you have exeeded the' +
+    ' Maximum Set value for one of the Comsumable keys.\n' +
+    'For more information on key constraints please use the /keys command';
+
+    error[errorType.missingBlood] = 'Looks like you have exeeded the' +
+    ' Maximum value for one of the keys.\n' +
     'For more information on key constraints please use the /keys command'; 
 
     return error[code];

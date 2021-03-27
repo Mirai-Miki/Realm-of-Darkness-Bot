@@ -7,7 +7,23 @@ module.exports = class Character20th extends Character
     constructor(willpower)
     {
         super();
+        this.version = 'v20';
         this.willpower = new Consumable(willpower);
         this.health = new DamageTracker20th();
+    }
+
+    resetOverflows()
+    {
+        this.health.resetOverflow();
+    }
+
+    deserilize(char)
+    {
+        super.deserilize(char);
+        this.willpower.setTotal(char.willpower.total);
+        this.willpower.setCurrent(char.willpower.current);
+        this.health.setBashing(char.health.bashing);
+        this.health.setLethal(char.health.lethal);
+        this.health.setAgg(char.health.aggravated);
     }
 }

@@ -5,12 +5,12 @@ const Tracker = require('../../modules/Tracker/Tracker.js');
 const mode = require('../../modules/Tracker/TypeDef/mode.js');
 
 module.exports = {
-    name: 'Tracker: Update Character',
-    aliases: ['update', 'u'],
-    description: 'Updates a characters existing values. Any' +
-        ' Value marked as "Consumable" will need the Set command to ' +
-        'Edit the max values.',
-    usage: `${prefix}update <name> <keys> {Reason}`,
+    name: 'Tracker: Set Consumables',
+    aliases: ['set', 's'],
+    description: 'Updates a characters consumable max values. Any' +
+        ' Field marked as "Consumable" will need the Set command to ' +
+        'edit the max values.',
+    usage: `${prefix}set <name> <keys> {Reason}`,
     help: getHelpMessage(),
 
     execute(message, args, content) 
@@ -25,7 +25,7 @@ module.exports = {
         if (content.match(
             /^\s*\w+\s+\w+\s*=\s*(\+|-)?\s*\w+/i))
         {
-            tracker.setMode(mode.update);
+            tracker.setMode(mode.set);
             tracker.parseCharacter(content);
         }
         else 
@@ -49,7 +49,6 @@ function getHelpMessage()
     '\nReason: An Optional note that will be added to the returned' +
     ' message\nNotes: For more information of Keys please use the' +
     ` ${prefix}Keys command` +
-    `\nExamples:\n${prefix}update Name hunger=-2 slacked 2 hunger` +
-    `\n${prefix}u Name superficialWillpower=4 hunger=2 Took 4 willpower` +
-    ' damage and hunger went up by 2';
+    `\nExamples:\n${prefix}set Name willpower=8 setting willpower to 8` +
+    `\n${prefix}s Name experiance=15 setting total experiance to 15`;
 }
