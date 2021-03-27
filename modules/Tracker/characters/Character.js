@@ -43,7 +43,7 @@ module.exports = class Character
         this.owner = char.owner;
         this.guild = char.guild;
         this.updateDate = char.updateDate;
-        this.exp.setTotal(char.exp.total);
-        this.exp.setCurrent(char.exp.current);
+        if (char.exp) this.exp.setTotal(char.exp.total);
+        if (char.exp) this.exp.setCurrent(char.exp.current);
     }
 }
