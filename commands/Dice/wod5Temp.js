@@ -4,12 +4,12 @@ const WoD5Res = require('../../modules/dice/WoD5Res.js');
 const Discord = require('discord.js');
 
 module.exports = {
-    name: 'Dice: WoD v5 Resonance Roll',
-    aliases: ['resonance', 'res'],
-    description: 'Rolls some D10 acording to the the random Resonance rules' +
-        ' on page 228 of the 5th edition corebook and returns the Resonance' +
+    name: 'Dice: WoD v5 Temperament Roll',
+    aliases: ['temperament', 'temp'],
+    description: 'Rolls some D10 acording to the the random Temperament rules' +
+        ' on page 228 of the 5th edition corebook and returns the Temperament' +
         ' aquired.',
-    usage: `${prefix}res`,
+    usage: `${prefix}temp {Resonance} {Reason}`,
     help: getHelpMessage(),
 
     execute(message, args, content) 
@@ -23,10 +23,19 @@ module.exports = {
         let roll = new WoD5Res();
         let notes = content.replace(/^\s+/, '');
         roll.rollTemp();
-        roll.rollRes();
+        roll.addRes(content);
         let embed = roll.constructEmbed(message, notes);
 
-        message.channel.send(embed);
+        message.channel.send(embed).catch(error => 
+        {
+            if (error instanceof Discord.DiscordAPIError && 
+                (error.code != 50013)) 
+            {
+                // Error codes Missing permissings
+                console.log(error)
+                throw error;
+            }
+        });;
 
         if (!roll.error) message.delete().catch(error => 
         {
