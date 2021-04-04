@@ -2,7 +2,7 @@ module.exports =
 {
     splat: 
     {
-        name: "Splat: Vampire",
+        name: "Splat: Vampire 5th",
         codeKey: 'splat',
         keys: ['splat', 's', 'type', 't'],
         required: "When creating a new character",

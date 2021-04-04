@@ -18,4 +18,7 @@ module.exports =
     exceededSetMinValue: 16,
     exceededSetMaxValue: 17,
     missingBlood: 18,
+    missingRage: 19,
+    missingGnosis: 20,
+    missingPathos: 21,
 }

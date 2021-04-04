@@ -35,7 +35,7 @@ module.exports = {
         {
             return message.channel.send(
                 `Usage: ${this.usage}` +
-                `\nType \`${prefix}v5 help\` for more info.`);
+                `\nType \`${prefix}rr help\` for more info.`);
         }
 
         roll.rerollDice();

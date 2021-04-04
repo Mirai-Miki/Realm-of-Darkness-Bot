@@ -66,9 +66,21 @@ module.exports.getErrorMessage = (code) =>
     ' Maximum Set value for one of the Comsumable keys.\n' +
     'For more information on key constraints please use the /keys command';
 
-    error[errorType.missingBlood] = 'Looks like you have exeeded the' +
-    ' Maximum value for one of the keys.\n' +
-    'For more information on key constraints please use the /keys command'; 
+    error[errorType.missingBlood] = 'Looks like you are missing the ' +
+    'Blood key. New characters require this key.\n' +
+    'For more information on keys please use the /keys command';
+
+    error[errorType.missingRage] = 'Looks like you are missing the ' +
+    'Rage key. New characters require this key.\n' +
+    'For more information on keys please use the /keys command'; 
+
+    error[errorType.missingGnosis] = 'Looks like you are missing the ' +
+    'Gnosis key. New characters require this key.\n' +
+    'For more information on keys please use the /keys command'; 
+
+    error[errorType.missingPathos] = 'Looks like you are missing the ' +
+    'Pathos key. New characters require this key.\n' +
+    'For more information on keys please use the /keys command'; 
 
     return error[code];
 }

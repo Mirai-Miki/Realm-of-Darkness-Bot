@@ -79,7 +79,7 @@ module.exports.character5thEmbed = (char, tracker, unknownKeys) =>
                 hungerOverflow), false);
         }
 
-        if (char.exp.total) embed.addField("Experiance", consumableTracker(
+        if (char.exp.total) embed.addField("Experience", consumableTracker(
             char.exp.current, char.exp.total, 0, client, true), false);
 
         if (tracker.notes) 

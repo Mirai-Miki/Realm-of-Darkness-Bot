@@ -1,21 +1,21 @@
 const mode = require('../TypeDef/mode.js');
 const errorType = require('../TypeDef/errors.js');
-const Vampire = require('../characters/Vampire20th.js');
+const Wraith = require('../characters/Wraith20th.js');
 const { serializeCharacter } = require('../util/serilizeCharacter.js');
 // Key handling
 const CharacterKeys = require('../keys/CharacterKeys.js');
 const Character20thKeys = require('../keys/Character20thKeys.js');
-const Vampire20thKeys = require('../keys/vampire20thKeys.js');
+const Wraith20thKeys = require('../keys/wraith20thKeys.js');
 const { sortKeys } = require('../keys/SortKeys.js');
 // Create Embed
 const { character20thEmbed } = require('../embed/character20thEmbed.js');
 
 module.exports =
 {
-    name: 'Vampire 20th Edition',
+    name: 'Wraith 20th Edition',
     version: 'v20',
-    splat: 'Vampire',
-    keyHelp: 'vampire20th',    
+    splat: 'Wraith',
+    keyHelp: 'wraith20th',    
 
     handle(tracker)
     {
@@ -49,7 +49,7 @@ module.exports =
 
     getKeys()
     {
-        return {...Character20thKeys, ...Vampire20thKeys, ...CharacterKeys};
+        return {...Character20thKeys, ...Wraith20thKeys, ...CharacterKeys};
     }
 }
 
@@ -61,27 +61,23 @@ function newCharacter(tracker, keys)
     newKeyCheck(tracker, keys);
     if (tracker.error) return;
 
-    let char = new Vampire(keys.humanity, keys.blood, 
-        keys.willpower);
+    let char = new Wraith();
     
     char.setName(tracker.name);
     char.setOwner(tracker.recvMess.author.id);
     char.setGuild(tracker.guild);
     char = modifyFields(keys, char);
+    if (keys.corpus != undefined) char.corpus.setTotal(keys.corpus);
+    if (keys.pathos != undefined) char.pathos.setCurrent(keys.pathos);
     if (keys.exp != undefined) char.exp.updateTotal(keys.exp);
     return char;
 }
 
 function newKeyCheck(tracker, keys)
 {
-    if (!keys.humanity)
+    if (!keys.pathos)
     {
-        tracker.error = errorType.missingHumanity;
-    }
-
-    else if (!keys.blood)
-    {
-        tracker.error = errorType.missingBlood;
+        tracker.error = errorType.missingPathos;
     }
 
     else if (!keys.willpower)
@@ -95,33 +91,33 @@ function newKeyCheck(tracker, keys)
 function updateCharacter(tracker, keys)
 {
     if (tracker.error) return;
-    let char = new Vampire();
+    let char = new Wraith();
     char.deserilize(tracker.character);
     char = modifyFields(keys, char);
     char = updateConsumables(keys, char);
-    if (keys.humanity != undefined) char.humanity.modifiyCurrent(keys.humanity);
+    if (keys.pathos != undefined) char.pathos.modifiyCurrent(keys.pathos);
     return char;
 }
 
 function setCharacter(tracker, keys)
 {
     if (tracker.error) return;
-    let char = new Vampire();
+    let char = new Wraith();
     char.deserilize(tracker.character);
     char = modifyFields(keys, char);
     if (keys.willpower != undefined) 
         char.willpower.updateTotal(keys.willpower);
     if (keys.exp != undefined) char.exp.incTotal(keys.exp);
-    if (keys.blood != undefined) char.blood.updateTotal(keys.blood);
-    if (keys.humanity != undefined) char.humanity.setCurrent(keys.humanity);
+    if (keys.corpus != undefined) char.corpus.updateTotal(keys.corpus);
+    if (keys.pathos != undefined) char.pathos.setCurrent(keys.pathos);
     return char;
 }
 
 function findCharacter(tracker)
 {
-    let char = new Vampire();
+    let char = new Wraith();
     char.deserilize(tracker.character);
-    return  char;
+    return char;
 }
 
 function modifyFields(keys, char)
@@ -131,7 +127,6 @@ function modifyFields(keys, char)
     if (keys.bashing != undefined) char.health.updateBashing(keys.bashing);
     if (keys.lethal != undefined) char.health.updateLethal(keys.lethal);
     if (keys.aggravated != undefined) char.health.updateAgg(keys.aggravated);
-
     return char;
 }
 
@@ -141,6 +136,6 @@ function updateConsumables(keys, char)
         char.willpower.modifiyCurrent(keys.willpower);
     if (keys.exp > 0) char.exp.modifiyCurrent(keys.exp);
     else if (keys.exp != undefined) char.exp.modifiyCurrent(keys.exp);
-    if (keys.blood != undefined) char.blood.modifiyCurrent(keys.blood);
+    if (keys.corpus != undefined) char.corpus.modifiyCurrent(keys.corpus);
     return char;
 }

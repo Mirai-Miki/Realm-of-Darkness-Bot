@@ -1,21 +1,21 @@
 const mode = require('../TypeDef/mode.js');
 const errorType = require('../TypeDef/errors.js');
-const Vampire = require('../characters/Vampire20th.js');
+const Mortal = require('../characters/Mortal5th.js');
 const { serializeCharacter } = require('../util/serilizeCharacter.js');
 // Key handling
 const CharacterKeys = require('../keys/CharacterKeys.js');
-const Character20thKeys = require('../keys/Character20thKeys.js');
-const Vampire20thKeys = require('../keys/vampire20thKeys.js');
+const Character5thKeys = require('../keys/Character5thKeys.js');
+const Mortal5thKeys = require('../keys/mortal5thKeys.js');
 const { sortKeys } = require('../keys/SortKeys.js');
 // Create Embed
-const { character20thEmbed } = require('../embed/character20thEmbed.js');
+const { character5thEmbed } = require('../embed/character5thEmbed.js');
 
 module.exports =
 {
-    name: 'Vampire 20th Edition',
-    version: 'v20',
-    splat: 'Vampire',
-    keyHelp: 'vampire20th',    
+    name: 'Mortal 5th Edition',
+    version: 'v5',
+    splat: 'Mortal',
+    keyHelp: 'mortal5th',    
 
     handle(tracker)
     {
@@ -44,12 +44,12 @@ module.exports =
                 return 'Handler Error: Default Case';
         }
         if (!tracker.error) serializeCharacter(character);
-        return character20thEmbed(character, tracker, unknownKeys);
+        return character5thEmbed(character, tracker, unknownKeys);
     },
 
     getKeys()
     {
-        return {...Character20thKeys, ...Vampire20thKeys, ...CharacterKeys};
+        return {...Character5thKeys, ...Mortal5thKeys, ...CharacterKeys};
     }
 }
 
@@ -61,13 +61,14 @@ function newCharacter(tracker, keys)
     newKeyCheck(tracker, keys);
     if (tracker.error) return;
 
-    let char = new Vampire(keys.humanity, keys.blood, 
-        keys.willpower);
+    if (keys.hunger != undefined) keys.hunger -= 1;
+    let char = new Mortal(keys.health, keys.willpower, 
+        keys.humanity);
     
     char.setName(tracker.name);
     char.setOwner(tracker.recvMess.author.id);
     char.setGuild(tracker.guild);
-    char = modifyFields(keys, char);
+    char = modifyCharacter(keys, char);
     if (keys.exp != undefined) char.exp.updateTotal(keys.exp);
     return char;
 }
@@ -79,9 +80,9 @@ function newKeyCheck(tracker, keys)
         tracker.error = errorType.missingHumanity;
     }
 
-    else if (!keys.blood)
+    else if (!keys.health)
     {
-        tracker.error = errorType.missingBlood;
+        tracker.error = errorType.missingHealth;
     }
 
     else if (!keys.willpower)
@@ -95,52 +96,55 @@ function newKeyCheck(tracker, keys)
 function updateCharacter(tracker, keys)
 {
     if (tracker.error) return;
-    let char = new Vampire();
+    let char = new Mortal();
     char.deserilize(tracker.character);
-    char = modifyFields(keys, char);
-    char = updateConsumables(keys, char);
-    if (keys.humanity != undefined) char.humanity.modifiyCurrent(keys.humanity);
+    char = modifyCharacter(keys, char);
+    char = modifyMaxValues(keys, char);
+    if (keys.exp != undefined) char.exp.modifiyCurrent(keys.exp);
     return char;
 }
+
+
 
 function setCharacter(tracker, keys)
 {
     if (tracker.error) return;
-    let char = new Vampire();
+    let char = new Mortal();
     char.deserilize(tracker.character);
-    char = modifyFields(keys, char);
-    if (keys.willpower != undefined) 
-        char.willpower.updateTotal(keys.willpower);
     if (keys.exp != undefined) char.exp.incTotal(keys.exp);
-    if (keys.blood != undefined) char.blood.updateTotal(keys.blood);
-    if (keys.humanity != undefined) char.humanity.setCurrent(keys.humanity);
+    char = modifyCharacter(keys, char);
+    char = modifyMaxValues(keys, char);
     return char;
 }
 
 function findCharacter(tracker)
 {
-    let char = new Vampire();
+    let char = new Mortal();
     char.deserilize(tracker.character);
     return  char;
 }
 
-function modifyFields(keys, char)
+function modifyCharacter(keys, char)
 {
+    char.setDate(Date.now());
     char.resetOverflows();
-    char.setDate(Date.now());    
-    if (keys.bashing != undefined) char.health.updateBashing(keys.bashing);
-    if (keys.lethal != undefined) char.health.updateLethal(keys.lethal);
-    if (keys.aggravated != undefined) char.health.updateAgg(keys.aggravated);
+    if (keys.superficialWillpower != undefined) char.willpower.takeSuperfical(
+        keys.superficialWillpower);
+    if (keys.aggWillpower != undefined) char.willpower.takeAgg(
+        keys.aggWillpower);
+    if (keys.superficialHealth != undefined) char.health.takeSuperfical(
+        keys.superficialHealth);
+    if (keys.aggHealth != undefined) char.health.takeAgg(
+        keys.aggHealth);
+    if (keys.stains != undefined) char.humanity.takeStains(keys.stains);
 
     return char;
 }
 
-function updateConsumables(keys, char)
+function modifyMaxValues(keys, char)
 {
-    if (keys.willpower != undefined) 
-        char.willpower.modifiyCurrent(keys.willpower);
-    if (keys.exp > 0) char.exp.modifiyCurrent(keys.exp);
-    else if (keys.exp != undefined) char.exp.modifiyCurrent(keys.exp);
-    if (keys.blood != undefined) char.blood.modifiyCurrent(keys.blood);
+    if (keys.humanity != undefined) char.humanity.setTotal(keys.humanity);
+    if (keys.willpower != undefined) char.willpower.setTotal(keys.willpower);
+    if (keys.health != undefined) char.health.setTotal(keys.health);
     return char;
 }

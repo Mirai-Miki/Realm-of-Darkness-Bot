@@ -1,21 +1,21 @@
 const mode = require('../TypeDef/mode.js');
 const errorType = require('../TypeDef/errors.js');
-const Vampire = require('../characters/Vampire20th.js');
+const Werewolf = require('../characters/Werewolf20th.js');
 const { serializeCharacter } = require('../util/serilizeCharacter.js');
 // Key handling
 const CharacterKeys = require('../keys/CharacterKeys.js');
 const Character20thKeys = require('../keys/Character20thKeys.js');
-const Vampire20thKeys = require('../keys/vampire20thKeys.js');
+const Werewolf20thKeys = require('../keys/werewolf20thKeys.js');
 const { sortKeys } = require('../keys/SortKeys.js');
 // Create Embed
 const { character20thEmbed } = require('../embed/character20thEmbed.js');
 
 module.exports =
 {
-    name: 'Vampire 20th Edition',
+    name: 'Werewolf 20th Edition',
     version: 'v20',
-    splat: 'Vampire',
-    keyHelp: 'vampire20th',    
+    splat: 'Werewolf',
+    keyHelp: 'werewolf20th',    
 
     handle(tracker)
     {
@@ -49,7 +49,7 @@ module.exports =
 
     getKeys()
     {
-        return {...Character20thKeys, ...Vampire20thKeys, ...CharacterKeys};
+        return {...Character20thKeys, ...Werewolf20thKeys, ...CharacterKeys};
     }
 }
 
@@ -61,7 +61,7 @@ function newCharacter(tracker, keys)
     newKeyCheck(tracker, keys);
     if (tracker.error) return;
 
-    let char = new Vampire(keys.humanity, keys.blood, 
+    let char = new Werewolf(keys.rage, keys.gnosis, 
         keys.willpower);
     
     char.setName(tracker.name);
@@ -74,14 +74,14 @@ function newCharacter(tracker, keys)
 
 function newKeyCheck(tracker, keys)
 {
-    if (!keys.humanity)
+    if (!keys.rage)
     {
-        tracker.error = errorType.missingHumanity;
+        tracker.error = errorType.missingRage;
     }
 
-    else if (!keys.blood)
+    else if (!keys.gnosis)
     {
-        tracker.error = errorType.missingBlood;
+        tracker.error = errorType.missingGnosis;
     }
 
     else if (!keys.willpower)
@@ -95,33 +95,32 @@ function newKeyCheck(tracker, keys)
 function updateCharacter(tracker, keys)
 {
     if (tracker.error) return;
-    let char = new Vampire();
+    let char = new Werewolf();
     char.deserilize(tracker.character);
     char = modifyFields(keys, char);
     char = updateConsumables(keys, char);
-    if (keys.humanity != undefined) char.humanity.modifiyCurrent(keys.humanity);
     return char;
 }
 
 function setCharacter(tracker, keys)
 {
     if (tracker.error) return;
-    let char = new Vampire();
+    let char = new Werewolf();
     char.deserilize(tracker.character);
     char = modifyFields(keys, char);
     if (keys.willpower != undefined) 
         char.willpower.updateTotal(keys.willpower);
     if (keys.exp != undefined) char.exp.incTotal(keys.exp);
-    if (keys.blood != undefined) char.blood.updateTotal(keys.blood);
-    if (keys.humanity != undefined) char.humanity.setCurrent(keys.humanity);
+    if (keys.rage != undefined) char.rage.updateTotal(keys.rage);
+    if (keys.gnosis != undefined) char.gnosis.updateTotal(keys.gnosis);
     return char;
 }
 
 function findCharacter(tracker)
 {
-    let char = new Vampire();
+    let char = new Werewolf();
     char.deserilize(tracker.character);
-    return  char;
+    return char;
 }
 
 function modifyFields(keys, char)
@@ -131,7 +130,6 @@ function modifyFields(keys, char)
     if (keys.bashing != undefined) char.health.updateBashing(keys.bashing);
     if (keys.lethal != undefined) char.health.updateLethal(keys.lethal);
     if (keys.aggravated != undefined) char.health.updateAgg(keys.aggravated);
-
     return char;
 }
 
@@ -141,6 +139,7 @@ function updateConsumables(keys, char)
         char.willpower.modifiyCurrent(keys.willpower);
     if (keys.exp > 0) char.exp.modifiyCurrent(keys.exp);
     else if (keys.exp != undefined) char.exp.modifiyCurrent(keys.exp);
-    if (keys.blood != undefined) char.blood.modifiyCurrent(keys.blood);
+    if (keys.rage != undefined) char.rage.modifiyCurrent(keys.rage);
+    if (keys.gnosis != undefined) char.gnosis.modifiyCurrent(keys.gnosis);
     return char;
 }
