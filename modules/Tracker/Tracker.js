@@ -80,7 +80,7 @@ module.exports = class Tracker
 
         let keyValues = content.match(/\w+\s*=\s*(\+|-)?\s*\w+/ig);
         content = content.replace(/\w+\s*=\s*(\+|-)?\s*\w+/ig, '');
-        this.notes = content.match(/\w+(\s+\w+)*/);
+        this.notes = content.match(/\S+(\s+\S+)*/);
 
         if (this.notes) this.notes = this.notes[0];
         
@@ -220,84 +220,3 @@ module.exports = class Tracker
         }
     }
 }
-
-/*
-Commands
-/new <name> <keys>
-used for creating a new character. "consumable" keys change the max value
-/update <name> <keys>
-used for changing values
-/set <name> <keys>
-used for changing "consumable" max values
-/delete <name>
-used for deleting a characte
-
-Key
-
-Universal <Required for a new Character>
-version: 'v', 'version'
-splat: 'type', 'splat', 't', 's
-
-
-V5: '5', 'v5', '5th'
-willpower: 'w', 'willpower', 'wp'
-health: 'd', 'health', 'damage' 
-superficialWillpower: 'sw', 'superwillpower', 'superficialwillpower', 'swp'
-aggWillpower: 'aw', 'aggw', 'aggwp', 'aggwillpower', 'aggravatedwillpower'
-superficialHealth: 'sw', 'superwillpower', 'superficialwillpower', 'swp'
-aggHealth: 'ad', 'ah', 'aggh', 'aggdamage', 'agghealth
-
-Vamp 'v', 'vamp', 'vampire'      
-hunger: 'h', 'hunger'
-humanity: 'hm', 'humanity'
-
-Human 'h', 'human'
-humanity: 'hm', 'humanity
-
-
-V20: '20', 'v20', '20th'
-willpower(consumable): 'w', 'willpower', 'wp'
-bashing: 'bash', 'bashing'
-lethal: 'l', 'lethal'
-aggravated: 'agg', 'aggravated
-
-Vamp 'v', 'vamp', 'vampire'
-blood(consumable): 'b', 'blood'
-humanity: 'h', 'hm', 'humanity
-
-Human 'h', 'human'
-blood: 'b', 'blood'
-humanity: 'h', 'hm', 'humanity
-
-Ghoul 'g', 'ghoul'
-blood: 'b', 'blood'
-humanity: 'h', 'hm', 'humanity'
-vitea: 'v', 'vitea
-
-Werewolf 'w', 'wolf', 'garou' 'werewolf'
-Rage(consumable): 'r', 'rage'
-gnosis(consumable): 'g', 'gnosis
-
-Changeling 'c', 'changeling'
-glamour(consumable): 'g', 'glamour'
-banality(consumable): 'b', 'bane', 'banality'
-chimericalbashing: 'cbash', 'cbashing'
-chimericallethal: 'cl', 'clethal'
-chimericalaggravated: 'cagg', 'caggravated
-
-Mage 'm', 'mage'
-arete: 'a', 'arete'
-quintessence: 'q', 'quint', 'quintessence'
-paradox: 'p', 'paradox
-
-Wraith 'wr', 'wraith'
-corpus(consumable): 'c', 'corpus'
-pathos: 'p', 'pathos
-
-
-Note about consumables
-To set the Total Value rather then the current value you need to use
-the set command rather then the update command
-if i didn't do it that way i would need total value keys as well for 
-every consumable
-*/
