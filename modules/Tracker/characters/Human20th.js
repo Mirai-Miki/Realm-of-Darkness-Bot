@@ -17,7 +17,6 @@ module.exports = class Ghoul20th extends Character20th
         super.resetOverflows();
         this.blood.resetOverflow();
         this.humanity.resetOverflow();
-        this.vitae.resetOverflow();
     }
 
     deserilize(char)
