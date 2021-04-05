@@ -4,7 +4,7 @@ const Character20th = require("./Character20th");
 
 module.exports = class Ghoul20th extends Character20th
 {
-    constructor(humanity=7, blood=10, willpower=6) 
+    constructor(humanity=7, willpower=6) 
     {
         super(willpower);
         this.splat = 'Human';
