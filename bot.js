@@ -65,6 +65,29 @@ client.on('message', (mess) => {
         && !mess.content.startsWith('\\'))
         || mess.author.bot)  { return };
 
+    if (!isSendPermSet(mess))
+    {
+        mess.author.send("Sorry, I do not have permission to post in the " +
+            `<${mess.guild.name} - ${mess.channel.name}> channel.`)
+        .catch(error =>
+        {
+            if (error instanceof Discord.DiscordAPIError &&
+                error.code == 50007)
+            {
+                // Cannot send DM to user. Sending to debug log
+                client.channels.cache.get('776761322859266050').send(
+                    `Permissions not set in guild <${mess.guild.name}>, ` +
+                    `channel <${mess.channel.name}>` +
+                    `\nFailed to DM user ` +
+                    `${mess.author.username}#${mess.author.discriminator}` +
+                    `\n<@${mess.author.id}>`
+                );            
+            }
+            else throw error; // Unknown error
+        });
+        return;
+    }
+
     const args = mess.content.slice(prefix.length).trim().split(/ +/);
     const commandName = args.shift().toLowerCase();
     const content = mess.content.slice(prefix.length + commandName.length);
@@ -221,4 +244,11 @@ function setActivity(client)
     client.user.setActivity(`${client.guilds.cache.size} Servers |` +
         ` Type ${config.prefix}rod for a list of commands`, 
         { type: 'WATCHING' });
+}
+
+function isSendPermSet(message)
+{
+    if (!message.guild) return true; // Not sending in a guild
+
+    return message.channel.permissionsFor(client.user.id).has("SEND_MESSAGES");
 }

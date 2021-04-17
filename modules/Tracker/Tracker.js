@@ -60,7 +60,7 @@ module.exports = class Tracker
         this.db.open('Tracker', 'Database');
         this.dbGuild = this.db.find(this.guild);
 
-        let char
+        let char;
         if (this.dbGuild) char = this.dbGuild[this.name.toLowerCase()];
         
         if (char) this.character = char;
