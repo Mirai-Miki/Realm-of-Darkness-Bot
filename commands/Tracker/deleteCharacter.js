@@ -33,9 +33,9 @@ module.exports = {
                 `\ntype \`${prefix}${this.aliases[0]} help\` for more info`);
         } 
 
-        let embed = tracker.deleteCharacter();
+        let retMess = tracker.deleteCharacter();
         
-        message.channel.send(embed);
+        message.channel.send(retMess);
     }
 }
 

@@ -67,6 +67,7 @@ function newCharacter(tracker, keys)
     char.setOwner(tracker.recvMess.author.id);
     char.setGuild(tracker.guild);
     char = modifyFields(keys, char);
+    char.updateHistory(keys, tracker.notes, "New");
     if (keys.glamour != undefined) char.glamour.setTotal(keys.glamour);
     if (keys.banality != undefined) char.banality.setTotal(keys.banality);
     if (keys.nightmare != undefined) char.nightmare.setCurrent(keys.nightmare);
@@ -90,6 +91,7 @@ function updateCharacter(tracker, keys)
     let char = new Changeling();
     char.deserilize(tracker.character);
     char = modifyFields(keys, char);
+    char.updateHistory(keys, tracker.notes, "Update");
     char = updateConsumables(keys, char);
     if (keys.nightmare != undefined) 
         char.nightmare.modifiyCurrent(keys.nightmare);
@@ -104,6 +106,7 @@ function setCharacter(tracker, keys)
     let char = new Changeling();
     char.deserilize(tracker.character);
     char = modifyFields(keys, char);
+    char.updateHistory(keys, tracker.notes, "Set");
     if (keys.willpower != undefined) 
         char.willpower.updateTotal(keys.willpower);
     if (keys.exp != undefined) char.exp.incTotal(keys.exp);
@@ -124,7 +127,7 @@ function findCharacter(tracker)
 function modifyFields(keys, char)
 {
     char.resetOverflows();
-    char.setDate(Date.now());    
+    char.setUpdateDate();
     if (keys.bashing != undefined) char.health.updateBashing(keys.bashing);
     if (keys.lethal != undefined) char.health.updateLethal(keys.lethal);
     if (keys.aggravated != undefined) char.health.updateAgg(keys.aggravated);

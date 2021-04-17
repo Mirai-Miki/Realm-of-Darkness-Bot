@@ -68,6 +68,7 @@ function newCharacter(tracker, keys)
     char.setOwner(tracker.recvMess.author.id);
     char.setGuild(tracker.guild);
     char = modifyFields(keys, char);
+    char.updateHistory(keys, tracker.notes, "New");
     if (keys.exp != undefined) char.exp.updateTotal(keys.exp);
     return char;
 }
@@ -99,6 +100,7 @@ function updateCharacter(tracker, keys)
     char.deserilize(tracker.character);
     char = modifyFields(keys, char);
     char = updateConsumables(keys, char);
+    char.updateHistory(keys, tracker.notes, "Update");
     if (keys.humanity != undefined) char.humanity.modifiyCurrent(keys.humanity);
     return char;
 }
@@ -109,6 +111,7 @@ function setCharacter(tracker, keys)
     let char = new Vampire();
     char.deserilize(tracker.character);
     char = modifyFields(keys, char);
+    char.updateHistory(keys, tracker.notes, "Set");
     if (keys.willpower != undefined) 
         char.willpower.updateTotal(keys.willpower);
     if (keys.exp != undefined) char.exp.incTotal(keys.exp);
@@ -127,7 +130,7 @@ function findCharacter(tracker)
 function modifyFields(keys, char)
 {
     char.resetOverflows();
-    char.setDate(Date.now());    
+    char.setUpdateDate();    
     if (keys.bashing != undefined) char.health.updateBashing(keys.bashing);
     if (keys.lethal != undefined) char.health.updateLethal(keys.lethal);
     if (keys.aggravated != undefined) char.health.updateAgg(keys.aggravated);

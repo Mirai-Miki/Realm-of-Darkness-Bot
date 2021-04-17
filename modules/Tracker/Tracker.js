@@ -33,6 +33,7 @@ module.exports = class Tracker
         this.error;
         this.embed;
         this.notes;
+        this.findHistory = false;
         
         if (message.member)
         {
@@ -78,8 +79,17 @@ module.exports = class Tracker
         this.name = name.replace(/\s+/g, '');
         content = content.replace(name, '');
 
+        // Finding Key Value pairs
         let keyValues = content.match(/\w+\s*=\s*(\+|-)?\s*\w+/ig);
         content = content.replace(/\w+\s*=\s*(\+|-)?\s*\w+/ig, '');
+
+        // Finding Args
+        if (this.mode == mode.find && content.match(/--history(\s+|$)/i))
+        {
+            content = content.replace(/--history(\s+)?/i, '');
+            this.findHistory = true;
+        }
+
         this.notes = content.match(/\S+(\s+\S+)*/);
 
         if (this.notes) this.notes = this.notes[0];

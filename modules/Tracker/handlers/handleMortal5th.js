@@ -69,6 +69,7 @@ function newCharacter(tracker, keys)
     char.setOwner(tracker.recvMess.author.id);
     char.setGuild(tracker.guild);
     char = modifyCharacter(keys, char);
+    char.updateHistory(keys, tracker.notes, "New");
     if (keys.exp != undefined) char.exp.updateTotal(keys.exp);
     return char;
 }
@@ -100,6 +101,7 @@ function updateCharacter(tracker, keys)
     char.deserilize(tracker.character);
     char = modifyCharacter(keys, char);
     char = modifyMaxValues(keys, char);
+    char.updateHistory(keys, tracker.notes, "Update");
     if (keys.exp != undefined) char.exp.modifiyCurrent(keys.exp);
     return char;
 }
@@ -114,6 +116,7 @@ function setCharacter(tracker, keys)
     if (keys.exp != undefined) char.exp.incTotal(keys.exp);
     char = modifyCharacter(keys, char);
     char = modifyMaxValues(keys, char);
+    char.updateHistory(keys, tracker.notes, "Set");
     return char;
 }
 
@@ -126,7 +129,7 @@ function findCharacter(tracker)
 
 function modifyCharacter(keys, char)
 {
-    char.setDate(Date.now());
+    char.setUpdateDate();
     char.resetOverflows();
     if (keys.superficialWillpower != undefined) char.willpower.takeSuperfical(
         keys.superficialWillpower);

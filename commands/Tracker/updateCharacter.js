@@ -34,9 +34,9 @@ module.exports = {
                 `\ntype \`${prefix}${this.aliases[0]} help\` for more info`);
         } 
 
-        let embed = tracker.existingCharacter();
+        let retMess = tracker.existingCharacter();
         
-        message.channel.send(embed);
+        message.reply(retMess.embed);
     }
 }
 

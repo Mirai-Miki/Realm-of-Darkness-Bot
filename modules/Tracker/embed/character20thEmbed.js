@@ -120,7 +120,17 @@ module.exports.character20thEmbed = (char, tracker, unknownKeys) =>
         if (unknownKeys.length) 
             embed.addField("Unknown Keys", unknownKeys.join(' | '));
 
-        return embed;        
+        // Adding History if History flag is Set
+        if (tracker.findHistory && char.history)
+        {
+            var history = `__**History for ${char.name}**__\n`;
+            for (record of char.history)
+            {
+                history += `${record}ﾠ\n`;
+            }
+        }
+
+        return {embed: embed, history: history};        
 }
 
 function damageTracker(health, client) {
