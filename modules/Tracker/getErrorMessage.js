@@ -82,5 +82,8 @@ module.exports.getErrorMessage = (code) =>
     'Pathos key. New characters require this key.\n' +
     'For more information on keys please use the /keys command'; 
 
+    error[errorType.reservedName] = 'Sorry, This name is reserved for bot' +
+    ' use. Please try another one.'; 
+
     return error[code];
 }

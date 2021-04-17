@@ -21,4 +21,5 @@ module.exports =
     missingRage: 19,
     missingGnosis: 20,
     missingPathos: 21,
+    reservedName: 22,
 }

@@ -98,7 +98,8 @@ module.exports.character5thEmbed = (char, tracker, unknownKeys) =>
             }
         }
 
-        return {embed: embed, history: history};        
+        if (history) return {embed: embed, history: history};
+        else return embed;        
 }
 
 function damageTracker(max, supDamage, aggDamage, client) {

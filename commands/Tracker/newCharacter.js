@@ -1,4 +1,3 @@
-const Discord = require('discord.js');
 const { prefix } = require('../../config.json');
 
 const Help = require('../../modules/util/Help.js');
@@ -35,7 +34,7 @@ module.exports = {
 
         let retMess = tracker.newCharacter();
         
-        message.channel.send(retMess.embed);
+        message.channel.send(retMess);
     }
 }
 

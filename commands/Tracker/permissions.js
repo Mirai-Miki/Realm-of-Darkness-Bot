@@ -1,4 +1,3 @@
-const Discord = require('discord.js');
 const { prefix } = require('../../config.json');
 const Database = require('../../modules/util/Database.js');
 

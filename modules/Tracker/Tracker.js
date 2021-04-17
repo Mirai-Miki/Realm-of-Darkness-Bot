@@ -75,8 +75,9 @@ module.exports = class Tracker
     parseCharacter(content)
     {
         //TODO implement multi word names
-        let name = content.match(/^\s*\w+\s*/i)[0];
+        let name = content.match(/^\s*\w+\s*/i)[0];        
         this.name = name.replace(/\s+/g, '');
+        this.name = this.name.charAt(0).toUpperCase() + this.name.slice(1);
         content = content.replace(name, '');
 
         // Finding Key Value pairs
@@ -123,6 +124,9 @@ module.exports = class Tracker
 
     newCharacter()
     {
+        if (this.name.match(/all/i)) return `<@${this.recvMess.author.id}> ` +
+        `${getErrorMessage(errorType.reservedName)}`;
+
         if (this.character) return `<@${this.recvMess.author.id}> ` +
             `${getErrorMessage(errorType.dupChar)}`;
         
@@ -169,6 +173,8 @@ module.exports = class Tracker
 
     find()
     {
+        if (this.name.match(/all/i)) return this.findAll();
+
         if (!this.character) return `<@${this.recvMess.author.id}> ` +
             `${getErrorMessage(errorType.noChar)}`;
 
@@ -180,6 +186,32 @@ module.exports = class Tracker
         }
 
         return this.handle(this.character.version, this.character.splat);
+    }
+
+    findAll()
+    {
+        if (this.recvMess.guild && !this.admin && !this.ST)
+        {
+            return `<@${this.recvMess.author.id}> ` +
+                `${getErrorMessage(errorType.noPerm)}`;
+        }
+
+        let names = "";
+        
+        // Check if there are characters saved
+        if (!this.dbGuild) return `<@${this.recvMess.author.id}>` +
+        ` No Characters currently Saved!`;
+
+        for (let character of Object.values(this.dbGuild))
+        {
+            let date = new Date(character.updateDate);
+            date = date.toDateString();
+            names += `__**${character.name}**__ﾠ\n` +
+            `\`\`\`yaml\nSplat: ${character.splat}\n` +
+            `Last Update: ${date}\`\`\``;
+        }
+        
+        return names;
     }
 
     deleteCharacter()

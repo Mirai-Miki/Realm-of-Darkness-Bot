@@ -36,7 +36,7 @@ module.exports = {
 
         let retMess = tracker.existingCharacter();
         
-        message.channel.send(retMess.embed);
+        message.channel.send(retMess);
     }
 }
 

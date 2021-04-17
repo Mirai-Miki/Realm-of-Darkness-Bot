@@ -130,7 +130,8 @@ module.exports.character20thEmbed = (char, tracker, unknownKeys) =>
             }
         }
 
-        return {embed: embed, history: history};        
+        if (history) return {embed: embed, history: history};
+        else return embed;        
 }
 
 function damageTracker(health, client) {
