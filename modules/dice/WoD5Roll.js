@@ -36,7 +36,7 @@ module.exports = class WoD5Roll
         this.pool;
         this.hunger;
 
-        this.reroll;
+        this.reroll = {};
         this.notes;
 
         this.total = 0,     
@@ -105,12 +105,17 @@ module.exports = class WoD5Roll
     parseReroll(content)
     {
         if (this.error) return;
-        this.reroll = {queue: 0};
-        let breakdown = content.match(/\s*\d+(\s+\d+(\s+\d+)?)?/i)[0];
+        this.reroll.queue = 0;
+        let breakdown = content.match
+        (/^\s*(\d+|f|c|s|p|fail|crit|sux)(\s+(\d+|f|c|s|p|fail|crit|sux)(\s+(\d+|f|c|s|p|fail|crit|sux))?)?(\s+|$)/i)[0];
+        this.reroll.notes = content.replace(breakdown, '');
         // Extract args
-        while (breakdown.match(/\s*\d+/i))
-        {
-            let temp = breakdown.match(/\s*\d+/i)[0]
+        this.reroll.dice = {};
+        while (breakdown.match(/\s*(\d+|f|c|s|p|fail|crit|sux)/i))
+        {   
+            let temp = breakdown.match(/(\d+|f|c|s|p|fail|crit|sux)/i)[0]
+            this.reroll.dice[this.reroll.queue] =temp;
+            /*
             if (this.reroll.dice1 === undefined)
             {
                 this.reroll.dice1 = parseInt(temp);
@@ -123,10 +128,16 @@ module.exports = class WoD5Roll
             {
                 this.reroll.dice3 = parseInt(temp);
             }
+            */
+            if (parseInt(temp) && (parseInt(temp) < 1 || parseInt(temp) > 10))
+            {
+                this.error = REROLL_ERR;
+                return;
+            }
             breakdown = breakdown.replace(temp, '');
             this.reroll.queue++;
         }
-
+        /*
         // Sanity checks
         if ((this.reroll.dice1 != undefined && 
             (this.reroll.dice1 < 1 || this.reroll.dice1 > 10)) ||
@@ -138,11 +149,14 @@ module.exports = class WoD5Roll
             this.error = REROLL_ERR;
             return;
         }
+        */
     }
 
-    quickReroll()
+    quickReroll(content)
     {
-        this.reroll = {quick: true};
+        this.reroll.notes = content;
+        this.reroll.dice = {};
+        this.reroll.quick = true;
         this.reroll.queue = 3;
     }
 
@@ -151,6 +165,7 @@ module.exports = class WoD5Roll
         if (this.error) return;
         this.diceResults = Roll.v5(this.pool, this.hunger);
         this._calculateResults();
+        this.reroll.rrCount = 0;
         this._serialize();   
     }
 
@@ -163,6 +178,7 @@ module.exports = class WoD5Roll
         let hungerResults = [];
         let regResults = [];
         let count = 0;
+        this.reroll.rrCount++;
 
         for (let result of this.diceResults)
         {
@@ -171,40 +187,47 @@ module.exports = class WoD5Roll
             {
                 regResults.push(result);
             }
-            else if (this.reroll.dice1 && this.reroll.dice1 == result.result)
-            {
-                this.reroll.dice1 = undefined;
-                count++;
-            }
-            else if (this.reroll.dice2 && this.reroll.dice2 == result.result)
-            {
-                this.reroll.dice2 = undefined;
-                count++;
-            }
-            else if (this.reroll.dice3 && this.reroll.dice3 == result.result)
-            {
-                this.reroll.dice3 = undefined;
-                count++;
-            }
             else if (this.reroll.quick && result.result < 6)
             {
+                regResults.push(Roll.v5(1, 0)[0]);
                 count++
+            }
+            else if (this.reroll.dice[0] || this.reroll.dice[1] || 
+                this.reroll.dice[2])
+            {
+                let hit = false;
+                for (const [key, value] of Object.entries(this.reroll.dice))
+                {
+                    if ((parseInt(value) && parseInt(value) == result.result) ||
+                        (value.match(/f|fail/i) && result.result < 6) ||
+                        (value.match(/c|crit/i) && result.result == 10) ||
+                        (value.match(/p|s|sux/i) && result.result >= 6 && 
+                        result.result < 10))
+                    {
+                        delete this.reroll.dice[key];
+                        regResults.push(Roll.v5(1, 0)[0]);
+                        count++;
+                        hit = true;
+                        break;
+                    }
+                }
+                if (!hit) regResults.push(result);
             }
             else
             {
                 regResults.push(result);
             }          
         }
+        
         // Make sure we have removed all the dice we are going to reroll
         if (!this.reroll.quick && count != this.reroll.queue) 
             return this.error = DICE_MISSING_ERR;
-
-        regResults = regResults.concat(Roll.v5(count, 0));
+        
+        if (count == 0) this.reroll.queue = 0;
         this.diceResults = regResults.concat(hungerResults);
         this._calculateResults();
-        // Once the dice rolls you cannot reroll again
-        this._removeSerializedRoll();
-        
+        // we reserialize with the new roll
+        this._serialize();        
     }
 
     networkRoll()
@@ -358,7 +381,6 @@ module.exports = class WoD5Roll
 
         // Create the embed
         let embed = new Discord.MessageEmbed();
-        // Change to try and use DisplayNames if available.
         embed.setAuthor(this.user.username, this.user.avatarURL())
         .setTitle(title)
         .addField("Result", resultMessage, true)
@@ -369,12 +391,18 @@ module.exports = class WoD5Roll
         if (this.hunger) embed.addField("Hunger", hungerResult, true);
 
         // Finishing touches
-        if (this.reroll) embed.setDescription('<† Willpower Reroll †>');
+        let reroll = '<† Willpower Reroll †>'
+        if (this.reroll.rrCount > 1) reroll += 
+            `ﾠ**Reroll Attempts: ${this.reroll.rrCount}**`;
+        if (this.reroll.rrCount) embed.setDescription(reroll);
         if (this.notes) embed.addField("Notes", this.notes);
+        if (this.reroll.notes) embed.addField("Reroll Notes", this.reroll.notes);
 
         // Send it all back
-        let pack = {'message': message, 'embed': embed};
-        return pack;
+        if (this.reroll.rrCount && !this.reroll.queue)
+            return {'message': `<@${this.user.id}>, There is nothing to reroll!`
+            , 'embed': {}};
+        return {'message': message, 'embed': embed};
     }
 
     _serialize()
@@ -388,6 +416,7 @@ module.exports = class WoD5Roll
             hunger: this.hunger,
             diff: this.diff,
             diceResults: this.diceResults,
+            rrCount: this.reroll.rrCount,
             notes: this.notes,
         }        
         let id = this.user.id;
@@ -411,6 +440,7 @@ module.exports = class WoD5Roll
         this.hunger = roll.hunger;
         this.diff = roll.diff;
         this.diceResults = roll.diceResults;
+        this.reroll.rrCount = roll.rrCount;
         this.notes = roll.notes;
     }
 
@@ -498,19 +528,27 @@ module.exports = class WoD5Roll
     _getErrorMessage(code)
     {
         let errors = {};
-        errors[POOL_ERR] = `Pool should **not** be less than 1 or` +
-                ` larger then 50`;
+        errors[POOL_ERR] = `<@${this.user.id}>, ` +
+            `Pool should **not** be less than 1 or` +
+            ` larger then 50`;
         
-        errors[HUNGER_ERR] = 'Hunger should **not** be less than ' +
+        errors[HUNGER_ERR] = `<@${this.user.id}>, ` +
+            'Hunger should **not** be less than ' +
             '0 or greater than 5';
         
-        errors[DIFF_ERR] = 'Difficulty should not be less than 0 or greater ' +
-                'than 50';
+        errors[DIFF_ERR] = `<@${this.user.id}>, ` +
+            'Difficulty should not be less than 0 or greater ' +
+            'than 50';
 
-        errors[HISTORY_ERR] = 'Sorry I could not find your previous roll. ' +
+        errors[HISTORY_ERR] = `<@${this.user.id}>, ` +
+            'Sorry I could not find your previous roll. ' +
             'Perhaps you have already rerolled it?';
-        errors[REROLL_ERR] = 'Dice cannot be less than 1 or greater than 10.';
-        errors[DICE_MISSING_ERR] = 'One of the dice you selected is' +
+        
+        errors[REROLL_ERR] = `<@${this.user.id}>, ` +
+            'Dice cannot be less than 1 or greater than 10.';
+        
+        errors[DICE_MISSING_ERR] = `<@${this.user.id}>, ` +
+            'One of the dice you selected is' +
             ' not one of the previously rolled regular dice.';
 
         return errors[code];

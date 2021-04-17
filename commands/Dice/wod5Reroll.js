@@ -21,21 +21,16 @@ module.exports = {
         }
 
         let roll = new WoD5Roll(message.client, message.author, message.member);
-        if (content.match(/^\s*\d+(\s+\d+(\s+\d+)?)?/i))
+        if (content.match
+            (/^\s*(\d+|f|c|s|p|fail|crit|sux)(\s+(\d+|f|c|s|p|fail|crit|sux)(\s+(\d+|f|c|s|p|fail|crit|sux))?)?(\s+|$)/i))
         {
             // Standard roll
             roll.parseReroll(content);
         }
-        else if (content.match(/^\s*$/))
-        {
-            // quick reroll
-            roll.quickReroll();
-        }
         else
         {
-            return message.channel.send(
-                `Usage: ${this.usage}` +
-                `\nType \`${prefix}rr help\` for more info.`);
+            // quick reroll
+            roll.quickReroll(content);
         }
 
         roll.rerollDice();
