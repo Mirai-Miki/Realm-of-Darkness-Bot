@@ -63,7 +63,8 @@ module.exports = {
 
         const name = args[0].toLowerCase();
         const splat = splats.find(
-            splat => splat.keyHelp && splat.keyHelp == name);
+            splat => splat.keyHelp && splat.keyHelp.toLowerCase() == 
+            name.toLowerCase());
         
         if (!splat) return message.reply("Sorry that is not a valid" +
             ' KeyHelp command.\n' +

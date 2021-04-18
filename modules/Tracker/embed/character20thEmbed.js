@@ -109,6 +109,20 @@ module.exports.character20thEmbed = (char, tracker, unknownKeys) =>
                     staticFieldTracker(char.paradox, 0, client), false
                 );
                 break;
+            case 'Demon':  
+                embed.addField(
+                    `Faith [${char.faith.current}/${char.faith.total}]`, 
+                    consumableTracker(char.faith, 1, client, 10), false
+                );
+                embed.addField(
+                    `Permanent Torment ${char.permTorment.current}`, 
+                    staticFieldTracker(char.permTorment, 0, client), false
+                );
+                embed.addField(
+                    `Temporary Torment ${char.tempTorment.current}`, 
+                    staticFieldTracker(char.tempTorment, 0, client), false
+                );
+                break;
         }
 
         embed.addField("Health", damageTracker(char.health, client), false);

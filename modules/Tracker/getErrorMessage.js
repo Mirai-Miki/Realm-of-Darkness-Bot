@@ -85,5 +85,9 @@ module.exports.getErrorMessage = (code) =>
     error[errorType.reservedName] = 'Sorry, This name is reserved for bot' +
     ' use. Please try another one.'; 
 
+    error[errorType.missingPermTorment] = 'Looks like you are missing the ' +
+    'Permanent Torment key. New characters require this key.\n' +
+    'For more information on keys please use the /keys command';
+
     return error[code];
 }

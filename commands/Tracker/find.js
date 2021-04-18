@@ -54,7 +54,8 @@ module.exports = {
         }
         else
         {
-            message.channel.send(retMess, {split: {char: 'ﾠ'}});
+            if (retMess.type) message.channel.send(retMess);
+            else message.channel.send(retMess, {split: {char: 'ﾠ'}});
         }            
     }
 }
