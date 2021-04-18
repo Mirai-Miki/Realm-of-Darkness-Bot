@@ -208,7 +208,7 @@ module.exports = class Tracker
             date = date.toDateString();
             names += `__**${character.name}**__ﾠ\n` +
             `\`\`\`yaml\nSplat: ${character.splat}\n` +
-            `Last Update: ${date}\`\`\``;
+            `Last Update: ${date}\`\`\`ﾠ`;
         }
         
         return names;
