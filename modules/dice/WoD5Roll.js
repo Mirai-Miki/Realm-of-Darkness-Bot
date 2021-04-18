@@ -114,21 +114,8 @@ module.exports = class WoD5Roll
         while (breakdown.match(/\s*(\d+|f|c|s|p|fail|crit|sux)/i))
         {   
             let temp = breakdown.match(/(\d+|f|c|s|p|fail|crit|sux)/i)[0]
-            this.reroll.dice[this.reroll.queue] =temp;
-            /*
-            if (this.reroll.dice1 === undefined)
-            {
-                this.reroll.dice1 = parseInt(temp);
-            }
-            else if (this.reroll.dice2 === undefined)
-            {
-                this.reroll.dice2 = parseInt(temp);
-            }
-            else
-            {
-                this.reroll.dice3 = parseInt(temp);
-            }
-            */
+            this.reroll.dice[this.reroll.queue] = temp;
+            
             if (parseInt(temp) && (parseInt(temp) < 1 || parseInt(temp) > 10))
             {
                 this.error = REROLL_ERR;
@@ -137,19 +124,6 @@ module.exports = class WoD5Roll
             breakdown = breakdown.replace(temp, '');
             this.reroll.queue++;
         }
-        /*
-        // Sanity checks
-        if ((this.reroll.dice1 != undefined && 
-            (this.reroll.dice1 < 1 || this.reroll.dice1 > 10)) ||
-            (this.reroll.dice2 != undefined && 
-            (this.reroll.dice2 < 1 || this.reroll.dice2 > 10)) ||
-            (this.reroll.dice3 != undefined && 
-            (this.reroll.dice3 < 1 || this.reroll.dice3 > 10)))
-        {
-            this.error = REROLL_ERR;
-            return;
-        }
-        */
     }
 
     quickReroll(content)
@@ -404,6 +378,9 @@ module.exports = class WoD5Roll
             , 'embed': {}};
         return {'message': message, 'embed': embed};
     }
+
+////////////////////////////// Private Helper Functions ///////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
     _serialize()
     {

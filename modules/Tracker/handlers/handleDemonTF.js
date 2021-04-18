@@ -13,7 +13,7 @@ const { character20thEmbed } = require('../embed/character20thEmbed.js');
 module.exports =
 {
     name: 'Demon The Fallen',
-    version: 'TF',
+    version: 'v20',
     splat: 'Demon',
     keyHelp: 'demonTF',    
 
@@ -108,7 +108,7 @@ function updateCharacter(tracker, keys)
     if (char.tempTorment.overflow > 0)
     {
         char.permTorment.modifiyCurrent(1);
-        char.tempTorment.setCurrent(0 + char.tempTorment.overflow);
+        char.tempTorment.setCurrent(0 + (char.tempTorment.overflow - 1));
     }
     return char;
 }
