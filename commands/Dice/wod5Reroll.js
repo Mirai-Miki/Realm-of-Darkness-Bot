@@ -33,7 +33,9 @@ module.exports = {
             roll.quickReroll(content);
         }
 
+        roll.deserialize();
         roll.rerollDice();
+        roll.serialize();
         let response = roll.constructEmbed();
         if (response.message)
         message.channel.send(response.message, response.embed);

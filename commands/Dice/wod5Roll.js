@@ -41,6 +41,7 @@ module.exports = {
         }
 
         roll.roll();
+        roll.serialize()
         let response = roll.constructEmbed();
         if (response.message)
         message.channel.send(response.message, response.embed);

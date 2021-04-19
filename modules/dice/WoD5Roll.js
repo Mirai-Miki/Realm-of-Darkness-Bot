@@ -18,6 +18,7 @@ const DIFF_ERR = 3;
 const HISTORY_ERR = 4;
 const REROLL_ERR = 5;
 const DICE_MISSING_ERR = 6;
+const NOTHING_TO_REROLL = 7;
 
 module.exports = class WoD5Roll
 {
@@ -37,6 +38,7 @@ module.exports = class WoD5Roll
         this.hunger;
 
         this.reroll = {};
+        this.surge;
         this.notes;
 
         this.total = 0,     
@@ -47,21 +49,13 @@ module.exports = class WoD5Roll
             this.member = member;
             this.user.username = member.displayName;
         }
-
-        // Emojis
-        this.v5SkullRed = this.client.emojis.resolve('814397402185728001');
-        this.v5AnkhRed = this.client.emojis.resolve('814396441828392982');
-        this.v5AnkhCritRed = this.client.emojis.resolve('814395210678927370');
-        this.v5AnkhBlack = this.client.emojis.resolve('814396636793012254');
-        this.v5AnkhCritBlack = this.client.emojis.resolve('814396519574143006');
-        this.v5DotRed = this.client.emojis.resolve('814396574092361750');
-        this.v5DotBlack = this.client.emojis.resolve('814391880258682881');
     }
 
     parseContent(content)
     {
         let breakdown = content.match(/\s*\d+(\s+\d+(\s+\d+)?)?/i)[0];
         this.notes = content.replace(breakdown, '');
+        this.notes = this.notes.trim();
 
         // Extract args
         while (breakdown.match(/\s*\d+/i))
@@ -109,6 +103,8 @@ module.exports = class WoD5Roll
         let breakdown = content.match
         (/^\s*(\d+|f|c|s|p|fail|crit|sux)(\s+(\d+|f|c|s|p|fail|crit|sux)(\s+(\d+|f|c|s|p|fail|crit|sux))?)?(\s+|$)/i)[0];
         this.reroll.notes = content.replace(breakdown, '');
+        this.reroll.notes = this.reroll.notes.trim();
+
         // Extract args
         this.reroll.dice = {};
         while (breakdown.match(/\s*(\d+|f|c|s|p|fail|crit|sux)/i))
@@ -128,7 +124,7 @@ module.exports = class WoD5Roll
 
     quickReroll(content)
     {
-        this.reroll.notes = content;
+        this.reroll.notes = content.trim();
         this.reroll.dice = {};
         this.reroll.quick = true;
         this.reroll.queue = 3;
@@ -138,15 +134,26 @@ module.exports = class WoD5Roll
     {
         if (this.error) return;
         this.diceResults = Roll.v5(this.pool, this.hunger);
-        this._calculateResults();
         this.reroll.rrCount = 0;
-        this._serialize();   
+    }
+
+    addSurge(amount, bp)
+    {   
+        let rouse;
+        if (Math.floor(Math.random() * 2)) rouse = false;
+        else rouse = true;
+        
+        this.surge = {rouse: rouse, pool: amount, bp: bp};
+        this.pool += amount;
+    }
+
+    setDifficulty(amount)
+    {
+        this.diff = amount;
     }
 
     rerollDice()
-    {        
-        if (this.error) return;
-        this._deserialize();
+    {
         if (this.error) return;
         
         let hungerResults = [];
@@ -199,18 +206,28 @@ module.exports = class WoD5Roll
         
         if (count == 0) this.reroll.queue = 0;
         this.diceResults = regResults.concat(hungerResults);
-        this._calculateResults();
-        // we reserialize with the new roll
-        this._serialize();        
+        
+        if (this.reroll.rrCount && !this.reroll.queue)
+            this.error = NOTHING_TO_REROLL;
     }
 
     networkRoll()
     {
-        this._calculateResults();
+        this.calculateResults();
     }    
 
     constructEmbed()
     {
+        this.calculateResults();
+        // Init Emojis
+        this.v5SkullRed = this.client.emojis.resolve('814397402185728001');
+        this.v5AnkhRed = this.client.emojis.resolve('814396441828392982');
+        this.v5AnkhCritRed = this.client.emojis.resolve('814395210678927370');
+        this.v5AnkhBlack = this.client.emojis.resolve('814396636793012254');
+        this.v5AnkhCritBlack = this.client.emojis.resolve('814396519574143006');
+        this.v5DotRed = this.client.emojis.resolve('814396574092361750');
+        this.v5DotBlack = this.client.emojis.resolve('814391880258682881');
+
         if (this.error) return this._getErrorMessage(this.error);
         let total = this.total;
         let diff = this.diff;
@@ -365,25 +382,32 @@ module.exports = class WoD5Roll
         if (this.hunger) embed.addField("Hunger", hungerResult, true);
 
         // Finishing touches
-        let reroll = '<† Willpower Reroll †>'
-        if (this.reroll.rrCount > 1) reroll += 
+        let description = '';
+        if (this.reroll.rrCount) description = '<† Willpower Reroll †>'
+        if (this.surge)
+        {
+            description += ` <† Surged †>`;
+
+            let rouse;
+            if (this.surge.rouse) rouse = ' <† Rouse Passed †>';
+            else rouse = ' **<† Hunger Increased †>**'
+            description += rouse;
+        }
+
+        if (this.reroll.rrCount > 1) description += 
             `ﾠ**Reroll Attempts: ${this.reroll.rrCount}**`;
-        if (this.reroll.rrCount) embed.setDescription(reroll);
+        if (description) embed.setDescription(description);
         if (this.notes) embed.addField("Notes", this.notes);
         if (this.reroll.notes) embed.addField("Reroll Notes", this.reroll.notes);
 
-        // Send it all back
-        if (this.reroll.rrCount && !this.reroll.queue)
-            return {'message': `<@${this.user.id}>, There is nothing to reroll!`
-            , 'embed': {}};
+        // Send it all back            
         return {'message': message, 'embed': embed};
     }
 
-////////////////////////////// Private Helper Functions ///////////////////////
-///////////////////////////////////////////////////////////////////////////////
-
-    _serialize()
+    serialize()
     {
+        if (this.error) return;
+        
         let db = new Database();
         db.open('v5RollHisotry', 'Database');
 
@@ -395,14 +419,30 @@ module.exports = class WoD5Roll
             diceResults: this.diceResults,
             rrCount: this.reroll.rrCount,
             notes: this.notes,
-        }        
+        };     
+        
         let id = this.user.id;
         if (this.member) id += this.member.guild.id;
         db.add(id, roll);
         db.close();
     }
 
-    _deserialize()
+    getSerializedRoll()
+    {
+        return {
+            pool: this.pool,
+            hunger: this.hunger,
+            diff: this.diff,
+            diceResults: this.diceResults,
+            rrCount: this.reroll.rrCount,
+            surge: this.surge,
+            notes: this.notes,
+            rrNotes: this.reroll.notes,
+            total: this.total,
+        };
+    }
+
+    deserialize()
     {
         let db = new Database();
         db.open('v5RollHisotry', 'Database');
@@ -421,7 +461,20 @@ module.exports = class WoD5Roll
         this.notes = roll.notes;
     }
 
-    _removeSerializedRoll()
+    deserializeFromPayload(roll)
+    {
+        this.pool = roll.pool;
+        this.hunger = roll.hunger;
+        this.diff = roll.diff;
+        this.diceResults = roll.diceResults;
+        this.reroll.rrCount = roll.rrCount;
+        this.surge = roll.surge;
+        this.notes = roll.notes;
+        this.reroll.notes = roll.rrNotes;
+        this.total = roll.total;
+    }
+
+    removeSerializedRoll()
     {
         let db = new Database();
         db.open('v5RollHisotry', 'Database');
@@ -432,9 +485,10 @@ module.exports = class WoD5Roll
         db.delete(id);
         db.close();
     }
-    
-    _calculateResults()
-    {        
+
+    calculateResults()
+    {
+        if (this.error) return;     
         let crit = 0;
         this.total = 0;
 
@@ -502,6 +556,9 @@ module.exports = class WoD5Roll
         }
     }
 
+////////////////////////////// Private Helper Functions ///////////////////////
+///////////////////////////////////////////////////////////////////////////////
+    
     _getErrorMessage(code)
     {
         let errors = {};
@@ -527,6 +584,9 @@ module.exports = class WoD5Roll
         errors[DICE_MISSING_ERR] = `<@${this.user.id}>, ` +
             'One of the dice you selected is' +
             ' not one of the previously rolled regular dice.';
+
+        errors[NOTHING_TO_REROLL] = `<@${this.user.id}>, ` +
+            'There is nothing to reroll!';
 
         return errors[code];
     }

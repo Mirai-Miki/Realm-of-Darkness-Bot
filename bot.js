@@ -2,6 +2,7 @@ const fs = require("fs");
 const Discord = require("discord.js");
 const config = require("./config.json");
 const WebSocketServer = require("./modules/RoDApp/WebSocketServer.js");
+const Database = require("./modules/util/Database");
 
 const client = new Discord.Client();
 
@@ -25,6 +26,10 @@ for (const folder of commandFolders) {
 client.on("ready", () => {
     console.log("Connected as: " + client.user.tag);
     setActivity(client);
+
+    let db = new Database();
+    db.open('Contests', 'Database');
+    db.deleteAll();
 });
 
 client.on('guildCreate', (guild) => {
