@@ -14,7 +14,8 @@ module.exports = {
         let help = "";
         const { commands } = message.client;
 
-        if (content.match(/^\s*(--force)?\s*$/i)) {
+        if (content.match(/^\s*(--force)?\s*$/i)) 
+        {
         	help += ('Here\'s a list of all my commands\n\n');
             commands.map(command => 
             {
@@ -45,6 +46,8 @@ module.exports = {
             	});
         }
         
+        // Trying to locate a bug in this line
+        if (!args[0]) console.log(message.content);
         const name = args[0].toLowerCase();
         const command = commands.find(
             cmd => cmd.aliases && cmd.aliases.includes(name));
