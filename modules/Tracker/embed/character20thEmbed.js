@@ -149,14 +149,7 @@ module.exports.character20thEmbed = (char, tracker, unknownKeys) =>
 }
 
 function damageTracker(health, client) {
-    // No Damage
-    let greenBox = client.emojis.resolve("820909151328141312").toString();
-    // Bashing Damage
-    let yellowBox = client.emojis.resolve("820909188154523649").toString();
-    // Lethal Damage
-    let redBox = client.emojis.resolve("820909202678743061").toString();
-    // Agg Damage
-    let purpleBox = client.emojis.resolve("825368831920177192").toString();
+    let emoji = getHealthEmoji(client)
 
     let tracker = "";
     let MAX_DAMAGE = 7
@@ -171,22 +164,22 @@ function damageTracker(health, client) {
 
         if (agg) 
         {
-            tracker += purpleBox;
+            tracker += emoji.purpleBox;
             agg--;
         }         
         else if (lethal) 
         {
-            tracker += redBox;
+            tracker += emoji.redBox;
             lethal--;
         }          
         else if (bashing) 
         {
-            tracker += yellowBox;
+            tracker += emoji.yellowBox;
             bashing--;
         } 
         else if (undamaged) 
         {
-            tracker += greenBox;
+            tracker += emoji.greenBox;
             undamaged--;        
         }
         else console.error("Error in damageTracker()");        
@@ -243,10 +236,7 @@ function damageTracker(health, client) {
 
 function consumableTracker(field, color, client, pad=0, noEmoji=false) 
 {
-    let bloodDot = client.emojis.resolve("817642148794335253").toString();
-    let purpleDot = client.emojis.resolve("820913320378236939").toString();
-    let emptyDot = client.emojis.resolve("817641377826471936").toString();
-    let blackDot = client.emojis.resolve("814391880258682881").toString();
+    let emoji = initEmoji(client)
 
     let tracker = "";
     
@@ -268,15 +258,15 @@ function consumableTracker(field, color, client, pad=0, noEmoji=false)
             switch (color)
             {
                 case 0:
-                    tracker += bloodDot;
+                    tracker += emoji.bloodDot;
                     break;
                 case 1:
-                    tracker += purpleDot;
+                    tracker += emoji.purpleDot;
                     break;
             }
         }
-        else if (i < field.total) tracker += emptyDot;
-        else tracker += blackDot;                 
+        else if (i < field.total) tracker += emoji.emptyDot;
+        else tracker += emoji.blackDot;                 
     }
     tracker += 'ﾠ';
     return tracker;
@@ -284,9 +274,7 @@ function consumableTracker(field, color, client, pad=0, noEmoji=false)
 
 function staticFieldTracker(field, color, client, noEmoji=false)
 {
-    let bloodDot = client.emojis.resolve("817642148794335253").toString();
-    let purpleDot = client.emojis.resolve("820913320378236939").toString();
-    let emptyDot = client.emojis.resolve("814391880258682881").toString();
+    let emoji = initEmoji(client);
 
     let tracker = "";
 
@@ -305,16 +293,62 @@ function staticFieldTracker(field, color, client, noEmoji=false)
             switch (color)
             {
                 case 0:
-                    tracker += bloodDot;
+                    tracker += emoji.bloodDot;
                     break;
                 case 1:
-                    tracker += purpleDot;
+                    tracker += emoji.purpleDot;
                     break;
             }
         }
         else if (field.max > 15) break;
-        else tracker += emptyDot;                
+        else tracker += emoji.emptyDot;                
     }
     tracker += 'ﾠ';
     return tracker;
+}
+
+function initEmoji()
+{
+    let emoji = {}
+    emoji.bloodDot = '▣'
+    emoji.purpleDot = '▣'
+    emoji.emptyDot = '☐'
+    emoji.blackDot = '•'
+
+    if (client.emojis.resolve("817642148794335253") &&
+        client.emojis.resolve("820913320378236939") &&
+        client.emojis.resolve("817641377826471936") &&
+        client.emojis.resolve("814391880258682881"))
+    {
+        emoji.bloodDot = client.emojis.resolve("817642148794335253").toString();
+        emoji.purpleDot = client.emojis.resolve("820913320378236939").toString();
+        emoji.emptyDot = client.emojis.resolve("817641377826471936").toString();
+        emoji.blackDot = client.emojis.resolve("814391880258682881").toString();
+    }
+    return emoji
+}
+
+function getHealthEmoji(client)
+{
+    let emoji = {}
+    // No Damage
+    emoji.greenBox = '☐'
+    // Bashing Damage
+    emoji.yellowBox = '⧄'
+    // Lethal Damage
+    emoji.redBox = '☒'
+    // Agg Damage
+    emoji.purpleBox = '▩'
+
+    if (client.emojis.resolve("820909151328141312") &&
+        client.emojis.resolve("820909188154523649") &&
+        client.emojis.resolve("820909202678743061") &&
+        client.emojis.resolve("825368831920177192"))
+    {
+        emoji.greenBox = client.emojis.resolve("820909151328141312").toString();
+        emoji.yellowBox = client.emojis.resolve("820909188154523649").toString();
+        emoji.redBox = client.emojis.resolve("820909202678743061").toString();
+        emoji.purpleBox = client.emojis.resolve("825368831920177192").toString();
+    }
+    return emoji
 }
