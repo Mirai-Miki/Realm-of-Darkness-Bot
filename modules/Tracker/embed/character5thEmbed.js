@@ -225,7 +225,7 @@ function getEmoji()
     return emoji
 }
 
-getDamageEmoji()
+function getDamageEmoji()
 {
     let emoji = {}
     // No Damage
