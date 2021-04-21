@@ -234,7 +234,7 @@ function damageTracker(health, client) {
     return tracker
 }
 
-function consumableTracker(field, color, client, pad=0, noEmoji=false) 
+function consumableTracker(field, color, client, pad=0, noEmoji=false)
 {
     let emoji = initEmoji(client)
 
@@ -307,7 +307,7 @@ function staticFieldTracker(field, color, client, noEmoji=false)
     return tracker;
 }
 
-function initEmoji()
+function initEmoji(client)
 {
     let emoji = {}
     emoji.bloodDot = '▣'

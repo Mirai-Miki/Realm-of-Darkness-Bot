@@ -201,7 +201,7 @@ function consumableTracker(current, max, color, client, noEmoji=false) {
     return tracker;
 }
 
-function getEmoji()
+function getEmoji(client)
 {
     let emoji = {}
     emoji.bloodDot = '▣'
@@ -225,7 +225,7 @@ function getEmoji()
     return emoji
 }
 
-function getDamageEmoji()
+function getDamageEmoji(client)
 {
     let emoji = {}
     // No Damage
