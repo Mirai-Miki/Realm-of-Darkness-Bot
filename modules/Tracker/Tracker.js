@@ -161,7 +161,7 @@ module.exports = class Tracker
         if (!this.character) return `<@${this.recvMess.author.id}> ` +
             `${getErrorMessage(errorType.noChar)}`;
 
-        if (this.character.owner.id != this.recvMess.author.id &&
+        if (getOwnerIDFromOld(this.character) != this.recvMess.author.id &&
             !this.admin && !this.ST)
         {
             return `<@${this.recvMess.author.id}> ` +
@@ -178,7 +178,7 @@ module.exports = class Tracker
         if (!this.character) return `<@${this.recvMess.author.id}> ` +
             `${getErrorMessage(errorType.noChar)}`;
 
-        if (this.character.owner.id != this.recvMess.author.id &&
+        if (getOwnerIDFromOld(this.character) != this.recvMess.author.id &&
             !this.admin && !this.ST)
         {
             return `<@${this.recvMess.author.id}> ` +
@@ -220,7 +220,7 @@ module.exports = class Tracker
         if (!this.character) return `<@${this.recvMess.author.id}> ` +
             `${getErrorMessage(errorType.noChar)}`;
 
-        if (this.character.owner.id != this.recvMess.author.id &&
+        if (getOwnerIDFromOld(this.character) != this.recvMess.author.id &&
             !this.admin && !this.ST)
         {
             return `<@${this.recvMess.author.id}> ` +
@@ -262,4 +262,13 @@ module.exports = class Tracker
                 `${getErrorMessage(errorType.handle)}`;
         }
     }
+}
+
+
+function getOwnerIDFromOld(char)
+{
+    let id;
+    if (typeof(char.owner) == 'string') id = char.owner;
+    else id = char.owner.id;
+    return id;
 }
