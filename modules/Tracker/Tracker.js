@@ -207,7 +207,8 @@ module.exports = class Tracker
             let date = new Date(character.updateDate);
             date = date.toDateString();
             names += `__**${character.name}**__ﾠ\n` +
-            `\`\`\`yaml\nSplat: ${character.splat}\n` +
+            `\`\`\`yaml\nPlayer: ${character.ownerUsername}` +
+            `\nSplat: ${character.splat}\n` +
             `Last Update: ${date}\`\`\``;
         }
         

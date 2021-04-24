@@ -6,6 +6,7 @@ module.exports = class Character
     {
         this.name;
         this.owner;
+        this.ownerUsername;
         this.guild;
         this.updateDate;
         this.exp = new Consumable(0);
@@ -67,5 +68,6 @@ module.exports = class Character
         if (char.exp) this.exp.setTotal(char.exp.total);
         if (char.exp) this.exp.setCurrent(char.exp.current);
         if (char.history) this.history = char.history;
+        if (char.ownerUsername) this.ownerUsername = char.ownerUsername;
     }
 }

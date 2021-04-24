@@ -2,6 +2,7 @@ const mode = require('../TypeDef/mode.js');
 const errorType = require('../TypeDef/errors.js');
 const Demon = require('../characters/DemonTF.js');
 const { serializeCharacter } = require('../util/serilizeCharacter.js');
+const { setOwnerUsername } = require('../util/setOwnerUsername.js');
 // Key handling
 const CharacterKeys = require('../keys/CharacterKeys.js');
 const Character20thKeys = require('../keys/Character20thKeys.js');
@@ -43,7 +44,11 @@ module.exports =
                 console.error("Hit default case in handler");
                 return 'Handler Error: Default Case';
         }
-        if (!tracker.error) serializeCharacter(character);
+        if (!tracker.error)
+        {
+            setOwnerUsername(tracker.recvMess, character);
+            serializeCharacter(character);
+        }
         return character20thEmbed(character, tracker, unknownKeys);
     },
 
