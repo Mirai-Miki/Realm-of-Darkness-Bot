@@ -161,7 +161,7 @@ module.exports = class Tracker
         if (!this.character) return `<@${this.recvMess.author.id}> ` +
             `${getErrorMessage(errorType.noChar)}`;
 
-        if (this.character.owner != this.recvMess.author.id &&
+        if (this.character.owner.id != this.recvMess.author.id &&
             !this.admin && !this.ST)
         {
             return `<@${this.recvMess.author.id}> ` +
@@ -178,7 +178,7 @@ module.exports = class Tracker
         if (!this.character) return `<@${this.recvMess.author.id}> ` +
             `${getErrorMessage(errorType.noChar)}`;
 
-        if (this.character.owner != this.recvMess.author.id &&
+        if (this.character.owner.id != this.recvMess.author.id &&
             !this.admin && !this.ST)
         {
             return `<@${this.recvMess.author.id}> ` +
@@ -207,7 +207,7 @@ module.exports = class Tracker
             let date = new Date(character.updateDate);
             date = date.toDateString();
             names += `__**${character.name}**__ﾠ\n` +
-            `\`\`\`yaml\nPlayer: ${character.ownerUsername}` +
+            `\`\`\`yaml\nPlayer: ${character.owner.username}` +
             `\nSplat: ${character.splat}\n` +
             `Last Update: ${date}\`\`\``;
         }
@@ -220,7 +220,7 @@ module.exports = class Tracker
         if (!this.character) return `<@${this.recvMess.author.id}> ` +
             `${getErrorMessage(errorType.noChar)}`;
 
-        if (this.character.owner != this.recvMess.author.id &&
+        if (this.character.owner.id != this.recvMess.author.id &&
             !this.admin && !this.ST)
         {
             return `<@${this.recvMess.author.id}> ` +

@@ -2,7 +2,7 @@ const mode = require('../TypeDef/mode.js');
 const errorType = require('../TypeDef/errors.js');
 const Mortal = require('../characters/Mortal5th.js');
 const { serializeCharacter } = require('../util/serilizeCharacter.js');
-const { setOwnerUsername } = require('../util/setOwnerUsername.js');
+const { setOwnerInfo } = require('../util/setOwnerInfo.js');
 // Key handling
 const CharacterKeys = require('../keys/CharacterKeys.js');
 const Character5thKeys = require('../keys/Character5thKeys.js');
@@ -46,7 +46,7 @@ module.exports =
         }
         if (!tracker.error)
         {
-            setOwnerUsername(tracker.recvMess, character);
+            setOwnerInfo(tracker.recvMess, character);
             serializeCharacter(character);
         }
         return character5thEmbed(character, tracker, unknownKeys);
@@ -71,7 +71,7 @@ function newCharacter(tracker, keys)
         keys.humanity);
     
     char.setName(tracker.name);
-    char.setOwner(tracker.recvMess.author.id);
+    char.setOwner(tracker.recvMess);
     char.setGuild(tracker.guild);
     char = modifyCharacter(keys, char);
     char.updateHistory(keys, tracker.notes, "New");

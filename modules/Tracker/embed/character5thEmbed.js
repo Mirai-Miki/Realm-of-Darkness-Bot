@@ -8,10 +8,6 @@ module.exports.character5thEmbed = (char, tracker, unknownKeys) =>
     if (tracker.error) return `<@${recvMess.author.id}> ` +
         `${getErrorMessage(tracker.error)}`;
 
-    let name;
-    if (recvMess.member) name = recvMess.member.displayName;
-    else name = recvMess.author.username;
-
     let stainsOverflow = "";
     let hungerOverflow = "";
     let willImpairment = "";
@@ -52,7 +48,7 @@ module.exports.character5thEmbed = (char, tracker, unknownKeys) =>
    
     let embed = new Discord.MessageEmbed()
         .setColor(char.colour)
-        .setAuthor(name, recvMess.author.avatarURL())
+        .setAuthor(char.owner.username, char.owner.avatarURL)
         .setTitle(char.name)
         .addField("Willpower", 
             (damageTracker(char.willpower.total, 

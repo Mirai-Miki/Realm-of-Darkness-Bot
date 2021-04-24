@@ -2,7 +2,7 @@ const mode = require('../TypeDef/mode.js');
 const errorType = require('../TypeDef/errors.js');
 const Werewolf = require('../characters/Werewolf20th.js');
 const { serializeCharacter } = require('../util/serilizeCharacter.js');
-const { setOwnerUsername } = require('../util/setOwnerUsername.js');
+const { setOwnerInfo } = require('../util/setOwnerInfo.js');
 // Key handling
 const CharacterKeys = require('../keys/CharacterKeys.js');
 const Character20thKeys = require('../keys/Character20thKeys.js');
@@ -46,7 +46,7 @@ module.exports =
         }
         if (!tracker.error)
         {
-            setOwnerUsername(tracker.recvMess, character);
+            setOwnerInfo(tracker.recvMess, character);
             serializeCharacter(character);
         }
         return character20thEmbed(character, tracker, unknownKeys);
@@ -70,7 +70,7 @@ function newCharacter(tracker, keys)
         keys.willpower);
     
     char.setName(tracker.name);
-    char.setOwner(tracker.recvMess.author.id);
+    char.setOwner(tracker.recvMess);
     char.setGuild(tracker.guild);
     char = modifyFields(keys, char);
     char.updateHistory(keys, tracker.notes, "New");
