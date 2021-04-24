@@ -68,6 +68,8 @@ function newCharacter(tracker, keys)
     char.setGuild(tracker.guild);
     char = modifyFields(keys, char);
     char.updateHistory(keys, tracker.notes, "New");
+    if (keys.willpower != undefined) 
+        char.willpower.updateTotal(keys.willpower);
     if (keys.exp != undefined) char.exp.updateTotal(keys.exp);
     if (keys.faith != undefined) char.faith.setTotal(keys.faith);
     if (keys.faith != undefined) char.faith.setCurrent(keys.faith);

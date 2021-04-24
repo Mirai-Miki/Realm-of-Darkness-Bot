@@ -93,10 +93,13 @@ function updateCharacter(tracker, keys)
     char = modifyFields(keys, char);
     char.updateHistory(keys, tracker.notes, "Update");
     char = updateConsumables(keys, char);
+    if (keys.willpower != undefined) 
+        char.willpower.updateTotal(keys.willpower);
     if (keys.nightmare != undefined) 
         char.nightmare.modifiyCurrent(keys.nightmare);
     if (keys.imbalence != undefined) 
         char.imbalence.modifiyCurrent(keys.imbalence);
+    if (keys.exp != undefined) char.exp.updateTotal(keys.exp);
     return char;
 }
 
