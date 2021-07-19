@@ -77,10 +77,11 @@ client.on('message', (mess) => {
         .catch(error =>
         {
             if (error instanceof Discord.DiscordAPIError &&
-                error.code == 50007)
+                error.code == 50007 || error.code == 50013)
             {
                 // Cannot send DM to user. Sending to debug log
                 client.channels.cache.get('776761322859266050').send(
+                    `DiscordAPIError: ${error.code}\n` +
                     `Permissions not set in guild <${mess.guild.name}>, ` +
                     `channel <${mess.channel.name}>` +
                     `\nFailed to DM user ` +
@@ -95,8 +96,9 @@ client.on('message', (mess) => {
 
     const args = mess.content.slice(prefix.length).trim().split(/ +/);
     const commandName = args.shift().toLowerCase();
-    const content = mess.content.slice(prefix.length + commandName.length);
-
+    const content = 
+        mess.content.slice(prefix.length).trim().slice(commandName.length);
+    
     const command = client.commands.find(
         cmd => cmd.aliases && cmd.aliases.includes(commandName));
 
@@ -107,7 +109,8 @@ client.on('message', (mess) => {
     	command.execute(mess, args, content);
     } catch (error) {
     	console.error(error);
-    	mess.reply('there was an error trying to execute that command!');
+    	mess.reply('there was an error trying to execute that command!\n' +
+            'If see this error please let Mirai-Miki#6631 know.');
     }
 });
 

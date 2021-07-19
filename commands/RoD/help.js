@@ -13,7 +13,7 @@ module.exports = {
     {
         let help = "";
         const { commands } = message.client;
-
+        
         if (content.match(/^\s*(--force)?\s*$/i)) 
         {
         	help += ('Here\'s a list of all my commands\n\n');
@@ -39,15 +39,11 @@ module.exports = {
             		message.reply('I\'ve sent you a DM with all my commands!');
             	})
             	.catch(error => {
-            		console.error(`Could not send help DM to ` +
-                        `${message.author.tag}.\n`, error);
             		message.reply('it seems like I can\'t DM you! Do ' +
                         'you have DMs disabled?');
             	});
         }
         
-        // Trying to locate a bug in this line
-        if (!args[0]) console.log(message.content);
         const name = args[0].toLowerCase();
         const command = commands.find(
             cmd => cmd.aliases && cmd.aliases.includes(name));

@@ -31,7 +31,6 @@ module.exports = {
         }
 
         let help = ""
-        
         if (content.match(/^\s*(--force)?\s*$/i)) {
             help += ('Here\'s a list of all my Splats\n\n');
             
@@ -63,8 +62,7 @@ module.exports = {
 
         const name = args[0].toLowerCase();
         const splat = splats.find(
-            splat => splat.keyHelp && splat.keyHelp.toLowerCase() == 
-            name.toLowerCase());
+            splat => splat.keyHelp && splat.keyHelp.toLowerCase() == name);
         
         if (!splat) return message.reply("Sorry that is not a valid" +
             ' KeyHelp command.\n' +
@@ -96,8 +94,6 @@ module.exports = {
         		message.reply('I\'ve sent you a DM with all my Keys!');
         	})
         	.catch(error => {
-        		console.error(`Could not send help DM to ` +
-                    `${message.author.tag}.\n`, error);
         		message.reply('it seems like I can\'t DM you! Do ' +
                     'you have DMs disabled?');
         	});
