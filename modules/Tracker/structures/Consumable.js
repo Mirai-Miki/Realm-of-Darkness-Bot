@@ -15,7 +15,6 @@ module.exports = class Consumable
 
     modifiyCurrent(amount)
     {
-        if (amount === 0) this.current = 0;
         this.resetOverflow();
         this.current += amount;
 

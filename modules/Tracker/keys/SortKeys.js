@@ -14,7 +14,9 @@ module.exports.sortKeys = (tracker, handler) =>
             if (keyHelp.keys.includes(key))
             {
                 if (keys[keyHelp.codeKey]) 
+                {
                     tracker.error = errorType.dupKey;
+                }                    
                 
                 iskey = true;
                 if (keyHelp.returnType == 'int')

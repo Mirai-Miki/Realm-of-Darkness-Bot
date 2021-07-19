@@ -17,7 +17,6 @@ module.exports = class DamageTracker20th
 
     updateBashing(amount)
     {
-        if (amount === 0) this.bashing = 0;
         this.bashing += amount;
 
         if (this.bashing < 0) this.bashing = 0;
@@ -28,7 +27,6 @@ module.exports = class DamageTracker20th
 
     updateLethal(amount)
     {
-        if (amount === 0) this.lethal = 0;
         this.lethal += amount;
 
         if (this.lethal < 0) this.lethal = 0;
@@ -39,7 +37,6 @@ module.exports = class DamageTracker20th
 
     updateAgg(amount)
     {
-        if (amount === 0) this.aggravated = 0;
         this.aggravated += amount;
 
         if (this.aggravated < 0) this.aggravated = 0;

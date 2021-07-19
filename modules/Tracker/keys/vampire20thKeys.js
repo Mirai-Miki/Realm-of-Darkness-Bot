@@ -29,7 +29,7 @@ module.exports =
     {
         name: "Humanity",
         codeKey: 'humanity',
-        keys: ['h', 'humanity'],
+        keys: ['h', 'humanity', 'path', 'p'],
         required: "When creating a new character",
         constraints: {min: -10, max: 10},
         setConstraints: {min: 0, max: 10},

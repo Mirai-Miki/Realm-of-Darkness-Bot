@@ -8,7 +8,7 @@ module.exports = {
     name: 'Tracker: Find Character',
     aliases: ['find', 'f'],
     description: 'Finds a character from the Database.',
-    usage: `${prefix}find <name>`,
+    usage: `${prefix}find <name> {--history}`,
     help: getHelpMessage(),
 
     execute(message, args, content) 
@@ -63,6 +63,10 @@ module.exports = {
 function getHelpMessage()
 {
     return 'Name: The name of the existing Character' +
+    '. If name is all it will return all characters on the server.' +
+    ' This only works for admins/mods however.' +
+    '\n--History: adding the `--history` tag will DM the character as well' +
+    ' as the last 10 commands made for that character' +
     '\nNotes: Can only be done by either the Owner, ST or Admin' +
     `\nExamples:\n${prefix}find Name`;
 }

@@ -66,14 +66,13 @@ function newCharacter(tracker, keys)
     newKeyCheck(tracker, keys);
     if (tracker.error) return;
 
-    if (keys.hunger != undefined) keys.hunger -= 1;
     let char = new Mortal(keys.health, keys.willpower, 
         keys.humanity);
     
     char.setName(tracker.name);
     char.setOwner(tracker.recvMess);
     char.setGuild(tracker.guild);
-    char = modifyCharacter(keys, char);
+    char = setCharacterValues(keys, char);
     char.updateHistory(keys, tracker.notes, "New");
     if (keys.exp != undefined) char.exp.updateTotal(keys.exp);
     return char;
@@ -104,14 +103,11 @@ function updateCharacter(tracker, keys)
     if (tracker.error) return;
     let char = new Mortal();
     char.deserilize(tracker.character);
-    char = modifyCharacter(keys, char);
-    char = modifyMaxValues(keys, char);
+    char = modifyCharacterValues(keys, char);
     char.updateHistory(keys, tracker.notes, "Update");
     if (keys.exp != undefined) char.exp.modifiyCurrent(keys.exp);
     return char;
 }
-
-
 
 function setCharacter(tracker, keys)
 {
@@ -119,8 +115,7 @@ function setCharacter(tracker, keys)
     let char = new Mortal();
     char.deserilize(tracker.character);
     if (keys.exp != undefined) char.exp.incTotal(keys.exp);
-    char = modifyCharacter(keys, char);
-    char = modifyMaxValues(keys, char);
+    char = setCharacterValues(keys, char);
     char.updateHistory(keys, tracker.notes, "Set");
     return char;
 }
@@ -129,13 +124,17 @@ function findCharacter(tracker)
 {
     let char = new Mortal();
     char.deserilize(tracker.character);
-    return  char;
+    return char;
 }
 
-function modifyCharacter(keys, char)
+function modifyCharacterValues(keys, char)
 {
     char.setUpdateDate();
     char.resetOverflows();
+    if (keys.humanity != undefined) char.humanity.modifyTotal(keys.humanity);
+    if (keys.willpower != undefined) char.willpower.modifyTotal(keys.willpower);
+    if (keys.health != undefined) char.health.modifyTotal(keys.health);
+
     if (keys.superficialWillpower != undefined) char.willpower.takeSuperfical(
         keys.superficialWillpower);
     if (keys.aggWillpower != undefined) char.willpower.takeAgg(
@@ -149,10 +148,23 @@ function modifyCharacter(keys, char)
     return char;
 }
 
-function modifyMaxValues(keys, char)
+function setCharacterValues(keys, char)
 {
+    char.setUpdateDate();
+    char.resetOverflows();
     if (keys.humanity != undefined) char.humanity.setTotal(keys.humanity);
     if (keys.willpower != undefined) char.willpower.setTotal(keys.willpower);
     if (keys.health != undefined) char.health.setTotal(keys.health);
+    
+    if (keys.superficialWillpower != undefined) char.willpower.setSuperfical(
+        keys.superficialWillpower);
+    if (keys.aggWillpower != undefined) char.willpower.setAgg(
+        keys.aggWillpower);
+    if (keys.superficialHealth != undefined) char.health.setSuperfical(
+        keys.superficialHealth);
+    if (keys.aggHealth != undefined) char.health.setAgg(
+        keys.aggHealth);
+    if (keys.stains != undefined) char.humanity.setStains(keys.stains);
+
     return char;
 }

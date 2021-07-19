@@ -17,7 +17,8 @@ module.exports =
         codeKey: 'humanity',
         keys: ['hm', 'humanity'],
         required: "When creating a new character",
-        constraints: {min: 0, max: 10},
+        constraints: {min: -20, max: 20},
+        setConstraints: {min: 0, max: 10},
         description: "The amount of Humanity this character has." +
             "\nEnter the current amount of humanity you have.",
         returnType: "int"
@@ -28,6 +29,7 @@ module.exports =
         codeKey: 'stains',
         keys: ['s', 'stain', 'stains'],
         constraints: {min: -100, max: 100},
+        setConstraints: {min: 0, max: 15},
         description: "The current amount of stains this character has.\n" +
             "Enter the amount the value has changed. Eg +/- 1." +
             " Entering 0 will remove all stains.",
@@ -39,7 +41,8 @@ module.exports =
         codeKey: 'willpower',
         keys: ['w', 'wp', 'willpower'],
         required: "When creating a new character",
-        constraints: {min: 1, max: 15},
+        constraints: {min: -19, max: 19},
+        setConstraints: {min: 1, max: 20},
         description: "The total amount of undamaged willpower this" +
             " character has.\n Enter the total amount of willpower this" +
             " character has.",
@@ -51,7 +54,8 @@ module.exports =
         codeKey: 'health',
         keys: ['d', 'health', 'damage'],
         required: "When creating a new character",
-        constraints: {min: 1, max: 15},
+        constraints: {min: -19, max: 19},
+        setConstraints: {min: 1, max: 20},
         description: "The total amount of undamaged Health this" +
         " character has.\n Enter the total amount of willpower this" +
         " character has.",
@@ -63,6 +67,7 @@ module.exports =
         codeKey: 'superficialWillpower',
         keys: ['sw', 'swp', 'superficialwillpower'],
         constraints: {min: -100, max: 100},
+        setConstraints: {min: 0, max: 20},
         description: "The current amount of Superficial Willpower damage" +
         " this character has.\n" +
         "Enter the amount the value has changed. Eg +/- 1." +
@@ -71,10 +76,11 @@ module.exports =
     },
     aggWillpower:
     {
-        name: "Aggravated Health Damage",
+        name: "Aggravated Willpower Damage",
         codeKey: 'aggWillpower',
         keys: ['aw', 'aggw', 'aggwp', 'aggwillpower', 'aggravatedwillpower'],
         constraints: {min: -100, max: 100},
+        setConstraints: {min: 0, max: 20},
         description: "The current amount of Aggravated Willpower damage" +
         " this character has.\n" +
         "Enter the amount the value has changed. Eg +/- 1." +
@@ -87,6 +93,7 @@ module.exports =
         codeKey: 'superficialHealth',
         keys: ['sh', 'sd', 'superficialhealth', 'superficialdamage'],
         constraints: {min: -100, max: 100},
+        setConstraints: {min: 0, max: 20},
         description: "The current amount of Superficial Health damage" +
         " this character has.\n" +
         "Enter the amount the value has changed. Eg +/- 1." +
@@ -99,6 +106,7 @@ module.exports =
         codeKey: 'aggHealth',
         keys: ['ah', 'ad', 'aggd', 'aggh', 'agghealth', 'aggdamage'],
         constraints: {min: -100, max: 100},
+        setConstraints: {min: 0, max: 20},
         description: "The current amount of Aggravated Health damage" +
         " this character has.\n" +
         "Enter the amount the value has changed. Eg +/- 1." +

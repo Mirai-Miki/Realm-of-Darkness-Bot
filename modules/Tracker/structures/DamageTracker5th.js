@@ -9,11 +9,7 @@ module.exports = class DamageTracker5th
 
     takeSuperfical(amount)
     {
-        if (amount === 0)
-        {
-            this.superficial = 0;
-        }
-        else if (amount > (this.total - this.aggravated - this.superficial)) 
+        if (amount > (this.total - this.aggravated - this.superficial)) 
         {
             // taking more superficial damage then is available
             // take agg damage as well.
@@ -31,13 +27,26 @@ module.exports = class DamageTracker5th
         }
     }
 
+    setSuperfical(amount)
+    {
+        if (amount > (this.total - this.aggravated))
+        {
+            this.superficial = (this.total - this.aggravated);
+        }
+        else if (amount < 0)
+        {
+            // Should never be less then 0
+            return;
+        }
+        else
+        {
+            this.superficial = amount;
+        }
+    }
+
     takeAgg(amount)
     {
-        if (amount === 0)
-        {
-            this.aggravated = 0;
-        }
-        else if (amount > (this.total - this.aggravated - this.superficial)) 
+        if (amount > (this.total - this.aggravated - this.superficial)) 
         {
             // taking more agg damage then undamaged available
             // convert superficial damage to agg for exess
@@ -54,26 +63,46 @@ module.exports = class DamageTracker5th
         }
     }
 
-    setTotal(amount)
+    setAgg(amount)
     {
-        this.total = amount;
-        
-        if (this.total < (this.aggravated + this.superficial)) 
+        if (amount > this.total)
         {
-            // taking more superficial damage then is available
-            // take agg damage as well.
-            this.aggravated += ((this.aggravated + this.superficial) - 
-                this.total);
-            this.superficial = (this.total - this.aggravated);
-
-            if (this.superficial < 0) this.superficial = 0;
-            if (this.aggravated > this.total) this.aggravated = this.total;
+            this.aggravated = this.total;
+        }
+        else if (amount < 0)
+        {
+            // Should never be less then 0
+            return;
+        }
+        else
+        {
+            this.aggravated = amount;
         }
     }
 
-    print()
+    setTotal(amount)
     {
-        
+        if (amount < 1) return; // Should never be less than 1 
+        this.total = amount;
+        this.adjustSecondaryValues();
+    }
+
+    modifyTotal(amount)
+    {
+        this.total += amount;
+        if (this.total < 1) this.total = 1;
+        else if (this.total > 20) this.total = 20;
+        this.adjustSecondaryValues();
+    }
+
+    adjustSecondaryValues()
+    {
+        if (this.total < (this.aggravated + this.superficial)) 
+        {
+            this.superficial = (this.total - this.aggravated);
+            if (this.superficial < 0) this.superficial = 0;
+            if (this.total < this.aggravated) this.aggravated = this.total;
+        }
     }
 
     toSerializable()

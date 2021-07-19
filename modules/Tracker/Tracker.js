@@ -112,12 +112,23 @@ module.exports = class Tracker
 
             if (key)
             {
-                if (this.keys.has(key[0]))
+                if (this.mode == mode.update && this.keys.has(key[0]))
+                {
+                    let oldValue = parseInt(this.keys.get(key[0]));
+                    let tempValue = parseInt(key[1]);
+                    let newValue = oldValue + tempValue;
+                    this.keys.set(key[0].toLowerCase(), 
+                        newValue.toString());          
+                }
+                else if (this.keys.has(key[0]))
                 {
                     this.error = errorType.dupKey;
                 }
-                this.keys.set(key[0].toLowerCase(), key[1].toLowerCase());
-            }
+                else
+                {
+                    this.keys.set(key[0].toLowerCase(), key[1].toLowerCase());
+                }
+            }            
         }
         this.findCharacter(); 
     }
@@ -267,6 +278,13 @@ module.exports = class Tracker
 
 function getOwnerIDFromOld(char)
 {
+    /*
+     * Temporary Function to handle the transition from owner containing a
+     * string to owner containing an object.
+     * Should be able to remove this once all characters are updated.
+     * May want to think about making some DB update scripts to just 
+     * do it all at once
+     */
     let id;
     if (typeof(char.owner) == 'string') id = char.owner;
     else id = char.owner.id;

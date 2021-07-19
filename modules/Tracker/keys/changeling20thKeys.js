@@ -49,12 +49,12 @@ module.exports =
     },
     imbalence:
     {
-        name: "Imbalence",
-        codeKey: 'imbalence',
-        keys: ['i', 'imbalence'],
+        name: "Imbalance",
+        codeKey: 'imbalance',
+        keys: ['i', 'imbalance'],
         constraints: {min: -20, max: 20},
         setConstraints: {min: 0, max: 10},
-        description: "The current Imbalence a character has.",
+        description: "The current Imbalance a character has.",
         returnType: "int"
     },
     chimBashing:
