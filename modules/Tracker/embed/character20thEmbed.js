@@ -82,7 +82,7 @@ module.exports.character20thEmbed = (char, tracker, unknownKeys) =>
                     staticFieldTracker(char.nightmare, 0, client), false
                 );
                 embed.addField(
-                    `Imbalence ${char.imbalence.current}`, 
+                    `Imbalance ${char.imbalence.current}`, 
                     staticFieldTracker(char.imbalence, 0, client), false
                 );
                 embed.addField(

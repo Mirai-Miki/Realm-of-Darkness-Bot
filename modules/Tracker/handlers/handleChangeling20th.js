@@ -97,14 +97,7 @@ function updateCharacter(tracker, keys)
     char.deserilize(tracker.character);
     char = modifyFields(keys, char);
     char.updateHistory(keys, tracker.notes, "Update");
-    char = updateConsumables(keys, char);
-    if (keys.willpower != undefined) 
-        char.willpower.updateTotal(keys.willpower);
-    if (keys.nightmare != undefined) 
-        char.nightmare.modifiyCurrent(keys.nightmare);
-    if (keys.imbalence != undefined) 
-        char.imbalence.modifiyCurrent(keys.imbalence);
-    if (keys.exp != undefined) char.exp.updateTotal(keys.exp);
+    char = updateConsumables(keys, char);    
     return char;
 }
 
@@ -156,5 +149,9 @@ function updateConsumables(keys, char)
     else if (keys.exp != undefined) char.exp.modifiyCurrent(keys.exp);
     if (keys.glamour != undefined) char.glamour.modifiyCurrent(keys.glamour);
     if (keys.banality != undefined) char.banality.modifiyCurrent(keys.banality);
+    if (keys.nightmare != undefined) 
+        char.nightmare.modifiyCurrent(keys.nightmare);
+    if (keys.imbalence != undefined) 
+        char.imbalence.modifiyCurrent(keys.imbalence);
     return char;
 }
