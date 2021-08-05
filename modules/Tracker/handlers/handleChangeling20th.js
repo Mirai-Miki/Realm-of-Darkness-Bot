@@ -73,10 +73,12 @@ function newCharacter(tracker, keys)
     char.setGuild(tracker.guild);
     char = modifyFields(keys, char);
     char.updateHistory(keys, tracker.notes, "New");
-    if (keys.glamour != undefined) char.glamour.setTotal(keys.glamour);
-    if (keys.banality != undefined) char.banality.setTotal(keys.banality);
+    if (keys.willpower != undefined) 
+        char.willpower.updateTotal(keys.willpower);
+    if (keys.glamour != undefined) char.glamour.updateTotal(keys.glamour);
+    if (keys.banality != undefined) char.banality.updateTotal(keys.banality);
     if (keys.nightmare != undefined) char.nightmare.setCurrent(keys.nightmare);
-    if (keys.imbalence != undefined) char.imbalence.setCurrent(keys.imbalence);
+    if (keys.imbalance != undefined) char.imbalence.setCurrent(keys.imbalance);
     if (keys.exp != undefined) char.exp.updateTotal(keys.exp);
     return char;
 }
@@ -114,7 +116,7 @@ function setCharacter(tracker, keys)
     if (keys.glamour != undefined) char.glamour.updateTotal(keys.glamour);
     if (keys.banality != undefined) char.banality.updateTotal(keys.banality);
     if (keys.nightmare != undefined) char.nightmare.setCurrent(keys.nightmare);
-    if (keys.imbalence != undefined) char.imbalence.setCurrent(keys.imbalence);
+    if (keys.imbalance != undefined) char.imbalence.setCurrent(keys.imbalance);
     return char;
 }
 
@@ -151,7 +153,7 @@ function updateConsumables(keys, char)
     if (keys.banality != undefined) char.banality.modifiyCurrent(keys.banality);
     if (keys.nightmare != undefined) 
         char.nightmare.modifiyCurrent(keys.nightmare);
-    if (keys.imbalence != undefined) 
-        char.imbalence.modifiyCurrent(keys.imbalence);
+    if (keys.imbalance != undefined) 
+        char.imbalence.modifiyCurrent(keys.imbalance);
     return char;
 }
