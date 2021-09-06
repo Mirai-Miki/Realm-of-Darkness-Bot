@@ -18,7 +18,7 @@ module.exports =
         keys: ['b', 'blood'],
         required: "When creating a new character",
         constraints: {min: -100, max: 100},
-        setConstraints: {min: 1, max: 50},
+        setConstraints: {min: 1, max: 100},
         consumable: 'Consumables work by updating their current value with' +
             ' the update command. To update their max values the new and set' +
             ' commands are used.',

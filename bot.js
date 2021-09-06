@@ -249,8 +249,10 @@ client.login(config.token);
 
 function setActivity(client)
 {
-    client.user.setActivity(`${client.guilds.cache.size} Servers |` +
-        ` Type ${config.prefix}rod for a list of commands`, 
+    let userCount = 0;
+    client.guilds.cache.each(guild => userCount += guild.memberCount);
+    client.user.setActivity(`${client.guilds.cache.size} Chronicles and` +
+        ` ${userCount} Players | Type ${config.prefix}rod for a list of commands`, 
         { type: 'WATCHING' });
 }
 
