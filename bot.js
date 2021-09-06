@@ -1,3 +1,5 @@
+'use strict';
+
 const fs = require("fs");
 const Discord = require("discord.js");
 const config = require("./config.json");
@@ -9,8 +11,8 @@ const client = new Discord.Client();
 client.commands = new Discord.Collection();
 const commandFolders = fs.readdirSync(config.commandPath);
 
-const PORT = 52723;
-const wss = new WebSocketServer(client, PORT);
+//const PORT = 52723;
+//const wss = new WebSocketServer(client, PORT);
 
 for (const folder of commandFolders) {
     const commandFiles = fs.readdirSync(

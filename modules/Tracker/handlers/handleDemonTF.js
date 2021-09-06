@@ -1,3 +1,5 @@
+'use strict';
+
 const mode = require('../TypeDef/mode.js');
 const errorType = require('../TypeDef/errors.js');
 const Demon = require('../characters/DemonTF.js');
@@ -70,18 +72,11 @@ function newCharacter(tracker, keys)
     
     char.setName(tracker.name);
     char.setOwner(tracker.recvMess);
-    char.setGuild(tracker.guild);
-    char = modifyFields(keys, char);
+    char.setGuild(tracker.guild);    
     char.updateHistory(keys, tracker.notes, "New");
-    if (keys.willpower != undefined) 
-        char.willpower.updateTotal(keys.willpower);
+    char = setFields(keys, char);
+    
     if (keys.exp != undefined) char.exp.updateTotal(keys.exp);
-    if (keys.faith != undefined) char.faith.setTotal(keys.faith);
-    if (keys.faith != undefined) char.faith.setCurrent(keys.faith);
-    if (keys.permTorment != undefined) 
-        char.permTorment.setCurrent(keys.permTorment);
-    if (keys.tempTorment != undefined) 
-        char.tempTorment.setCurrent(keys.tempTorment);
     return char;
 }
 
@@ -104,19 +99,9 @@ function updateCharacter(tracker, keys)
     if (tracker.error) return;
     let char = new Demon();
     char.deserilize(tracker.character);
-    char = modifyFields(keys, char);
-    char = updateConsumables(keys, char);
+    char = updateFields(keys, char);
     char.updateHistory(keys, tracker.notes, "Update");
-    if (keys.permTorment != undefined) 
-        char.permTorment.modifiyCurrent(keys.permTorment);
-    if (keys.tempTorment != undefined) 
-        char.tempTorment.modifiyCurrent(keys.tempTorment);
     
-    if (char.tempTorment.overflow > 0)
-    {
-        char.permTorment.modifiyCurrent(1);
-        char.tempTorment.setCurrent(0 + (char.tempTorment.overflow - 1));
-    }
     return char;
 }
 
@@ -124,17 +109,10 @@ function setCharacter(tracker, keys)
 {
     if (tracker.error) return;
     let char = new Demon();
-    char.deserilize(tracker.character);
-    char = modifyFields(keys, char);
+    char.deserilize(tracker.character);    
     char.updateHistory(keys, tracker.notes, "Set");
-    if (keys.willpower != undefined) 
-        char.willpower.updateTotal(keys.willpower);
+    char = setFields(keys, char);
     if (keys.exp != undefined) char.exp.incTotal(keys.exp);
-    if (keys.faith != undefined) char.faith.updateTotal(keys.faith);
-    if (keys.permTorment != undefined) 
-        char.permTorment.setCurrent(keys.permTorment);
-    if (keys.tempTorment != undefined) 
-        char.tempTorment.setCurrent(keys.tempTorment);
     return char;
 }
 
@@ -145,22 +123,53 @@ function findCharacter(tracker)
     return char;
 }
 
-function modifyFields(keys, char)
+function setFields(keys, char)
 {
     char.resetOverflows();
-    char.setUpdateDate();    
-    if (keys.bashing != undefined) char.health.updateBashing(keys.bashing);
-    if (keys.lethal != undefined) char.health.updateLethal(keys.lethal);
-    if (keys.aggravated != undefined) char.health.updateAgg(keys.aggravated);
+    char.setUpdateDate();   
+    
+    if (keys.willpower != undefined) 
+        char.willpower.updateTotal(keys.willpower);
+    
+    if (keys.faith != undefined) char.faith.setTotal(keys.faith);
+    if (keys.permTorment != undefined) 
+        char.permTorment.setCurrent(keys.permTorment);
+    if (keys.tempTorment != undefined) 
+        char.tempTorment.setCurrent(keys.tempTorment);
+
+    if (keys.health != undefined) char.health.setTotal(keys.health);
+    if (keys.bashing != undefined) char.health.setBashing(keys.bashing);
+    if (keys.lethal != undefined) char.health.setLethal(keys.lethal);
+    if (keys.aggravated != undefined) char.health.setAgg(keys.aggravated);
     return char;
 }
 
-function updateConsumables(keys, char)
+function updateFields(keys, char)
 {
+    char.resetOverflows();
+    char.setUpdateDate(); 
+
+    if (keys.health != undefined) char.health.updateTotal(keys.health);
+    if (keys.bashing != undefined) char.health.updateBashing(keys.bashing);
+    if (keys.lethal != undefined) char.health.updateLethal(keys.lethal);
+    if (keys.aggravated != undefined) char.health.updateAgg(keys.aggravated);
+
     if (keys.willpower != undefined) 
         char.willpower.modifiyCurrent(keys.willpower);
     if (keys.faith != undefined) 
         char.faith.modifiyCurrent(keys.faith);
+
+    if (keys.permTorment != undefined) 
+        char.permTorment.modifiyCurrent(keys.permTorment);
+    if (keys.tempTorment != undefined) 
+        char.tempTorment.modifiyCurrent(keys.tempTorment);
+    
+    if (char.tempTorment.overflow > 0)
+    {
+        char.permTorment.modifiyCurrent(1);
+        char.tempTorment.setCurrent(0 + (char.tempTorment.overflow - 1));
+    }
+
     if (keys.exp > 0) char.exp.modifiyCurrent(keys.exp);
     else if (keys.exp != undefined) char.exp.modifiyCurrent(keys.exp);
     return char;

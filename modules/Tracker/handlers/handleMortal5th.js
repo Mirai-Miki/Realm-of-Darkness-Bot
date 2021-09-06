@@ -1,3 +1,5 @@
+'use strict';
+
 const mode = require('../TypeDef/mode.js');
 const errorType = require('../TypeDef/errors.js');
 const Mortal = require('../characters/Mortal5th.js');

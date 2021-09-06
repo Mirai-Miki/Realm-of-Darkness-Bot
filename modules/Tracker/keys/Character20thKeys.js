@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports =
 {
     version: 
@@ -23,6 +25,17 @@ module.exports =
             ' the update command. To update their max values the new and set' +
             ' commands are used.',
         description: "The total and current willpower a character has.",
+        returnType: "int"
+    },
+    health:
+    {
+        name: "Health",
+        codeKey: 'health',
+        keys: ['health'],
+        constraints: {min: -50, max: 50},
+        setConstraints: {min: 7, max: 15},
+        description: "The total health the character has. Ever level above 7" +
+            " acts as an extra level of bruised.",
         returnType: "int"
     },
     bashing:

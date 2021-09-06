@@ -1,9 +1,10 @@
-const MAX_DAMAGE = 7;
+'use strict';
 
 module.exports = class DamageTracker20th
 {
     constructor()
     {
+        this.total = 7;
         this.bashing = 0;
         this.lethal = 0;
         this.aggravated = 0;
@@ -20,9 +21,9 @@ module.exports = class DamageTracker20th
         this.bashing += amount;
 
         if (this.bashing < 0) this.bashing = 0;
-        let total = this.getTotal()
-        if (total > MAX_DAMAGE) 
-            this.bashing = this.bashing - (total - MAX_DAMAGE);
+        let total = this.getTotalDamage()
+        if (total > this.total) 
+            this.bashing = this.bashing - (total - this.total);
     }
 
     updateLethal(amount)
@@ -30,9 +31,9 @@ module.exports = class DamageTracker20th
         this.lethal += amount;
 
         if (this.lethal < 0) this.lethal = 0;
-        let total = this.getTotal()
-        if (total > MAX_DAMAGE) 
-            this.lethal = this.lethal - (total - MAX_DAMAGE);
+        let total = this.getTotalDamage()
+        if (total > this.total) 
+            this.lethal = this.lethal - (total - this.total);
     }
 
     updateAgg(amount)
@@ -40,30 +41,58 @@ module.exports = class DamageTracker20th
         this.aggravated += amount;
 
         if (this.aggravated < 0) this.aggravated = 0;
-        let total = this.getTotal()
-        if (total > MAX_DAMAGE) 
-            this.aggravated = this.aggravated - (total - MAX_DAMAGE);
+        let total = this.getTotalDamage()
+        if (total > this.total) 
+            this.aggravated = this.aggravated - (total - this.total);
     }
 
     setBashing(amount)
     {
         this.bashing = amount;
+        if (this.bashing < 0) this.bashing = 0;
+        let total = this.getTotalDamage()
+        if (total > this.total) 
+            this.bashing = this.bashing - (total - this.total);
     }
 
     setLethal(amount)
     {
         this.lethal = amount;
+
+        if (this.lethal < 0) this.lethal = 0;
+        let total = this.getTotalDamage()
+        if (total > this.total) 
+            this.lethal = this.lethal - (total - this.total);
     }
 
     setAgg(amount)
     {
         this.aggravated = amount;
+
+        if (this.aggravated < 0) this.aggravated = 0;
+        let total = this.getTotalDamage()
+        if (total > this.total) 
+            this.aggravated = this.aggravated - (total - this.total);
     }
 
-    getTotal()
+    updateTotal(amount)
+    {
+        this.total += amount;
+        if (this.total < 7) this.total = 7;
+        else if (this.total > 15) this.total = 15;
+    }
+
+    setTotal(amount)
+    {
+        this.total = amount;
+        if (this.total < 7) this.total = 7;
+        else if (this.total > 15) this.total = 15;
+    }
+
+    getTotalDamage()
     {
         let total = this.bashing + this.lethal + this.aggravated;
-        if (total > MAX_DAMAGE) this.overflow += total - MAX_DAMAGE;
+        if (total > this.total) this.overflow += total - this.total;
         return total
     }
 }

@@ -1,3 +1,5 @@
+'use strict';
+
 const Discord = require("discord.js");
 const { getErrorMessage } = require('../getErrorMessage.js');
 
@@ -148,15 +150,16 @@ function damageTracker(health, client) {
     let emoji = getHealthEmoji(client)
 
     let tracker = "";
-    let MAX_DAMAGE = 7
-    let undamaged = (MAX_DAMAGE - health.getTotal());
+    let totalHealth = health.total;
+    let undamaged = (totalHealth - health.getTotalDamage());
     let bashing = health.bashing;
     let lethal = health.lethal;
     let agg = health.aggravated;
 
-    for (let i = 0; i < MAX_DAMAGE; i++) 
+    for (let i = 0; i < totalHealth; i++) 
     {
-        if (i == 2 || i == 4 || i == 6) tracker += 'ﾠ';
+        if (i == 2 || i == 4 || i == 6 || i == 8 || i == 10 || i == 12 || i == 14) 
+            tracker += 'ﾠ';
 
         if (agg) 
         {
@@ -182,13 +185,17 @@ function damageTracker(health, client) {
     }
     tracker += 'ﾠ';
     
-    let total = health.getTotal()
+    let total = health.getTotalDamage();
     if (health.overflow)
     {
         tracker += `Damage overflowed by ${health.overflow} while ` +
             'Incapacitated.\nCheck the corebook for rules on what happens now.'
         return tracker;
     }
+
+    // Correct for extra levels of brusied
+    if (total && total <= (totalHealth - 7)) total = 1;
+    else if (total > (totalHealth - 7)) total -= (totalHealth - 7);
 
     switch (total)
     {

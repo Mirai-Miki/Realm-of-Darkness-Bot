@@ -22,6 +22,7 @@ module.exports = class Character20th extends Character
         super.deserilize(char);
         this.willpower.setTotal(char.willpower.total);
         this.willpower.setCurrent(char.willpower.current);
+        if (this.health.total) this.health.setTotal(char.health.total);
         this.health.setBashing(char.health.bashing);
         this.health.setLethal(char.health.lethal);
         this.health.setAgg(char.health.aggravated);

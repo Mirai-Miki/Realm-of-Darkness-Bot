@@ -1,3 +1,5 @@
+'use strict';
+
 const StaticField = require("../structures/StaticField");
 const Character20th = require("./Character20th");
 
