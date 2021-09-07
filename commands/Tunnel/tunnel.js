@@ -2,15 +2,14 @@
 
 const { prefix } = require('../../config.json');
 const Help = require('../../modules/util/Help.js');
-const Discord = require('discord.js');
 const Database = require("../../modules/util/Database");
 
 module.exports = {
     name: 'Channel Tunnel',
     aliases: ['tunnel', 'tun'],
-    description: 'Sets up a channel tunnel where ever message send in the' +
+    description: 'Sets up a channel tunnel where every message sent in the' +
         ' entrence channel will taken and posted in the exit channel',
-    usage: `${prefix}tunnel {#exit_channel}`,
+    usage: `${prefix}tunnel #exit_channel`,
     help: getHelpMessage(),
 
     execute(message, args, content) 

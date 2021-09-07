@@ -29,6 +29,7 @@ for (const folder of commandFolders) {
 client.on("ready", () => {
     console.log("Connected as: " + client.user.tag);
     setActivity(client);
+    displayStats();
 
     let db = new Database();
     db.open('Contests', 'Database');
@@ -61,6 +62,9 @@ client.on('message', (mess) => {
 
 	    if (command) 
         {
+            commandCount(command.name);
+            userCount(mess.author.id);
+
             try 
             {
             	command.execute(mess, args, content);
@@ -189,9 +193,6 @@ client.on('warn', (info) => {
     } 
 });
 
-// Logs into the server using the secret token
-client.login(config.token);
-
 function setActivity(client)
 {
     let userCount = 0;
@@ -238,3 +239,93 @@ function canSend(mess)
     }
     else return true;
 }
+
+function commandCount(commandName)
+{
+    const db = new Database();
+    db.open("CommandUsage", 'Database');
+    let count = db.find(commandName);
+    if (!count) count = 0;
+    count++;
+    db.add(commandName, count);
+    db.close();    
+}
+
+function userCount(userID)
+{
+    const db = new Database();
+    db.open("UserCount", 'Database');
+    let count = db.find(userID);
+    if (!count) count = 0;
+    count++;
+    db.add(userID, count);
+    db.close();
+}
+
+function displayStats()
+{
+    const channel = client.channels.cache.get(config.statChannel);
+    
+    const db = new Database();
+    db.open("StatMessages", 'Database');
+
+
+    const userDB = new Database();
+    userDB.open("UserCount", 'Database');
+    const userCountID = db.find("userCount");
+    if (!userCountID)
+    {
+        channel.send(`User Count: ${userDB.length()}`)
+            .then(message =>
+                {
+                    db.add("userCount", message.id);
+                    db.close();
+                });
+    }
+    else
+    {
+        channel.messages.fetch(userCountID).then(message => 
+            {
+                message.edit(`User Count: ${userDB.length()}`)
+            });
+    }
+
+
+    const commandDB = new Database();
+    commandDB.open("CommandUsage", 'Database');
+    const commandUsageID = db.find("commandUsage");
+    if (!commandUsageID)
+    {
+        let content = '';
+
+        for (const [key, value] of Object.entries(commandDB.db)) {
+            content += `${key}: ${value}\n`;
+        }
+
+        channel.send(`${content}`)
+            .then(message =>
+                {
+                    db.add("commandUsage", message.id);
+                    db.close();
+                });
+    }
+    else
+    {
+        let content = '';
+
+        for (const [key, value] of Object.entries(commandDB.db)) {
+            content += `${key}: ${value}\n`;
+            
+        }
+        console.log(content)
+
+        channel.messages.fetch(commandUsageID).then(message => 
+            {
+                console.log()
+                message.edit(`${content}`)
+            });
+    }
+}
+
+// Logs into the server using the secret token
+client.login(config.token);

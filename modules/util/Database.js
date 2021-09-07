@@ -191,17 +191,7 @@ module.exports = class Database
      */
     isEmpty() 
     {
-        let count = 0;
-        for (const key in this.db) 
-        {
-            count++;
-        }
-
-        if (count) 
-        {
-            return false;
-        }
-        return true;
+        return Object.keys(this.db).length ? false : true;
     }
 
     /*
@@ -211,12 +201,7 @@ module.exports = class Database
      */
     length() 
     {
-        let count = 0;
-        for (const key in this.db) 
-        {
-            count++;
-        }
-        return count;
+        return Object.keys(this.db).length;
     }
 
     /*
