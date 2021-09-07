@@ -3,8 +3,9 @@
 const fs = require("fs");
 const Discord = require("discord.js");
 const config = require("./config.json");
-const WebSocketServer = require("./modules/RoDApp/WebSocketServer.js");
+//const WebSocketServer = require("./modules/RoDApp/WebSocketServer.js");
 const Database = require("./modules/util/Database");
+const Tunnel = require("./modules/Tunnel/Tunnel.js");
 
 const client = new Discord.Client();
 
@@ -42,77 +43,55 @@ client.on('guildDelete', (guild) => {
     setActivity(client);
 });
 
-client.on('guildUpdate', (oldGuild, newGuild) => {
-    
-});
-
-client.on('guildUnavailable', (guild) => {
-    
-});
-
-client.on('guildMemberAdd', (member) => {
-    
-});
-
-client.on('guildMemberRemove', (member) => {
-    
-});
-
-client.on('guildMemberUpdate', (oldMember, newMember) => {
-    
-});
-
-client.on('presenceUpdate', (oldPresence, newPresence) => {
-    
-});
-
 client.on('message', (mess) => {
     const prefix = config.prefix;    
-    if ((!mess.content.startsWith(prefix) 
-        && !mess.content.startsWith('\\'))
-        || mess.author.bot)  { return };
+    if (mess.author.bot)  { return };
 
-    if (!isSendPermSet(mess))
+    if (mess.content.startsWith(prefix) || mess.content.startsWith('\\'))
     {
-        mess.author.send("Sorry, I do not have permission to post in the " +
-            `<${mess.guild.name} - ${mess.channel.name}> channel.`)
-        .catch(error =>
+        if (!canSend(mess)) return;
+
+        const args = mess.content.slice(prefix.length).trim().split(/ +/);
+        const commandName = args.shift().toLowerCase();
+        const content = 
+            mess.content.slice(prefix.length).trim().slice(commandName.length);
+
+        const command = client.commands.find(
+            cmd => cmd.aliases && cmd.aliases.includes(commandName));
+
+	    if (command) 
         {
-            if (error instanceof Discord.DiscordAPIError &&
-                error.code == 50007 || error.code == 50013)
+            try 
             {
-                // Cannot send DM to user. Sending to debug log
-                client.channels.cache.get('776761322859266050').send(
-                    `DiscordAPIError: ${error.code}\n` +
-                    `Permissions not set in guild <${mess.guild.name}>, ` +
-                    `channel <${mess.channel.name}>` +
-                    `\nFailed to DM user ` +
-                    `${mess.author.username}#${mess.author.discriminator}` +
-                    `\n<@${mess.author.id}>`
-                );            
+            	command.execute(mess, args, content);
+            } 
+            catch (error) {
+            	console.error(error);
+            	mess.reply('there was an error trying to execute that command!\n' +
+                    'If see this error please let Mirai-Miki#6631 know.');
             }
-            else throw error; // Unknown error
-        });
-        return;
+            return;
+        }        
     }
 
-    const args = mess.content.slice(prefix.length).trim().split(/ +/);
-    const commandName = args.shift().toLowerCase();
-    const content = 
-        mess.content.slice(prefix.length).trim().slice(commandName.length);
-    
-    const command = client.commands.find(
-        cmd => cmd.aliases && cmd.aliases.includes(commandName));
-
-	if (!command) return;
-
-    try 
+    const db = new Database();
+    db.open("Tunnel", 'Database');
+    const toChannelID = db.find(mess.channel.id);
+    if (toChannelID)
     {
-    	command.execute(mess, args, content);
-    } catch (error) {
-    	console.error(error);
-    	mess.reply('there was an error trying to execute that command!\n' +
-            'If see this error please let Mirai-Miki#6631 know.');
+        if (!canSend(mess)) return;
+        else if (Tunnel.canTunnel(mess, toChannelID))
+        {
+            try 
+            {
+                Tunnel.toChannel(mess, toChannelID)
+            } 
+            catch (error) {
+            	console.error(error);
+            	mess.reply('there was an error trying to Tunnel!\n' +
+                    'If see this error please let Mirai-Miki#6631 know.');
+            }
+        }
     }
 });
 
@@ -175,42 +154,6 @@ client.on('shardReady', (id, unavailGuilds) => {
     }  
 });
 
-client.on('shardReconnecting', (id) => {
-    /*
-    try {
-        client.channels.cache.get('776761322859266050').send(
-            `Shard ${String(id)} is reconnecting.`
-        );
-    }
-    catch (err) {
-        console.error(
-            `The RoD Bot - ShardReconnecting.\n\n` + 
-            `There was also Error sending a message.\n` +
-            `${err}`
-        );
-    }
-    */
-});
-
-client.on('shardResume', (id, replayedEvents) => {
-    /*
-    try {
-        client.channels.cache.get('776761322859266050').send(
-            `Shard ${String(id)} resumed.\n` +
-            `There was ${String(replayedEvents)} replayed Events.`
-        );
-    }
-    catch (err) {
-        console.error(
-            `The RoD Bot - ShardResume.\n` +
-            `There was ${String(replayedEvents)} replayed Events.\n\n` +
-            `There was also Error sending a message.\n` +
-            `${err}`
-        );
-    } 
-    */
-});
-
 client.on('error', (error) => {
     try {
         client.channels.cache.get('776761322859266050').send(
@@ -258,9 +201,40 @@ function setActivity(client)
         { type: 'WATCHING' });
 }
 
-function isSendPermSet(message)
+function canSend(mess)
 {
-    if (!message.guild) return true; // Not sending in a guild
-
-    return message.channel.permissionsFor(client.user.id).has("SEND_MESSAGES");
+    if (!mess.guild) return true; // Not sending in a guild
+    
+    if (!mess.channel.permissionsFor(client.user.id).has("SEND_MESSAGES"))
+    {
+        mess.author.send("Sorry, I do not have permission to post in the " +
+            `<${mess.guild.name} - #${mess.channel.name}> channel.\n` +
+            'Please enable "Send Messages" and "Embed Linds" in any channel' +
+            ' you want me to work in.')
+        .catch(error =>
+        {
+            if (error instanceof Discord.DiscordAPIError &&
+                error.code == 50007)
+            {
+                // Cannot send DM to user. Sending to debug log
+                client.channels.cache.get('776761322859266050').send(
+                    `DiscordAPIError: ${error.code}\n` +
+                    `Permissions not set in guild <${mess.guild.name}>, ` +
+                    `channel <${mess.channel.name}>` +
+                    `\nFailed to DM user ` +
+                    `${mess.author.username}#${mess.author.discriminator}` +
+                    `\n<@${mess.author.id}>`
+                );            
+            }
+            else throw error; // Unknown error
+        });
+        return false;
+    }
+    else if (!mess.channel.permissionsFor(client.user.id).has("EMBED_LINKS"))
+    {
+        mess.reply('Sorry, I need the "Embed Links" permissions in this' +
+            ' channel to function correctly.');
+        return false;
+    }
+    else return true;
 }
