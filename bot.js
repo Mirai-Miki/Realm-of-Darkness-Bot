@@ -273,9 +273,14 @@ function displayStats()
     const userDB = new Database();
     userDB.open("UserCount", 'Database');
     const userCountID = db.find("userCount");
+    const userEmbed = new Discord.MessageEmbed()
+        .setTitle("User Count")
+        .setDescription(`${userDB.length()}`)
+        .setTimestamp()
+        .setColor('#bf1bc4')
     if (!userCountID)
     {
-        channel.send(`User Count: ${userDB.length()}`)
+        channel.send(userEmbed)
             .then(message =>
                 {
                     db.add("userCount", message.id);
@@ -286,7 +291,7 @@ function displayStats()
     {
         channel.messages.fetch(userCountID).then(message => 
             {
-                message.edit(`User Count: ${userDB.length()}`)
+                message.edit(userEmbed)
             });
     }
 
@@ -294,15 +299,16 @@ function displayStats()
     const commandDB = new Database();
     commandDB.open("CommandUsage", 'Database');
     const commandUsageID = db.find("commandUsage");
+    const commandEmbed = new Discord.MessageEmbed()
+        .setTitle("Command Usage Information")
+        .setTimestamp()
+        .setColor('#199e1e')
+    for (const [key, value] of Object.entries(commandDB.db)) {
+            commandEmbed.addField(`${key}`, `${value}`);
+    }
     if (!commandUsageID)
     {
-        let content = '';
-
-        for (const [key, value] of Object.entries(commandDB.db)) {
-            content += `${key}: ${value}\n`;
-        }
-
-        channel.send(`${content}`)
+        channel.send(commandEmbed)
             .then(message =>
                 {
                     db.add("commandUsage", message.id);
@@ -311,21 +317,14 @@ function displayStats()
     }
     else
     {
-        let content = '';
-
-        for (const [key, value] of Object.entries(commandDB.db)) {
-            content += `${key}: ${value}\n`;
-            
-        }
-        console.log(content)
-
         channel.messages.fetch(commandUsageID).then(message => 
             {
-                console.log()
-                message.edit(`${content}`)
+                message.edit(commandEmbed);
             });
     }
 }
 
 // Logs into the server using the secret token
 client.login(config.token);
+
+setInterval(displayStats, 900000);
