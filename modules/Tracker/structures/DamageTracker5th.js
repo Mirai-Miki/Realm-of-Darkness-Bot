@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = class DamageTracker5th
 {
     constructor(total, superficial=0, aggravated=0)

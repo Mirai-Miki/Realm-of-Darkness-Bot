@@ -1,3 +1,5 @@
+'use strict';
+
 /* Database.js
  * Author: Michael Bossner
  * Version: 2.0.0

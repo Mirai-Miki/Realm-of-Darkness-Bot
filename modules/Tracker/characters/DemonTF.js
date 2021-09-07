@@ -1,3 +1,5 @@
+'use strict';
+
 const Character20th = require("../characters/Character20th.js");
 const Consumable = require("../structures/Consumable");
 const StaticField = require("../structures/StaticField");

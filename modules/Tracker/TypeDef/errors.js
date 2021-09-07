@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = 
 {
     noKey: 1,

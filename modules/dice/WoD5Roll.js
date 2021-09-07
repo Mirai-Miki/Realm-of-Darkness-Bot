@@ -1,3 +1,5 @@
+'use strict';
+
 const Roll = require('./Roll.js');
 const Discord = require('discord.js');
 const Database = require('../util/Database.js');

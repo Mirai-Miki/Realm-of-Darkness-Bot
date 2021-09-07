@@ -1,3 +1,5 @@
+'use strict';
+
 const DamageTracker5th = require("../structures/DamageTracker5th");
 const Character = require("./Character.js");
 

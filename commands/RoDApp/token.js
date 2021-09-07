@@ -1,3 +1,5 @@
+'use strict';
+
 const Database = require("../../modules/util/Database.js");
 const crypto = require('crypto');
 const { prefix } = require('../../config.json');

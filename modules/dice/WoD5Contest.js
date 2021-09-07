@@ -1,3 +1,5 @@
+'use strict';
+
 const Database = require('../util/Database.js');
 const WoD5Dice = require('./WoD5Roll.js');
 const Discord = require('discord.js');

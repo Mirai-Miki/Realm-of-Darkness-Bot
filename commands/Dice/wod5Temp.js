@@ -1,3 +1,5 @@
+'use strict';
+
 const { prefix } = require('../../config.json');
 const Help = require('../../modules/util/Help.js');
 const WoD5Res = require('../../modules/dice/WoD5Res.js');

@@ -1,3 +1,5 @@
+'use strict';
+
 const Consumable = require("../structures/Consumable");
 const Character5th = require("./Character5th");
 const Humanity = require("../structures/humanity5th.js");

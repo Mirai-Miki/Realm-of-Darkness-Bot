@@ -1,3 +1,5 @@
+'use strict';
+
 const DamageTracker20th = require("../structures/DamageTracker20th");
 const Consumable = require("../structures/Consumable");
 const Character = require("./Character.js");

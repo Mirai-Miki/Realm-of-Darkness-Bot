@@ -1,9 +1,11 @@
+'use strict';
+
 const { prefix } = require('../../config.json');
 const Help = require('../../modules/util/Help.js');
 const Discord = require('discord.js');
 const fs = require("fs");
 
-splats = new Discord.Collection();
+const splats = new Discord.Collection();
 
 const handlersFiles = fs.readdirSync('./modules/Tracker/handlers/')
     .filter(file => file.endsWith('.js'))

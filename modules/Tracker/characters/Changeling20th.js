@@ -1,3 +1,5 @@
+'use strict';
+
 const Consumable = require("../structures/Consumable");
 const DamageTracker20th = require("../structures/DamageTracker20th");
 const StaticField = require("../structures/StaticField");

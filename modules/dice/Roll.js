@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = class Roll
 {
     static v5hunger = 'v5h';

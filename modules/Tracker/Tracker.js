@@ -1,3 +1,5 @@
+'use strict';
+
 const fs = require("fs");
 const Database = require('../util/Database.js');
 const mode = require('./TypeDef/mode.js');
@@ -6,7 +8,7 @@ const Discord = require('discord.js');
 const { getErrorMessage } = require('./getErrorMessage.js');
 const universalKeys = require('./keys/universal.js');
 
-handlers = new Discord.Collection();
+const handlers = new Discord.Collection();
 
 const handlersFiles = fs.readdirSync('./modules/Tracker/handlers/')
     .filter(file => file.endsWith('.js'))

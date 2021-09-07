@@ -1,3 +1,5 @@
+'use strict';
+
 const Discord = require('discord.js');
 const WebSocket = require('ws');
 const Database = require('../util/Database.js');

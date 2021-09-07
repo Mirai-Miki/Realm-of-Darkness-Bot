@@ -1,8 +1,10 @@
+'use strict';
+
 const errorType = require('./TypeDef/errors.js');
 
 module.exports.getErrorMessage = (code) =>
 {
-    error = {}
+    const error = {};
     error[errorType.noKey] = 'No Keys were provided. Please check the /keys' +
     ' command for more information on keys.';
 

@@ -1,3 +1,5 @@
+'use strict';
+
 const Consumable = require("../structures/Consumable");
 
 module.exports = class Character 
