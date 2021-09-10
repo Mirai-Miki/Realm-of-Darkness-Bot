@@ -1,15 +1,21 @@
 'use strict';
 
 const fs = require("fs");
-const Discord = require("discord.js");
+const { Client, Intents, Collection, DiscordAPIError,MessageEmbed } = 
+    require("discord.js");
 const config = require("./config.json");
 //const WebSocketServer = require("./modules/RoDApp/WebSocketServer.js");
 const Database = require("./modules/util/Database");
 const Tunnel = require("./modules/Tunnel/Tunnel.js");
 
-const client = new Discord.Client();
+const client = new Client({intents: [
+    Intents.FLAGS.GUILDS, 
+    Intents.FLAGS.GUILD_MESSAGES,
+    Intents.FLAGS.DIRECT_MESSAGES,
+    Intents.FLAGS.DIRECT_MESSAGE_REACTIONS
+]});
 
-client.commands = new Discord.Collection();
+client.commands = new Collection();
 const commandFolders = fs.readdirSync(config.commandPath);
 
 //const PORT = 52723;
@@ -44,7 +50,11 @@ client.on('guildDelete', (guild) => {
     setActivity(client);
 });
 
-client.on('message', (mess) => {
+client.on('interactionCreate', async (interaction) => {
+    if (!interaction.isCommand()) return;
+});
+
+client.on('messageCreate', (mess) => {
     const prefix = config.prefix;    
     if (mess.author.bot)  { return };
 
@@ -100,33 +110,27 @@ client.on('message', (mess) => {
 });
 
 client.on('shardDisconnect', (closeEvent, id) => {
-    try {
-        client.channels.cache.get('776761322859266050').send(
-            `Shard ${String(id)} disconnected.\n` +
-            `Code: ${String(closeEvent.code)}\n` +
-            `Reason: ${closeEvent.reason}`
-        );
-    }
-    catch (error) {
+    client.channels.cache.get('776761322859266050').send(
+        `Shard ${String(id)} disconnected.\n` +
+        `Code: ${String(closeEvent.code)}\n` +
+        `Reason: ${closeEvent.reason}`
+    ).catch((err) => {
         console.error(
             `The RoD Bot - ShardDisconnect.\n` +
             `Shard ${String(id)} disconnected.\n` +
             `Code: ${String(closeEvent.code)}\n\n` +
             `There was also Error sending a message.\n` +
-            `${error}`
+            `${err}`
         );
-    }    
+    });
 });
 
 client.on('shardError', (error, id) => {
-    try {
-        client.channels.cache.get('776761322859266050').send(
-            `Shard ${String(id)} encounted an error.\n` +
-            `Name: ${error.name}\n` +
-            `Message: ${error.message}`
-        );
-    }
-    catch (err) {
+    client.channels.cache.get('776761322859266050').send(
+        `Shard ${String(id)} encounted an error.\n` +
+        `Name: ${error.name}\n` +
+        `Message: ${error.message}`
+    ).catch((err) => {
         console.error(
             `The RoD Bot - ShardError.` +
             `Shard ${String(id)} encounted an error.\n` +
@@ -135,18 +139,15 @@ client.on('shardError', (error, id) => {
             `There was also Error sending a message.\n`
             `${err}`
         );
-    }  
+    });
 });
 
 client.on('shardReady', (id, unavailGuilds) => {
-    try {
-        client.channels.cache.get('776761322859266050').send(
-            `Shard ${String(id)} is ready.\n` +
-            `There are ${unavailGuilds ? unavailGuilds.size : '0'}` +
-            ` unavailable guilds.`
-        );
-    }
-    catch (err) {
+    client.channels.cache.get('776761322859266050').send(
+        `Shard ${String(id)} is ready.\n` +
+        `There are ${unavailGuilds ? unavailGuilds.size : '0'}` +
+        ` unavailable guilds.`
+    ).catch((err) => {
         console.error(
             `The RoD Bot - ShardReady.\n` +
             `Shard ${String(id)} is ready.\n` +
@@ -155,18 +156,15 @@ client.on('shardReady', (id, unavailGuilds) => {
             `There was also Error sending a message.\n
             ${err}`
         );
-    }  
+    });  
 });
 
 client.on('error', (error) => {
-    try {
-        client.channels.cache.get('776761322859266050').send(
-            `An Error was encounted.\n` +
-            `Error Name: ${error.name}\n` +
-            `Message: ${error.message}`
-        );
-    }
-    catch (err) {
+    client.channels.cache.get('776761322859266050').send(
+        `An Error was encounted.\n` +
+        `Error Name: ${error.name}\n` +
+        `Message: ${error.message}`
+    ).catch((err) => {
         console.error(
             `The RoD Bot - Encounted an Error.\n` +
             `Name: ${error.name}\n` +
@@ -174,23 +172,20 @@ client.on('error', (error) => {
             `There was also Error sending a message.\n` +
             `${err}`
         );
-    } 
+    });
 });
 
 client.on('warn', (info) => {
-    try {
-        client.channels.cache.get('776761322859266050').send(
-            `${info}`
-        );
-    }
-    catch (err) {
+    client.channels.cache.get('776761322859266050').send(
+        `${info}`
+    ).catch((err) => {
         console.error(
             `The RoD Bot - Encounted a Warning.\n` +
             `Message: ${info}\n\n` +
             `There was also Error sending a message.\n` +
             `${err}`
         );
-    } 
+    });
 });
 
 function setActivity(client)
@@ -214,7 +209,7 @@ function canSend(mess)
             ' you want me to work in.')
         .catch(error =>
         {
-            if (error instanceof Discord.DiscordAPIError &&
+            if (error instanceof DiscordAPIError &&
                 error.code == 50007)
             {
                 // Cannot send DM to user. Sending to debug log
@@ -273,7 +268,7 @@ function displayStats()
     const userDB = new Database();
     userDB.open("UserCount", 'Database');
     const userCountID = db.find("userCount");
-    const userEmbed = new Discord.MessageEmbed()
+    const userEmbed = new MessageEmbed()
         .setTitle("User Count")
         .setDescription(`${userDB.length()}`)
         .setTimestamp()
@@ -299,7 +294,7 @@ function displayStats()
     const commandDB = new Database();
     commandDB.open("CommandUsage", 'Database');
     const commandUsageID = db.find("commandUsage");
-    const commandEmbed = new Discord.MessageEmbed()
+    const commandEmbed = new MessageEmbed()
         .setTitle("Command Usage Information")
         .setTimestamp()
         .setColor('#199e1e')

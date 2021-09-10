@@ -1,0 +1,18 @@
+- Fixed bugs in the Shard event Handlers
+- Updated to Discord API v9
+- Updated to Discord.js v13
+- Message handeling changed to Slash Commands
+
+
+
+
+Ideas
+- /find @user (ST only). Brings a list of characters in the server. 
+User button and choice box to select the character to find.
+/find (user). Does the same as above.
+
+- /help and /key will provide select box to zoom in on a document
+
+- /temp will prove a select box to choose the Res
+
+- Add a compulsion roll for v5
