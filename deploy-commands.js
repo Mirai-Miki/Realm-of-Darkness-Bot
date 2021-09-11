@@ -1,25 +1,23 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
+'use strict';
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
-const { clientId, token } = require('./config.json');
+const { clientId, token, commandPath } = require('./config.json');
+const fs = require('fs');
+
 const guildId = "699082446729117746"
 
-const commands = [
-    // Dice Commands
-	new SlashCommandBuilder()
-        .setName('generalRoll')
-        .setDescription('Replies with pong!'),
-	new SlashCommandBuilder()
-        .setName('server')
-        .setDescription('Replies with server info!'),
-	new SlashCommandBuilder()
-        .setName('user')
-        .setDescription('Replies with user info!'),
-    // Tracker Commands
-    // Tunnel Commands
-    // Help Commands
-]
-	.map(command => command.toJSON());
+const commands = [];
+const commandFolders = fs.readdirSync(commandPath);
+
+
+for (const folder of commandFolders) {
+    const commandFiles = fs.readdirSync(
+        `${commandPath}${folder}`).filter(file => file.endsWith('.js'));
+    for (const file of commandFiles) {
+        const command = require(`${commandPath}${folder}/${file}`);
+        commands.push(command.data.toJSON());
+    }
+}
 
 const rest = new REST({ version: '9' }).setToken(token);
 
