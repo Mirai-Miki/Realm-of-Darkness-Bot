@@ -1,12 +1,6 @@
 'use strict';
 const { SlashCommandBuilder } = require('@discordjs/builders');
-
-const Discord = require('discord.js');
-const { prefix } = require('../../config.json');
-const Help = require('../../modules/util/Help.js');
-//const generalRoll = require('./generalRoll.js');
-//const wod20Init = require('./wod20Init.js');
-const WoD20Roll = require('../../modules/dice/WoD20Roll.js');
+const WoD20thRoll = require('../../modules/dice/20th/WoD20thRoll.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -35,6 +29,10 @@ module.exports = {
                 .addStringOption(option =>
                     option.setName("reason")
                     .setDescription("The reason for the roll and pool used."))
+                .addBooleanOption(option =>
+                    option.setName("cancel_ones")
+                        .setDescription("Stops any 1s from removing successes" +
+                            " from the result."))
         )
         .addSubcommand(subcommand =>        
             subcommand
@@ -61,7 +59,14 @@ module.exports = {
         switch (interaction.options.getSubcommand())
         {
             case 'roll':
-                interaction.reply("roll")
+                const roll = new WoD20thRoll(interaction);
+                if (roll.isArgsValid())
+                {
+                    roll.roll();
+                    roll.constructEmbed();
+                    roll.constructContent();
+                    roll.reply();
+                }
                 break;
             case 'initiative':
                 interaction.reply("Init")
