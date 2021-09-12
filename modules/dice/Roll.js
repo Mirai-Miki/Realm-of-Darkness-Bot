@@ -34,14 +34,14 @@ module.exports = class Roll
         for (let i = 0; i < regularQueue; i++)
         {
             let result = Roll.single(10);
-            let diceResult = {diceType: this.v5black, 'result': result};
+            let diceResult = {type: this.v5black, 'result': result};
             results.push(diceResult);
         }
 
         for (let i = 0; i < hunger; i++)
         {
             let result = Roll.single(10);
-            let diceResult = {diceType: this.v5hunger, 'result': result};
+            let diceResult = {type: this.v5hunger, 'result': result};
             results.push(diceResult);
         }
 

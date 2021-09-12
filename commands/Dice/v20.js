@@ -28,8 +28,9 @@ module.exports = {
                     option.setName("speciality")
                     .setDescription("The speciality applied to the roll. p96"))
                 .addStringOption(option =>
-                    option.setName("reason")
-                    .setDescription("The reason for the roll and pool used."))
+                    option.setName("notes")
+                    .setDescription("Any extra information you would like to" +
+                        " include."))
                 .addBooleanOption(option =>
                     option.setName("cancel_ones")
                         .setDescription("Stops any 1s from removing successes" +

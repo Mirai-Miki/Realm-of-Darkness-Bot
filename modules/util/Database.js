@@ -1,5 +1,4 @@
 'use strict';
-
 /* Database.js
  * Author: Michael Bossner
  * Version: 2.0.0
@@ -22,7 +21,7 @@ const path = require("path");
  *    deleteAll();
  *    isEmpty();
  *    length();
- *    close();
+ *    send();
  */
 module.exports = class Database 
 {
@@ -210,7 +209,7 @@ module.exports = class Database
      * return: returns 0 if the file was successfully saved.
      *         Throws Err is the file was not saved correctly.
      */
-    close() 
+    send() 
     {
         const contents = JSON.stringify(this.db);
         fs.writeFileSync(this.path, contents, "utf-8", (err) => 

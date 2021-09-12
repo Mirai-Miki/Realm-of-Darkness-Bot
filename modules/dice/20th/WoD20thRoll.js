@@ -15,7 +15,7 @@ module.exports = class WoD20thRoll
         this.diff = this.interaction.options.getInteger('difficulty');
         this.mod = this.interaction.options.getInteger('modifier');
         this.spec = this.interaction.options.getString('speciality');
-        this.reason = this.interaction.options.getString('reason');
+        this.reason = this.interaction.options.getString('notes');
         this.cancelOnes = this.interaction.options.getBoolean('cancel_ones');
 
         if (this.pool < 1 || this.pool > 50)

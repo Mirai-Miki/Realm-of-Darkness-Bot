@@ -3,7 +3,7 @@ const setActivity = require('../modules/util/setActivity.js');
 const Database = require("../modules/util/Database");
 const { statChannel } = require("../config.json");
 const { MessageEmbed } = require("discord.js");
-setInterval(displayStats, 900000);
+
 
 module.exports = {
 	name: 'ready',
@@ -12,6 +12,7 @@ module.exports = {
 		console.log("Connected as: " + client.user.tag);
         setActivity(client);
         displayStats(client);
+        setInterval(function() {displayStats(client)}, 900000);
 
         let db = new Database();
         db.open('Contests', 'Database');
@@ -37,7 +38,7 @@ function displayStats(client)
         .setColor('#bf1bc4')
     if (!userCountID)
     {
-        channel.send(userEmbed)
+        channel.send({embeds: [userEmbed]})
             .then(message =>
                 {
                     db.add("userCount", message.id);
@@ -48,7 +49,7 @@ function displayStats(client)
     {
         channel.messages.fetch(userCountID).then(message => 
             {
-                message.edit(userEmbed)
+                message.edit({embeds: [userEmbed]})
             });
     }
 
@@ -65,18 +66,18 @@ function displayStats(client)
     }
     if (!commandUsageID)
     {
-        channel.send(commandEmbed)
+        channel.send({embeds: [commandEmbed]})
             .then(message =>
-                {
-                    db.add("commandUsage", message.id);
-                    db.close();
-                });
+            {
+                db.add("commandUsage", message.id);
+                db.close();
+            });
     }
     else
     {
         channel.messages.fetch(commandUsageID).then(message => 
-            {
-                message.edit(commandEmbed);
-            });
+        {
+            message.edit({embeds: [commandEmbed]});
+        });
     }
 }

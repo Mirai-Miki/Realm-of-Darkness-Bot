@@ -1,8 +1,18 @@
+# General
 - Fixed bugs in the Shard event Handlers
 - Updated to Discord API v9
 - Updated to Discord.js v13
 - Message handeling changed to Slash Commands
 
+# v20 rolls
+- Redesigned the look of the v20 Roll
+- Redesigned the look of v20 Init
+
+# v5 rolls
+- Added surge option to v5 roll
+- Added spec option to v5 roll
+- removed /rr command in favor of Interactions on the main roll
+- Due to limitations on Discord Interactions and to clean up the channel, rerolls must be made within 15min of the roll
 
 
 
