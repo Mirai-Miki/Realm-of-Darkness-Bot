@@ -1,6 +1,7 @@
 'use strict';
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const WoD20thRoll = require('../../modules/dice/20th/WoD20thRoll.js');
+const WoD20thInit = require('../../modules/dice/20th/WoD20thInit.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -39,13 +40,8 @@ module.exports = {
                 .setName('initiative')
                 .setDescription('Initiative roll using Dex + Wits p271')
                 .addIntegerOption(option =>
-                    option.setName("dexterity")
-                    .setDescription("Your Dexterity." +
-                        " Must be between 1 and 50")
-                    .setRequired(true))
-                .addIntegerOption(option =>
-                    option.setName("wits")
-                    .setDescription("Your Wits." +
+                    option.setName("dexterity_wits")
+                    .setDescription("Your Dexterity plus you Wits." +
                         " Must be between 1 and 50")
                     .setRequired(true))
         )
@@ -69,11 +65,16 @@ module.exports = {
                 }
                 break;
             case 'initiative':
-                interaction.reply("Init")
+                const init = new WoD20thInit(interaction);
+                if (init.isArgsValid())
+                {
+                    init.roll();
+                    init.constructEmbed();
+                    init.reply();
+                }
                 break;
             case 'general':
-                interaction.reply("General")
-                console.log(interaction)
+                interaction.reply("TODO: add general roll.")
                 break;
         }
 	},
