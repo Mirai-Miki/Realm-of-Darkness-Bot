@@ -3,28 +3,34 @@
 - Updated to Discord API v9
 - Updated to Discord.js v13
 - Message handeling changed to Slash Commands
+- Threads now supported
 
 # v20 rolls
 - Redesigned the look of the v20 Roll
 - Redesigned the look of v20 Init
 
 # v5 rolls
+- Added Rouse roll
+- Res roll can select resonance and or temp from a list
 - Added surge option to v5 roll
+- Added rouse option to v5 roll
 - Added spec option to v5 roll
 - removed /rr command in favor of Interactions on the main roll
 - Due to limitations on Discord Interactions and to clean up the channel, rerolls must be made within 15min of the roll
 
 
 
-Ideas
+# Ideas
 - /find @user (ST only). Brings a list of characters in the server. 
 User button and choice box to select the character to find.
 /find (user). Does the same as above.
 
 - /help and /key will provide select box to zoom in on a document
 
-- /temp will prove a select box to choose the Res
-
 - Add a compulsion roll for v5
 
-- Rouse roll/button. Surging is messing up willpower reroll.
+- Add character option to v5 and rouse and update hunger on failed rouse.
+
+- Tracking add a hidden command with optional ST channel.
+Using the command in a channel will hide all tracking responses.
+Adding an ST channel will post a second non hidden message in that channel.

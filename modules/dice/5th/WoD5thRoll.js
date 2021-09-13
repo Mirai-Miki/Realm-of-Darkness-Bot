@@ -29,7 +29,7 @@ module.exports = class WoD5thRoll
         this.diff = this.interaction.options.getInteger('difficulty');
         this.bp = this.interaction.options.getInteger('blood_surge');
         this.spec = this.interaction.options.getString('speciality');
-        this.rouse = this.interaction.options.getBoolean('rouse');
+        this.rouse = this.interaction.options.getString('rouse');
         this.notes = this.interaction.options.getString('notes');
         this.totalPool = calculateTotalPool(this.pool, this.bp, this.spec);
     }
@@ -358,12 +358,18 @@ module.exports = class WoD5thRoll
             components: this.response.interactions,
         });
 
-        if (this.bp || this.rouse)
+        if (this.bp)
+        {
+            const rouse = new Rouse(this.interaction, true);
+            rouse.roll();
+            rouse.constructEmbed();
+            rouse.reply(true);          
+        }
+        if (this.rouse)
         {
             const rouse = new Rouse(this.interaction);
             rouse.roll();
             rouse.constructEmbed();
-            rouse.constructComponents();
             rouse.reply(true);          
         }
 

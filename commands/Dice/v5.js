@@ -35,10 +35,12 @@ module.exports = {
                     option.setName("speciality")
                     .setDescription("The speciality applied to the roll. " +
                     " This adds one dice to your pool. p159"))
-                .addBooleanOption(option =>
+                .addStringOption(option =>
                     option.setName("rouse")
                     .setDescription("Select if you would also like to Rouse" +
-                    " the blood. p211"))
+                    " the blood. p211")
+                    .addChoice('No Reroll', 'No Reroll')
+                    .addChoice('Reroll', 'Reroll'))
                 .addStringOption(option =>
                     option.setName("notes")
                     .setDescription("Any extra information you would like to" +
@@ -48,10 +50,13 @@ module.exports = {
             subcommand
                 .setName('rouse')
                 .setDescription('Rouse the blood for special feats. p211')
+                .addBooleanOption(option =>
+                    option.setName("reroll")
+                    .setDescription("Select if you are able to roll 2 dice. p211"))
                 .addStringOption(option =>
                     option.setName("notes")
                     .setDescription("Any extra information you would like to" +
-                        " include."))
+                        " include."))      
         )
         .addSubcommand(subcommand =>
             subcommand
@@ -108,7 +113,6 @@ module.exports = {
                 const rouseRoll = new Rouse(interaction);
                 rouseRoll.roll();
                 rouseRoll.constructEmbed();
-                rouseRoll.constructComponents();
                 await rouseRoll.reply();
                 break;
             case 'general':

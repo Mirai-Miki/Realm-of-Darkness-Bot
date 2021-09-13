@@ -1,11 +1,10 @@
 'use strict';
 const Roll = require('../Roll.js');
-const Util = require('../../util/Util.js');
-const { MessageEmbed, MessageActionRow, MessageButton } = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = class Resonance
 {
-    constructor(interaction)
+    constructor(interaction, surge=undefined)
     {
         this.interaction = interaction;
         this.notes = this.interaction.options.getString('notes');
@@ -17,11 +16,26 @@ module.exports = class Resonance
             colour: [143, 6, 33]
         };
         this.response = {embeds: [], components: []};
+
+        if (surge)
+        {
+            this.surge = this.interaction.options.getInteger('blood_surge');
+            // No reroll on surge
+        }
+        else
+        {
+            const rerollv5 = this.interaction.options.getString('rouse');
+            const reroll = this.interaction.options.getBoolean('reroll');
+
+            if (rerollv5 === 'Reroll') this.results.reroll = true;
+            if (reroll) this.results.reroll = true;
+        }        
     }
 
     roll()
     {        
         this.results.dice.push(Roll.single(10));
+        if (this.results.reroll) this.results.dice.push(Roll.single(10))
         for (const dice of this.results.dice)
         {
             if (dice >= 6) 
@@ -35,6 +49,26 @@ module.exports = class Resonance
 
     constructEmbed()
     {
+        const client = this.interaction.client;
+        const redDice = {
+            1: client.emojis.resolve('886257732028596315').toString(),
+            2: client.emojis.resolve('886257745743999066').toString(),
+            3: client.emojis.resolve('886257759794888726').toString(),
+            4: client.emojis.resolve('886257774168797254').toString(),
+            5: client.emojis.resolve('886257791587741807').toString(),
+            6: client.emojis.resolve('886257808964734997').toString(),
+            7: client.emojis.resolve('886257824148107304').toString(),
+            8: client.emojis.resolve('886257842657579018').toString(), 
+            9: client.emojis.resolve('886257860227514380').toString(),
+            10: client.emojis.resolve('886448649075306496').toString(),
+        }
+
+        const diceMess = [];
+        for (const dice of this.results.dice)
+        {
+            diceMess.push(redDice[dice]);
+        }
+
         const embed = new MessageEmbed();
         embed.setAuthor(
             (
@@ -45,7 +79,7 @@ module.exports = class Resonance
             this.interaction.user.avatarURL()
         );
 
-        embed.setTitle('Rouse Roll');
+        embed.setTitle(`${this.surge ? 'Blood Surge Check' : 'Rouse Check'}`);
         embed.setColor(this.results.colour);
         embed.setURL('https://discord.gg/Za738E6');
         
@@ -53,9 +87,7 @@ module.exports = class Resonance
             embed.setThumbnail('https://cdn.discordapp.com/attachments/7140' +
             '50986947117076/886855116035084288/RealmOfDarknessSkullnoBNG.png');
         
-        embed.addField("Dice", `${this.results.dice[0]}`, true);
-        if (this.results.reroll) 
-            embed.addField("Reroll", `${this.results.dice[1]}`, true);
+        embed.addField("Rouse Dice", `${diceMess.join(' ')}ﾠ`);
         
         embed.addField("Result", `\`\`\`diff\n` +
             `${this.results.description}\n\`\`\``);
@@ -66,72 +98,19 @@ module.exports = class Resonance
         return embed;
     }
 
-    constructComponents()
-    {
-        if (this.results.passed) return;
-
-        const buttonRow = new MessageActionRow()
-        buttonRow.addComponents(
-            new MessageButton()
-                .setCustomId('reroll')
-                .setLabel('Reroll')
-                .setStyle('PRIMARY'),
-        );
-        
-        this.response.components.push(buttonRow);
-    }
-
     async reply(followUp)
     {
-        let message;
         if (followUp)
         {
-            message = await this.interaction.followUp({
-                embeds: this.response.embeds, 
-                components: this.response.components
+           await this.interaction.followUp({
+                embeds: this.response.embeds
             });
         }
         else
         {
             await this.interaction.reply({
-                embeds: this.response.embeds, 
-                components: this.response.components
+                embeds: this.response.embeds
             });
-            message = await this.interaction.fetchReply();
         }
-
-        if (!this.response.components.length) return; 
-        // don't need to stick around if there is no buttons
-
-        this.collector = message.createMessageComponentCollector(
-            {
-                time: Util.minToMilli(14)
-            });
-        
-        this.collector.on('collect', async i => {
-            if (i.user.id === this.interaction.user.id) {
-                if (i.customId == 'reroll')
-                {
-                    // reroll
-                    this.roll();                    
-                    this.results.reroll = true;
-                    this.constructEmbed();
-                    await i.update({ 
-                        embeds: this.response.embeds,                        
-                        components: []
-                    });
-                    this.collector.stop();
-                }
-            } else {
-                i.reply({ 
-                    content: `These buttons aren't for you!`, 
-                    ephemeral: true 
-                });
-            }
-        });
-
-        this.collector.on('end', i => {
-            this.interaction.editReply({components: []});
-        });
     }
 }
