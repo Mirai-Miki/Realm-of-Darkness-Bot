@@ -2,6 +2,7 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const WoD20thRoll = require('../../modules/dice/20th/WoD20thRoll.js');
 const WoD20thInit = require('../../modules/dice/20th/WoD20thInit.js');
+const GeneralRoll = require('../../modules/dice/GeneralRoll');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -50,6 +51,39 @@ module.exports = {
             subcommand
                 .setName('general')
                 .setDescription('Roll a number of X-sided dice.')
+                .addStringOption(option =>
+                    option.setName("dice_set_01")
+                    .setDescription('A dice set is defined as "(x)d(y)"' +
+                        ' where (x) is the number of dice and (y) is the' +
+                        ' number of sides.')
+                    .setRequired(true))
+                .addStringOption(option =>
+                    option.setName("dice_set_02")
+                    .setDescription('A dice set is defined as "(x)d(y)"' +
+                        ' where (x) is the number of dice and (y) is the' +
+                        ' number of sides.'))
+                .addStringOption(option =>
+                    option.setName("dice_set_03")
+                    .setDescription('A dice set is defined as "(x)d(y)"' +
+                        ' where (x) is the number of dice and (y) is the' +
+                        ' number of sides.'))
+                .addStringOption(option =>
+                    option.setName("dice_set_04")
+                    .setDescription('A dice set is defined as "(x)d(y)"' +
+                        ' where (x) is the number of dice and (y) is the' +
+                        ' number of sides.'))
+                .addStringOption(option =>
+                    option.setName("dice_set_05")
+                    .setDescription('A dice set is defined as "(x)d(y)"' +
+                        ' where (x) is the number of dice and (y) is the' +
+                        ' number of sides.'))
+                .addIntegerOption(option =>
+                    option.setName("difficulty")
+                    .setDescription('The total needed to pass the Roll.'))
+                .addStringOption(option =>
+                    option.setName("notes")
+                    .setDescription('Any additional information you would' +
+                        ' like to include.'))
         ),
 	
 	async execute(interaction) {
@@ -75,7 +109,13 @@ module.exports = {
                 }
                 break;
             case 'general':
-                interaction.reply("TODO: add general roll.")
+                const generalRoll = new GeneralRoll(interaction);
+                if (generalRoll.isArgsValid())
+                {
+                    generalRoll.roll();
+                    generalRoll.contructEmbed();
+                    generalRoll.reply();
+                }
                 break;
         }
 	},
