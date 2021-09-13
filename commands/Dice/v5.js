@@ -1,6 +1,7 @@
 'use strict';
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const Resonance = require('../../modules/dice/5th/Resonance.js');
+const Rouse = require('../../modules/dice/5th/Rouse.js');
 const WoD5thRoll = require('../../modules/dice/5th/WoD5thRoll.js');
 
 module.exports = {
@@ -47,6 +48,10 @@ module.exports = {
             subcommand
                 .setName('rouse')
                 .setDescription('Rouse the blood for special feats. p211')
+                .addStringOption(option =>
+                    option.setName("notes")
+                    .setDescription("Any extra information you would like to" +
+                        " include."))
         )
         .addSubcommand(subcommand =>
             subcommand
@@ -98,6 +103,13 @@ module.exports = {
                 resRoll.roll();
                 resRoll.constructEmbed();
                 resRoll.reply();
+                break;
+            case 'rouse':
+                const rouseRoll = new Rouse(interaction);
+                rouseRoll.roll();
+                rouseRoll.constructEmbed();
+                rouseRoll.constructComponents();
+                await rouseRoll.reply();
                 break;
             case 'general':
                 interaction.reply("TODO: add general roll.")

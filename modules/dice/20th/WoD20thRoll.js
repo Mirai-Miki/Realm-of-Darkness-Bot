@@ -7,17 +7,17 @@ module.exports = class WoD20thRoll
     constructor(interaction)
     {
         this.interaction = interaction;
-    }
 
-    isArgsValid()
-    {
         this.pool = this.interaction.options.getInteger('pool');
         this.diff = this.interaction.options.getInteger('difficulty');
         this.mod = this.interaction.options.getInteger('modifier');
         this.spec = this.interaction.options.getString('speciality');
         this.reason = this.interaction.options.getString('notes');
         this.cancelOnes = this.interaction.options.getBoolean('cancel_ones');
+    }
 
+    isArgsValid()
+    {
         if (this.pool < 1 || this.pool > 50)
         {
             this.interaction.reply({ 

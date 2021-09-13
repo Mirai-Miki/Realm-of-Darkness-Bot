@@ -1,8 +1,9 @@
 'use strict';
 const Roll = require('../Roll.js');
+const Rouse = require('./Rouse.js');
 const { MessageActionRow, MessageSelectMenu, 
     MessageButton, MessageEmbed } = require('discord.js');
-const Util = require('../../util/Util.js')
+const Util = require('../../util/Util.js');
 
 
 const Result = 
@@ -22,10 +23,7 @@ module.exports = class WoD5thRoll
         this.interaction = interaction;
         this.results = {roll: {}, total: 0, type: 0, fails: 0};
         this.response = {embed: [], content: '', interactions: []};
-    }
 
-    isArgsValid()
-    {
         this.pool = this.interaction.options.getInteger('pool');
         this.hunger = this.interaction.options.getInteger('hunger');
         this.diff = this.interaction.options.getInteger('difficulty');
@@ -34,7 +32,10 @@ module.exports = class WoD5thRoll
         this.rouse = this.interaction.options.getBoolean('rouse');
         this.notes = this.interaction.options.getString('notes');
         this.totalPool = calculateTotalPool(this.pool, this.bp, this.spec);
+    }
 
+    isArgsValid()
+    {
         if (this.pool < 1 || this.pool > 50)
         {
             this.interaction.reply({ 
@@ -357,8 +358,14 @@ module.exports = class WoD5thRoll
             components: this.response.interactions,
         });
 
-        if (this.bp || this.rouse) 
-            await this.interaction.followUp("Rouse for surge");
+        if (this.bp || this.rouse)
+        {
+            const rouse = new Rouse(this.interaction);
+            rouse.roll();
+            rouse.constructEmbed();
+            rouse.constructComponents();
+            rouse.reply(true);          
+        }
 
         const message = await this.interaction.fetchReply();
         

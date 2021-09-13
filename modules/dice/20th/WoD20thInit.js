@@ -8,12 +8,11 @@ module.exports = class WoD20thInit
     {
         this.interaction = interaction;
         this.response = {};
+        this.modifier = this.interaction.options.getInteger("dexterity_wits");
     }
 
     isArgsValid()
     {
-        this.modifier = this.interaction.options.getInteger("dexterity_wits");
-
         if (this.stats < 1 || this.stats > 50)
         {
             this.interaction.reply("Your Dex + Wits must be between" +

@@ -8,10 +8,7 @@ module.exports = class Resonance
     {
         this.interaction = interaction;
         this.colour = {hex: [0, 0, 0], mod: 0};
-    }
 
-    roll()
-    {
         this.temp = {
             name: this.interaction.options.getString('temperament') ?? '',
             dice: '',
@@ -23,7 +20,10 @@ module.exports = class Resonance
             dice: '',
         }
         this.notes = this.interaction.options.getString('notes');
+    }
 
+    roll()
+    {
         this.rollTemp();
         this.rollRes();
     }
@@ -170,7 +170,7 @@ module.exports = class Resonance
             this.interaction.user.avatarURL()
         );
         embed.setTitle('Resonance Roll');
-        embed.setColor(this.colour.hex)
+        embed.setColor(this.colour.hex);
         embed.setURL('https://discord.gg/Za738E6');
 
         embed.addField("Result", `\`\`\`${this.temp.name}` +
