@@ -1,145 +1,130 @@
 'use strict';
-
 const Roll = require('./Roll.js');
-const Discord = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = class GeneralRoll
 {
-    constructor(message)
+    constructor(interaction)
     {
-        this.parsed;
-        this.message = message;
-        this.error;
+        this.interaction = interaction;
+
+        this.args = [
+            interaction.options.getString('dice_set_01'),
+            interaction.options.getString('dice_set_02'),
+            interaction.options.getString('dice_set_03'),
+            interaction.options.getString('dice_set_04'),
+            interaction.options.getString('dice_set_05'),
+        ]
+        this.sets = {};
+        this.diff = interaction.options.getInteger('difficulty');
+        this.notes = interaction.options.getString('notes');
+        this.embed = [];
     }
 
-    parseContent(content)
+    isArgsValid()
     {
-        let parsed = {results: {}, total: 0, reason: '', 
-            errorFlag: false, errorCode: 0};    
-
-        let breakdown = content.match(
-            /(\d+d\d+)(\s*(\+|-|\*|\/)\s*((\d+d\d+)|(\d+)))*(\s*@\s*\d+)?/i)[0];
-
-
-        parsed.roll = breakdown;
-        parsed.reason = content.replace(breakdown, '');
-        let difficulty = breakdown.match(/(\s*@\s*\d+)/i);
-        if (difficulty)
+        for (const set of this.args)
         {
-            breakdown = breakdown.replace(difficulty[0], '');
-            parsed.diff = difficulty[0].match(/\d+/i)[0];
-        }
+            if (!set) continue;
 
-        parsed.DiceQueue = breakdown;
-        this.parsed = parsed;
-        return;
+            const valid = set.match(/^\s*\d+\s*d\s*\d+\s*$/i);
+            if (!valid)
+            {
+                this.interaction.reply({
+                    content: 
+                        'The arguments need to be' +
+                        ' in the format "(x)d(y)" where (x) is' +
+                        ' the number of dice in the set and (y) is the' +
+                        ' number of sides on the dice.\nExample: "5d6"' +
+                        ' is 5 dice with six sides each.',
+                    ephemeral: true});
+                return false;
+            }
+
+            let match = valid[0];
+            const dice = parseInt(match.match(/\d+/)[0]);
+            const sides = parseInt(match.match(/\d+/)[0]);
+
+            if (dice > 50 || sides > 500)
+            {
+                this.interaction.reply({
+                    content: 
+                        'The number of Dice cannot be more then 50.\n' +
+                        'The number of Dice Sides cannot be more than 500.',
+                    ephemeral: true});
+                return false;
+            }
+
+            if (this.sets[sides])
+            {
+                this.sets[sides].dice += dice;
+            }
+            else
+            {
+                this.sets[sides] = {sides: sides, dice: dice};
+            }
+        }
+        return true;
     }
 
     roll()
     {
-        if (this.error) return;
-        let parsed = this.parsed;
-        let DiceQueue = parsed.DiceQueue;
-        let count = {}
-        let allRolls = {};
-        while (DiceQueue.match(/\d+d\d+/i))
-        {        
-            let diceList = DiceQueue.match(/\d+d\d+/i);
-            let diceSides = diceList[0].match(/\d+$/i)[0];
-            let quantity = diceList[0].match(/^\d+/i)[0];
-
-            if (diceSides < 1 || diceSides > 1000)
-            {
-                // incorrect usage
-                this.error = SIDE_ERR;
-                return;
-            }
-            else if (quantity < 1 || quantity > 50)
-            {
-                // incorrect usage
-                this.error = QNTY_ERR;
-                return;
-            }
-
-            let results = Roll.manySingle(quantity, diceSides);
-            DiceQueue = DiceQueue.replace(diceList[0], results.total.toString());
-
-            if (allRolls[diceSides.toString()])
-            {  
-                // Making sure there is not more then one of the same type of dice
-                // being rolled 
-                if (!count[diceSides.toString()])
-                {
-                    count[diceSides.toString()] = 2;
-                }
-                else 
-                {
-                    count[diceSides.toString()] += 1;
-                }
-
-                allRolls[`${diceSides.toString()} (${count[diceSides.toString()]})`] 
-                    = results[diceSides.toString()];
-            }
-            else
-            {
-                allRolls[diceSides.toString()] = results[diceSides.toString()];
-            }        
+        let total = 0;
+        for (const key of Object.keys(this.sets))
+        {
+            const set = this.sets[key];
+            set['results'] = Roll.manySingle(set.dice, set.sides);
+            total += set.results.total;
         }
-
-        parsed.results = allRolls;
-        parsed.total = eval(DiceQueue);
-        if (parsed.total > 9999999) return this.error = TOTL_ERR;
-        parsed.DiceQueue = undefined;
-        this.parsed = parsed;
-        return;
+        this.sets['total'] = total;
     }
 
     contructEmbed()
     {
-        if (this.error) return this.getErrorMessage(this.error);
-        let message = this.message;
-        let results = this.parsed;
-        // Create the embed
-        let embed = new Discord.MessageEmbed();        
-        if (message.member)
+        let embed = new MessageEmbed();        
+        
+        embed.setAuthor(
+            (
+                this.interaction.member ? 
+                this.interaction.member.displayName : 
+                this.interaction.user.username
+            ), 
+            this.interaction.user.avatarURL()
+        );
+
+        embed.setTitle(`General Roll`);
+
+        for (const key of Object.keys(this.sets))
         {
-            embed.setAuthor(message.member.displayName, 
-                message.author.avatarURL());
-        }
-        else
-        {
-            embed.setAuthor(message.author.username, 
-                message.author.avatarURL());
-        }
-        embed.setTitle(`Rolled | ${results.roll}`);
-        Object.entries(results.results).forEach((entry) =>
-        {
-            const [key, value] = entry;
+            if (key == 'total') continue;
+            const set = this.sets[key];
+
             let mess = "```css\n "
-            for (let result of value)
+            for (const result of set.results[key])
             {
                 mess += `${result.toString()} `;
             }
             mess += '\n```'
-            embed.addField(`d${key.toString()}`, mess, true)
-        });
-        if (results.diff)
+            embed.addField(`${set.dice}d${set.sides}`, mess, true);
+        }
+        
+        if (this.diff)
         {
-            if (results.total < results.diff)
+            if (this.sets.total < this.diff)
             {
                 // Failed the roll
-                let total = results.diff - results.total;
-                embed.addField('Result', `Total of ${results.total.toString()}\n`
-                    + `Missing ${total}\n` +
+                const total = this.diff - this.sets.total;
+                embed.addField('Result', `Total of ${this.sets.total} vs ` +
+                    `diff ${this.diff}\nMissing ${total}\n` +
                     '```diff\n- Failed\n```');
                 embed.setColor([205, 14, 14]);
             }
             else
             {
                 // Passed the roll
-                let total = results.total - results.diff;
-                embed.addField('Result', `Total of ${results.total.toString()}\n`
-                    + `Margin of ${total}\n` +
+                const total = this.sets.total - this.diff;
+                embed.addField('Result', `Total of ${this.sets.total} vs ` +
+                    `diff ${this.diff}\nMargin of ${total}\n` +
                     '```diff\n+ Passed\n```');
                 embed.setColor([102, 255, 51]);
             }
@@ -147,35 +132,18 @@ module.exports = class GeneralRoll
         else
         {
             // No difficulty
-            embed.addField('Result', `Total of ${results.total.toString()}`);
+            embed.addField('Result', `Total of ${this.sets.total}`);
             embed.setColor([0,0,0]);
         }
-        if (results.reason.match(/\S+/)) 
-        {
-            embed.addField('Notes', results.reason);
-        }
+        if (this.notes) embed.setFooter(this.notes);
         embed.setURL('https://discord.gg/Za738E6');
+
+        this.embed = [embed];
         return embed;
     }
 
-    getErrorMessage(code)
+    reply()
     {
-        let errors = {};
-        errors[SIDE_ERR] = 
-                `DiceSides should not be less then 1 or greater than 1000`;
-
-        errors[QNTY_ERR] = 
-                'The number of dice should not be less than 1' +
-                ' or greater than 50';
-
-        errors[TOTL_ERR] =
-                'You numbers are too powerful! Try keeping things a ' +
-                'little more simple.';
-                
-        return errors[code];
+        this.interaction.reply({embeds: this.embed});
     }
 }
-
-const SIDE_ERR = 'SIDE_ERR';
-const QNTY_ERR = 'QNTY_ERR';
-const TOTL_ERR = 'TOTL_ERR';
