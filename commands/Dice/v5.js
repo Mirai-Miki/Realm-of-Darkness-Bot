@@ -1,5 +1,6 @@
 'use strict';
 const { SlashCommandBuilder } = require('@discordjs/builders');
+const Resonance = require('../../modules/dice/5th/Resonance.js');
 const WoD5thRoll = require('../../modules/dice/5th/WoD5thRoll.js');
 
 module.exports = {
@@ -50,7 +51,27 @@ module.exports = {
         .addSubcommand(subcommand =>
             subcommand
                 .setName('resonance')
-                .setDescription('Resonance roll p228')
+                .setDescription('Temperament and Resonance roll. p228')
+                .addStringOption(option =>
+                    option.setName("resonance")
+                    .setDescription("Select if you already know the what" +
+                        " the resonance will be.")
+                    .addChoice('Phlegmatic', 'Phlegmatic')
+                    .addChoice('Melancholy', 'Melancholy')
+                    .addChoice('Choleric', 'Choleric')
+                    .addChoice('Sanguine', 'Sanguine'))
+                .addStringOption(option =>
+                    option.setName("temperament")
+                    .setDescription("Select if you already know the what" +
+                        " the temperament will be.")
+                    .addChoice('Fleeting', 'Fleeting')
+                    .addChoice('Intense', 'Intense')
+                    .addChoice('Acute', 'Acute'))
+                .addStringOption(option =>
+                    option.setName("notes")
+                    .setDescription("Any extra information you would like to" +
+                        " include."))
+
         )
         .addSubcommand(subcommand =>
             subcommand
@@ -72,24 +93,16 @@ module.exports = {
                     await roll.reply();
                 }
                 break;
-            case 'initiative':
-                
+            case 'resonance':
+                const resRoll = new Resonance(interaction);
+                resRoll.roll();
+                resRoll.constructEmbed();
+                resRoll.reply();
                 break;
             case 'general':
                 interaction.reply("TODO: add general roll.")
                 break;
         }
-	},
-    async buttonClicked(component)
-    {
-        switch (component.customId)
-        {
-            case 'autoReroll':
-                break;
-            case 'selectReroll':
-                const roll = new WoD5thRoll(component);
-                break;
-        }
-    }
+	}
 };
 
