@@ -20,6 +20,11 @@ module.exports = {
 	},
 };
 
+
+// Doesn't Track anything because it is working of old Commands
+// Not interactions. Will need to change this.
+/////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////
 function displayStats(client)
 {
     const channel = client.channels.cache.get(statChannel);
@@ -42,15 +47,22 @@ function displayStats(client)
             .then(message =>
                 {
                     db.add("userCount", message.id);
-                    db.close();
+                    db.save();
                 });
     }
     else
     {
         channel.messages.fetch(userCountID).then(message => 
-            {
-                message.edit({embeds: [userEmbed]})
-            });
+        {
+            message.edit({embeds: [userEmbed]})
+        }).catch(error => {
+            channel.send({embeds: [userEmbed]})
+            .then(message =>
+                {
+                    db.add("userCount", message.id);
+                    db.save();
+                });
+        });
     }
 
 
@@ -70,7 +82,7 @@ function displayStats(client)
             .then(message =>
             {
                 db.add("commandUsage", message.id);
-                db.close();
+                db.save();
             });
     }
     else
@@ -78,6 +90,13 @@ function displayStats(client)
         channel.messages.fetch(commandUsageID).then(message => 
         {
             message.edit({embeds: [commandEmbed]});
+        }).catch(error => {
+            channel.send({embeds: [commandEmbed]})
+            .then(message =>
+                {
+                    db.add("commandUsage", message.id);
+                    db.save();
+                });
         });
     }
 }

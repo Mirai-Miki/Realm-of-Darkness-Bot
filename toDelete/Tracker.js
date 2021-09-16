@@ -1,7 +1,7 @@
 'use strict';
 
 const fs = require("fs");
-const Database = require('../util/Database.js');
+const Database = require('../modules/util/Database.js');
 const mode = require('./TypeDef/mode.js');
 const errorType = require('./TypeDef/errors.js');
 const Discord = require('discord.js');

@@ -10,22 +10,19 @@ module.exports = class Vampire20th extends Character20th
     {
         super(willpower);
         this.splat = 'Vampire';
-        this.humanity = new StaticField(humanity, 0, 10);
+        this.morality = {
+            name: 'Humanity', 
+            pool: new StaticField(humanity, 0, 10)
+        };
         this.blood = new Consumable(blood);
     }
 
-    resetOverflows()
+    deserilize(json)
     {
-        super.resetOverflows();
-        this.blood.resetOverflow();
-        this.humanity.resetOverflow();
-    }
-
-    deserilize(char)
-    {
-        super.deserilize(char);
-        this.humanity.setCurrent(char.humanity.current);
-        this.blood.setTotal(char.blood.total);
-        this.blood.setCurrent(char.blood.current);
+        super.deserilize(json);
+        this.morality.pool.setCurrent(json.morality.current);
+        this.morality.name = json.morality.name;
+        this.blood.setTotal(json.blood.total);
+        this.blood.setCurrent(json.blood.current);
     }
 }

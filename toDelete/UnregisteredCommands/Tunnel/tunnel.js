@@ -1,8 +1,8 @@
 'use strict';
 
-const { prefix } = require('../../config.json');
-const Help = require('../../modules/util/Help.js');
-const Database = require("../../modules/util/Database");
+const { prefix } = require('../../../config.json');
+const Help = require('../../../modules/util/Help.js');
+const Database = require("../../../modules/util/Database");
 
 module.exports = {
     name: 'Channel Tunnel',

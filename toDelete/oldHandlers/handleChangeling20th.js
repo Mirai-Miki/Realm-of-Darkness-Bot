@@ -2,16 +2,16 @@
 
 const mode = require('../TypeDef/mode.js');
 const errorType = require('../TypeDef/errors.js');
-const Changeling = require('../characters/Changeling20th.js');
+const Changeling = require('../modules/Tracker/characters/Changeling20th.js');
 const { serializeCharacter } = require('../util/serilizeCharacter.js');
 const { setOwnerInfo } = require('../util/setOwnerInfo.js');
 // Key handling
-const CharacterKeys = require('../keys/CharacterKeys.js');
-const Character20thKeys = require('../keys/Character20thKeys.js');
-const Changeling20thKeys = require('../keys/changeling20thKeys.js');
-const { sortKeys } = require('../keys/SortKeys.js');
+const CharacterKeys = require('../modules/Tracker/keys/CharacterKeys.js');
+const Character20thKeys = require('../modules/Tracker/keys/Character20thKeys.js');
+const Changeling20thKeys = require('../modules/Tracker/keys/changeling20thKeys.js');
+const { sortKeys } = require('../modules/Tracker/keys/SortKeys.js');
 // Create Embed
-const { character20thEmbed } = require('../embed/character20thEmbed.js');
+const { character20thEmbed } = require('../modules/Tracker/embed/character20thEmbed.js');
 
 module.exports =
 {

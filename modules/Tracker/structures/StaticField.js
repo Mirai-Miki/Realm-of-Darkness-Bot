@@ -1,5 +1,4 @@
 'use strict';
-
 module.exports = class StaticField
 {
     constructor(current, min, max)
@@ -8,14 +7,17 @@ module.exports = class StaticField
         this.max = max;
         this.current = current;
         this.overflow = 0;
+        this.modified = 0;
         if (this.current > max) this.current = max;
         if (this.current < min) this.current = min;     
     }
 
-    modifiyCurrent(amount)
+    updateCurrent(amount)
     {
-        this.resetOverflow();
+        this.overflow = 0;
+        const before = this.current;
         this.current += amount;
+        this.modified += this.current - before;
 
         if (this.current < this.min) 
         {
@@ -32,8 +34,10 @@ module.exports = class StaticField
 
     setCurrent(amount)
     {
-        this.resetOverflow();
+        this.overflow = 0;
+        const before = this.current;
         this.current = amount;
+        this.modified += this.current - before;       
 
         if (this.current < this.min) 
         {
@@ -43,11 +47,6 @@ module.exports = class StaticField
         {
             this.current = this.max;
         }
-    }    
-
-    resetOverflow()
-    {
-        this.overflow = 0;
     }
 
     setMin(amount)

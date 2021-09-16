@@ -18,6 +18,13 @@
 - removed /rr command in favor of Interactions on the main roll
 - Due to limitations on Discord Interactions and to clean up the channel, rerolls must be made within 15min of the roll
 
+# Tracker
+- names can now be more then one word
+- names can now be changed using set
+- names are now unique to a player rather than a server
+- side bar colour can now be changed using set
+- 20th edition vamipres can now define their morality
+
 
 
 # Ideas

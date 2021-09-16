@@ -90,7 +90,7 @@ module.exports.character5thEmbed = (char, tracker, unknownKeys) =>
         if (tracker.findHistory && char.history)
         {
             var history = `__**History for ${char.name}**__\n`;
-            for (record of char.history)
+            for (const record of char.history)
             {
                 history += `${record}ﾠ\n`;
             }

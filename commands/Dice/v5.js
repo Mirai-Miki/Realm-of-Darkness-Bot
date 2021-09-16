@@ -7,8 +7,8 @@ const WoD5thRoll = require('../../modules/dice/5th/WoD5thRoll.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('5th')
-		.setDescription('Dice rolls for the 5th Edition Game.')
+		.setName('v5')
+		.setDescription('Dice rolls for the v5 Game.')
 		.addSubcommand(subcommand =>
             subcommand
 				.setName('roll')

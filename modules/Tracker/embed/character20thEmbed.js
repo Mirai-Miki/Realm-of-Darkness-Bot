@@ -1,22 +1,26 @@
 'use strict';
+const { MessageEmbed } = require("discord.js");
 
-const Discord = require("discord.js");
-const { getErrorMessage } = require('../getErrorMessage.js');
-
-module.exports.character20thEmbed = (char, tracker, unknownKeys) =>
+module.exports.character20thEmbed = (char, interaction, args) =>
 {
-    let client = tracker.recvMess.client;
-    let recvMess = tracker.recvMess;
-    if (tracker.error) return `<@${recvMess.author.id}> ` +
-        `${getErrorMessage(tracker.error)}`;
+    let client = interaction.client;    
    
-    let embed = new Discord.MessageEmbed()
+    let embed = new MessageEmbed()
         .setColor(char.colour)
-        .setAuthor(char.owner.username, char.owner.avatarURL)
-        .setTitle(char.name)
+        .setAuthor(
+            (
+                interaction.member ? 
+                interaction.member.displayName : 
+                interaction.user.username
+            ), 
+            interaction.user.avatarURL()
+        )
+        .setTitle(char.name)        
         .addField(`Willpower [${char.willpower.current}/${char.willpower.total}]`, 
-            consumableTracker(char.willpower, 1, client, 10),false)
+            consumableTracker(char.willpower, 1, client, 10), false)
         .setURL('https://discord.gg/Za738E6');
+
+        if (char.thumbnail) embed.setThumbnail(char.thumbnail);
 
         switch (char.splat)
         {
@@ -44,8 +48,8 @@ module.exports.character20thEmbed = (char, tracker, unknownKeys) =>
                         consumableTracker(char.blood, 0, client, 10), false
                     );
                 }
-                embed.addField(`Humanity ${char.humanity.current}`, 
-                    staticFieldTracker(char.humanity, 1, client));
+                embed.addField(`${char.morality.name} ${char.morality.pool.current}`, 
+                    staticFieldTracker(char.morality.pool, 1, client));
                 break;
             
             case 'Werewolf':  
@@ -128,22 +132,22 @@ module.exports.character20thEmbed = (char, tracker, unknownKeys) =>
             embed.addField("Experience", 
             consumableTracker(char.exp, 0, client, 0, true), false);
 
-        if (tracker.notes) embed.addField("Notes", tracker.notes);
-        if (unknownKeys.length) 
-            embed.addField("Unknown Keys", unknownKeys.join(' | '));
+        if (args.notes) embed.setFooter(args.notes);
 
         // Adding History if History flag is Set
-        if (tracker.findHistory && char.history)
+        let history = '';
+        if (args.history && char.history)
         {
-            var history = `__**History for ${char.name}**__\n`;
-            for (let record of char.history)
+            history = `__**History for ${char.name}**__\n`;
+            for (const record of char.history)
             {
                 history += `${record}ﾠ\n`;
             }
         }
 
-        if (history) return {embed: embed, history: history};
-        else return embed;        
+        const response = {embeds: [embed], ephemeral: true};
+        if (history) response['content'] = history;
+        return response;  
 }
 
 function damageTracker(health, client) {
