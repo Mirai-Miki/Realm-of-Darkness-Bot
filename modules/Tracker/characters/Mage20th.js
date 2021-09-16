@@ -1,7 +1,7 @@
 'use strict';
 
 const StaticField = require("../structures/StaticField");
-const Character20th = require("./Character20th");
+const Character20th = require("./base/Character20th");
 
 module.exports = class Mage20 extends Character20th 
 {
@@ -14,12 +14,9 @@ module.exports = class Mage20 extends Character20th
         this.paradox = new StaticField(paradox, 0, 10);
     }
 
-    resetOverflows()
+    static getSplat()
     {
-        super.resetOverflows();
-        this.arete.resetOverflow();
-        this.quintessence.resetOverflow();
-        this.paradox.resetOverflow();
+        return ("Mage20th");
     }
 
     deserilize(char)

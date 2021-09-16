@@ -1,5 +1,5 @@
 'use strict';
-const { saveCharacter } = require('./util/util.js');
+const { saveCharacter } = require('../util/util.js');
 const { Collection } = require("discord.js");
 const fs = require("fs");
 const handlersPath = './modules/Tracker/handlers/'
@@ -37,7 +37,8 @@ module.exports = async function (interaction) {
             await reply(handler);
         }
     }
-    else if (handler.isUpdateArgsValid() && handler.updateCharacter())
+    else if (interaction.commandName == 'update' && handler.isUpdateArgsValid() && 
+        handler.updateCharacter())
     {
         await reply(handler);
     }    

@@ -1,7 +1,7 @@
 'use strict';
 
 const Consumable = require("../structures/Consumable");
-const Character5th = require("./Character5th");
+const Character5th = require("./base/Character5th");
 const Humanity = require("../structures/humanity5th.js");
 
 module.exports = class Vampire5th extends Character5th
@@ -15,9 +15,9 @@ module.exports = class Vampire5th extends Character5th
         this.humanity = new Humanity(humanity);
     }
 
-    resetOverflows()
+    static getSplat()
     {
-        this.hunger.resetOverflow();
+        return ("Mortal5th");
     }
 
     deserilize(char)

@@ -22,6 +22,9 @@ module.exports = {
                     .setDescription("The Difficulty of the roll." +
                         " Must be between 2 to 10. p249")
                     .setRequired(true))
+                .addBooleanOption(option =>
+                    option.setName("willpower")
+                    .setDescription("Select to add 1 auto success. p250"))
                 .addIntegerOption(option =>
                     option.setName("modifier")
                     .setDescription("The number of automatic successes. p250"))
@@ -32,6 +35,9 @@ module.exports = {
                     option.setName("notes")
                     .setDescription("Any extra information you would like to" +
                         " include."))
+                .addStringOption(option =>
+                    option.setName("character")
+                    .setDescription("Name of the character making the roll."))
                 .addBooleanOption(option =>
                     option.setName("cancel_ones")
                         .setDescription("Stops any 1s from removing successes" +
@@ -44,8 +50,10 @@ module.exports = {
                 .addIntegerOption(option =>
                     option.setName("dexterity_wits")
                     .setDescription("Your Dexterity plus you Wits." +
-                        " Must be between 1 and 50")
-                    .setRequired(true))
+                        " Must be between 1 and 50"))
+                .addStringOption(option =>
+                    option.setName("character")
+                    .setDescription("Name of the character making the roll."))
         )
         .addSubcommand(subcommand =>
             subcommand

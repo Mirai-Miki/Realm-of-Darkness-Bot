@@ -1,5 +1,5 @@
 'use strict';
-const Consumable = require("../structures/Consumable");
+const Consumable = require("../../structures/Consumable");
 
 module.exports = class Character 
 {
@@ -46,24 +46,24 @@ module.exports = class Character
         this.name = name;
     }
 
-    updateHistory(args, notes, mode)
+    updateHistory(charArgs, notes, mode)
     {
-        this.setUpdateDate();
+        this.setUpdateDate();        
+        
         const dateObj = new Date(Date.now());
-        const date = dateObj.toDateString();        
-        const argStr = [];
+        const date = dateObj.toDateString();
+        const history = {date: date, args: {}, notes: '', mode: ''};
         
-        for (const key of Object.keys(args))
+        for (const key of Object.keys(charArgs))
         {
-            const value = args[key];
+            const value = charArgs[key];
 
-            if (value) argStr.push(`${key}: ${value}`);
-        } 
-        const content = `**${mode} Character** - ${date}\n\`\`\`\nArgs: ` +
-            `[${argStr.join(', ')}]\n\`\`\`` +
-            `${notes ? 'Notes: ' + notes : ''}`;
+            if (value != null) history.args[key] = value;
+        }
         
-        this.history.push(content);
+        history.notes = notes;
+        history.mode = mode;
+        this.history.push(history);
         if (this.history.length > 10) this.history.shift();
     }
 
@@ -75,11 +75,8 @@ module.exports = class Character
         this.colour = json.colour; 
         this.thumbnail = json.thumbnail;       
         this.updateDate = json.updateDate;
-        if (json.exp) 
-        {
-            this.exp.setTotal(json.exp.total);
-            this.exp.setCurrent(json.exp.current);
-        }
-        if (json.history) this.history = json.history;        
+        this.exp.setTotal(json.exp.total);
+        this.exp.setCurrent(json.exp.current);
+        this.history = json.history;        
     }
 }

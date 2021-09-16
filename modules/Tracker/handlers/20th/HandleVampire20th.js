@@ -2,7 +2,8 @@
 const Vampire = require('../../characters/Vampire20th.js');
 const isArgsValid = require('../../util/isArgsValid.js');
 const { character20thEmbed } = require('../../embed/character20thEmbed.js');
-const { getCharacter } = require('../../util/util.js');
+const { getCharacter } = require('../../../util/util.js');
+const Vampire20th = require('../../characters/Vampire20th');
 
 module.exports = class HandleVampire20th
 {
@@ -82,31 +83,21 @@ module.exports = class HandleVampire20th
 
     updateCharacter()
     {
-        const json = getCharacter(this.args.name, this.interaction.user.id);
-        if (!json)
+        const char = getCharacter(this.args.name, this.interaction.user.id);
+        if (!char)
         {
             this.interaction.reply({
                 content: `Could not find ${this.args.name}.`, 
                 ephemeral: true});
             return undefined;
         }
-        else if (json.splat != 'Vampire')
+        else if (!(char instanceof Vampire20th))
         {
             this.interaction.reply({
                 content: `This character is not a Vampire 20th.`, 
                 ephemeral: true});
             return undefined;
         }
-        else if (json.version != 'v20')
-        {
-            this.interaction.reply({
-                content: `This vampire is not a 20th edition Character.`, 
-                ephemeral: true});
-            return undefined;
-        }
-
-        const char = new Vampire();
-        char.deserilize(json);
 
         char.setUser(this.interaction);
         char.setGuild(this.interaction);
@@ -119,31 +110,21 @@ module.exports = class HandleVampire20th
 
     setCharacter()
     {
-        const json = getCharacter(this.args.name, this.interaction.user.id);
-        if (!json)
+        const char = getCharacter(this.args.name, this.interaction.user.id);
+        if (!char)
         {
             this.interaction.reply({
                 content: `Could not find ${this.args.name}.`, 
                 ephemeral: true});
             return undefined;
         }
-        else if (json.splat != 'Vampire')
+        else if (!(char instanceof Vampire20th))
         {
             this.interaction.reply({
                 content: `This character is not a Vampire 20th.`, 
                 ephemeral: true});
             return undefined;
         }
-        else if (json.version != 'v20')
-        {
-            this.interaction.reply({
-                content: `This vampire is not a 20th edition Character.`, 
-                ephemeral: true});
-            return undefined;
-        }
-
-        const char = new Vampire();
-        char.deserilize(json);
 
         char.setUser(this.interaction);
         char.setGuild(this.interaction);
@@ -189,42 +170,8 @@ module.exports = class HandleVampire20th
     }
 
     serialize()
-    {
-        if (!this.character) return;
-        const s = {};
-
-        s['name'] = this.character.name;
-        s['user'] = this.character.user;
-        s['guild'] = this.character.guild;
-        s['splat'] = this.character.splat;
-        s['version'] = this.character.version;
-        s['colour'] = this.character.colour;
-        s['thumbnail'] = this.character.thumbnail;
-        s['exp'] = {
-            total: this.character.exp.total,
-            current: this.character.exp.current,    
-        };
-        s['history'] = this.character.history;
-        s['willpower'] = {
-            total: this.character.willpower.total,
-            current: this.character.willpower.current,
-        };
-        s['health'] = {
-            total: this.character.health.total,
-            bashing: this.character.health.bashing,
-            lethal: this.character.health.lethal,
-            aggravated: this.character.health.aggravated,
-        };
-        s['morality'] = {
-            name: this.character.morality.name,
-            current: this.character.morality.pool.current,
-        };
-        s['blood'] = {
-            total: this.character.blood.total,
-            current: this.character.blood.current,
-        };
-
-        return s;
+    {       
+        return this.character?.serialize();
     }
 }
 
@@ -243,7 +190,10 @@ function setFields(args, char)
     if (args.exp != null) char.exp.setTotal(args.exp);
 
     if (args.colour != null) char.colour = args.colour;
-    if (args.thumbnail != null) char.thumbnail = args.thumbnail;
+    if (args.thumbnail != null && args.thumbnail === 'none')
+        char.thumbnail = null;
+    else if (args.thumbnail != null)
+        char.thumbnail = args.thumbnail;
 }
 
 function updateFields(args, char)

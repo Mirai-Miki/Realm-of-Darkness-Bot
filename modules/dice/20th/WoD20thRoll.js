@@ -1,6 +1,8 @@
 'use strict';
 const Roll = require('../Roll.js');
 const { MessageEmbed } = require('discord.js');
+const { correctName, getCharacter, saveCharacter } = require('../../util/util.js');
+const { character20thEmbed } = require('../../Tracker/embed/character20thEmbed.js');
 
 module.exports = class WoD20thRoll
 {
@@ -10,14 +12,33 @@ module.exports = class WoD20thRoll
 
         this.pool = this.interaction.options.getInteger('pool');
         this.diff = this.interaction.options.getInteger('difficulty');
+        this.willpower = this.interaction.options.getBoolean('willpower');
         this.mod = this.interaction.options.getInteger('modifier');
         this.spec = this.interaction.options.getString('speciality');
         this.reason = this.interaction.options.getString('notes');
+        this.character = this.interaction.options.getString('character');
         this.cancelOnes = this.interaction.options.getBoolean('cancel_ones');
     }
 
     isArgsValid()
     {
+        if (this.character) 
+        {
+            const name = correctName(this.character);
+            if (name.lenght > 50)
+            {
+                this.interaction.reply({ 
+                    content: ('Character name cannot be longer than 50 chars.'), 
+                    ephemeral: true 
+                });
+                return false;
+            }
+            this.character = {
+                name: name, 
+                tracked: getCharacter(name, this.interaction.user.id),
+            };
+        }
+
         if (this.pool < 1 || this.pool > 50)
         {
             this.interaction.reply({ 
@@ -43,6 +64,15 @@ module.exports = class WoD20thRoll
                     ' them. Generally used for Willpower.'), 
                 ephemeral: true 
             });
+        }
+        else if (this.willpower && this.character.tracked?.willpower.current == 0)
+        {
+            this.interaction.reply({ 
+                content: ('You are currently out of willpower.'), 
+                ephemeral: true 
+            });
+            this.interaction.followUp(character20thEmbed(
+                this.character.tracked, this.interaction));
         }
         else return true;
         return false;
@@ -112,8 +142,11 @@ module.exports = class WoD20thRoll
             }
         }
         
+        if (this.willpower) this.results.total += 1;
         if (this.mod) this.results.total += this.mod; 
         if (this.results.total < 0) this.results.total = 0;
+
+        this.updateCharacter();
         return;
     }
 
@@ -132,6 +165,7 @@ module.exports = class WoD20thRoll
         );
 
         let title = `Pool ${this.pool} | Diff ${this.diff}`;
+        if (this.willpower) title += ` | WP`;
         if (this.mod) title += ` | Mod ${this.mod}`;
         if (this.spec) title += ` | Spec`;
         if (this.cancelOnes) title += ` | Cancel Ones`;
@@ -139,6 +173,13 @@ module.exports = class WoD20thRoll
 
         const sortedResults = this.results.rolls.map((x) => x);
         sortedResults.sort((a, b) => b - a);
+        
+        if (this.character)
+        {
+            embed.addField("Character", this.character.name);
+            if (this.character.tracked?.thumbnail) 
+                embed.setThumbnail(this.character.tracked.thumbnail)
+        }
         
         const mess = [];
         for (let dice of sortedResults)
@@ -149,6 +190,7 @@ module.exports = class WoD20thRoll
                 mess.push(`~~${dice}~~`);
             else mess.push(`**~~1~~**`);            
         }
+        
         embed.addField("Dice", mess.join(", "), true)
 
         if (this.spec) embed.addField("Specialty", `${this.spec}`, true);
@@ -236,6 +278,16 @@ module.exports = class WoD20thRoll
         return mess;
     }
 
+    updateCharacter()
+    {
+        if (!this.character?.tracked || !this.willpower) return;
+
+        this.character.tracked.willpower.updateCurrent(-1);
+        this.followUp = 
+            character20thEmbed(this.character.tracked, this.interaction);
+        saveCharacter(this.character.tracked.serialize());
+    }
+
     reply()
     {
         if (this.response)
@@ -244,6 +296,12 @@ module.exports = class WoD20thRoll
                 content: this.response.content,  
                 embeds: [this.response.embed] 
             });
-        }        
+        }
+        if (this.followUp)
+        {
+            this.interaction.followUp(this.followUp);
+        }       
     }
+
+
 }

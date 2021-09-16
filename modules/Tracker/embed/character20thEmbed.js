@@ -132,11 +132,11 @@ module.exports.character20thEmbed = (char, interaction, args) =>
             embed.addField("Experience", 
             consumableTracker(char.exp, 0, client, 0, true), false);
 
-        if (args.notes) embed.setFooter(args.notes);
+        if (args?.notes) embed.setFooter(args.notes);
 
         // Adding History if History flag is Set
         let history = '';
-        if (args.history && char.history)
+        if (args?.history && char.history)
         {
             history = `__**History for ${char.name}**__\n`;
             for (const record of char.history)

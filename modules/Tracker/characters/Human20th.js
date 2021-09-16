@@ -2,9 +2,9 @@
 
 const Consumable = require("../structures/Consumable");
 const StaticField = require("../structures/StaticField");
-const Character20th = require("./Character20th");
+const Character20th = require("./base/Character20th");
 
-module.exports = class Ghoul20th extends Character20th
+module.exports = class Human20th extends Character20th
 {
     constructor(humanity=7, willpower=6) 
     {
@@ -14,11 +14,9 @@ module.exports = class Ghoul20th extends Character20th
         this.blood = new Consumable(10);
     }
 
-    resetOverflows()
+    static getSplat()
     {
-        super.resetOverflows();
-        this.blood.resetOverflow();
-        this.humanity.resetOverflow();
+        return ("Human20th");
     }
 
     deserilize(char)

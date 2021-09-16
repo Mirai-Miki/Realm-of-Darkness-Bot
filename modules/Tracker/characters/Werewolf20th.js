@@ -1,7 +1,7 @@
 'use strict';
 
 const Consumable = require("../structures/Consumable");
-const Character20th = require("./Character20th");
+const Character20th = require("./base/Character20th");
 
 module.exports = class Werewolf20th extends Character20th 
 {
@@ -13,11 +13,9 @@ module.exports = class Werewolf20th extends Character20th
         this.gnosis = new Consumable(gnosis);
     }
 
-    resetOverflows()
+    static getSplat()
     {
-        super.resetOverflows();
-        this.rage.resetOverflow();
-        this.gnosis.resetOverflow();
+        return ("Werewolf20th");
     }
 
     deserilize(char)

@@ -1,6 +1,6 @@
 'use strict';
 
-const Character20th = require("../characters/Character20th.js");
+const Character20th = require("./base/Character20th.js");
 const Consumable = require("../structures/Consumable");
 const StaticField = require("../structures/StaticField");
 
@@ -9,19 +9,15 @@ module.exports = class DemonTF extends Character20th
     constructor(permTorment=1, faith=3, willpower=6) 
     {
         super(willpower);
-        this.version = 'v20';
         this.splat = 'Demon';          
         this.faith = new Consumable(1);
         this.permTorment = new StaticField(1, 1, 10);
         this.tempTorment = new StaticField(0, 0, 10);
     }
 
-    resetOverflows()
+    static getSplat()
     {
-        super.resetOverflows();
-        this.faith.resetOverflow();
-        this.tempTorment.resetOverflow();
-        this.permTorment.resetOverflow();
+        return ('Demon20th');
     }
 
     deserilize(char)

@@ -3,7 +3,7 @@ const Roll = require('../Roll.js');
 const Rouse = require('./Rouse.js');
 const { MessageActionRow, MessageSelectMenu, 
     MessageButton, MessageEmbed } = require('discord.js');
-const Util = require('../../util/Util.js');
+const { minToMilli } = require('../../util/Util.js');
 
 
 const Result = 
@@ -377,7 +377,7 @@ module.exports = class WoD5thRoll
         
         this.collector = message.createMessageComponentCollector(
             {
-                time: Util.minToMilli(14)
+                time: minToMilli(14)
             });
         
         this.collector.on('collect', async i => {

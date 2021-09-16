@@ -2,7 +2,7 @@
 
 const Consumable = require("../structures/Consumable");
 const StaticField = require("../structures/StaticField");
-const Character20th = require("./Character20th");
+const Character20th = require("./base/Character20th");
 
 module.exports = class Wraith20 extends Character20th 
 {
@@ -14,11 +14,9 @@ module.exports = class Wraith20 extends Character20th
         this.pathos = new StaticField(pathos, 0, 10);
     }
 
-    resetOverflows()
+    static getSplat()
     {
-        super.resetOverflows();
-        this.corpus.resetOverflow();
-        this.pathos.resetOverflow();
+        return ("Wraith20th");
     }
 
     deserilize(char)

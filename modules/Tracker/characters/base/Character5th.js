@@ -1,6 +1,6 @@
 'use strict';
 
-const DamageTracker5th = require("../structures/DamageTracker5th");
+const DamageTracker5th = require("../../structures/DamageTracker5th");
 const Character = require("./Character.js");
 
 module.exports = class Character5th extends Character
@@ -8,7 +8,7 @@ module.exports = class Character5th extends Character
     constructor(health, willpower) 
     {
         super();
-        this.version = 'v5';
+        this.version = '5th';
         this.willpower = new DamageTracker5th(willpower);
         this.health = new DamageTracker5th(health);
     }

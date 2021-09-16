@@ -1,9 +1,8 @@
 'use strict';
-
 const Consumable = require("../structures/Consumable");
 const DamageTracker20th = require("../structures/DamageTracker20th");
 const StaticField = require("../structures/StaticField");
-const Character20th = require("./Character20th");
+const Character20th = require("./base/Character20th");
 
 module.exports = class Changeling20 extends Character20th
 {
@@ -17,14 +16,10 @@ module.exports = class Changeling20 extends Character20th
         this.imbalence = new StaticField(imbalence, 0, 10);
         this.chimericalHealth = new DamageTracker20th();
     }
-
-    resetOverflows()
+    
+    static getSplat()
     {
-        super.resetOverflows();
-        this.glamour.resetOverflow();
-        this.banality.resetOverflow();
-        this.nightmare.resetOverflow();
-        this.imbalence.resetOverflow();
+        return ('Changeling20th');
     }
 
     deserilize(char)

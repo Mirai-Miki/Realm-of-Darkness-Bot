@@ -1,6 +1,6 @@
 'use strict';
-const { isSupporter } = require('../../util/util.js');
 const { MessageActionRow, MessageButton } = require('discord.js');
+const { isSupporter, correctName } = require('../../util/Util.js');
 
 
 module.exports = 
@@ -9,10 +9,10 @@ module.exports =
     {
         let response = '';
         let button;
-        args.name = editName(args.name);
+        args.name = correctName(args.name);
 
-        if (args.moralityType) args.moralityType = editName(args.moralityType);
-        if (args.nameChange) args.nameChange = editName(args.nameChange);
+        if (args.moralityType) args.moralityType = correctName(args.moralityType);
+        if (args.nameChange) args.nameChange = correctName(args.nameChange);
 
         if (args.name.length > 50)
         {
@@ -62,13 +62,13 @@ module.exports =
         {
             [ response, button ] = vanityError();
         }
-        else if (args.thumbnail && !isValidImageURL(args.thumbnail))
+        else if (args.thumbnail && !isValidImageURL(args.thumbnail) && args.thumbnail != 'none')
         {
             response = 'This is not a valid image URL. Please enter a valid' +
                 " image URL of type png, jpeg or gif.\n" +
                 "The easiest way to do this is upload your file to discord and" +
-                " select the copy link option from it.";
-            args.thumbnail = null;
+                " select the copy link option from it.\n" +
+                ' Type `None` if you would like to remove the image.';
         }
         else if (args.colour)
         {
@@ -115,7 +115,7 @@ module.exports =
     update(args)
     {
         let response = '';
-        args.name = editName(args.name);
+        args.name = correctName(args.name);
 
         if (args.willpower && (args.willpower < -15 || args.willpower > 15))
         {
@@ -152,19 +152,6 @@ module.exports =
 
         return {content: response, ephemeral: true};
     }
-}
-
-function editName(nameStr)
-{
-    const words = nameStr.trim().toLowerCase().split(/\s+/);
-    const name = []
-
-    for (const part of words)
-    {
-        name.push(part[0].toUpperCase() + part.substring(1));
-    }
-
-    return name.join(' ');
 }
 
 function vanityError()
