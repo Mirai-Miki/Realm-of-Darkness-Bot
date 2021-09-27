@@ -11,19 +11,6 @@ for (const file of charFiles) {
 	characters.set(char.getSplat(), char);
 }
 
-module.exports.saveCharacter = (character) =>
-{
-    let db = new Database();
-    db.open('Tracker', 'Database');
-
-    let user = db.find(character.user.id);
-
-    if (!user) user = {};
-    user[character.name] = character;
-
-    db.add(character.user.id, user);
-    db.save();
-}
 
 module.exports.getCharacter = (name, userId) =>
 {

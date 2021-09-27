@@ -6,9 +6,9 @@ module.exports = class Character
     constructor() 
     {
         this.name;
-        this.user = {id: '', username: '', discriminator: '', avatar: ''};
-        this.guild = {id: '', name: '', memberName: ''};
-        this.updateDate;
+        this.id = null;
+        this.user = {id: '', username: '', discriminator: '', avatarURL: ''};
+        this.guild = {id: '', name: '', iconURL: '', displayName: ''};
         this.exp = new Consumable(0);
         this.thumbnail;
         this.colour = [
@@ -19,16 +19,12 @@ module.exports = class Character
         this.history = [];
     }
 
-    setUpdateDate()
-    {
-        this.updateDate = Date.now();
-    }
-
     setUser(interaction)
     {
         this.user.id = interaction.user.id;
+        this.user.username = interaction.user.username;
         this.user.discriminator = interaction.user.discriminator;
-        this.user.avatar = interaction.user.avatarURL();    
+        this.user.avatarURL = interaction.user.avatarURL();    
     }
 
     setGuild(interaction)
@@ -37,7 +33,8 @@ module.exports = class Character
         {
             this.guild.id = interaction.guildId;
             this.guild.name = interaction.guild.name;
-            this.guild.memberName = interaction.member?.displayName;
+            this.guild.iconURL = interaction.guild.iconURL();
+            this.guild.displayName = interaction.member?.displayName;
         }
     }
 
@@ -48,16 +45,13 @@ module.exports = class Character
 
     updateHistory(charArgs, notes, mode)
     {
-        this.setUpdateDate();        
-        
-        const dateObj = new Date(Date.now());
-        const date = dateObj.toDateString();
-        const history = {date: date, args: {}, notes: '', mode: ''};
+        const history = {args: {}, notes: '', mode: ''};
         
         for (const key of Object.keys(charArgs))
         {
             const value = charArgs[key];
-
+            
+            if (key === 'name') continue;
             if (value != null) history.args[key] = value;
         }
         
@@ -70,13 +64,32 @@ module.exports = class Character
     deserilize(json)
     {
         this.user = json.user;
-        this.name = json.name;
+        this.id = json.character.id;
+        this.name = json.character.name;
         this.guild = json.guild;
-        this.colour = json.colour; 
-        this.thumbnail = json.thumbnail;       
-        this.updateDate = json.updateDate;
-        this.exp.setTotal(json.exp.total);
-        this.exp.setCurrent(json.exp.current);
-        this.history = json.history;        
+        this.colour = json.character.colour; 
+        this.thumbnail = json.character.thumbnail;
+        this.exp.setTotal(json.character.exp.total);
+        this.exp.setCurrent(json.character.exp.current); 
+        this.history = json.character.history;        
+    }
+
+    serialize()
+    {
+        const s = {character: {}, user: {}, guild: {}};
+
+        s.character['name'] = this.name;
+        s.character['id'] = this.id;
+        s.user = this.user;        
+        s.guild = this.guild;        
+        s.character['colour'] = this.colour;
+        s.character['thumbnail'] = this.thumbnail;
+        s.character['exp'] = {
+            total: this.exp.total,
+            current: this.exp.current,    
+        };
+        s.character['history'] = this.history;
+
+        return s;
     }
 }

@@ -17,7 +17,8 @@ module.exports = {
 	    	await interaction.reply(
             { 
                 content: 'There was an error while executing this command!\n' +
-                    'If see this error please let Mirai-Miki#6631 know.', 
+                    'If see this error please report it at the ' +
+					'[Realm of Darkness Server](<https://discord.gg/7xMqVrVeFt>).', 
                 ephemeral: true 
             });
 	    }

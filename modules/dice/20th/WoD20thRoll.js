@@ -65,7 +65,8 @@ module.exports = class WoD20thRoll
                 ephemeral: true 
             });
         }
-        else if (this.willpower && this.character.tracked?.willpower.current == 0)
+        else if (this.willpower && 
+            this.character?.tracked?.willpower.current == 0)
         {
             this.interaction.reply({ 
                 content: ('You are currently out of willpower.'), 

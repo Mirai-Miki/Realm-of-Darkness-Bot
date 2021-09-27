@@ -168,11 +168,6 @@ module.exports = class HandleVampire20th
         }
         return true;
     }
-
-    serialize()
-    {       
-        return this.character?.serialize();
-    }
 }
 
 function setFields(args, char)

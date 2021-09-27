@@ -8,6 +8,9 @@
 # v20 rolls
 - Redesigned the look of the v20 Roll
 - Redesigned the look of v20 Init
+- Added a willpower option
+- Added a character option
+- The roller has been tied into the tracker. Using willpower and Character options will automaticly update you willpower. It will also warn you if you attempt to use willpower with none available.
 
 # v5 rolls
 - Added Rouse roll
@@ -22,9 +25,9 @@
 - names can now be more then one word
 - names can now be changed using set
 - names are now unique to a player rather than a server
-- side bar colour can now be changed using set
+- side bar colour can now be changed using set [Supporter Only]
+- Images can now be set [Supporter Only]
 - 20th edition vamipres can now define their morality
-
 
 
 # Ideas

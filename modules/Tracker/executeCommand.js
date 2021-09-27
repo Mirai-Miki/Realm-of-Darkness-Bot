@@ -1,8 +1,12 @@
 'use strict';
-const { saveCharacter } = require('../util/util.js');
 const { Collection } = require("discord.js");
+const DatabaseAPI = require("../util/DatabaseAPI");
 const fs = require("fs");
 const handlersPath = './modules/Tracker/handlers/'
+
+const dbError = 'There was an error accessing the Database. Please try again' +
+    ' later.\nIf this issue persists please report it at the ' +
+    '[Realm of Darkness Server](<https://discord.gg/7xMqVrVeFt>).'
 
 const handlers = new Collection();
 const handlerFolders = fs.readdirSync(handlersPath);
@@ -30,25 +34,35 @@ module.exports = async function (interaction) {
     {
         if (interaction.commandName == 'new' && handler.newCharacter())
         {
-            await reply(handler);
+            await saveCharacter(handler);
         }
         else if (interaction.commandName == 'set' && handler.setCharacter())
         {
-            await reply(handler);
+            await saveCharacter(handler);
         }
     }
     else if (interaction.commandName == 'update' && handler.isUpdateArgsValid() && 
         handler.updateCharacter())
     {
-        await reply(handler);
+        await saveCharacter(handler);
     }    
 }
 
-async function reply(handler)
+async function saveCharacter(handler)
 {
-    handler.constructEmbed();
-    if (await handler.reply())
+    const result = await DatabaseAPI.saveCharacter(handler.character)
+    if (result === 'saved')
     {
-        saveCharacter(handler.serialize());
+        handler.constructEmbed();
+        await handler.reply();
+    }
+    else if (result === 'exists')
+    {
+        handler.interaction.reply({content: "You already have a character" +
+            " with this name. Please chose another.", ephemeral: true})
+    }
+    else
+    {
+        handler.interaction.reply({content: dbError, ephemeral: true})
     }
 }
