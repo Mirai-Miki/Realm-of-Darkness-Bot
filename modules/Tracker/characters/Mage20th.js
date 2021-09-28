@@ -16,7 +16,7 @@ module.exports = class Mage20 extends Character20th
 
     static getSplat()
     {
-        return ("Mage20th");
+        return ("mage20th");
     }
 
     deserilize(char)

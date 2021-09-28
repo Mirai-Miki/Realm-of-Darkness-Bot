@@ -1,4 +1,5 @@
 'use strict';
+const handleError = require("./util/handleError");
 const { Collection } = require("discord.js");
 const DatabaseAPI = require("../util/DatabaseAPI");
 const fs = require("fs");
@@ -36,13 +37,13 @@ module.exports = async function (interaction) {
         {
             await saveCharacter(handler);
         }
-        else if (interaction.commandName == 'set' && handler.setCharacter())
+        else if (interaction.commandName == 'set' && await handler.setCharacter())
         {
             await saveCharacter(handler);
         }
     }
     else if (interaction.commandName == 'update' && handler.isUpdateArgsValid() && 
-        handler.updateCharacter())
+        await handler.updateCharacter())
     {
         await saveCharacter(handler);
     }    
@@ -56,13 +57,6 @@ async function saveCharacter(handler)
         handler.constructEmbed();
         await handler.reply();
     }
-    else if (result === 'exists')
-    {
-        handler.interaction.reply({content: "You already have a character" +
-            " with this name. Please chose another.", ephemeral: true})
-    }
-    else
-    {
-        handler.interaction.reply({content: dbError, ephemeral: true})
-    }
+    else if (result === 'exists') handleError(handler.interaction, 'exists');
+    else handleError(handler.interaction, 'dbError');
 }

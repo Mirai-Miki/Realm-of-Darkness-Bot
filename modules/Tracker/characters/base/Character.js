@@ -64,14 +64,14 @@ module.exports = class Character
     deserilize(json)
     {
         this.user = json.user;
-        this.id = json.character.id;
-        this.name = json.character.name;
+        this.id = json.id;
+        this.name = json.name;
         this.guild = json.guild;
-        this.colour = json.character.colour; 
-        this.thumbnail = json.character.thumbnail;
-        this.exp.setTotal(json.character.exp.total);
-        this.exp.setCurrent(json.character.exp.current); 
-        this.history = json.character.history;        
+        this.colour = json.colour; 
+        this.thumbnail = json.thumbnail;
+        this.exp.setTotal(json.exp.total);
+        this.exp.setCurrent(json.exp.current); 
+        this.history = json.history;        
     }
 
     serialize()

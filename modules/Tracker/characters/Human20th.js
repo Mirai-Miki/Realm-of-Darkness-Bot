@@ -16,7 +16,7 @@ module.exports = class Human20th extends Character20th
 
     static getSplat()
     {
-        return ("Human20th");
+        return ("human20th");
     }
 
     deserilize(char)

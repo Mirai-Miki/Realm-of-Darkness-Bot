@@ -19,7 +19,7 @@ module.exports = class Changeling20 extends Character20th
     
     static getSplat()
     {
-        return ('Changeling20th');
+        return ('changeling20th');
     }
 
     deserilize(char)

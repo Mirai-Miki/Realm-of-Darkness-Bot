@@ -16,12 +16,12 @@ module.exports = class Character20th extends Character
     deserilize(json)
     {
         super.deserilize(json);
-        this.willpower.setTotal(json.character.willpower.total);
-        this.willpower.setCurrent(json.character.willpower.current);
-        if (json.health.total) this.health.setTotal(json.character.health.total);
-        this.health.setBashing(json.character.health.bashing);
-        this.health.setLethal(json.character.health.lethal);
-        this.health.setAgg(json.character.health.aggravated);
+        this.willpower.setTotal(json.willpower.total);
+        this.willpower.setCurrent(json.willpower.current);
+        if (json.health.total) this.health.setTotal(json.health.total);
+        this.health.setBashing(json.health.bashing);
+        this.health.setLethal(json.health.lethal);
+        this.health.setAgg(json.health.aggravated);
     }
 
     serialize()

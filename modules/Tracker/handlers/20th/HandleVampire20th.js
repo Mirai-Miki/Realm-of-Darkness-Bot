@@ -1,15 +1,16 @@
 'use strict';
 const Vampire = require('../../characters/Vampire20th.js');
 const isArgsValid = require('../../util/isArgsValid.js');
+const handleError = require('../../util/handleError.js');
 const { character20thEmbed } = require('../../embed/character20thEmbed.js');
-const { getCharacter } = require('../../../util/util.js');
-const Vampire20th = require('../../characters/Vampire20th');
+const DatabaseAPI = require("../../../util/DatabaseAPI");
 
 module.exports = class HandleVampire20th
 {
     constructor(interaction)
     {
         this.interaction = interaction;
+        this.splat = 'vampire20th';
 
         this.args = {
             name: interaction.options.getString('name'),
@@ -61,16 +62,7 @@ module.exports = class HandleVampire20th
 
     newCharacter()
     {
-        if (getCharacter(this.args.name, this.interaction.user.id))
-        {
-            this.interaction.reply({
-                content: "You already have a Character with this name.", 
-                ephemeral: true});
-            return undefined;
-        }
-
         const char = new Vampire();
-
         char.setName(this.args.name);
         char.setUser(this.interaction);
         char.setGuild(this.interaction);
@@ -81,21 +73,21 @@ module.exports = class HandleVampire20th
         return char;
     }
 
-    updateCharacter()
+    async updateCharacter()
     {
-        const char = getCharacter(this.args.name, this.interaction.user.id);
-        if (!char)
+        const char = await DatabaseAPI.getCharacter(
+            this.args.name, 
+            this.interaction.user.id,
+            'vampire20th'
+        );
+        if (char === 'noChar')
         {
-            this.interaction.reply({
-                content: `Could not find ${this.args.name}.`, 
-                ephemeral: true});
+            handleError(this.interaction, 'noChar', this);
             return undefined;
         }
-        else if (!(char instanceof Vampire20th))
+        else if (!char)
         {
-            this.interaction.reply({
-                content: `This character is not a Vampire 20th.`, 
-                ephemeral: true});
+            handleError(this.interaction, 'dbError');
             return undefined;
         }
 
@@ -108,21 +100,21 @@ module.exports = class HandleVampire20th
         return char;
     }
 
-    setCharacter()
+    async setCharacter()
     {
-        const char = getCharacter(this.args.name, this.interaction.user.id);
-        if (!char)
+        const char = await DatabaseAPI.getCharacter(
+            this.args.name, 
+            this.interaction.user.id,
+            'vampire20th'
+        );
+        if (char === 'noChar')
         {
-            this.interaction.reply({
-                content: `Could not find ${this.args.name}.`, 
-                ephemeral: true});
+            handleError(this.interaction, 'noChar');
             return undefined;
         }
-        else if (!(char instanceof Vampire20th))
+        else if (!char)
         {
-            this.interaction.reply({
-                content: `This character is not a Vampire 20th.`, 
-                ephemeral: true});
+            handleError(this.interaction, 'dbError');
             return undefined;
         }
 
@@ -154,16 +146,9 @@ module.exports = class HandleVampire20th
             {
                 console.error("Error at Vamp20th Handler Reply");
                 console.error(error);
+                handleError(this.interaction, 'handlerReply');
             }
-            else
-            {
-                this.interaction.reply({content: 
-                    "The URL you sent was Malformed." +
-                    " Please enter a valid image URL." +
-                    "\nThe easiest way to do this is upload your file to discord and" +
-                    " select the copy link option from it.",
-                    ephemeral: true});
-            }            
+            else handleError(this.interaction, 'malformedURL');         
             return false;
         }
         return true;

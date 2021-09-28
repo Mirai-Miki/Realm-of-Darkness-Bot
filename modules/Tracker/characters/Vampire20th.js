@@ -19,16 +19,16 @@ module.exports = class Vampire20th extends Character20th
 
     static getSplat()
     {
-        return ("Vampire20th");
+        return ("vampire20th");
     }
 
     deserilize(json)
     {
         super.deserilize(json);
-        this.morality.pool.setCurrent(json.character.morality.current);
-        this.morality.name = json.character.morality.name;
-        this.blood.setTotal(json.character.blood.total);
-        this.blood.setCurrent(json.character.blood.current);
+        this.morality.pool.setCurrent(json.morality.current);
+        this.morality.name = json.morality.name;
+        this.blood.setTotal(json.blood.total);
+        this.blood.setCurrent(json.blood.current);
     }
 
     serialize()
