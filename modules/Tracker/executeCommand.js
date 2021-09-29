@@ -3,11 +3,7 @@ const handleError = require("./util/handleError");
 const { Collection } = require("discord.js");
 const DatabaseAPI = require("../util/DatabaseAPI");
 const fs = require("fs");
-const handlersPath = './modules/Tracker/handlers/'
-
-const dbError = 'There was an error accessing the Database. Please try again' +
-    ' later.\nIf this issue persists please report it at the ' +
-    '[Realm of Darkness Server](<https://discord.gg/7xMqVrVeFt>).'
+const handlersPath = './modules/Tracker/handlers/';
 
 const handlers = new Collection();
 const handlerFolders = fs.readdirSync(handlersPath);

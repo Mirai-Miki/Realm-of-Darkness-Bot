@@ -1,19 +1,17 @@
 'use strict';
 const { MessageEmbed } = require("discord.js");
 
-module.exports.character20thEmbed = (char, interaction, args) =>
-{
-    let client = interaction.client;    
-   
+module.exports.character20thEmbed = (char, client, args) =>
+{   
     let embed = new MessageEmbed()
         .setColor(char.colour)
         .setAuthor(
             (
-                interaction.member ? 
-                interaction.member.displayName : 
-                interaction.user.username
+                char.guild?.displayName ? 
+                char.guild.displayName : 
+                char.user.username
             ), 
-            interaction.user.avatarURL()
+            char.user.avatarURL
         )
         .setTitle(char.name)        
         .addField(`Willpower [${char.willpower.current}/${char.willpower.total}]`, 

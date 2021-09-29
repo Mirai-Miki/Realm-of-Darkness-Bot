@@ -1,34 +1,5 @@
 'use strict';
 const Database = require('./Database.js');
-const { Collection } = require("discord.js");
-const fs = require('fs');
-
-const characters = new Collection();
-const charFiles = fs.readdirSync('./modules/Tracker/characters').filter(file => file.endsWith('.js'));
-
-for (const file of charFiles) {
-	const char = require(`../Tracker/characters/${file}`);
-	characters.set(char.getSplat(), char);
-}
-
-
-module.exports.getCharacter = (name, userId) =>
-{
-    const db = new Database();
-    db.open('Tracker', 'Database');
-
-    const user = db.find(userId);
-    if (!user) return;
-
-    const json = user[name];
-    if (!json) return;
-
-    const Character = characters.get(json.splat + json.version);
-    if (!Character) return;
-    const char = new Character();
-    char.deserilize(json);
-    return char;
-}
 
 module.exports.isSupporter = (userId) =>
 {

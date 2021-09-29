@@ -6,9 +6,9 @@ const Character20th = require("./base/Character20th");
 
 module.exports = class Vampire20th extends Character20th
 {
-    constructor(humanity=7, blood=10, willpower=6) 
+    constructor(interaction=null, humanity=7, blood=10, willpower=6) 
     {
-        super(willpower);
+        super(interaction, willpower);
         this.splat = 'Vampire';
         this.morality = {
             name: 'Humanity', 

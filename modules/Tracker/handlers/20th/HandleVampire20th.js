@@ -62,10 +62,8 @@ module.exports = class HandleVampire20th
 
     newCharacter()
     {
-        const char = new Vampire();
+        const char = new Vampire(this.interaction);
         char.setName(this.args.name);
-        char.setUser(this.interaction);
-        char.setGuild(this.interaction);
         setFields(this.args, char);
         char.updateHistory(this.args, this.notes, "New");
 
@@ -78,6 +76,7 @@ module.exports = class HandleVampire20th
         const char = await DatabaseAPI.getCharacter(
             this.args.name, 
             this.interaction.user.id,
+            undefined,
             'vampire20th'
         );
         if (char === 'noChar')
@@ -91,8 +90,6 @@ module.exports = class HandleVampire20th
             return undefined;
         }
 
-        char.setUser(this.interaction);
-        char.setGuild(this.interaction);
         updateFields(this.args, char);
         char.updateHistory(this.args, this.notes, "update");
 
@@ -104,7 +101,8 @@ module.exports = class HandleVampire20th
     {
         const char = await DatabaseAPI.getCharacter(
             this.args.name, 
-            this.interaction.user.id,
+            this.interaction,
+            undefined,
             'vampire20th'
         );
         if (char === 'noChar')
@@ -118,8 +116,6 @@ module.exports = class HandleVampire20th
             return undefined;
         }
 
-        char.setUser(this.interaction);
-        char.setGuild(this.interaction);
         setFields(this.args, char);
         char.updateHistory(this.args, this.notes, "Set");
 
@@ -130,7 +126,7 @@ module.exports = class HandleVampire20th
     constructEmbed()
     {
         this.response = 
-            character20thEmbed(this.character, this.interaction, this.args);
+            character20thEmbed(this.character, this.interaction.client, this.args);
         return this.response;
     }
 

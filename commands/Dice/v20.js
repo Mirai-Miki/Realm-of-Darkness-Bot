@@ -99,9 +99,9 @@ module.exports = {
         {
             case 'roll':
                 const roll = new WoD20thRoll(interaction);
-                if (roll.isArgsValid())
+                if (await roll.isArgsValid())
                 {
-                    roll.roll();
+                    await roll.roll();
                     roll.constructEmbed();
                     roll.constructContent();
                     roll.reply();

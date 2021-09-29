@@ -3,12 +3,22 @@ const Consumable = require("../../structures/Consumable");
 
 module.exports = class Character 
 {
-    constructor() 
+    constructor(interaction) 
     {
         this.name;
         this.id = null;
-        this.user = {id: '', username: '', discriminator: '', avatarURL: ''};
-        this.guild = {id: '', name: '', iconURL: '', displayName: ''};
+        this.user = {
+            id: '', 
+            username: '', 
+            discriminator: '', 
+            avatarURL: ''
+        };
+        this.guild = {
+            id: '', 
+            name: '', 
+            iconURL: '', 
+            displayName: ''
+        };
         this.exp = new Consumable(0);
         this.thumbnail;
         this.colour = [
@@ -17,19 +27,25 @@ module.exports = class Character
             Math.floor(Math.random() * 256),
         ]
         this.history = [];
+        this.interaction = interaction;
+        this.setUser(this.interaction);
+        this.setGuild(this.interaction);
     }
 
     setUser(interaction)
     {
-        this.user.id = interaction.user.id;
-        this.user.username = interaction.user.username;
-        this.user.discriminator = interaction.user.discriminator;
-        this.user.avatarURL = interaction.user.avatarURL();    
+        if (interaction)
+        {
+            this.user.id = interaction.user.id;
+            this.user.username = interaction.user.username;
+            this.user.discriminator = interaction.user.discriminator;
+            this.user.avatarURL = interaction.user.avatarURL();    
+        }
     }
 
     setGuild(interaction)
     {
-        if (interaction.guild)
+        if (interaction?.guild)
         {
             this.guild.id = interaction.guildId;
             this.guild.name = interaction.guild.name;
@@ -63,15 +79,19 @@ module.exports = class Character
 
     deserilize(json)
     {
-        this.user = json.user;
         this.id = json.id;
         this.name = json.name;
-        this.guild = json.guild;
         this.colour = json.colour; 
         this.thumbnail = json.thumbnail;
         this.exp.setTotal(json.exp.total);
         this.exp.setCurrent(json.exp.current); 
-        this.history = json.history;        
+        this.history = json.history;   
+        
+        if (!this.interaction)
+        {
+            this.user = json.user;
+            this.guild = json.guild;
+        }
     }
 
     serialize()

@@ -373,10 +373,16 @@ module.exports = class WoD5thRoll
             rouse.reply(true);          
         }
 
-        const message = await this.interaction.fetchReply();
+        const filter = i => (
+            i.message.interaction.id == this.interaction.id &&
+            (i.customId === 'autoReroll' || i.customId === 'selectReroll')         
+        );
+        const channel = 
+            await this.interaction.client.channels.fetch(this.interaction.channelId);
         
-        this.collector = message.createMessageComponentCollector(
+        this.collector = channel.createMessageComponentCollector(
             {
+                filter,
                 time: minToMilli(14)
             });
         

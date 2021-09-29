@@ -1,7 +1,8 @@
 'use strict';
 const Roll = require('../Roll.js');
 const { MessageEmbed } = require('discord.js');
-const { correctName, getCharacter, saveCharacter } = require('../../util/util.js');
+const { correctName } = require('../../util/util.js');
+const DatabaseAPI = require('../../util/DatabaseAPI')
 const { character20thEmbed } = require('../../Tracker/embed/character20thEmbed.js');
 
 module.exports = class WoD20thRoll
@@ -20,7 +21,7 @@ module.exports = class WoD20thRoll
         this.cancelOnes = this.interaction.options.getBoolean('cancel_ones');
     }
 
-    isArgsValid()
+    async isArgsValid()
     {
         if (this.character) 
         {
@@ -33,9 +34,12 @@ module.exports = class WoD20thRoll
                 });
                 return false;
             }
+            let char = await DatabaseAPI.getCharacter(name, 
+                this.interaction.user.id, this.interaction);
+            if (char == 'noChar') char = undefined;
             this.character = {
                 name: name, 
-                tracked: getCharacter(name, this.interaction.user.id),
+                tracked: char,
             };
         }
 
@@ -68,18 +72,16 @@ module.exports = class WoD20thRoll
         else if (this.willpower && 
             this.character?.tracked?.willpower.current == 0)
         {
-            this.interaction.reply({ 
-                content: ('You are currently out of willpower.'), 
-                ephemeral: true 
-            });
-            this.interaction.followUp(character20thEmbed(
-                this.character.tracked, this.interaction));
+            const resp = character20thEmbed(
+                this.character.tracked, this.interaction.client);
+            resp['content'] = 'You are currently out of willpower.'
+            this.interaction.reply(resp);
         }
         else return true;
         return false;
     }
 
-    roll()
+    async roll()
     {
         const results = Roll.manySingle(this.pool, 10);
         this.results = {
@@ -147,7 +149,7 @@ module.exports = class WoD20thRoll
         if (this.mod) this.results.total += this.mod; 
         if (this.results.total < 0) this.results.total = 0;
 
-        this.updateCharacter();
+        await this.updateCharacter();
         return;
     }
 
@@ -214,8 +216,8 @@ module.exports = class WoD20thRoll
         else
         {
             // Passed the roll
-            embed.addField('Result', `\`\`\`diff\n+ Rolled: ` +
-                `${this.results.total} sux\n\`\`\``);
+            embed.addField('Result', `\`\`\`diff\n+ ` +
+                `${this.results.total} success +\n\`\`\``);
             embed.setColor([50, 168, 82]);
         }
 
@@ -279,14 +281,24 @@ module.exports = class WoD20thRoll
         return mess;
     }
 
-    updateCharacter()
+    async updateCharacter()
     {
         if (!this.character?.tracked || !this.willpower) return;
 
         this.character.tracked.willpower.updateCurrent(-1);
-        this.followUp = 
-            character20thEmbed(this.character.tracked, this.interaction);
-        saveCharacter(this.character.tracked.serialize());
+        const resp = await DatabaseAPI.saveCharacter(this.character.tracked);
+        if (resp != 'saved')
+        {
+            this.followUp = {
+                content: "There was an error accessing the Database and" +
+                " the character was not updated."
+            }
+        }
+        else
+        {
+            this.followUp = 
+                character20thEmbed(this.character.tracked, this.interaction.client);
+        }
     }
 
     reply()
@@ -303,6 +315,4 @@ module.exports = class WoD20thRoll
             this.interaction.followUp(this.followUp);
         }       
     }
-
-
 }

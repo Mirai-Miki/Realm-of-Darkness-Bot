@@ -26,7 +26,6 @@ module.exports = class DatabaseAPI
         const data = character.serialize();
         data['APIKey'] = APIKey;
         let res;
-        console.log(data)
         try
         {
             res = await Axios.post(host, data, config);
@@ -50,7 +49,6 @@ module.exports = class DatabaseAPI
                 return 'exists';
             }
             
-            console.log(response);
             return 'saved';
         }
         else
@@ -61,10 +59,16 @@ module.exports = class DatabaseAPI
         }
     }
 
-    static async getCharacter(name, userId, splat)
+    static async getCharacter(name, userId, interaction=null, splat=null, pk=null)
     {
         const host = `http://${IP}:${PORT}/bot/character/get`;
-        const data = {APIKey: APIKey, name: name, userId: userId, splat: splat}
+        const data = {
+            APIKey: APIKey, 
+            name: name, 
+            userId: userId, 
+            splat: splat ?? undefined,
+            pk: pk ?? undefined
+        }
         let res;
         try
         {
@@ -88,20 +92,96 @@ module.exports = class DatabaseAPI
             {
                 return 'noChar';
             }
-
             const character = response.character;
 
-            const Character = characters.get(splat);
+            const Character = characters.get(character.splat);
             if (!Character) return console.error("No Character Class");
-            const char = new Character();
+            const char = new Character(interaction);
             char.deserilize(character);
             
-            console.log(response);
             return char;
         }
         else
         {
             console.error("Error in DatabaseAPI.getCharacter()")
+            console.error(`Status: ${res.status}`)
+            return undefined;
+        }
+    }
+
+    static async getNameList(userId, guildId)
+    {
+        const host = `http://${IP}:${PORT}/bot/character/name_list`;
+        const data = {
+            APIKey: APIKey, 
+            userId: userId, 
+            guildId: guildId
+        }
+        let res;
+        try
+        {
+            res = await Axios.post(host, data, config);
+        }
+        catch (error)
+        {
+            if (error.code === 'ECONNREFUSED')
+            {
+                console.error("Error Database refused connection.\nCode: " +
+                    "ECONNREFUSED")
+            }
+            else console.error(error);
+            return undefined;
+        }
+
+        if (res.status == 200 && res.data)
+        {
+            const response = res.data;
+            if (response.status == 'noChar')
+            {
+                return 'noChar';
+            }
+
+            return res.data.list;
+        }
+        else
+        {
+            console.error("Error in DatabaseAPI.getNameList()")
+            console.error(`Status: ${res.status}`)
+            return undefined;
+        }
+    }
+
+    static async deleteCharacters(ids)
+    {
+        const host = `http://${IP}:${PORT}/bot/character/delete`;
+        const data = {
+            APIKey: APIKey,
+            ids: ids
+        }
+        let res;
+        try
+        {
+            res = await Axios.post(host, data, config);
+        }
+        catch (error)
+        {
+            if (error.code === 'ECONNREFUSED')
+            {
+                console.error("Error Database refused connection.\nCode: " +
+                    "ECONNREFUSED")
+            }
+            else console.error(error);
+            return undefined;
+        }
+
+        if (res.status == 200 && res.data)
+        {
+            const response = res.data;
+            return response;
+        }
+        else
+        {
+            console.error("Error in DatabaseAPI.deleteCharacters()")
             console.error(`Status: ${res.status}`)
             return undefined;
         }
