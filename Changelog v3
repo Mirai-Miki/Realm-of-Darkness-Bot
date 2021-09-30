@@ -28,12 +28,14 @@
 - side bar colour can now be changed using set [Supporter Only]
 - Images can now be set [Supporter Only]
 - 20th edition vamipres can now define their morality
+- Find a character now brings up a drop down menu to select that character
+- Deleting characters is now done via a drop down menu and a confirmation will be asked before it is deleted.
 
 
 # Ideas
 - /find @user (ST only). Brings a list of characters in the server. 
 User button and choice box to select the character to find.
-/find (user). Does the same as above.
+/delete (user). Does the same as above.
 
 - /help and /key will provide select box to zoom in on a document
 
@@ -41,6 +43,92 @@ User button and choice box to select the character to find.
 
 - Add character option to v5 and rouse and update hunger on failed rouse.
 
+- Add dice stats. Track passes, fails, crits, botches, messy crits and bestial fails. 
+
 - Tracking add a hidden command with optional ST channel.
 Using the command in a channel will hide all tracking responses.
 Adding an ST channel will post a second non hidden message in that channel.
+
+- Add tracking for LARP characters
+
+- Maybe Nightmare dice for changeling
+
+# Notes
+- More then 25 characters might be a problem for the drop down box. Maybe add a second select menu if there are more then 25. Dynamicly add select menus up to 5? that is 150 characters.
+- When a member leaves a guild, disconnect their characters and delete the member
+- When a user deletes a character, the site checks if there are no more characters for that member. Before deleting that member check if the user is registered. If so don't delete.
+- Mage20th Quint and Paradox is not being tracked correctly. The bars can overlap p331. Make them 20 points each and Quint cannot be higher then paradox.
+display that as a single 20 point bar with quint from the left and para from the right.
+- Changling Banality, werewolf rage not limited by max. Maybe add a locked propertie and if unlocked the current can exeed the max. Change colour on the bar to denote excess.
+- Make sure a linked character is using the correct version Dice roller.
+- 10 points of temp torment gets converted to one point of permenant torment
+
+
+# Commands
+--------------------------------
+vampire20th
+    new
+    update
+    set
+
+vampire5th 
+    new
+    update
+    set
+
+werewolf 
+    new
+    update
+    set
+
+changeling 
+    new
+    update
+    set
+
+mage 
+    new
+    update
+    set
+
+wraith 
+    new
+    update
+    set
+
+demon 
+    new
+    update
+    set
+
+mortal5th 
+    new
+    update
+    set
+
+human20th 
+    new
+    update
+    set
+
+ghoul20th 
+    new
+    update
+    set
+---------------------------------
+tracker 
+    find
+    delete
+    permissions
+    channel
+
+v5
+    roll
+    rouse
+    resonence
+    general
+
+20th
+    roll
+    init
+    general

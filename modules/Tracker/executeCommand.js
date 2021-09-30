@@ -17,28 +17,40 @@ for (const folder of handlerFolders) {
 }
 
 module.exports = async function (interaction) { 
-    
-    const group = interaction.options.getSubcommandGroup(false);
-    const subcommand = ((group ?? '') + interaction.options.getSubcommand());
+    let mode = '';
+    const subcommand = interaction.options.getSubcommand(false);
+    let commandName = interaction.commandName;
 
-    const Handler = handlers.get(subcommand);
-    if (!Handler) return console.error(`No Handler for ${subcommand}`);
+    if (commandName.includes('new') || subcommand?.includes('new'))
+        mode = 'new';
+    else if (commandName.includes('set') || subcommand?.includes('set'))
+        mode = 'set';
+    else mode = 'update';
+
+    if (!subcommand)
+    {
+        // Need to strip excess
+        commandName = commandName.replace(/(_new)|(_update)|(_set)/i, '')
+    }
+
+    const Handler = handlers.get(commandName);
+    if (!Handler) return console.error(`No Handler for ${commandName}`);
 
     const handler = new Handler(interaction);
 
-    if ((interaction.commandName == 'new' || interaction.commandName == 'set') &&
+    if ((mode == 'new' || mode == 'set') &&
         handler.isSetArgsValid())
     {
-        if (interaction.commandName == 'new' && handler.newCharacter())
+        if (mode == 'new' && handler.newCharacter())
         {
             await saveCharacter(handler);
         }
-        else if (interaction.commandName == 'set' && await handler.setCharacter())
+        else if (mode == 'set' && await handler.setCharacter())
         {
             await saveCharacter(handler);
         }
     }
-    else if (interaction.commandName == 'update' && handler.isUpdateArgsValid() && 
+    else if (mode == 'update' && handler.isUpdateArgsValid() && 
         await handler.updateCharacter())
     {
         await saveCharacter(handler);
