@@ -1,6 +1,7 @@
 'use strict';
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const execute = require('../../modules/Tracker/executeCommand.js');
+const { Splats } = require('../../modules/util/Constants')
 
 module.exports = {
 	data: werewolf20thCommands(),      
@@ -14,7 +15,7 @@ function werewolf20thCommands()
 {
     const slashCommand = new SlashCommandBuilder();
 
-    slashCommand.setName('werewolf')
+    slashCommand.setName(Splats.werewolf20th)
 	    .setDescription('C');
 
     slashCommand.addSubcommand(subcommand => subcommand

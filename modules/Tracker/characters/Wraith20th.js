@@ -1,8 +1,7 @@
 'use strict';
-
 const Consumable = require("../structures/Consumable");
-const StaticField = require("../structures/StaticField");
 const Character20th = require("./base/Character20th");
+const { Splats } = require('../../util/Constants');
 
 module.exports = class Wraith20 extends Character20th 
 {
@@ -10,13 +9,13 @@ module.exports = class Wraith20 extends Character20th
     {
         super(willpower);
         this.splat = 'Wraith';
-        this.corpus = new Consumable(corpus);
-        this.pathos = new StaticField(pathos, 0, 10);
+        this.corpus = new Consumable(corpus, corpus, 0);
+        this.pathos = new Consumable(10, pathos, 0);
     }
 
     static getSplat()
     {
-        return ("wraith20th");
+        return Splats.wraith20th;
     }
 
     deserilize(char)
@@ -24,6 +23,20 @@ module.exports = class Wraith20 extends Character20th
         super.deserilize(char);
         this.corpus.setTotal(char.corpus.total);
         this.corpus.setCurrent(char.corpus.current);
-        this.pathos.setCurrent(char.pathos.current);
+        this.pathos.setCurrent(char.pathos);
+    }
+
+    serialize()
+    {        
+        const s = super.serialize();
+        
+        s.character['splat'] = this.splat;        
+        s.character['corpus'] = {
+            totra: this.corpus.total,
+            current: this.corpus.current,
+        }
+        s.character['gnosis'] = this.pathos.current;
+        
+        return s;
     }
 }

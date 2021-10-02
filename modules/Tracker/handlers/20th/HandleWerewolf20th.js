@@ -1,26 +1,25 @@
 'use strict';
-const Vampire = require('../../characters/Vampire20th.js');
+const Werewolf = require('../../characters/Werewolf20th.js');
 const isArgsValid = require('../../util/isArgsValid.js');
 const handleError = require('../../util/handleError.js');
 const { character20thEmbed } = require('../../embed/character20thEmbed.js');
 const DatabaseAPI = require("../../../util/DatabaseAPI");
 
-const SPLAT = 'vampire';
-const VERSION = '20th';
+const SPLAT = 'werewolf';
+const VERSION = '20th'
 
 module.exports = class HandleVampire20th
 {
     constructor(interaction)
     {
         this.interaction = interaction;
-        this.splat = (SPLAT+VERSION);
+        this.splat = SPLAT;
 
         this.args = {
             name: interaction.options.getString('name'),
             willpower: interaction.options.getInteger('willpower'),
-            blood: interaction.options.getInteger('blood'),
-            moralityType: interaction.options.getString('morality_type'),
-            morality: interaction.options.getInteger('morality'),
+            rage: interaction.options.getInteger('rage'),
+            gnosis: interaction.options.getInteger('gnosis'),
             exp: interaction.options.getInteger('exp'),
             health: interaction.options.getInteger('health'),
             bashing: interaction.options.getInteger('bashing_damage'),
@@ -36,12 +35,12 @@ module.exports = class HandleVampire20th
 
     static getCommand()
     {
-        return (SPLAT+VERSION);
+        return SPLAT;
     }
 
     newCharacter()
     {
-        const char = new Vampire(this.interaction);
+        const char = new Werewolf(this.interaction);
         char.setName(this.args.name);
         setFields(this.args, char);
         char.updateHistory(this.args, this.notes, "New");
@@ -119,7 +118,7 @@ module.exports = class HandleVampire20th
         {
             if (error.code != 50035)
             {
-                console.error("Error at Vamp20th Handler Reply");
+                console.error("Error at Werewolf20th Handler Reply");
                 console.error(error);
                 handleError(this.interaction, 'handlerReply');
             }

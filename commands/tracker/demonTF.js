@@ -1,6 +1,7 @@
 'use strict';
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const execute = require('../../modules/Tracker/executeCommand.js');
+const { Splats } = require('../../modules/util/Constants')
 
 module.exports = {
 	data: demonTFCommands(),      
@@ -14,7 +15,7 @@ function demonTFCommands()
 {
     const slashCommand = new SlashCommandBuilder();
 
-    slashCommand.setName('demon')
+    slashCommand.setName(Splats.demonTF)
 	    .setDescription('Create a new World of Darkness Character ' +
             'to be tracked.');
 

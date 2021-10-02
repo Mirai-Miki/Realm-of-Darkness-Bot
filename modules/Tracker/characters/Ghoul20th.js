@@ -1,8 +1,7 @@
 'use strict';
-
 const Consumable = require("../structures/Consumable");
-const StaticField = require("../structures/StaticField");
 const Character20th = require("./base/Character20th");
+const { Splats } = require('../../util/Constants');
 
 module.exports = class Ghoul20th extends Character20th
 {
@@ -10,21 +9,36 @@ module.exports = class Ghoul20th extends Character20th
     {
         super(willpower);
         this.splat = 'Ghoul';
-        this.humanity = new StaticField(humanity, 0, 10);
-        this.blood = new Consumable(10);
-        this.vitae = new Consumable(5, vitae);
+        this.morality = {
+            name: 'Humanity', 
+            pool: new Consumable(10, humanity, 0),
+        };
+        this.blood = new Consumable(10, 10, 0);
+        this.vitae = new Consumable(5, vitae, 0);
     }
 
     static getSplat()
     {
-        return ('ghoul20th');
+        return Splats.ghoul20th;
     }
 
     deserilize(char)
     {
         super.deserilize(char);
-        this.humanity.setCurrent(char.humanity.current);
-        this.blood.setCurrent(char.blood.current);
-        this.vitae.setCurrent(char.vitae.current);
+        this.morality.pool.setCurrent(char.morality);
+        this.blood.setCurrent(char.blood);
+        this.vitae.setCurrent(char.vitae);
+    }
+
+    serialize()
+    {        
+        const s = super.serialize();
+        
+        s.character['splat'] = this.splat;        
+        s.character['morality'] = this.morality.pool.current;
+        s.character['blood'] = this.blood.current;
+        s.character['vitae'] = this.vitae.current
+        
+        return s;
     }
 }

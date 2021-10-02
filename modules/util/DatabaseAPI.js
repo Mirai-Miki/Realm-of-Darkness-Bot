@@ -1,18 +1,7 @@
 'use strict';
 const Axios = require('axios');
 const { APIKey } = require('../../config.json');
-
-const { Collection } = require("discord.js");
-const fs = require('fs');
-
-const characters = new Collection();
-const charFiles = fs.readdirSync('./modules/Tracker/characters')
-    .filter(file => file.endsWith('.js'));
-
-for (const file of charFiles) {
-	const char = require(`../Tracker/characters/${file}`);
-	characters.set(char.getSplat(), char);
-}
+const { getCharacterClass } = require('./util');
 
 const config = {headers: {'Content-Type': 'application/json'}};
 const IP = 'localhost';
@@ -28,6 +17,7 @@ module.exports = class DatabaseAPI
         let res;
         try
         {
+            console.log(data);
             res = await Axios.post(host, data, config);
         }
         catch (error)
@@ -94,8 +84,7 @@ module.exports = class DatabaseAPI
             }
             const character = response.character;
 
-            const Character = characters.get(character.splat);
-            if (!Character) return console.error("No Character Class");
+            const Character = getCharacterClass(character.splat);
             const char = new Character(interaction);
             char.deserilize(character);
             

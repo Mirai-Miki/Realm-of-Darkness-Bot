@@ -25,4 +25,22 @@ module.exports = class Character5th extends Character
         this.health.takeSuperfical(char.health.superficial);
         this.health.takeAgg(char.health.aggravated);
     }
+
+    serialize()
+    {
+        const s = super.serialize();
+
+        s.character['version'] = this.version;
+        s.character['willpower'] = {
+            total: this.willpower.total,
+            superficial: this.willpower.superficial,
+            aggravated: this.willpower.aggravated,
+        };
+        s.character['health'] = {
+            total: this.health.total,
+            superficial: this.health.superficial,
+            aggravated: this.health.aggravated,
+        };
+        return s
+    }
 }

@@ -1,6 +1,7 @@
 'use strict';
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const execute = require('../../modules/Tracker/executeCommand.js');
+const { Splats } = require('../../modules/util/Constants')
 
 module.exports = {
 	data: vampire20thSetCommands(),      
@@ -14,7 +15,7 @@ function vampire20thSetCommands()
 {
     const slashCommand = new SlashCommandBuilder();
 
-    slashCommand.setName('vampire20th_set')
+    slashCommand.setName(Splats.vampire20th + '_set')
         .setDescription('Not the sparkly kind.')
         .addStringOption(option =>
             option.setName("name")

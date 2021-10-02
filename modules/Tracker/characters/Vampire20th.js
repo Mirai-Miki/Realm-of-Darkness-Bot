@@ -1,8 +1,8 @@
 'use strict';
-
 const Consumable = require("../structures/Consumable");
 const StaticField = require("../structures/StaticField");
 const Character20th = require("./base/Character20th");
+const { Splats } = require('../../util/Constants');
 
 module.exports = class Vampire20th extends Character20th
 {
@@ -12,14 +12,14 @@ module.exports = class Vampire20th extends Character20th
         this.splat = 'Vampire';
         this.morality = {
             name: 'Humanity', 
-            pool: new StaticField(humanity, 0, 10)
+            pool: new Consumable(10, humanity, 0),
         };
-        this.blood = new Consumable(blood);
+        this.blood = new Consumable(blood, blood, 0);
     }
 
     static getSplat()
     {
-        return ("vampire20th");
+        return Splats.vampire20th;
     }
 
     deserilize(json)

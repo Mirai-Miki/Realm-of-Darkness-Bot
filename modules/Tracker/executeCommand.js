@@ -1,20 +1,8 @@
 'use strict';
 const handleError = require("./util/handleError");
-const { Collection } = require("discord.js");
-const DatabaseAPI = require("../util/DatabaseAPI");
-const fs = require("fs");
-const handlersPath = './modules/Tracker/handlers/';
-
-const handlers = new Collection();
-const handlerFolders = fs.readdirSync(handlersPath);
-for (const folder of handlerFolders) {
-    const handlerFiles = fs.readdirSync(
-        `${handlersPath}${folder}`).filter(file => file.endsWith('.js'));
-    for (const file of handlerFiles) {
-        const handler = require(`./handlers/${folder}/${file}`);
-        handlers.set(handler.getCommand(), handler);
-    }
-}
+const isArgsValid = require('./util/isArgsValid');
+const Handler = require('./HandleCharacter');
+const { SplatVersions } = require('../util/Constants');
 
 module.exports = async function (interaction) { 
     let mode = '';
@@ -33,13 +21,11 @@ module.exports = async function (interaction) {
         commandName = commandName.replace(/(_new)|(_update)|(_set)/i, '')
     }
 
-    const Handler = handlers.get(commandName);
-    if (!Handler) return console.error(`No Handler for ${commandName}`);
-
-    const handler = new Handler(interaction);
+    const version = SplatVersions[commandName];
+    const handler = new Handler(interaction, commandName);
 
     if ((mode == 'new' || mode == 'set') &&
-        handler.isSetArgsValid())
+        isArgsValid.set(handler.args, interaction, version))
     {
         if (mode == 'new' && handler.newCharacter())
         {
@@ -50,7 +36,8 @@ module.exports = async function (interaction) {
             await saveCharacter(handler);
         }
     }
-    else if (mode == 'update' && handler.isUpdateArgsValid() && 
+    else if (mode == 'update' && 
+        isArgsValid.update(handler.args, interaction) && 
         await handler.updateCharacter())
     {
         await saveCharacter(handler);

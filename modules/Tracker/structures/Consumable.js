@@ -1,18 +1,29 @@
 'use strict';
 module.exports = class Consumable
 {
-    constructor(total, current=total)
+    constructor(total, current=total, min=0)
     {
         this.total = total;
         this.current = current;
+        // The minimum amount the current pool can drop too. Not the total.
+        this.min = min;
         this.modified = 0;
         this.overflow = 0;
+        // If unlocked a current is not limited by the total.
+        this.locked = true;
+        this.maxCurrent; // If unlocked the max current can reach.
 
         if (this.current > this.total)
         {
             this.overflow = this.current - this.total;
             this.current = this.total;
         }
+    }
+
+    unlock(max)
+    {
+        this.locked = false;
+        this.maxCurrent = max;
     }
 
     updateCurrent(amount)

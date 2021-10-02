@@ -1,6 +1,7 @@
 'use strict';
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const execute = require('../../modules/Tracker/executeCommand.js');
+const { Splats } = require('../../modules/util/Constants')
 
 module.exports = {
 	data: mage20thCommands(),      
@@ -14,7 +15,7 @@ function mage20thCommands()
 {
 	const slashCommand = new SlashCommandBuilder();
 
-    slashCommand.setName('mage')
+    slashCommand.setName(Splats.mage20th)
 	    .setDescription('Create a new World of Darkness Character ' +
             'to be tracked.');
 
@@ -33,7 +34,7 @@ function mage20thCommands()
         .addIntegerOption(option =>
             option.setName("arete")
             .setDescription("Your total Arete. " +
-                "Must be between 1 and 10. MtA 20th Corebook p328")
+                "Must be between 0 and 10. MtA 20th Corebook p328")
             .setRequired(true))
         .addIntegerOption(option =>
             option.setName("quintessence")
