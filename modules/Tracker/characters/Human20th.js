@@ -1,14 +1,13 @@
 'use strict';
 const Consumable = require("../structures/Consumable");
-const StaticField = require("../structures/StaticField");
 const Character20th = require("./base/Character20th");
 const { Splats } = require('../../util/Constants');
 
 module.exports = class Human20th extends Character20th
 {
-    constructor(humanity=7, willpower=6) 
+    constructor(interaction, humanity=7, willpower=6) 
     {
-        super(willpower);
+        super(interaction, willpower);
         this.splat = 'Human';
         this.morality = {
             name: 'Humanity', 
@@ -36,7 +35,6 @@ module.exports = class Human20th extends Character20th
         s.character['splat'] = this.splat;        
         s.character['morality'] = this.morality.pool.current;
         s.character['blood'] = this.blood.current;
-        s.character['vitae'] = this.vitae.current
         
         return s;
     }

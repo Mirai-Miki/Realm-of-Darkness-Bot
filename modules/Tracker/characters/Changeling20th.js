@@ -6,9 +6,9 @@ const { Splats } = require('../../util/Constants');
 
 module.exports = class Changeling extends Character20th
 {
-    constructor(glamour=4, banality=3, willpower=4, nightmare=0, imbalence=0) 
+    constructor(interaction, glamour=4, banality=3, willpower=4, nightmare=0, imbalence=0) 
     {
-        super(willpower);
+        super(interaction, willpower);
         this.splat = 'Changeling';
         this.glamour = new Consumable(glamour, glamour, 1);
         this.banality = new Consumable(banality, banality, 1);

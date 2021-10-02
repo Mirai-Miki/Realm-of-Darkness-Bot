@@ -1,14 +1,13 @@
 'use strict';
-const Consumable = require("../structures/Consumable");
 const Character5th = require("./base/Character5th");
 const Humanity = require("../structures/humanity5th.js");
 const { Splats } = require('../../util/Constants');
 
 module.exports = class Mortal5th extends Character5th
 {
-    constructor(health=4, willpower=2, humanity=7) 
+    constructor(interaction, health=4, willpower=2, humanity=7) 
     {
-        super(health, willpower);
+        super(interaction, health, willpower);
         
         this.splat = 'Mortal';             
         this.humanity = new Humanity(humanity);
@@ -25,7 +24,6 @@ module.exports = class Mortal5th extends Character5th
 
         this.humanity = new Humanity(char.humanity.total);
         this.humanity.takeStains(char.humanity.stains);
-        this.humanity.overflow = char.humanity.stainOverflow;
     }
 
     serialize()
@@ -36,7 +34,6 @@ module.exports = class Mortal5th extends Character5th
         s.character['humanity'] = {
             total: this.humanity.total,
             stains: this.humanity.stains,
-            stainOverflow: this.humanity.overflow,
         }
         
         return s;

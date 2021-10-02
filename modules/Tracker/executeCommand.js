@@ -3,6 +3,7 @@ const handleError = require("./util/handleError");
 const isArgsValid = require('./util/isArgsValid');
 const Handler = require('./HandleCharacter');
 const { SplatVersions } = require('../util/Constants');
+const DatabaseAPI = require('../util/DatabaseAPI')
 
 module.exports = async function (interaction) { 
     let mode = '';
@@ -22,7 +23,7 @@ module.exports = async function (interaction) {
     }
 
     const version = SplatVersions[commandName];
-    const handler = new Handler(interaction, commandName);
+    const handler = new Handler(interaction, commandName, version);
 
     if ((mode == 'new' || mode == 'set') &&
         isArgsValid.set(handler.args, interaction, version))

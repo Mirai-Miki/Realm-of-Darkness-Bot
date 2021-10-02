@@ -29,8 +29,8 @@ module.exports.character20thEmbed = (char, client, args) =>
             case 'Human':
                 embed.addField(`Blood [${char.blood.current}/10]`, 
                 consumableTracker(char.blood, 0, client, 10), false);
-                embed.addField(`Humanity ${char.humanity.current}`, 
-                    staticFieldTracker(char.humanity, 1, client), false);
+                embed.addField(`Humanity ${char.morality.pool.current}`, 
+                    consumableTracker(char.morality.pool, 1, client), false);
                 break;
 
             case 'Vampire':  
@@ -47,7 +47,7 @@ module.exports.character20thEmbed = (char, client, args) =>
                     );
                 }
                 embed.addField(`${char.morality.name} ${char.morality.pool.current}`, 
-                    staticFieldTracker(char.morality.pool, 1, client));
+                consumableTracker(char.morality.pool, 1, client));
                 break;
             
             case 'Werewolf':  
@@ -68,7 +68,7 @@ module.exports.character20thEmbed = (char, client, args) =>
                 );
                 embed.addField(
                     `Pathos ${char.pathos.current}`, 
-                    staticFieldTracker(char.pathos, 1, client), false
+                    consumableTracker(char.pathos, 1, client), false
                 );
                 break;
 
@@ -83,11 +83,11 @@ module.exports.character20thEmbed = (char, client, args) =>
                 );
                 embed.addField(
                     `Nightmare ${char.nightmare.current}`, 
-                    staticFieldTracker(char.nightmare, 0, client), false
+                    consumableTracker(char.nightmare, 0, client), false
                 );
                 embed.addField(
                     `Imbalance ${char.imbalence.current}`, 
-                    staticFieldTracker(char.imbalence, 0, client), false
+                    consumableTracker(char.imbalence, 0, client), false
                 );
                 embed.addField(
                     `Chimerical Health`, 
@@ -115,12 +115,9 @@ module.exports.character20thEmbed = (char, client, args) =>
                     consumableTracker(char.faith, 1, client, 10), false
                 );
                 embed.addField(
-                    `Permanent Torment ${char.permTorment.current}`, 
+                    `Torment - Permenent: ${char.torment.total}` +
+                    ` - Temporary: ${char.torment.current}`, 
                     staticFieldTracker(char.permTorment, 0, client), false
-                );
-                embed.addField(
-                    `Temporary Torment ${char.tempTorment.current}`, 
-                    staticFieldTracker(char.tempTorment, 0, client), false
                 );
                 break;
         }
@@ -289,7 +286,7 @@ function staticFieldTracker(field, color, client, noEmoji=false)
         return tracker;
     }
 
-    for (let i = 0; i < field.max; i++) 
+    for (let i = 0; i < field.total; i++) 
     {
         if (i == 5 || i == 10) tracker += 'ﾠ';
 
@@ -305,7 +302,7 @@ function staticFieldTracker(field, color, client, noEmoji=false)
                     break;
             }
         }
-        else if (field.max > 15) break;
+        else if (field.total > 15) break;
         else tracker += emoji.emptyDot;                
     }
     tracker += 'ﾠ';

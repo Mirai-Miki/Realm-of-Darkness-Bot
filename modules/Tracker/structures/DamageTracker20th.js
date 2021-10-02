@@ -75,7 +75,7 @@ module.exports = class DamageTracker20th
             this.aggravated = this.aggravated - (total - this.total);
     }
 
-    updateTotal(amount)
+    updateCurrent(amount)
     {
         this.total += amount;
         if (this.total < 7) this.total = 7;

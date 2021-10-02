@@ -1,6 +1,5 @@
 'use strict';
 const Consumable = require("../structures/Consumable");
-const StaticField = require("../structures/StaticField");
 const Character20th = require("./base/Character20th");
 const { Splats } = require('../../util/Constants');
 

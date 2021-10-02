@@ -5,9 +5,9 @@ const { Splats } = require('../../util/Constants');
 
 module.exports = class DemonTF extends Character20th
 {
-    constructor(willpower=6) 
+    constructor(interaction, willpower=6) 
     {
-        super(willpower);
+        super(interaction, willpower);
         this.splat = 'Demon';          
         this.faith = new Consumable(10, 6, 1);
         this.torment = new Consumable(6, 0, 0);

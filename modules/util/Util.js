@@ -48,7 +48,7 @@ module.exports.correctName = (name) =>
 
 module.exports.getCharacterClass = (splat) =>
 {
-    const Character = characters.get(character.splat);
+    const Character = characters.get(splat);
     if (!Character) 
     {
         console.error("No Character Class");

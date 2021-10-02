@@ -5,9 +5,9 @@ const { Splats } = require('../../util/Constants');
 
 module.exports = class Ghoul20th extends Character20th
 {
-    constructor(humanity=7, willpower=6, vitae=1) 
+    constructor(interaction, humanity=7, willpower=6, vitae=1) 
     {
-        super(willpower);
+        super(interaction, willpower);
         this.splat = 'Ghoul';
         this.morality = {
             name: 'Humanity', 

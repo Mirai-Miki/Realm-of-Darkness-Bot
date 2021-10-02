@@ -32,7 +32,7 @@ module.exports = class Humanity5th
         }
     }
 
-    setTotal(amount)
+    setCurrent(amount)
     {
         this.overflow = 0;
         
@@ -47,7 +47,7 @@ module.exports = class Humanity5th
         this.calculateStainsOverflow();        
     }
 
-    modifyTotal(amount)
+    updateCurrent(amount)
     {
         this.overflow = 0;
 

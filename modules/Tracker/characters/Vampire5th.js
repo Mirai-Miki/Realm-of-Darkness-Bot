@@ -6,9 +6,9 @@ const { Splats } = require('../../util/Constants');
 
 module.exports = class Vampire5th extends Character5th
 {
-    constructor(health=4, willpower=2, humanity=7) 
+    constructor(interaction, health=4, willpower=2, humanity=7) 
     {
-        super(health, willpower);
+        super(interaction, health, willpower);
         
         this.splat = 'Vampire';
         this.hunger = new Consumable(5, 1, 0);              
@@ -27,7 +27,6 @@ module.exports = class Vampire5th extends Character5th
         this.hunger.setCurrent(char.hunger);
         this.humanity = new Humanity(char.humanity.total);
         this.humanity.takeStains(char.humanity.stains);
-        this.humanity.overflow = char.humanity.overflow;
     }
 
     serialize()
@@ -39,7 +38,6 @@ module.exports = class Vampire5th extends Character5th
         s.character['humanity'] = {
             total: this.humanity.total,
             stains: this.humanity.stains,
-            stainOverflow: this.humanity.overflow,
         }
         
         return s;

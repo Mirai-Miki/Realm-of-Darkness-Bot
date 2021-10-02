@@ -5,9 +5,9 @@ const { Splats } = require('../../util/Constants');
 
 module.exports = class Mage extends Character20th 
 {
-    constructor(arete=1, quintessence=5, paradox=0, willpower=5) 
+    constructor(interaction, arete=1, quintessence=5, paradox=0, willpower=5) 
     {
-        super(willpower);
+        super(interaction, willpower);
         this.splat = 'Mage';
         this.arete = new Consumable(10, arete, 0);
         this.quintParadox = new Consumable((20 - paradox), quintessence, 0);

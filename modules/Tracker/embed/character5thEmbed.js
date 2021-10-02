@@ -1,15 +1,8 @@
 'use strict';
-
 const Discord = require("discord.js");
-const { getErrorMessage } = require('../getErrorMessage.js');
 
-module.exports.character5thEmbed = (char, tracker, unknownKeys) =>
+module.exports.character5thEmbed = (char, client, args) =>
 {
-    let client = tracker.recvMess.client;
-    let recvMess = tracker.recvMess;
-    if (tracker.error) return `<@${recvMess.author.id}> ` +
-        `${getErrorMessage(tracker.error)}`;
-
     let stainsOverflow = "";
     let hungerOverflow = "";
     let willImpairment = "";
@@ -30,27 +23,34 @@ module.exports.character5thEmbed = (char, tracker, unknownKeys) =>
     }
 
     if (char.humanity.overflow) {
-        stainsOverflow = `${char.humanity.overflow} `;
-
-        if (char.humanity.overflow == 1) stainsOverflow += 'stain';
-        else if (char.humanity.overflow) stainsOverflow += 'stains';
-
+        stainsOverflow = `${char.humanity.overflow} `
+        if (char.humanity.overflow)
+        {
+            stainsOverflow += `${char.humanity.overflow > 1 ? 'stains' : 'stain'}`;
+        }
         stainsOverflow += " overflowed. You are now in Degeneration. p239";  
     }
 
     // Adding Hunger messages if character has hunger
-    if (char.hunger && char.hunger.overflow > 0) {
+    if (char.hunger?.overflow > 0) {
         hungerOverflow = `${char.hunger.overflow} hunger has ` +
             "overflowed. You should now do a hunger frenzy check. p220"
     }
-    else if (char.hunger && char.hunger.current == 5) {
+    else if (char.hunger?.current == 5) {
         hungerOverflow = `Hunger is currently 5` +
             ". You can no longer intentionally rouse the blood. p211"
     }      
    
     let embed = new Discord.MessageEmbed()
         .setColor(char.colour)
-        .setAuthor(char.owner.username, char.owner.avatarURL)
+        .setAuthor(
+            (
+                char.guild?.displayName ? 
+                char.guild.displayName : 
+                char.user.username
+            ), 
+            char.user.avatarURL
+        )
         .setTitle(char.name)
         .addField("Willpower", 
             (damageTracker(char.willpower.total, 
@@ -80,14 +80,11 @@ module.exports.character5thEmbed = (char, tracker, unknownKeys) =>
         if (char.exp.total) embed.addField("Experience", consumableTracker(
             char.exp.current, char.exp.total, 0, client, true), false);
 
-        if (tracker.notes) 
-            embed.addField("Notes", tracker.notes);
-
-        if (unknownKeys.length) 
-            embed.addField("Unknown Keys", unknownKeys.join(' | '));
+        if (args.notes) 
+            embed.addField("Notes", args.notes);
 
         // Adding History if History flag is Set
-        if (tracker.findHistory && char.history)
+        if (false && char.history)
         {
             var history = `__**History for ${char.name}**__\n`;
             for (const record of char.history)
@@ -96,8 +93,9 @@ module.exports.character5thEmbed = (char, tracker, unknownKeys) =>
             }
         }
 
-        if (history) return {embed: embed, history: history};
-        else return embed;        
+        const response = {embeds: [embed], ephemeral: true};
+        if (false) return {embed: embed, history: history};
+        else return response;        
 }
 
 function damageTracker(max, supDamage, aggDamage, client) {

@@ -5,9 +5,9 @@ const Character = require("./Character.js");
 
 module.exports = class Character5th extends Character
 {
-    constructor(health, willpower) 
+    constructor(interaction, health, willpower) 
     {
-        super();
+        super(interaction);
         this.version = '5th';
         this.willpower = new DamageTracker5th(willpower);
         this.health = new DamageTracker5th(health);

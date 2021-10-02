@@ -17,7 +17,6 @@ module.exports = class DatabaseAPI
         let res;
         try
         {
-            console.log(data);
             res = await Axios.post(host, data, config);
         }
         catch (error)
@@ -34,6 +33,7 @@ module.exports = class DatabaseAPI
         if (res.status == 200 && res.data)
         {
             const response = res.data;
+            console.log(response)
             if (response.status === 'exists')
             {
                 return 'exists';

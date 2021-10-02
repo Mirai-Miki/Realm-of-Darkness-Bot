@@ -5,9 +5,9 @@ const { Splats } = require('../../util/Constants');
 
 module.exports = class Wraith20 extends Character20th 
 {
-    constructor(corpus=10, pathos=5, willpower=6) 
+    constructor(interaction, corpus=10, pathos=5, willpower=6) 
     {
-        super(willpower);
+        super(interaction, willpower);
         this.splat = 'Wraith';
         this.corpus = new Consumable(corpus, corpus, 0);
         this.pathos = new Consumable(10, pathos, 0);

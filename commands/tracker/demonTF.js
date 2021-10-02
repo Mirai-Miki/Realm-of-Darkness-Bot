@@ -37,14 +37,10 @@ function demonTFCommands()
                 "Must be between 1 and 10. DtF Corebook p249")
             .setRequired(true))
         .addIntegerOption(option =>
-            option.setName("torment_permanent")
+            option.setName("torment")
             .setDescription("Your Permanent Torment. " +
                 "Must be between 1 and 10. DtF Corebook p160")
             .setRequired(true))
-        .addIntegerOption(option =>
-            option.setName("torment_temporary")
-            .setDescription("Your Temporary Torment. " +
-                "Must be between 0 and 10. DtF Corebook p160"))
         .addIntegerOption(option =>
             option.setName("exp")
             .setDescription("Your total Experiance. " +
