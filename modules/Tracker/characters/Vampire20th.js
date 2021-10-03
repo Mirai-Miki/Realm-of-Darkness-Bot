@@ -2,6 +2,7 @@
 const Consumable = require("../structures/Consumable");
 const Character20th = require("./base/Character20th");
 const { Splats } = require('../../util/Constants');
+const { slugifiy } = require('../../util/util');
 
 module.exports = class Vampire20th extends Character20th
 {
@@ -34,9 +35,9 @@ module.exports = class Vampire20th extends Character20th
     {        
         const s = super.serialize();
         
-        s.character['splat'] = this.splat;        
+        s.character['splat'] = Splats.vampire20th;        
         s.character['morality'] = {
-            name: this.morality.name,
+            name: slugifiy(this.morality.name),
             current: this.morality.pool.current,
         };
         s.character['blood'] = {

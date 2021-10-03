@@ -80,7 +80,7 @@ module.exports.character5thEmbed = (char, client, args) =>
         if (char.exp.total) embed.addField("Experience", consumableTracker(
             char.exp.current, char.exp.total, 0, client, true), false);
 
-        if (args.notes) 
+        if (args?.notes) 
             embed.addField("Notes", args.notes);
 
         // Adding History if History flag is Set

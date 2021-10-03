@@ -1,5 +1,4 @@
 'use strict';
-
 module.exports = class Humanity5th
 {
     constructor(total)

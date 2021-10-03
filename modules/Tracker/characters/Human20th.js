@@ -24,7 +24,7 @@ module.exports = class Human20th extends Character20th
     deserilize(char)
     {
         super.deserilize(char);
-        this.morality.pool.setTotal(char.morality);
+        this.morality.pool.setCurrent(char.morality);
         this.blood.setCurrent(char.blood);
     }
 
@@ -32,7 +32,7 @@ module.exports = class Human20th extends Character20th
     {        
         const s = super.serialize();
         
-        s.character['splat'] = this.splat;        
+        s.character['splat'] = Splats.human20th;        
         s.character['morality'] = this.morality.pool.current;
         s.character['blood'] = this.blood.current;
         

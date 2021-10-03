@@ -32,6 +32,11 @@ module.exports = function(interaction, error, handler)
         '.\nIf you see this message please report it at the ' +
         '[Realm of Darkness Server](<https://discord.gg/7xMqVrVeFt>).';
     }
+    else if (error === 'charOverflow')
+    {
+        errorMessage = 'Sorry you have too many Characters. Please' +
+            ' delete some to free up some space.';
+    }
 
     interaction.reply({content: errorMessage, ephemeral: true});
 }

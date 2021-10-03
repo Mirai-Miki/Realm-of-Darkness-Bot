@@ -54,5 +54,6 @@ async function saveCharacter(handler)
         await handler.reply();
     }
     else if (result === 'exists') handleError(handler.interaction, 'exists');
+    else if (result === 'charOverflow') handleError(handler.interaction, 'charOverflow');
     else handleError(handler.interaction, 'dbError');
 }

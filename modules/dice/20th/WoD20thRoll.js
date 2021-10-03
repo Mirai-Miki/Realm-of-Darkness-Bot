@@ -4,6 +4,7 @@ const { MessageEmbed } = require('discord.js');
 const { correctName } = require('../../util/util.js');
 const DatabaseAPI = require('../../util/DatabaseAPI')
 const { character20thEmbed } = require('../../Tracker/embed/character20thEmbed.js');
+const { Versions } = require('../../util/Constants')
 
 module.exports = class WoD20thRoll
 {
@@ -283,7 +284,8 @@ module.exports = class WoD20thRoll
 
     async updateCharacter()
     {
-        if (!this.character?.tracked || !this.willpower) return;
+        if (!this.character?.tracked || !this.willpower || 
+            this.character.tracked.version == Versions.v5) return;
 
         this.character.tracked.willpower.updateCurrent(-1);
         const resp = await DatabaseAPI.saveCharacter(this.character.tracked);

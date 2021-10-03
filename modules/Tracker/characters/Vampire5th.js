@@ -33,7 +33,7 @@ module.exports = class Vampire5th extends Character5th
     {        
         const s = super.serialize();
         
-        s.character['splat'] = this.splat;        
+        s.character['splat'] = Splats.vampire5th;        
         s.character['hunger'] = this.hunger.current;
         s.character['humanity'] = {
             total: this.humanity.total,

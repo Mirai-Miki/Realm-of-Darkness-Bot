@@ -48,18 +48,20 @@ module.exports = class Mage extends Character20th
     {
         super.deserilize(char);
         this.arete.setCurrent(char.arete);
-        this.quintParadox.setCurrent(char.quintessence);
-        this.quintParadox.setTotal(20 - char.paradox);
+        this.quintParadox.setCurrent(char.quint_paradox.current);
+        this.quintParadox.setTotal(char.quint_paradox.total);
     }
 
     serialize()
     {        
         const s = super.serialize();
         
-        s.character['splat'] = this.splat;        
+        s.character['splat'] = Splats.mage20th;        
         s.character['arete'] = this.arete.current;
-        s.character['quintessence'] = this.quintParadox.current;
-        s.character['paradox'] = 20 - this.quintParadox.total;
+        s.character['quint_paradox'] = {
+            current: this.quintParadox.current,
+            total: this.quintParadox.total,
+        }
         
         return s;
     }

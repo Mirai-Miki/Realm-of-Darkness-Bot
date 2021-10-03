@@ -32,7 +32,7 @@ function ghoul20thCommands()
                 "Must be between 1 and 10. VtM 20th Corebook p120")
             .setRequired(true))        
         .addIntegerOption(option =>
-            option.setName("humanity")
+            option.setName("morality")
             .setDescription("Your total Humanity" +
                 "Must be between 0 and 10. VtM 20th Corebook p309")
             .setRequired(true))

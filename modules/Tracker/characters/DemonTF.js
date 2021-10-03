@@ -33,7 +33,7 @@ module.exports = class DemonTF extends Character20th
     {        
         const s = super.serialize();
         
-        s.character['splat'] = this.splat;        
+        s.character['splat'] = Splats.demonTF;        
         s.character['faith'] = {
             total: this.faith.total,
             current: this.faith.current,

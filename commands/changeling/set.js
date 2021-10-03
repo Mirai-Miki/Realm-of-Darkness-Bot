@@ -38,8 +38,8 @@ function changeling20thSetCommands()
             .setDescription("Sets you Nightmare to the number. " +
                 "Must be between 0 and 10. CtD 20th Corebook p274"))
         .addIntegerOption(option =>
-            option.setName("imbalence")
-            .setDescription("Sets you Imbalence to the number. " +
+            option.setName("imbalance")
+            .setDescription("Sets you imbalance to the number. " +
                 "Must be between 0 and 10. CtD 20th Corebook p275"))
         .addIntegerOption(option =>
             option.setName("exp")

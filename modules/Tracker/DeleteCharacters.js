@@ -12,7 +12,7 @@ module.exports = class DeleteCharacters
         this.name = interaction.options.getString('name');
         this.character;
         this.toDelete;
-        this.nameList;
+        this.nameLists;
         this.nameDict;
         this.response = {ephemeral: true}
     }
@@ -40,22 +40,38 @@ module.exports = class DeleteCharacters
             });
             return undefined;
         }
-        this.nameList = [];
+
+        this.nameLists = [];
         this.nameDict = {};
+        let count = 0;
+        let list = [];
         for (const char of response)
         {
-            this.nameList.push({
+            if (count == 25)
+            {
+                count = 0;
+                this.nameLists.push(list);
+                list = [];
+            }
+            count++;
+            list.push({
                 label: char.name,
                 value: char.id,
                 description: `Server: ${char.guildName}`
             });
+
             this.nameDict[char.id] = {
                 id: char.id, 
                 name:char.name, 
                 splat:char.splat
             };
         }
-        return this.nameList;
+        if (list.length)
+        {
+            this.nameLists.push(list);
+        }
+
+        return this.nameLists;
     }
 
     async deleteCharacters()
@@ -76,17 +92,23 @@ module.exports = class DeleteCharacters
         this.response['content'] = 'Please select which Characters you would' +
             " like to delete. Please note that this is permanent.";
 
-        const actionRow = new MessageActionRow()
-        actionRow.addComponents(
-            new MessageSelectMenu()
-                .setCustomId('delete_char')
-                .setPlaceholder("Choose a Character")
-                .addOptions(this.nameList)
-                .setMinValues(1)
-                .setMaxValues(this.nameList.length)
-        );
+        const actionsRows = []
+        let count = 0;
+        for (const list of this.nameLists)
+        {
+            const actionRow = new MessageActionRow()
+            actionRow.addComponents(
+                new MessageSelectMenu()
+                    .setCustomId(`del_char_${count}`)
+                    .setPlaceholder("Choose a Character")
+                    .setMaxValues(list.length)
+                    .addOptions(list)
+            );
+            actionsRows.push(actionRow);
+            count++;
+        }        
         
-        this.response['components'] = [actionRow];
+        this.response['components'] = actionsRows;
     }
 
     confirmButton()
@@ -116,8 +138,7 @@ module.exports = class DeleteCharacters
         await this.interaction.reply(this.response);
 
         const filter = i => (
-            i.message.interaction.id == this.interaction.id &&
-            i.customId === 'delete_char'            
+            i.message.interaction.id == this.interaction.id           
         );
         const channel = 
             await this.interaction.client.channels.fetch(this.interaction.channelId);
@@ -153,7 +174,10 @@ module.exports = class DeleteCharacters
                     this.response['components'] = [];                        
                     await i.update(this.response);
                     return this.confirmCollector.stop();
-                }
+                }                
+                await i.deferUpdate();
+                await i.editReply({content: "Loading...", components: []});
+                
                 const response = await this.deleteCharacters();
                 if (response.status == 'error') 
                 {
@@ -165,7 +189,7 @@ module.exports = class DeleteCharacters
                     `${this.toDelete.names.join(', ')}, Deleted.`;
                 }                    
                 this.response['components'] = []
-                await i.update(this.response);
+                await i.editReply(this.response);
                 this.confirmCollector.stop();
             });
             this.confirmCollector.on('end', i => {

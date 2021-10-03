@@ -38,8 +38,8 @@ function changeling20thUpdateCommands()
             .setDescription("Updates your Nightmare by the amount. " +
                 "Must be between -15 and 15. CtD 20th Corebook p274"))
         .addIntegerOption(option =>
-            option.setName("imbalence")
-            .setDescription("Updates your Imbalence by the amount. " +
+            option.setName("imbalance")
+            .setDescription("Updates your imbalance by the amount. " +
                 "Must be between -15 and 15. CtD 20th Corebook p275"))
         .addIntegerOption(option =>
             option.setName("exp")

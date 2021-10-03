@@ -103,7 +103,7 @@ module.exports = class Character
         s.user = this.user;        
         s.guild = this.guild;        
         s.character['colour'] = this.colour;
-        s.character['thumbnail'] = this.thumbnail;
+        s.character['thumbnail'] = this.thumbnail ?? undefined;
         s.character['exp'] = {
             total: this.exp.total,
             current: this.exp.current,    

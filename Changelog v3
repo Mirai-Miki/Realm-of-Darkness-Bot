@@ -56,13 +56,11 @@ Adding an ST channel will post a second non hidden message in that channel.
 - Track user usage over 14days/30days/1year and all time
 
 # Notes
-- More then 25 characters might be a problem for the drop down box. Maybe add a second select menu if there are more then 25. Dynamicly add select menus up to 5? that is 150 characters.
 - When a member leaves a guild, disconnect their characters and delete the member
 - When a user deletes a character, the site checks if there are no more characters for that member. Before deleting that member check if the user is registered. If so don't delete.
 - Mage20th Quint and Paradox is not being tracked correctly. The bars can overlap p331. Make them 20 points each and Quint cannot be higher then paradox.
 display that as a single 20 point bar with quint from the left and para from the right.
 - Changling Banality, werewolf rage not limited by max. Maybe add a locked propertie and if unlocked the current can exeed the max. Change colour on the bar to denote excess.
-- Make sure a linked character is using the correct version Dice roller.
 - 10 points of temp torment gets converted to one point of permenant torment
 
 

@@ -33,13 +33,13 @@ module.exports = class Werewolf20th extends Character20th
     {        
         const s = super.serialize();
         
-        s.character['splat'] = this.splat;        
+        s.character['splat'] = Splats.werewolf20th;        
         s.character['rage'] = {
-            totra: this.rage.total,
+            total: this.rage.total,
             current: this.rage.current,
         }
         s.character['gnosis'] = {
-            totra: this.gnosis.total,
+            total: this.gnosis.total,
             current: this.gnosis.current,
         }
         

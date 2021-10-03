@@ -30,12 +30,12 @@ module.exports = class Wraith20 extends Character20th
     {        
         const s = super.serialize();
         
-        s.character['splat'] = this.splat;        
+        s.character['splat'] = Splats.wraith20th;        
         s.character['corpus'] = {
-            totra: this.corpus.total,
+            total: this.corpus.total,
             current: this.corpus.current,
         }
-        s.character['gnosis'] = this.pathos.current;
+        s.character['pathos'] = this.pathos.current;
         
         return s;
     }

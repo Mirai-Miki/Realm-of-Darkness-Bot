@@ -30,7 +30,7 @@ module.exports = class Mortal5th extends Character5th
     {        
         const s = super.serialize();
         
-        s.character['splat'] = this.splat;        
+        s.character['splat'] = Splats.mortal5th;        
         s.character['humanity'] = {
             total: this.humanity.total,
             stains: this.humanity.stains,

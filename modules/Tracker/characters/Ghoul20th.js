@@ -34,7 +34,7 @@ module.exports = class Ghoul20th extends Character20th
     {        
         const s = super.serialize();
         
-        s.character['splat'] = this.splat;        
+        s.character['splat'] = Splats.ghoul20th;        
         s.character['morality'] = this.morality.pool.current;
         s.character['blood'] = this.blood.current;
         s.character['vitae'] = this.vitae.current

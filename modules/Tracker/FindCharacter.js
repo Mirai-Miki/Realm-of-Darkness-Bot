@@ -2,7 +2,9 @@
 const { minToMilli } = require('../util/util.js');
 const DatabaseAPI = require('../util/DatabaseAPI');
 const { character20thEmbed } = require('./embed/character20thEmbed.js');
-const { MessageActionRow, MessageSelectMenu } = require('discord.js')
+const { character5thEmbed } = require('./embed/character5thEmbed.js');
+const { MessageActionRow, MessageSelectMenu } = require('discord.js');
+const { Versions } = require('../util/Constants.js');
 
 module.exports = class FindCharacter
 {
@@ -14,7 +16,7 @@ module.exports = class FindCharacter
         this.character;
         this.splat;
         this.pk;
-        this.nameList;
+        this.nameLists;
         this.nameDict;
         this.userId = interaction.user.id;
     }
@@ -85,11 +87,20 @@ module.exports = class FindCharacter
             return undefined;
         }
 
-        this.nameList = [];
+        this.nameLists = [];
         this.nameDict = {};
+        let count = 0;
+        let list = [];
         for (const char of response)
         {
-            this.nameList.push({
+            if (count == 25)
+            {
+                count = 0;
+                this.nameLists.push(list);
+                list = [];
+            }
+            count++;
+            list.push({
                 label: char.name,
                 value: char.id,
                 description: `Server: ${char.guildName}`
@@ -101,7 +112,12 @@ module.exports = class FindCharacter
                 splat:char.splat
             };
         }
-        return this.nameList;
+        if (list.length)
+        {
+            this.nameLists.push(list);
+        }
+
+        return this.nameLists;
     }
 
     constructResponse()
@@ -117,33 +133,46 @@ module.exports = class FindCharacter
 
     constructEmbed()
     {
-        this.response = 
-            character20thEmbed(this.character, this.interaction.client);
+        if (this.character.version == Versions.v20)
+        {
+            this.response = 
+                character20thEmbed(this.character, this.interaction.client);
+        }
+        else
+        {
+            this.response = 
+                character5thEmbed(this.character, this.interaction.client);
+        }
+        
         return this.response;
     }
 
     constructComponents()
     {
-        if (this.name) return;
-
-        const actionRow = new MessageActionRow()
-        actionRow.addComponents(
-            new MessageSelectMenu()
-                .setCustomId('get_char')
-                .setPlaceholder("Choose a Character")
-                .setMaxValues(1)
-                .addOptions(this.nameList)
-        );
+        const actionsRows = []
+        let count = 0;
+        for (const list of this.nameLists)
+        {
+            const actionRow = new MessageActionRow()
+            actionRow.addComponents(
+                new MessageSelectMenu()
+                    .setCustomId(`get_char_${count}`)
+                    .setPlaceholder("Choose a Character")
+                    .setMaxValues(1)
+                    .addOptions(list)
+            );
+            actionsRows.push(actionRow);
+            count++;
+        }        
         
-        this.response['components'] = [actionRow];
+        this.response['components'] = actionsRows;
     }
 
     async reply()
     {
         await this.interaction.reply(this.response);
         const filter = i => (
-            i.message.interaction.id == this.interaction.id &&
-            i.customId === 'get_char'            
+            i.message.interaction.id == this.interaction.id          
         );
         const channel = 
             await this.interaction.client.channels.fetch(this.interaction.channelId);

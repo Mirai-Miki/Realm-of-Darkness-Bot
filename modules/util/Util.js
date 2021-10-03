@@ -1,16 +1,5 @@
 'use strict';
 const Database = require('./Database.js');
-const { Collection } = require("discord.js");
-const fs = require('fs');
-
-const characters = new Collection();
-const charFiles = fs.readdirSync('./modules/Tracker/characters')
-    .filter(file => file.endsWith('.js'));
-
-for (const file of charFiles) {
-	const char = require(`../Tracker/characters/${file}`);
-	characters.set(char.getSplat(), char);
-}
 
 module.exports.isSupporter = (userId) =>
 {
@@ -46,13 +35,7 @@ module.exports.correctName = (name) =>
     return nameParts.join(' ');
 }
 
-module.exports.getCharacterClass = (splat) =>
+module.exports.slugifiy = (str) =>
 {
-    const Character = characters.get(splat);
-    if (!Character) 
-    {
-        console.error("No Character Class");
-        return undefined;
-    }
-    return Character;
+    return str.toLowerCase().trim().replace(/\s+/g, '_')
 }

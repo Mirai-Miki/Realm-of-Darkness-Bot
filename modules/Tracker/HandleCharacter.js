@@ -1,5 +1,5 @@
 'use strict';
-const { getCharacterClass } = require('../util/util')
+const { getCharacterClass } = require('../util/getCharacterClass')
 const handleError = require('./util/handleError.js');
 const { character20thEmbed } = require('./embed/character20thEmbed.js');
 const { character5thEmbed } = require('./embed/character5thEmbed');
@@ -19,7 +19,7 @@ module.exports = class HandleCharacter
             name: interaction.options.getString('name'),
             exp: interaction.options.getInteger('exp'),                      
             notes: interaction.options.getString('notes'),
-            nameChange: interaction.options.getString('name_change'),
+            nameChange: interaction.options.getString('change_name'),
             thumbnail: interaction.options.getString('image'),
             colour: interaction.options.getString('colour'),
             // Used for both v20 and v5 but in differant ways
@@ -39,7 +39,7 @@ module.exports = class HandleCharacter
             glamour: interaction.options.getInteger('glamour'),
             banality: interaction.options.getInteger('banality'),
             nightmare: interaction.options.getInteger('nightmare'),
-            imbalence: interaction.options.getInteger('imbalence'),
+            imbalance: interaction.options.getInteger('imbalance'),
             healthChimerical: interaction.options.getInteger('health_chimerical'),
             bashingChimerical: interaction.options.getInteger('bashing_chimerical'),
             lethalChimerical: interaction.options.getInteger('lethal_chimerical'),
@@ -111,7 +111,7 @@ module.exports = class HandleCharacter
     {
         const char = await DatabaseAPI.getCharacter(
             this.args.name, 
-            this.interaction,
+            this.interaction.user.id,
             undefined,
             this.splat
         );
@@ -177,7 +177,8 @@ module.exports = class HandleCharacter
 }
 
 function setFields(args, char)
-{         
+{
+    if (args.nameChange != null) char.setName(args.nameChange);  
     if (args.exp != null) char.exp.setTotal(args.exp);
     if (args.colour != null) char.colour = args.colour;
     if (args.thumbnail === 'none')
@@ -206,7 +207,7 @@ function setFields(args, char)
     if (args.glamour != null) char.glamour.setTotal(args.glamour);
     if (args.banality != null) char.banality.setTotal(args.banality);
     if (args.nightmare != null) char.nightmare.setCurrent(args.nightmare);
-    if (args.imbalance != null) char.imbalence.setCurrent(args.imbalance);
+    if (args.imbalance != null) char.imbalance.setCurrent(args.imbalance);
     if (args.healthChimerical != null) 
         char.chimericalHealth.setTotal(args.healthChimerical);
     if (args.bashingChimerical != null) 
@@ -260,9 +261,9 @@ function updateFields(args, char)
     if (args.glamour != null) char.glamour.updateCurrent(args.glamour);
     if (args.banality != null) char.banality.updateCurrent(args.banality);
     if (args.nightmare != null) char.nightmare.updateCurrent(args.nightmare);
-    if (args.imbalance != null) char.imbalence.updateCurrent(args.imbalance);
+    if (args.imbalance != null) char.imbalance.updateCurrent(args.imbalance);
     if (args.healthChimerical != null) 
-        char.chimericalHealth.updateTotal(args.healthChimerical);
+        char.chimericalHealth.updateCurrent(args.healthChimerical);
     if (args.bashingChimerical != null) 
         char.chimericalHealth.updateBashing(args.bashingChimerical);
     if (args.lethalChimerical != null) 

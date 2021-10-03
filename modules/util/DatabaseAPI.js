@@ -1,7 +1,7 @@
 'use strict';
 const Axios = require('axios');
 const { APIKey } = require('../../config.json');
-const { getCharacterClass } = require('./util');
+const { getCharacterClass } = require('./getCharacterClass');
 
 const config = {headers: {'Content-Type': 'application/json'}};
 const IP = 'localhost';
@@ -17,6 +17,7 @@ module.exports = class DatabaseAPI
         let res;
         try
         {
+            console.log(data)
             res = await Axios.post(host, data, config);
         }
         catch (error)
@@ -33,10 +34,13 @@ module.exports = class DatabaseAPI
         if (res.status == 200 && res.data)
         {
             const response = res.data;
-            console.log(response)
             if (response.status === 'exists')
             {
                 return 'exists';
+            }
+            else if (response.status === 'charOverflow')
+            {
+                return 'charOverflow';
             }
             
             return 'saved';

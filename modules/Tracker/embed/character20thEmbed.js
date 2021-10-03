@@ -86,8 +86,8 @@ module.exports.character20thEmbed = (char, client, args) =>
                     consumableTracker(char.nightmare, 0, client), false
                 );
                 embed.addField(
-                    `Imbalance ${char.imbalence.current}`, 
-                    consumableTracker(char.imbalence, 0, client), false
+                    `Imbalance ${char.imbalance.current}`, 
+                    consumableTracker(char.imbalance, 0, client), false
                 );
                 embed.addField(
                     `Chimerical Health`, 
