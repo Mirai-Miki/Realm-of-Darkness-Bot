@@ -216,7 +216,7 @@ module.exports =
                 "Green and Blue.\nExample: `colour: 35 255 144`";
 
                 const colourMatch = args.colour.match(/\d+/g);
-                if (colourMatch.length != 3)
+                if (colourMatch?.length != 3)
                 {
                     response = colourError;
                 }

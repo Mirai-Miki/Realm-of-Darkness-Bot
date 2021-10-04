@@ -61,10 +61,8 @@ Adding an ST channel will post a second non hidden message in that channel.
 # Notes
 - When a member leaves a guild, disconnect their characters and delete the member
 - When a user deletes a character, the site checks if there are no more characters for that member. Before deleting that member check if the user is registered. If so don't delete.
-- Mage20th Quint and Paradox is not being tracked correctly. The bars can overlap p331. Make them 20 points each and Quint cannot be higher then paradox.
-display that as a single 20 point bar with quint from the left and para from the right.
-- Changling Banality, werewolf rage not limited by max. Maybe add a locked propertie and if unlocked the current can exeed the max. Change colour on the bar to denote excess.
-- 10 points of temp torment gets converted to one point of permenant torment
+- Changling Banality, not limited by max.
+- Maybe swap v5 rouse checks to before the dice roll. or add a delay when posting the follow ups.
 
 
 # Commands

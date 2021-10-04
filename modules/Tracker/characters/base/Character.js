@@ -68,6 +68,8 @@ module.exports = class Character
             const value = charArgs[key];
             
             if (key === 'name') continue;
+            else if (key === 'thumbnail') continue;
+            else if (key === 'colour') continue;
             if (value != null) history.args[key] = value;
         }
         
