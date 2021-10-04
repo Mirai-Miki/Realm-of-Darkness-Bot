@@ -218,14 +218,14 @@ function setFields(args, char)
         char.chimericalHealth.setAgg(args.aggChimerical);
     // Mage 20th
     if (args.arete != null) char.arete.setCurrent(args.arete);
-    if (args.quintessence != null) char.setQuint(args.quintessence)
     if (args.paradox != null) char.setParadox(args.paradox);
+    if (args.quintessence != null) char.setQuint(args.quintessence);    
     // Wraith 20th
     if (args.corpus != null) char.corpus.setTotal(args.corpus);
     if (args.pathos != null) char.pathos.setCurrent(args.pathos);
     // Demon TF
     if (args.faith != null) char.faith.setTotal(args.faith);
-    if (args.torment != null) char.torment.setTotal(args.torment);
+    if (args.torment != null) char.setTorment(args.torment);
     // 5th edition
     if (args.willpowerSup != null) char.willpower.setSuperfical(args.willpowerSup);
     if (args.willpowerAgg != null) char.willpower.setAgg(args.willpowerAgg);
@@ -279,7 +279,7 @@ function updateFields(args, char)
     if (args.pathos != null) char.pathos.updateCurrent(args.pathos);
     // Demon TF
     if (args.faith != null) char.faith.updateCurrent(args.faith);
-    if (args.torment != null) char.torment.updateCurrent(args.torment);
+    if (args.torment != null) char.updateTorment(args.torment);
     // 5th edition
     if (args.willpowerSup != null) char.willpower.takeSuperfical(args.willpowerSup);
     if (args.willpowerAgg != null) char.willpower.takeAgg(args.willpowerAgg);

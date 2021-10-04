@@ -17,7 +17,6 @@ module.exports = class DatabaseAPI
         let res;
         try
         {
-            console.log(data)
             res = await Axios.post(host, data, config);
         }
         catch (error)

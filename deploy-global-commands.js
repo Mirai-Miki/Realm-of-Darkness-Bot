@@ -4,8 +4,6 @@ const { Routes } = require('discord-api-types/v9');
 const { clientId, token, commandPath } = require('./config.json');
 const fs = require('fs');
 
-const guildId = "699082446729117746"
-
 const commands = [];
 const commandFolders = fs.readdirSync(commandPath);
 
@@ -25,7 +23,7 @@ const rest = new REST({ version: '9' }).setToken(token);
 	try {
 		await rest.put(
 			Routes.applicationCommands(clientId),
-			{ body: new Map },
+			{ body: commands },
 		);
 
 		console.log('Successfully registered application commands.');

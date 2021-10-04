@@ -38,8 +38,16 @@ module.exports = class Consumable
         }
         else if (this.current > this.total)
         {
-            this.overflow = this.current - this.total;
-            this.current = this.total;
+            if (this.locked)
+            {
+                this.overflow = this.current - this.total;
+                this.current = this.total;
+            }
+            else if (this.current > this.maxCurrent) 
+            {
+                this.overflow = this.current - this.maxCurrent;
+                this.current = this.maxCurrent;
+            }            
         }
         this.modified += this.current - before;
     }
@@ -56,19 +64,26 @@ module.exports = class Consumable
         }
         else if (this.current > this.total)
         {
-            this.current = this.total;
+            if (this.locked)
+            {
+                this.current = this.total
+            }
+            else if (this.current > this.maxCurrent)
+            {
+                this.current = this.maxCurrent;
+            }
         }
         this.modified += this.current - before;
     }
 
-    setTotal(amount)
+    setTotal(amount, inc=true)
     {
         this.overflow = 0;
         const before = this.total;
         let offset = amount - this.total;
         if (offset < 0) offset = 0;
         this.total = amount;
-        this.updateCurrent(offset);
+        if (inc) this.updateCurrent(offset);
         if (this.current > this.total) this.current = this.total;
         this.modified += this.total - before;
     }

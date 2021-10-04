@@ -92,13 +92,9 @@ function demonTFCommands()
             .setDescription("Sets you total Faith to the number. " +
                 "Must be between 1 and 10. DtF Corebook p249"))
         .addIntegerOption(option =>
-            option.setName("torment_permanent")
-            .setDescription("Sets you total Permanent Torment to the number. " +
+            option.setName("torment")
+            .setDescription("Sets you Permanent Torment to the number. " +
                 "Must be between 1 and 10. DtF Corebook p160"))
-        .addIntegerOption(option =>
-            option.setName("torment_temporary")
-            .setDescription("Sets you total Temporary Torment to the number. " +
-                "Must be between 0 and 10. DtF Corebook p160"))
         .addIntegerOption(option =>
             option.setName("exp")
             .setDescription("Sets your total Exp to the number. " +
@@ -154,11 +150,7 @@ function demonTFCommands()
             .setDescription("Updates your Faith by the amount. " +
                 "Must be between -15 and 15. DtF Corebook p249"))
         .addIntegerOption(option =>
-            option.setName("torment_permanent")
-            .setDescription("Updates your Permanent Torment by the amount. " +
-                "Must be between -15 and 15. DtF Corebook p160"))
-        .addIntegerOption(option =>
-            option.setName("torment_temporary")
+            option.setName("torment")
             .setDescription("Updates your Temporary Torment by the amount. " +
                 "Must be between -15 and 15. DtF Corebook p160"))
         .addIntegerOption(option =>

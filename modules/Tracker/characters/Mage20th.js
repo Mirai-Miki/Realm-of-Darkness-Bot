@@ -36,12 +36,12 @@ module.exports = class Mage extends Character20th
         if (update > 20) update = 20;
         else if (update < 0) update = 0;
 
-        this.quintParadox.setTotal(update);
+        this.quintParadox.setTotal(update, false);
     }
 
     setParadox(amount)
     {
-        this.quintParadox.setTotal(amount);
+        this.quintParadox.setTotal(20 - amount, false);
     }
 
     deserilize(char)
