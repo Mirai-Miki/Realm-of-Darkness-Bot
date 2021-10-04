@@ -1,5 +1,5 @@
 'use strict';
-const { minToMilli } = require('../util/util.js');
+const { minToMilli } = require('../util/misc.js');
 const DatabaseAPI = require('../util/DatabaseAPI');
 const { character20thEmbed } = require('./embed/character20thEmbed.js');
 const { character5thEmbed } = require('./embed/character5thEmbed.js');

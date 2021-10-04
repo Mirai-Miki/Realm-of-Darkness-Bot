@@ -3,7 +3,7 @@ const Roll = require('../Roll.js');
 const Rouse = require('./Rouse.js');
 const { MessageActionRow, MessageSelectMenu, 
     MessageButton, MessageEmbed } = require('discord.js');
-const { minToMilli } = require('../../util/Util.js');
+const { minToMilli } = require('../../util/misc.js');
 
 
 const Result = 

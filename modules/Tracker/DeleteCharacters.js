@@ -1,5 +1,5 @@
 'use strict';
-const { minToMilli } = require('../util/util.js');
+const { minToMilli } = require('../util/misc.js');
 const DatabaseAPI = require('../util/DatabaseAPI');
 const { MessageActionRow, MessageSelectMenu, MessageButton } = require('discord.js')
 

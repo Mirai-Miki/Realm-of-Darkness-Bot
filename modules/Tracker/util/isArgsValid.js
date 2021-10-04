@@ -1,6 +1,6 @@
 'use strict';
 const { MessageActionRow, MessageButton } = require('discord.js');
-const { isSupporter, correctName } = require('../../util/Util.js');
+const { isSupporter, correctName } = require('../../util/misc.js');
 const { Versions } = require('../../util/Constants')
 
 
