@@ -46,11 +46,11 @@ module.exports = {
         .addSubcommand(subcommand =>        
             subcommand
                 .setName('initiative')
-                .setDescription('Initiative roll using Dex + Wits p271')
+                .setDescription('Initiative roll using Dex + Wits')
                 .addIntegerOption(option =>
                     option.setName("dexterity_wits")
                     .setDescription("Your Dexterity plus you Wits." +
-                        " Must be between 1 and 50"))
+                        " Must be between 0 and 50"))
                 .addStringOption(option =>
                     option.setName("character")
                     .setDescription("Name of the character making the roll."))

@@ -13,8 +13,8 @@
 - The roller has been tied into the tracker. Using willpower and Character options will automaticly update you willpower. It will also warn you if you attempt to use willpower with none available.
 
 # v5 rolls
-- Added Rouse roll
-- Res roll can select resonance and or temp from a list
+- Added a v5 Rouse roll
+- v5 Res roll can select resonance and or temp from a list
 - Added surge option to v5 roll
 - Added rouse option to v5 roll
 - Added spec option to v5 roll
@@ -30,6 +30,9 @@
 - 20th edition vamipres can now define their morality
 - Find a character now brings up a drop down menu to select that character
 - Deleting characters is now done via a drop down menu and a confirmation will be asked before it is deleted.
+- Mage Quintessence and Paradox has been changed to more accuratly reflect the sheet wheel and rules.
+- Rage can now exceed its maximum as allowed by the rules.
+- Demon temporary torment will now automaticly add +1 permanent torment when it hits 10 as well as reset to 0.
 
 
 # Ideas

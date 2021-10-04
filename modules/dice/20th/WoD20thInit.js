@@ -13,10 +13,11 @@ module.exports = class WoD20thInit
 
     isArgsValid()
     {
-        if (this.stats < 1 || this.stats > 50)
+        if (this.modifier == null) this.modifier = 0; 
+        if (this.modifier < 0 || this.modifier > 50)
         {
             this.interaction.reply("Your Dex + Wits must be between" +
-                " 1 and 50.");
+                " 0 and 50.");
         }
         else return true;
         return false;

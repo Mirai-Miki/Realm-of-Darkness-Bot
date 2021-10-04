@@ -43,6 +43,7 @@ module.exports = class GeneralRoll
 
             let match = valid[0];
             const dice = parseInt(match.match(/\d+/)[0]);
+            match = match.replace(/\d+/, '');
             const sides = parseInt(match.match(/\d+/)[0]);
 
             if (dice > 50 || sides > 500)
