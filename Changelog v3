@@ -35,10 +35,8 @@
 - Demon temporary torment will now automaticly add +1 permanent torment when it hits 10 as well as reset to 0.
 
 # Known Bugs
-- Resonance description comes up with ```````` when negligable
 - Hidden character in embeds not so hidden on some devies. need to swap to another.
-- Change cancel-ones to no-botch
-
+- Change v5 Dice to unicode characters not emojis
 
 # Ideas
 - /find @user (ST only). Brings a list of characters in the server. 
@@ -67,11 +65,15 @@ Adding an ST channel will post a second non hidden message in that channel.
 
 - Chronicles of Darkness Dice roller
 
+- Update v5 Emojis to look more like dice
+
 # Notes
 - When a member leaves a guild, disconnect their characters and delete the member
 - When a user deletes a character, the site checks if there are no more characters for that member. Before deleting that member check if the user is registered. If so don't delete.
 - Changling Banality, not limited by max.
 - Maybe swap v5 rouse checks to before the dice roll. or add a delay when posting the follow ups.
+- Fix supporter stuff to work with new DB. Find a way to update From the role on my server
+- Need to delete old History
 
 
 # Commands

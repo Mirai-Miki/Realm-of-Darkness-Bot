@@ -14,6 +14,10 @@ module.exports = class TrackerChannel
     {
         // TODO check is user is ST
 
+        if (!this.interaction.guild)
+        {
+            return 'Sorry, this command can only be used in a server.'
+        }
         if (!this.channel.isText())
         {
             return 'Sorry, Please select a text channel.';
@@ -37,20 +41,22 @@ module.exports = class TrackerChannel
             return;
         }
 
-        const response = DatabaseAPI.setTrackerChannel();
+        const response = await DatabaseAPI.setTrackerChannel(
+            this.interaction.guild, this.channel.id);
+
         if (!response)
         {
             content = 'There was an error accessing the Database. Please try again' +
                 ' later.\nIf this issue persists please report it at the ' +
                 '[Realm of Darkness Server](<https://discord.gg/7xMqVrVeFt>).';
         }
-        else if (response === 'removed')
+        else if (response.removed)
         {
-            content = `<${this.channel.name}> Is no longer the tracker Channel.`;
+            content = `#${this.channel.name} Is no longer the tracker Channel.`;
         }
         else
         {
-            content = `<$${this.channel.name}> has been set as the tracker Channel.`;
+            content = `#${this.channel.name} has been set as the tracker Channel.`;
         }
 
         this.interaction.reply({content: content, ephemeral: true});

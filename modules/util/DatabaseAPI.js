@@ -14,6 +14,7 @@ module.exports = class DatabaseAPI
         const host = `http://${IP}:${PORT}/bot/character/save`;
         const data = character.serialize();
         data['APIKey'] = APIKey;
+        
         let res;
         try
         {
@@ -179,14 +180,20 @@ module.exports = class DatabaseAPI
         }
     }
 
-    static async setTrackerChannel(channelId, guildId)
+    static async setTrackerChannel(guild, channelId)
     {
-        const host = `http://${IP}:${PORT}/bot/chronicle/channel`;
+        const host = `http://${IP}:${PORT}/bot/chronicle/channel/set`;
+
         const data = {
             APIKey: APIKey,
-            guild_id: guildId,
+            guild: {
+                id: guild.id,
+                member_count: guild.memberCount,
+                icon_url: guild.iconURL() ?? '',
+            },
             channel_id: channelId,
         }
+
         let res;
         try
         {
@@ -206,6 +213,44 @@ module.exports = class DatabaseAPI
         if (res.status == 200 && res.data)
         {
             const response = res.data;
+            return response;
+        }
+        else
+        {
+            console.error("Error in DatabaseAPI.deleteCharacters()")
+            console.error(`Status: ${res.status}`)
+            return undefined;
+        }
+    }
+
+    static async getTrackerChannel(guildId)
+    {
+        const host = `http://${IP}:${PORT}/bot/chronicle/channel/get`;
+
+        const data = {
+            APIKey: APIKey,
+            guild_id: guildId
+        }
+
+        let res;
+        try
+        {
+            res = await Axios.post(host, data, config);
+        }
+        catch (error)
+        {
+            if (error.code === 'ECONNREFUSED')
+            {
+                console.error("Error Database refused connection.\nCode: " +
+                    "ECONNREFUSED")
+            }
+            else console.error(error);
+            return undefined;
+        }
+
+        if (res.status == 200 && res.data)
+        {
+            const response = res.data.channel_id;
             return response;
         }
         else

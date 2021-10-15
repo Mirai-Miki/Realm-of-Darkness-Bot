@@ -1,12 +1,13 @@
 'use strict';
+const DatabaseAPI = require('../../util/DatabaseAPI');
 
 module.exports = async function (embed, content, interaction)
 {
     const client = interaction.client;
+    if (!interaction.guildId) return;
 
-    const channelId = '719423357380198440'; // Change to a API retrieve
+    const channelId = await DatabaseAPI.getTrackerChannel(interaction.guildId);
     let channel;
-
     if (channelId)
     {
         channel = await client.channels.fetch(channelId);
@@ -19,5 +20,4 @@ module.exports = async function (embed, content, interaction)
     embed.content = content;
 
     channel.send(embed);
-    // DiscordAPI.getTrackerChannel(guildId)
 }
