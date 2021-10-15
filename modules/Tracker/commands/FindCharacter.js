@@ -1,10 +1,10 @@
 'use strict';
-const { minToMilli } = require('../util/misc.js');
-const DatabaseAPI = require('../util/DatabaseAPI');
-const { character20thEmbed } = require('./embed/character20thEmbed.js');
-const { character5thEmbed } = require('./embed/character5thEmbed.js');
+const { minToMilli } = require('../../util/misc.js');
+const DatabaseAPI = require('../../util/DatabaseAPI');
+const { character20thEmbed } = require('../embed/character20thEmbed.js');
+const { character5thEmbed } = require('../embed/character5thEmbed.js');
 const { MessageActionRow, MessageSelectMenu } = require('discord.js');
-const { Versions } = require('../util/Constants.js');
+const { Versions } = require('../../util/Constants.js');
 
 module.exports = class FindCharacter
 {

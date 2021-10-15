@@ -5,6 +5,7 @@ const { character20thEmbed } = require('./embed/character20thEmbed.js');
 const { character5thEmbed } = require('./embed/character5thEmbed');
 const DatabaseAPI = require("../util/DatabaseAPI");
 const { Versions } = require('../util/Constants');
+const sendToTrackerChannel = require('./util/sendToTrackerChan');
 
 module.exports = class HandleCharacter
 {
@@ -157,6 +158,19 @@ module.exports = class HandleCharacter
 
     async reply()
     {
+        const args = this.character.history[0].args
+        const parsedArgs = [];
+        let content = `Command: ${this.character.history[0].mode} { `;
+
+        for (const key of Object.keys(args))
+        {
+            const value = args[key];
+
+            parsedArgs.push(`${key}: ${value}`);
+        }
+        content += (parsedArgs.join(', ') + ' }');
+
+        sendToTrackerChannel(this.response, content, this.interaction);
         try
         {
             await this.interaction.reply(this.response);

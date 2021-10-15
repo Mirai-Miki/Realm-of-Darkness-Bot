@@ -1,7 +1,8 @@
 'use strict';
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const Find = require('../../modules/Tracker/FindCharacter')
-const DeleteCharacters = require('../../modules/Tracker/DeleteCharacters')
+const Find = require('../../modules/Tracker/commands/FindCharacter');
+const TrackerChannel = require('../../modules/Tracker/commands/TrackerChannel');
+const DeleteCharacters = require('../../modules/Tracker/commands/DeleteCharacters')
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -17,6 +18,16 @@ module.exports = {
     .addSubcommand(subcommand => subcommand
         .setName('delete')
         .setDescription('Choose which Character you wish to Delete.')      
+    )
+    .addSubcommand(subcommand => subcommand
+        .setName('channel')
+        .setDescription('Selects a channel for copies of all tracking posts' +
+            ' to be sent to. [ST only]')
+        .addChannelOption(option =>
+            option.setName("channel")
+            .setDescription("The channel to be selected. Or removes a channel" +
+                " if already selected.")
+            .setRequired(true))  
     ),      
 	
 	async execute(interaction) {
@@ -40,6 +51,11 @@ module.exports = {
                     deleteChars.constructComponents();
                     await deleteChars.reply();
                 }
+                break;
+
+            case 'channel':
+                const trackerChannel = new TrackerChannel(interaction);
+                trackerChannel.setChannel();
                 break;
         }
 	}

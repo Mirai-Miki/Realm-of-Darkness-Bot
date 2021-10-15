@@ -15,7 +15,22 @@ module.exports =
         if (args.moralityType) args.moralityType = correctName(args.moralityType);
         if (args.nameChange) args.nameChange = correctName(args.nameChange);
 
-        if (args.name.length > 50)
+        let wasProvided = false;
+        for (const key of Object.keys(args))
+        {
+            if (key === 'name') continue;
+            else if (args[key] != null)
+            {
+                wasProvided = true;
+                break;
+            }
+        }
+
+        if (!wasProvided) 
+        {
+            response = 'You must include at least one argument.'
+        }
+        else if (args.name.length > 50)
         {
             response = "Character Name must not be longer than 50.";
         }
@@ -254,8 +269,23 @@ module.exports =
     {
         let response = '';
         args.name = correctName(args.name);
-        
-        if (args.exp && (args.exp < -10000 || args.exp > 10000))
+
+        let wasProvided = false;
+        for (const key of Object.keys(args))
+        {
+            if (key === 'name') continue;
+            else if (args[key] != null)
+            {
+                wasProvided = true;
+                break;
+            }
+        }
+
+        if (!wasProvided) 
+        {
+            response = 'You must include at least one argument.'
+        }
+        else if (args.exp && (args.exp < -10000 || args.exp > 10000))
         {
             response = "exp must be between -10000 and 10000.";
         }        

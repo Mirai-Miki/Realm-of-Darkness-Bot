@@ -174,11 +174,18 @@ module.exports = class Resonance
         embed.setURL('https://discord.gg/Za738E6');
 
         embed.addField("Result", `\`\`\`${this.temp.name}` +
-            `${this.temp.name == 'Negligible' ? '' : (' '+this.res.name)}\`\`\``, true);
+            `${this.temp.name == 'Negligible' ? '' : (' '+this.res.name)}\`\`\``, 
+            true);
         embed.addField("Temperament", 
-            `\`\`\`${this.temp.dice ? this.temp.dice : this.temp.name}\`\`\``, true);
-        embed.addField("Resonance", 
-            `\`\`\`${this.res.dice ? this.res.dice : this.res.name}\`\`\``, true);
+            `\`\`\`${this.temp.dice ? this.temp.dice : this.temp.name}\`\`\``, 
+            true);
+        if (this.res.dice || this.res.name)
+        {
+            embed.addField("Resonance", 
+                `\`\`\`${this.res.dice ? this.res.dice : this.res.name}\`\`\``, 
+                true);
+        }
+            
         
         
         if (this.res.mechanic) 

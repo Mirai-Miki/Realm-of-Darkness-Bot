@@ -34,6 +34,11 @@
 - Rage can now exceed its maximum as allowed by the rules.
 - Demon temporary torment will now automaticly add +1 permanent torment when it hits 10 as well as reset to 0.
 
+# Known Bugs
+- Resonance description comes up with ```````` when negligable
+- Hidden character in embeds not so hidden on some devies. need to swap to another.
+- Change cancel-ones to no-botch
+
 
 # Ideas
 - /find @user (ST only). Brings a list of characters in the server. 
@@ -56,7 +61,11 @@ Adding an ST channel will post a second non hidden message in that channel.
 
 - Nightmare dice for changeling. Only 10 is meaningingful for that. Maybe draw a custom nightmare 10 for the roll.
 
-- Track user usage over 14days/30days/1year and all time
+- Track user usage over 14days/30days/1year and all time. Only need to keep one date. The last updated. From this can derive the rest through filters.
+
+- Add a consumable X amount at X time interval.
+
+- Chronicles of Darkness Dice roller
 
 # Notes
 - When a member leaves a guild, disconnect their characters and delete the member

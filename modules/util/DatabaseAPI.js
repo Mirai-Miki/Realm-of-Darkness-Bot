@@ -179,6 +179,43 @@ module.exports = class DatabaseAPI
         }
     }
 
+    static async setTrackerChannel(channelId, guildId)
+    {
+        const host = `http://${IP}:${PORT}/bot/chronicle/channel`;
+        const data = {
+            APIKey: APIKey,
+            guild_id: guildId,
+            channel_id: channelId,
+        }
+        let res;
+        try
+        {
+            res = await Axios.post(host, data, config);
+        }
+        catch (error)
+        {
+            if (error.code === 'ECONNREFUSED')
+            {
+                console.error("Error Database refused connection.\nCode: " +
+                    "ECONNREFUSED")
+            }
+            else console.error(error);
+            return undefined;
+        }
+
+        if (res.status == 200 && res.data)
+        {
+            const response = res.data;
+            return response;
+        }
+        else
+        {
+            console.error("Error in DatabaseAPI.deleteCharacters()")
+            console.error(`Status: ${res.status}`)
+            return undefined;
+        }
+    }
+
     static async sendUserInfo()
     {
         // create or update user info.

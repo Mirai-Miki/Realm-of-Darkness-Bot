@@ -39,7 +39,7 @@ module.exports = {
                     option.setName("character")
                     .setDescription("Name of the character making the roll."))
                 .addBooleanOption(option =>
-                    option.setName("cancel_ones")
+                    option.setName("no_botch")
                         .setDescription("Stops any 1s from removing successes" +
                             " from the result."))
         )

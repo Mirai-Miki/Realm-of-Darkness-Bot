@@ -19,7 +19,7 @@ module.exports = class WoD20thRoll
         this.spec = this.interaction.options.getString('speciality');
         this.reason = this.interaction.options.getString('notes');
         this.character = this.interaction.options.getString('character');
-        this.cancelOnes = this.interaction.options.getBoolean('cancel_ones');
+        this.cancelOnes = this.interaction.options.getBoolean('no_botch');
     }
 
     async isArgsValid()
@@ -100,12 +100,12 @@ module.exports = class WoD20thRoll
             this.results.rolls.push(result);
 
             if (result == 1)
-            {            
-                this.results.botch = true;
+            {               
                 this.results.failed.push(result);
 
                 if (!this.cancelOnes)
                 {
+                    this.results.botch = true;
                     removed += 1
                 }                
             }
@@ -172,7 +172,7 @@ module.exports = class WoD20thRoll
         if (this.willpower) title += ` | WP`;
         if (this.mod) title += ` | Mod ${this.mod}`;
         if (this.spec) title += ` | Spec`;
-        if (this.cancelOnes) title += ` | Cancel Ones`;
+        if (this.cancelOnes) title += ` | No Botch`;
         embed.setTitle(title);
 
         const sortedResults = this.results.rolls.map((x) => x);

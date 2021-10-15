@@ -28,7 +28,7 @@ module.exports = function(interaction, error, handler)
     }
     else if (error === 'handlerReply')
     {
-        errorMessage = 'There was in the Character Handler' +
+        errorMessage = 'There was an Error in the Character Handler' +
         '.\nIf you see this message please report it at the ' +
         '[Realm of Darkness Server](<https://discord.gg/7xMqVrVeFt>).';
     }
