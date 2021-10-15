@@ -155,6 +155,9 @@ module.exports = class GeneralRoll
             embed.addField('Notes', results.reason);
         }
         embed.setURL('https://discord.gg/Za738E6');
+
+        embed.setFooter("All commands are being replaced by Slash Commands on the 27/10.\n" +
+            "For more info please visit the RoD Server.")
         return embed;
     }
 

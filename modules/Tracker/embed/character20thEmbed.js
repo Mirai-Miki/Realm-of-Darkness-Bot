@@ -142,6 +142,9 @@ module.exports.character20thEmbed = (char, tracker, unknownKeys) =>
             }
         }
 
+        embed.setFooter("All commands are being replaced by Slash Commands on the 27/10.\nPlease note that a database reset will also occur at this time.\nPlease make sure you note your character details before that.\n"+
+            "For more info please visit the RoD Server.")
+
         if (history) return {embed: embed, history: history};
         else return embed;        
 }

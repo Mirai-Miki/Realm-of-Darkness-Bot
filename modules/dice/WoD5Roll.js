@@ -402,6 +402,9 @@ module.exports = class WoD5Roll
         if (this.notes) embed.addField("Notes", this.notes);
         if (this.reroll.notes) embed.addField("Reroll Notes", this.reroll.notes);
 
+        embed.setFooter("All commands are being replaced by Slash Commands on the 27/10.\n" +
+            "For more info please visit the RoD Server.")
+
         // Send it all back            
         return {'message': message, 'embed': embed};
     }

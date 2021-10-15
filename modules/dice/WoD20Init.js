@@ -86,6 +86,9 @@ module.exports = class WoD20Roll
             embed.addField('Notes', results.reason);
         }
 
+        embed.setFooter("All commands are being replaced by Slash Commands on the 27/10.\n" +
+            "For more info please visit the RoD Server.")
+
         return embed;
     }
 

@@ -165,6 +165,9 @@ module.exports = class WoD5Roll
 
         if (notes) embed.addField("Notes", notes);
 
+        embed.setFooter("All commands are being replaced by Slash Commands on the 27/10.\n" +
+            "For more info please visit the RoD Server.")
+
         return embed;
     }
 }
