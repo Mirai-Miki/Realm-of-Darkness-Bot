@@ -1,5 +1,6 @@
 'use strict';
 const Consumable = require("../structures/Consumable");
+const Counter = require("../structures/Counter");
 const DamageTracker20th = require("../structures/DamageTracker20th");
 const Character20th = require("./base/Character20th");
 const { Splats } = require('../../util/Constants');
@@ -11,9 +12,8 @@ module.exports = class Changeling extends Character20th
         super(interaction, willpower);
         this.splat = 'Changeling';
         this.glamour = new Consumable(glamour, glamour, 1);
-        this.banality = new Consumable(banality, banality, 1);
-        this.nightmare = new Consumable(10, nightmare, 0);
-        this.imbalance = new Consumable(10, imbalance, 0);
+        this.banality = new Counter(banality, 0);
+        this.nightmare = new Counter(imbalance, nightmare);
         this.chimericalHealth = new DamageTracker20th();
     }
     
@@ -25,13 +25,12 @@ module.exports = class Changeling extends Character20th
     deserilize(char)
     {
         super.deserilize(char);
-        this.glamour.setTotal(char.glamour.total);
-        this.banality.setTotal(char.banality.total);
+        this.glamour.setTotal(char.glamour.total);        
         this.glamour.setCurrent(char.glamour.current);
-        this.banality.setCurrent(char.banality.current);
-
-        this.nightmare.setCurrent(char.nightmare);
-        this.imbalance.setCurrent(char.imbalance);
+        this.banality.setPermanant(char.banality.total);
+        this.banality.setTemporary(char.banality.current);
+        this.nightmare.setPermanant(char.imbalance);
+        this.nightmare.setTemporary(char.nightmare);        
 
         this.chimericalHealth.setTotal(char.chimerical.total);
         this.chimericalHealth.setBashing(char.chimerical.bashing);
@@ -49,11 +48,11 @@ module.exports = class Changeling extends Character20th
             current: this.glamour.current,
         };
         s.character['banality'] = {
-            total: this.banality.total,
-            current: this.banality.current,
+            total: this.banality.permanant,
+            current: this.banality.temporary,
         };
-        s.character['nightmare'] = this.nightmare.current;
-        s.character['imbalance'] = this.imbalance.current;
+        s.character['nightmare'] = this.nightmare.temporary;
+        s.character['imbalance'] = this.nightmare.permanant;
         s.character['chimerical'] = {
             total: this.chimericalHealth.total,
             bashing: this.chimericalHealth.bashing,

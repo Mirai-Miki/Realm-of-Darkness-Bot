@@ -7,6 +7,7 @@ const DotColour =
     purpleBlack: 1,
     royalWhite: 2,
     royalBlack: 3,
+    yellowBlack: 4,
 }
 
 module.exports.character20thEmbed = (char, client, args) =>
@@ -81,23 +82,55 @@ module.exports.character20thEmbed = (char, client, args) =>
                 );
                 break;
 
-            case 'Changeling':  
+            case 'Changeling':
+                embed.addField(
+                    `Imbalance ${char.nightmare.permanant}`, 
+                    consumableTracker(
+                        {
+                            total: 10,
+                            current: char.nightmare.permanant
+                        }, 
+                        DotColour.royalWhite, client
+                    ), 
+                    false
+                );
                 embed.addField(
                     `Glamour [${char.glamour.current}/${char.glamour.total}]`, 
-                    consumableTracker(char.glamour, DotColour.bloodRed, client, 10), false
+                    consumableTracker(char.glamour, DotColour.royalBlack, client, 10), false
                 );
                 embed.addField(
-                    `Banality [${char.banality.current}/${char.banality.total}]`, 
-                    consumableTracker(char.banality, DotColour.royalBlack, client, 10), false
+                    `Banality Permanant ${char.banality.permanant}`, 
+                    consumableTracker(
+                        {
+                            total: 10,
+                            current: char.banality.permanant
+                        }, 
+                    DotColour.royalWhite, client, 10
+                    ), 
+                    false
                 );
                 embed.addField(
-                    `Nightmare ${char.nightmare.current}`, 
-                    consumableTracker(char.nightmare, DotColour.purpleBlack, client), false
+                    `Banality Temporary ${char.banality.temporary}`, 
+                    consumableTracker(
+                        {
+                            total: 10,
+                            current: char.banality.temporary
+                        },
+                        DotColour.yellowBlack, client, 10
+                    ), 
+                    false
                 );
                 embed.addField(
-                    `Imbalance ${char.imbalance.current}`, 
-                    consumableTracker(char.imbalance, DotColour.royalWhite, client), false
-                );
+                    `Nightmare ${char.nightmare.temporary}`, 
+                    consumableTracker(
+                        {
+                            total: 10,
+                            current: char.nightmare.temporary
+                        }, 
+                        DotColour.bloodRed, client
+                    ), 
+                    false
+                );                
                 embed.addField(
                     `Chimerical Health`, 
                     damageTracker(char.chimericalHealth, client), false
@@ -118,7 +151,7 @@ module.exports.character20thEmbed = (char, client, args) =>
             case 'Demon':  
                 embed.addField(
                     `Faith [${char.faith.current}/${char.faith.total}]`, 
-                    consumableTracker(char.faith, DotColour.purpleBlack, client, 10), false
+                    consumableTracker(char.faith, DotColour.bloodRed, client, 10), false
                 );
                 embed.addField(
                     `Torment - Permenent: ${char.torment.permanant}`, 
@@ -177,7 +210,7 @@ function damageTracker(health, client) {
     for (let i = 0; i < totalHealth; i++) 
     {
         if (i == 2 || i == 4 || i == 6 || i == 8 || i == 10 || i == 12 || i == 14) 
-            tracker += 'ﾠ';
+            tracker += '⠀';
 
         if (agg) 
         {
@@ -201,7 +234,7 @@ function damageTracker(health, client) {
         }
         else console.error("Error in damageTracker()");        
     }
-    tracker += 'ﾠ';
+    tracker += '⠀';
     
     let total = health.getTotalDamage();
     if (health.overflow)
@@ -272,7 +305,7 @@ function consumableTracker(field, color, client, pad=0, noEmoji=false)
 
     for (let i = 0; i < total; i++) 
     {
-        if (i == 5 || i == 10) tracker += 'ﾠ';
+        if (i == 5 || i == 10) tracker += '⠀';
 
         if (i >= field.total && i < field.current) tracker += emoji.overflow;
         else if (i < field.current) 
@@ -291,12 +324,14 @@ function consumableTracker(field, color, client, pad=0, noEmoji=false)
                 case DotColour.royalWhite:
                     tracker += emoji.royalWhite;
                     break;
+                case DotColour.yellowBlack:
+                    tracker += emoji.overflow;
             }
         }
         else if (i < field.total) tracker += emoji.emptyDot;
         else tracker += emoji.blackDot;                 
     }
-    tracker += 'ﾠ';
+    tracker += '⠀';
     return tracker;
 }
 
@@ -308,7 +343,7 @@ function quintParaTracker(quintPara, client)
 
     for (let i = 0; i < 20; i++) 
     {
-        if (i == 5 || i == 15) tracker += 'ﾠ';
+        if (i == 5 || i == 15) tracker += '⠀';
         else if (i == 10) tracker += '\n';
 
         if (i < quintPara.current) tracker += emoji.royalWhite;

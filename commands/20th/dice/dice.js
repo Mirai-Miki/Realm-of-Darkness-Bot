@@ -1,12 +1,12 @@
 'use strict';
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const WoD20thRoll = require('../../modules/dice/20th/WoD20thRoll.js');
-const WoD20thInit = require('../../modules/dice/20th/WoD20thInit.js');
-const GeneralRoll = require('../../modules/dice/GeneralRoll');
+const WoD20thRoll = require('../../../modules/dice/20th/WoD20thRoll.js');
+const WoD20thInit = require('../../../modules/dice/20th/WoD20thInit.js');
+const GeneralRoll = require('../../../modules/dice/GeneralRoll');
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('20th')
+		.setName('dice')
 		.setDescription('Dice rolls for the 20th Anniversary Edition Game.')
 		.addSubcommand(subcommand =>        
             subcommand

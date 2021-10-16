@@ -69,7 +69,7 @@ module.exports = class TrackerChannel
         const response = await DatabaseAPI.getSTRoles(
             this.interaction.guild.id);
 
-        if (response == undefined)
+        if (response === undefined)
         {
             content = 'There was an error accessing the Database. Please try again' +
                 ' later.\nIf this issue persists please report it at the ' +

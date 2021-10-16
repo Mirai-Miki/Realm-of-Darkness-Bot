@@ -1,5 +1,6 @@
 'use strict';
 const DatabaseAPI = require('../../util/DatabaseAPI');
+const { canSendMessage, canEmbed } = require('../../util/misc')
 
 module.exports = class TrackerChannel
 {
@@ -10,15 +11,30 @@ module.exports = class TrackerChannel
         this.channel = interaction.options.getChannel('channel');
     }
 
-    isArgsValid()
+    async isArgsValid()
     {
-        // TODO check is user is ST
-
+        const member = this.interaction.member;        
+        
         if (!this.interaction.guild)
         {
             return 'Sorry, this command can only be used in a server.'
         }
-        if (!this.channel.isText())
+
+        const roles = await DatabaseAPI.getSTRoles(this.interaction.guild.id);
+
+        if (roles === undefined)
+        {
+            return 'There was an error accessing the Database. Please try again' +
+            ' later.\nIf this issue persists please report it at the ' +
+            '[Realm of Darkness Server](<https://discord.gg/7xMqVrVeFt>).';
+        }
+        else if (member && (!member.permissions.has("ADMINISTRATOR") && 
+            !member.roles.cache.hasAny(...roles)))
+        {
+            return 'Sorry, you must either be an Administrator or Storyteller' +
+                ' to use this command.';
+        }
+        else if (!this.channel.isText())
         {
             return 'Sorry, Please select a text channel.';
         }
@@ -26,15 +42,23 @@ module.exports = class TrackerChannel
         {
             return 'Sorry, the channel cannot be a Thread.'
         }
-
-        // TODO Check channel permissions. The bot needs to be able to see,
-        // Post and Embed Links
+        else if (!canSendMessage(this.channel))
+        {
+            return `Sorry, you need to change the channel permissions to` +
+                ' use that channel. I need the "View Channel", "Send Messages"' +
+                ' and "Embed Links" Permissions to work correctly.';
+        }
+        else if (!canEmbed(this.channel))
+        {
+            return `Sorry, I need the "Embed Links" permission` +
+                ' to work in this channel.';
+        }
         return '';
     }
 
     async setChannel()
     {
-        let content = this.isArgsValid();
+        let content = await this.isArgsValid();
         if (content)
         {
             this.interaction.reply({content: content, ephemeral: true});
@@ -43,7 +67,6 @@ module.exports = class TrackerChannel
 
         const response = await DatabaseAPI.setTrackerChannel(
             this.interaction.guild, this.channel.id);
-
         if (!response)
         {
             content = 'There was an error accessing the Database. Please try again' +

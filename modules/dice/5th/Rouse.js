@@ -49,24 +49,10 @@ module.exports = class Resonance
 
     constructEmbed()
     {
-        const client = this.interaction.client;
-        const redDice = {
-            1: client.emojis.resolve('886257732028596315').toString(),
-            2: client.emojis.resolve('886257745743999066').toString(),
-            3: client.emojis.resolve('886257759794888726').toString(),
-            4: client.emojis.resolve('886257774168797254').toString(),
-            5: client.emojis.resolve('886257791587741807').toString(),
-            6: client.emojis.resolve('886257808964734997').toString(),
-            7: client.emojis.resolve('886257824148107304').toString(),
-            8: client.emojis.resolve('886257842657579018').toString(), 
-            9: client.emojis.resolve('886257860227514380').toString(),
-            10: client.emojis.resolve('886448649075306496').toString(),
-        }
-
         const diceMess = [];
         for (const dice of this.results.dice)
         {
-            diceMess.push(redDice[dice]);
+            diceMess.push(dice);
         }
 
         const embed = new MessageEmbed();

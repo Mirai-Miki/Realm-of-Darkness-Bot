@@ -116,36 +116,6 @@ module.exports = class WoD5thRoll
         
         let blackResult = [];
         let hungerResult = [];
-        
-        const client = this.interaction.client;
-        const hunger = 
-        {
-            1: client.emojis.resolve('886257732028596315').toString(),
-            2: client.emojis.resolve('886257745743999066').toString(),
-            3: client.emojis.resolve('886257759794888726').toString(),
-            4: client.emojis.resolve('886257774168797254').toString(),
-            5: client.emojis.resolve('886257791587741807').toString(),
-            6: client.emojis.resolve('886257808964734997').toString(),
-            7: client.emojis.resolve('886257824148107304').toString(),
-            8: client.emojis.resolve('886257842657579018').toString(), 
-            9: client.emojis.resolve('886257860227514380').toString(),
-            10: client.emojis.resolve('886448649075306496').toString(),
-        }
-
-        const blackDice = 
-        {
-            1: client.emojis.resolve('886604474842505217').toString(),
-            2: client.emojis.resolve('886257880372752394').toString(),
-            3: client.emojis.resolve('886257915059654717').toString(),
-            4: client.emojis.resolve('886257935431368754').toString(),
-            5: client.emojis.resolve('886257951428452422').toString(),
-            6: client.emojis.resolve('886257965567471626').toString(),
-            7: client.emojis.resolve('886257979769368627').toString(),
-            8: client.emojis.resolve('886258001713971240').toString(), 
-            9: client.emojis.resolve('886258017614561361').toString(),
-            10: client.emojis.resolve('886258032709865492').toString(),
-        }
-
 
         // Result Loop
         for (const dice of this.results.roll) 
@@ -153,11 +123,11 @@ module.exports = class WoD5thRoll
             // Adding the dice results to the dice fields
             if (dice.type == 'v5b')
             {
-                blackResult.push(blackDice[dice.result]);
+                blackResult.push(dice.result);
             }
             else 
             {
-                hungerResult.push(hunger[dice.result]);
+                hungerResult.push(dice.result);
             }      
         }
 

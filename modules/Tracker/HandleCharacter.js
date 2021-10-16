@@ -72,7 +72,7 @@ module.exports = class HandleCharacter
 
     newCharacter()
     {
-        const Character = getCharacterClass(this.splat);
+        const Character = getCharacterClass(this.splat + this.version);
         const char = new Character(this.interaction);
         char.setName(this.args.name);
         setFields(this.args, char);
@@ -88,7 +88,7 @@ module.exports = class HandleCharacter
             this.args.name, 
             this.interaction.user.id,
             undefined,
-            this.splat
+            (this.splat + this.version)
         );
         if (char === 'noChar')
         {
@@ -114,7 +114,7 @@ module.exports = class HandleCharacter
             this.args.name, 
             this.interaction.user.id,
             undefined,
-            this.splat
+            (this.splat + this.version)
         );
         if (char === 'noChar')
         {
@@ -220,9 +220,9 @@ function setFields(args, char)
     if (args.gnosis != null) char.gnosis.setTotal(args.gnosis);
     // changeling 20th
     if (args.glamour != null) char.glamour.setTotal(args.glamour);
-    if (args.banality != null) char.banality.setTotal(args.banality);
-    if (args.nightmare != null) char.nightmare.setCurrent(args.nightmare);
-    if (args.imbalance != null) char.imbalance.setCurrent(args.imbalance);
+    if (args.banality != null) char.banality.setPermanant(args.banality);
+    if (args.nightmare != null) char.nightmare.setTemporary(args.nightmare);
+    if (args.imbalance != null) char.nightmare.setPermanant(args.imbalance);
     if (args.healthChimerical != null) 
         char.chimericalHealth.setTotal(args.healthChimerical);
     if (args.bashingChimerical != null) 
@@ -240,7 +240,7 @@ function setFields(args, char)
     if (args.pathos != null) char.pathos.setCurrent(args.pathos);
     // Demon TF
     if (args.faith != null) char.faith.setTotal(args.faith);
-    if (args.torment != null) char.setTorment(args.torment);
+    if (args.torment != null) char.torment.setPermanant(args.torment);
     // 5th edition
     if (args.willpowerSup != null) char.willpower.setSuperfical(args.willpowerSup);
     if (args.willpowerAgg != null) char.willpower.setAgg(args.willpowerAgg);
@@ -274,9 +274,9 @@ function updateFields(args, char)
     if (args.gnosis != null) char.gnosis.updateCurrent(args.gnosis);
     // Changeling 20th
     if (args.glamour != null) char.glamour.updateCurrent(args.glamour);
-    if (args.banality != null) char.banality.updateCurrent(args.banality);
-    if (args.nightmare != null) char.nightmare.updateCurrent(args.nightmare);
-    if (args.imbalance != null) char.imbalance.updateCurrent(args.imbalance);
+    if (args.banality != null) char.banality.updateTemporary(args.banality);
+    if (args.nightmare != null) char.nightmare.updateTemporary(args.nightmare);
+    if (args.imbalance != null) char.nightmare.updatePermanant(args.imbalance);
     if (args.healthChimerical != null) 
         char.chimericalHealth.updateCurrent(args.healthChimerical);
     if (args.bashingChimerical != null) 
@@ -294,7 +294,7 @@ function updateFields(args, char)
     if (args.pathos != null) char.pathos.updateCurrent(args.pathos);
     // Demon TF
     if (args.faith != null) char.faith.updateCurrent(args.faith);
-    if (args.torment != null) char.updateTorment(args.torment);
+    if (args.torment != null) char.torment.updateTemporary(args.torment);
     // 5th edition
     if (args.willpowerSup != null) char.willpower.takeSuperfical(args.willpowerSup);
     if (args.willpowerAgg != null) char.willpower.takeAgg(args.willpowerAgg);

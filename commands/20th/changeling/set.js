@@ -1,7 +1,7 @@
 'use strict';
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const execute = require('../../modules/Tracker/executeCommand.js');
-const { Splats } = require('../../modules/util/Constants')
+const execute = require('../../../modules/Tracker/executeCommand.js');
+const { Splats } = require('../../../modules/util/Constants')
 
 module.exports = {
 	data: changeling20thSetCommands(),      
@@ -15,7 +15,7 @@ function changeling20thSetCommands()
 {
     const slashCommand = new SlashCommandBuilder();
 
-    slashCommand.setName(Splats.changeling20th + '_set')
+    slashCommand.setName('changeling' + '_set')
 	    .setDescription('All the world is made of faith, and trust, and pixie dust.')
         .addStringOption(option =>
             option.setName("name")

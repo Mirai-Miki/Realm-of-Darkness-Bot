@@ -1,27 +1,27 @@
 'use strict';
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const execute = require('../../modules/Tracker/executeCommand.js');
-const { Splats } = require('../../modules/util/Constants')
+const execute = require('../../../modules/Tracker/executeCommand.js');
+const { Splats } = require('../../../modules/util/Constants')
 
 module.exports = {
-	data: wraith20thCommands(),      
+	data: ghoul20thCommands(),      
 	
 	async execute(interaction) {
         await execute(interaction);
 	}
 };
 
-function wraith20thCommands()
+function ghoul20thCommands()
 {
-	const slashCommand = new SlashCommandBuilder();
+    const slashCommand = new SlashCommandBuilder();
 
-    slashCommand.setName(Splats.wraith20th)
+    slashCommand.setName('ghoul')
 	    .setDescription('Create a new World of Darkness Character ' +
             'to be tracked.');
 
     slashCommand.addSubcommand(subcommand => subcommand
         .setName('new')
-        .setDescription("Create a new Wraith")
+        .setDescription('Like a doped a Human.')
         .addStringOption(option =>
             option.setName("name")
             .setDescription("The name of your Character")
@@ -29,38 +29,41 @@ function wraith20thCommands()
         .addIntegerOption(option =>
             option.setName("willpower")
             .setDescription("Your total Willpower. " +
-                "Must be between 1 and 10. WtO 20th Corebook p115")
+                "Must be between 1 and 10. VtM 20th Corebook p120")
+            .setRequired(true))        
+        .addIntegerOption(option =>
+            option.setName("morality")
+            .setDescription("Your total Humanity" +
+                "Must be between 0 and 10. VtM 20th Corebook p309")
             .setRequired(true))
         .addIntegerOption(option =>
-            option.setName("corpus")
-            .setDescription("Your total Corpus. " +
-                "Must be between 0 and 10. WtO 20th Corebook p291")
-            .setRequired(true))
+            option.setName("blood")
+            .setDescription("Your current Blood Pool. " +
+                "Must be between 1 and 10. VtM 20th Corebook p121"))
         .addIntegerOption(option =>
-            option.setName("pathos")
-            .setDescription("Your Pathos rating. " +
-                "Must be between 0 and 10. WtO 20th Corebook p114")
-            .setRequired(true))
+            option.setName("vitae")
+            .setDescription("Your current Vitae Pool. " +
+                "Must be between 1 and 5. VtM 20th Corebook p502"))
         .addIntegerOption(option =>
             option.setName("exp")
             .setDescription("Your total Experiance. " +
-                "WtO 20th Corebook p301"))
+                "VtM 20th Corebook p122"))
         .addIntegerOption(option =>
             option.setName("health")
             .setDescription("Your total Health. Defaults to 7. " +
-                "Must be between 7 and 15. WtO 20th Corebook p293"))
+                "Must be between 7 and 15. VtM 20th Corebook p282"))
         .addIntegerOption(option =>
             option.setName("bashing_damage")
             .setDescription("The total bashing damage inflicted. " +
-                "WtO 20th Corebook p293"))
+                "VtM 20th Corebook p285"))
         .addIntegerOption(option =>
             option.setName("lethal_damage")
             .setDescription("The total lethal damage inflicted. " +
-                "WtO 20th Corebook p294"))
+                "VtM 20th Corebook p285"))
         .addIntegerOption(option =>
             option.setName("agg_damage")
             .setDescription("The total Agg damage inflicted. " +
-                "WtO 20th Corebook p294"))
+                "VtM 20th Corebook p285"))
         .addStringOption(option =>
             option.setName("notes")
             .setDescription("Any aditional information you" +
@@ -78,7 +81,7 @@ function wraith20thCommands()
 
     slashCommand.addSubcommand(subcommand => subcommand
         .setName('set')
-        .setDescription('Set values for your Wraith')
+        .setDescription('Set values for your Human.')
         .addStringOption(option =>
             option.setName("name")
             .setDescription("The name of your Character")
@@ -86,36 +89,40 @@ function wraith20thCommands()
         .addIntegerOption(option =>
             option.setName("willpower")
             .setDescription("Sets you total Willpower to the number. " +
-                "Must be between 1 and 10. WtO 20th Corebook p115"))
+                "Must be between 1 and 10. VtM 20th Corebook p120"))
         .addIntegerOption(option =>
-            option.setName("corpus")
-            .setDescription("Sets you Total Corpus to the number. " +
-                "Must be between 1 and 10. WtO 20th Corebook p291"))
+            option.setName("morality")
+            .setDescription("Sets your Mortality to the number. " +
+                "Must be between 0 and 10. VtM 20th Corebook p309"))
         .addIntegerOption(option =>
-            option.setName("pathos")
-            .setDescription("Sets your Pathos to the number. " +
-                "Must be between 0 and 10. WtO 20th Corebook p114"))
+            option.setName("blood")
+            .setDescription("Sets your current Blood Pool to the number. " +
+                "Must be between 1 and 10. VtM 20th Corebook p121"))
+        .addIntegerOption(option =>
+            option.setName("vitae")
+            .setDescription("Sets your current Vitae Pool. " +
+                "Must be between 1 and 5. VtM 20th Corebook p502"))
         .addIntegerOption(option =>
             option.setName("exp")
             .setDescription("Sets your total Exp to the number. " +
-                "+ values will update current exp as well." +
-                " WtO 20th Corebook p301"))
+                "Positive value will update current exp as well." +
+                " V20 Core p122"))
         .addIntegerOption(option =>
             option.setName("health")
             .setDescription("Sets your Health to the number. " +
-                "Must be between 7 and 15. WtO 20th Corebook p293"))
+                "Must be between 7 and 15. VtM 20th Corebook p282"))
         .addIntegerOption(option =>
             option.setName("bashing_damage")
             .setDescription("The total bashing damage inflicted. " +
-                "WtO 20th Corebook p293"))
+                "VtM 20th Corebook p285"))
         .addIntegerOption(option =>
             option.setName("lethal_damage")
             .setDescription("The total lethal damage inflicted. " +
-                "WtO 20th Corebook p294"))
+                "VtM 20th Corebook p285"))
         .addIntegerOption(option =>
             option.setName("agg_damage")
             .setDescription("The total Agg damage inflicted. " +
-                "WtO 20th Corebook p294"))
+                "VtM 20th Corebook p285"))
         .addStringOption(option =>
             option.setName("notes")
             .setDescription("Any aditional information you" +
@@ -131,12 +138,12 @@ function wraith20thCommands()
         .addStringOption(option =>
             option.setName("image")
             .setDescription("Changes your Character's Thumbnail" +
-            " Image. Must be a valid URL. [Supporter Only]"))                    
+            " Image. Must be a valid URL. [Supporter Only]")) 
     );
 
     slashCommand.addSubcommand(subcommand => subcommand
         .setName('update')
-        .setDescription('Update values for your Wraith.')
+	    .setDescription('Updates your Human.')
         .addStringOption(option =>
             option.setName("name")
             .setDescription("The name of your Character")
@@ -144,40 +151,43 @@ function wraith20thCommands()
         .addIntegerOption(option =>
             option.setName("willpower")
             .setDescription("Updates your Willpower by the amount. " +
-                "Must be between -15 and 15. WtO 20th Corebook p115"))
+                "Must be between -15 and 15. VtM 20th Corebook p120"))        
         .addIntegerOption(option =>
-            option.setName("corpus")
-            .setDescription("Updates you current Corpus by the amount. " +
-                "Must be between -20 and 20. WtO 20th Corebook p291"))
+            option.setName("morality")
+            .setDescription("Updates your Morality by the amount. " +
+                "Must be between -20 and 20. VtM 20th Corebook p309"))
         .addIntegerOption(option =>
-            option.setName("pathos")
-            .setDescription("Updates your Pathos by the amount. " +
-                "Must be between -20 and 20. WtO 20th Corebook p114"))
+            option.setName("blood")
+            .setDescription("Updates your Blood Pool by the amount. " +
+                "Must be between -20 and 20. VtM 20th Corebook p121"))
+        .addIntegerOption(option =>
+            option.setName("vitae")
+            .setDescription("Updates your Vitae Pool. " +
+                "Must be between -10 and 10. VtM 20th Corebook p502"))
         .addIntegerOption(option =>
             option.setName("exp")
             .setDescription("Updates your current exp. + values will increase" +
-                " total as well. WtO 20th Corebook p301"))
+                " total as well. VtM 20th Corebook p122"))
         .addIntegerOption(option =>
             option.setName("health")
             .setDescription("Updates your Health by the amount. " +
-                "Must be between -20 and 20. WtO 20th Corebook p293"))
+                "Must be between -20 and 20. VtM 20th Corebook p282"))
         .addIntegerOption(option =>
             option.setName("bashing_damage")
             .setDescription("Updates your Bashing damage by the amount. " +
-                "WtO 20th Corebook p293"))
+                "VtM 20th Corebook p285"))
         .addIntegerOption(option =>
             option.setName("lethal_damage")
             .setDescription("Updates your Lethal damage by the amount. " +
-                "WtO 20th Corebook p294"))
+                "VtM 20th Corebook p285"))
         .addIntegerOption(option =>
             option.setName("agg_damage")
             .setDescription("Updates your Agg damage by the amount. " +
-                "WtO 20th Corebook p294"))
+                "VtM 20th Corebook p285"))
         .addStringOption(option =>
             option.setName("notes")
             .setDescription("Any aditional information you" +
                 " would like to include."))
-        
-    );
+    );        
     return slashCommand;
 }

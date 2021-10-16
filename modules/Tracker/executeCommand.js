@@ -2,7 +2,7 @@
 const handleError = require("./util/handleError");
 const isArgsValid = require('./util/isArgsValid');
 const Handler = require('./HandleCharacter');
-const { SplatVersions } = require('../util/Constants');
+const { clientVersions } = require('../util/Constants');
 const DatabaseAPI = require('../util/DatabaseAPI')
 
 module.exports = async function (interaction) { 
@@ -21,8 +21,8 @@ module.exports = async function (interaction) {
         // Need to strip excess
         commandName = commandName.replace(/(_new)|(_update)|(_set)/i, '')
     }
-
-    const version = SplatVersions[commandName];
+    
+    const version = clientVersions[interaction.client.user.id];
     const handler = new Handler(interaction, commandName, version);
 
     if ((mode == 'new' || mode == 'set') &&

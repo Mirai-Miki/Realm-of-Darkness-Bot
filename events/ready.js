@@ -1,7 +1,7 @@
 'use strict';
-const setActivity = require('../modules/util/setActivity.js');
-const Database = require("../modules/util/Database");
-const { statChannel } = require("../config.json");
+//const setActivity = require('../modules/util/setActivity.js');
+//const Database = require("../modules/util/Database");
+//const { statChannel } = require("../config.json");
 const { MessageEmbed } = require("discord.js");
 
 
@@ -10,13 +10,13 @@ module.exports = {
 	once: true,
 	async execute(client) {
 		console.log("Connected as: " + client.user.tag);
-        setActivity(client);
-        displayStats(client);
-        setInterval(function() {displayStats(client)}, 900000);
+        //setActivity(client);
+        //displayStats(client);
+        //setInterval(function() {displayStats(client)}, 900000);
 
-        let db = new Database();
-        db.open('Contests', 'Database');
-        db.deleteAll();
+        //let db = new Database();
+        //db.open('Contests', 'Database');
+        //db.deleteAll();
 	},
 };
 

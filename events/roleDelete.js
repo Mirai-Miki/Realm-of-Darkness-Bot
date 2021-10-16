@@ -6,7 +6,6 @@ module.exports = {
 	once: false,
 	async execute(role) 
     {
-        console.log(role.name)
         DatabaseAPI.DeleteSTRole(role);
 	},
 };

@@ -1,6 +1,6 @@
 'use strict';
 const DatabaseAPI = require('../../util/DatabaseAPI');
-const { canSendMessage, canEmbed } = require('../../util/misc')
+const { canSendMessage, canEmbed } = require('../../util/misc');
 
 module.exports = async function (embed, content, guildId, client)
 {
@@ -14,7 +14,6 @@ module.exports = async function (embed, content, guildId, client)
     }
     else return;
 
-    // Check Channel Permissions
     if (!canSendMessage(channel))
     {
         const debugChannel = await client.channels.fetch('776761322859266050');

@@ -33,11 +33,11 @@
 - Deleting characters is now done via a drop down menu and a confirmation will be asked before it is deleted.
 - Mage Quintessence and Paradox has been changed to more accuratly reflect the sheet wheel and rules.
 - Rage can now exceed its maximum as allowed by the rules.
+- Changeling banality now more accurately refelcts rules with permanant/temporary.
+- Changeling Nightmare/Imbalance changed to more accurately reflect the rules.
 - Demon temporary torment will now automaticly add +1 permanent torment when it hits 10 as well as reset to 0.
 
 # Known Bugs
-- Hidden character in embeds not so hidden on some devies. need to swap to another.
-- Change v5 Dice to unicode characters not emojis
 
 # Ideas
 - /find @user (ST only). Brings a list of characters in the server. 
@@ -52,10 +52,6 @@ User button and choice box to select the character to find.
 
 - Add dice stats. Track passes, fails, crits, botches, messy crits and bestial fails. 
 
-- Tracking add a hidden command with optional ST channel.
-Using the command in a channel will hide all tracking responses.
-Adding an ST channel will post a second non hidden message in that channel.
-
 - Add tracking for LARP characters
 
 - Nightmare dice for changeling. Only 10 is meaningingful for that. Maybe draw a custom nightmare 10 for the roll.
@@ -68,10 +64,12 @@ Adding an ST channel will post a second non hidden message in that channel.
 
 - Update v5 Emojis to look more like dice
 
+- Seperate bot into differant version eg a v5 bot and a v20 bot. Commands only for each version.
+Can have a main RoD file with all modules and then files for each bot with version specific commands.
+
 # Notes
 - When a member leaves a guild, disconnect their characters and delete the member
 - When a user deletes a character, the site checks if there are no more characters for that member. Before deleting that member check if the user is registered. If so don't delete.
-- Changling Banality, not limited by max.
 - Maybe swap v5 rouse checks to before the dice roll. or add a delay when posting the follow ups.
 - Fix supporter stuff to work with new DB. Find a way to update From the role on my server
 - Need to delete old History
@@ -79,70 +77,21 @@ Adding an ST channel will post a second non hidden message in that channel.
 
 # Commands
 --------------------------------
-vampire20th
-    new
-    update
-    set
+vampire20th {new, update, set}
+vampire5th {new, update, set}
+werewolf {new, update set}
+changeling {new, update set}
+mage {new, update set}
+wraith {new, update set}
+demon {new, update set}
+mortal5th {new, update set}
+human20th {new, update set}
+ghoul20th {new, update set}
 
-vampire5th 
-    new
-    update
-    set
+tracker {find, delete, storytellers, channel}
 
-werewolf 
-    new
-    update
-    set
+v5 {roll, rouse, resonence, gener}
+20th {roll, init, general}
 
-changeling 
-    new
-    update
-    set
-
-mage 
-    new
-    update
-    set
-
-wraith 
-    new
-    update
-    set
-
-demon 
-    new
-    update
-    set
-
-mortal5th 
-    new
-    update
-    set
-
-human20th 
-    new
-    update
-    set
-
-ghoul20th 
-    new
-    update
-    set
----------------------------------
-tracker 
-    find
-    delete
-    permissions
-    channel
-
-v5
-    roll
-    rouse
-    resonence
-    compulsion
-    general
-
-20th
-    roll
-    init
-    general
+# To Add #
+v5 compulsion

@@ -1,6 +1,6 @@
 'use strict';
 const Axios = require('axios');
-const { APIKey } = require('../../config.json');
+const { APIKey } = require('../../config5th.json');
 const { getCharacterClass } = require('./getCharacterClass');
 
 const config = {headers: {'Content-Type': 'application/json'}};

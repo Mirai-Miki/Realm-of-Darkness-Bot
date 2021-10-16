@@ -105,7 +105,7 @@ function damageTracker(max, supDamage, aggDamage, client) {
     let undamaged = (max - supDamage - aggDamage);
     for (let i = 0; i < max; i++) {
         if (i == 5 || i == 10 || i == 15) {
-            tracker += 'ﾠ';
+            tracker += '⠀';
         }
 
         if (undamaged) {
@@ -120,7 +120,7 @@ function damageTracker(max, supDamage, aggDamage, client) {
             console.error("Error in damageTracker()");
         }        
     }
-    tracker += 'ﾠ';
+    tracker += '⠀';
     return tracker;
 }
 
@@ -131,7 +131,7 @@ function humanityTracker(max, stains, client) {
     let undamaged = (10 - max - stains);
     for (let i = 0; i < 10; i++) {
         if (i == 5) {
-            tracker += 'ﾠ';
+            tracker += '⠀';
         }
 
         if (max) {
@@ -146,7 +146,7 @@ function humanityTracker(max, stains, client) {
             console.error("Error in humanityTracker()");
         }        
     }
-    tracker += 'ﾠ';
+    tracker += '⠀';
     return tracker;
 }
 
@@ -164,7 +164,7 @@ function hungerTracker(hunger, client) {
         else tracker += emoji.emptyDot;
                 
     }
-    tracker += 'ﾠ';
+    tracker += '⠀';
     return tracker;
 }
 
@@ -193,7 +193,7 @@ function consumableTracker(current, max, color, client, noEmoji=false) {
         }
         else tracker += emoji.emptyDot;                
     }
-    tracker += 'ﾠ';
+    tracker += '⠀';
     return tracker;
 }
 
