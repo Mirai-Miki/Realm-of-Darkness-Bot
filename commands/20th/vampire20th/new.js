@@ -16,7 +16,7 @@ function vampire20thNewCommands()
     const slashCommand = new SlashCommandBuilder();
 
     slashCommand.setName('vampire' + '_new')
-        .setDescription('Not the sparkly kind.')
+        .setDescription('Create a new Vampire 20th')
         .addStringOption(option =>
             option.setName("name")
             .setDescription("The name of your Character")

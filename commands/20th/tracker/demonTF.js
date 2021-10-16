@@ -16,12 +16,11 @@ function demonTFCommands()
     const slashCommand = new SlashCommandBuilder();
 
     slashCommand.setName('demon')
-	    .setDescription('Create a new World of Darkness Character ' +
-            'to be tracked.');
+	    .setDescription('x');
 
     slashCommand.addSubcommand(subcommand => subcommand
         .setName('new')
-        .setDescription("Create a new Demon.")
+        .setDescription("Create a new Demon 20th.")
         .addStringOption(option =>
             option.setName("name")
             .setDescription("The name of your Character")
@@ -78,7 +77,7 @@ function demonTFCommands()
 
     slashCommand.addSubcommand(subcommand => subcommand
         .setName('set')
-        .setDescription('Sets values for your Demon')
+        .setDescription('Sets values for your Demon 20th')
         .addStringOption(option =>
             option.setName("name")
             .setDescription("The name of your Character")
@@ -136,7 +135,7 @@ function demonTFCommands()
 
     slashCommand.addSubcommand(subcommand => subcommand
         .setName('update')
-        .setDescription('Updates you Demon.')
+        .setDescription('Updates you Demon 20th')
         .addStringOption(option =>
             option.setName("name")
             .setDescription("The name of your Character")

@@ -1,4 +1,5 @@
 # General
+- Split the bot into two versions. RoD v5 and RoD 20th. This is to reduce command clutter and make it more user friendly.
 - Fixed bugs in the Shard event Handlers
 - Updated to Discord API v9
 - Updated to Discord.js v13
@@ -63,9 +64,6 @@ User button and choice box to select the character to find.
 - Chronicles of Darkness Dice roller
 
 - Update v5 Emojis to look more like dice
-
-- Seperate bot into differant version eg a v5 bot and a v20 bot. Commands only for each version.
-Can have a main RoD file with all modules and then files for each bot with version specific commands.
 
 # Notes
 - When a member leaves a guild, disconnect their characters and delete the member

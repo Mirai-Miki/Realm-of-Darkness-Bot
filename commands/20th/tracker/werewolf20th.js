@@ -20,7 +20,7 @@ function werewolf20thCommands()
 
     slashCommand.addSubcommand(subcommand => subcommand
         .setName('new')
-        .setDescription('Create a new Werewolf 20th.')
+        .setDescription('Create a new Werewolf 20th')
         .addStringOption(option =>
             option.setName("name")
             .setDescription("The name of your Character")
@@ -77,7 +77,7 @@ function werewolf20thCommands()
 
     slashCommand.addSubcommand(subcommand => subcommand
         .setName('set')
-        .setDescription('Woof.')
+        .setDescription('Set values for your Werewolf 20th')
         .addStringOption(option =>
             option.setName("name")
             .setDescription("The name of your Character")
@@ -135,7 +135,7 @@ function werewolf20thCommands()
 
     slashCommand.addSubcommand(subcommand => subcommand
         .setName('update')
-        .setDescription('Let the hate flow through you.')
+        .setDescription('Update values for your Werewolf 20th')
         .addStringOption(option =>
             option.setName("name")
             .setDescription("The name of your Character")

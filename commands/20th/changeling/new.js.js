@@ -16,7 +16,7 @@ function changeling20thNewCommands()
     const slashCommand = new SlashCommandBuilder();
 
     slashCommand.setName('changeling' + '_new')
-	    .setDescription('All the world is made of faith, and trust, and pixie dust.')
+	    .setDescription('Create a new Changeling 20th.')
         .addStringOption(option =>
             option.setName("name")
             .setDescription("The name of your Character")

@@ -16,7 +16,7 @@ function changeling20thUpdateCommands()
     const slashCommand = new SlashCommandBuilder();
 
     slashCommand.setName('changeling' + '_update')
-	    .setDescription('All the world is made of faith, and trust, and pixie dust.')
+	    .setDescription('Update values for your Changeling 20th')
         .addStringOption(option =>
             option.setName("name")
             .setDescription("The name of your Character")

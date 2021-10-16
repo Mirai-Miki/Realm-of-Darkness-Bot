@@ -16,12 +16,11 @@ function human20thCommands()
     const slashCommand = new SlashCommandBuilder();
 
     slashCommand.setName('human')
-	    .setDescription('Create a new World of Darkness Character ' +
-            'to be tracked.');
+	    .setDescription('x');
 
     slashCommand.addSubcommand(subcommand => subcommand
         .setName('new')
-        .setDescription('Your everyday John Doe.')
+        .setDescription('Create a new Human 20th')
         .addStringOption(option =>
             option.setName("name")
             .setDescription("The name of your Character")
@@ -77,7 +76,7 @@ function human20thCommands()
 
     slashCommand.addSubcommand(subcommand => subcommand
         .setName('set')
-        .setDescription('Set values for your Human.')
+        .setDescription('Set values for your Human 20th')
         .addStringOption(option =>
             option.setName("name")
             .setDescription("The name of your Character")
@@ -135,7 +134,7 @@ function human20thCommands()
 
     slashCommand.addSubcommand(subcommand => subcommand
         .setName('update')
-	    .setDescription('Updates your Human.')
+	    .setDescription('Update values for your Human 20th')
         .addStringOption(option =>
             option.setName("name")
             .setDescription("The name of your Character")

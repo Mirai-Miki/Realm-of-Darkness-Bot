@@ -16,12 +16,11 @@ function mage20thCommands()
 	const slashCommand = new SlashCommandBuilder();
 
     slashCommand.setName('mage')
-	    .setDescription('Create a new World of Darkness Character ' +
-            'to be tracked.');
+	    .setDescription('x');
 
     slashCommand.addSubcommand(subcommand => subcommand
         .setName('new')
-        .setDescription("You're a wizard Harry")
+        .setDescription("Create a new Mage 20th")
         .addStringOption(option =>
             option.setName("name")
             .setDescription("The name of your Character")
@@ -83,7 +82,7 @@ function mage20thCommands()
 
     slashCommand.addSubcommand(subcommand => subcommand
         .setName('set')
-        .setDescription('Fireball!!')
+        .setDescription('Set values for your Mage 20th')
         .addStringOption(option =>
             option.setName("name")
             .setDescription("The name of your Character")
@@ -145,7 +144,7 @@ function mage20thCommands()
 
     slashCommand.addSubcommand(subcommand => subcommand
         .setName('update')
-        .setDescription('Who need armour when you have magick.')
+        .setDescription('Update values for your Mage 20th')
         .addStringOption(option =>
             option.setName("name")
             .setDescription("The name of your Character")

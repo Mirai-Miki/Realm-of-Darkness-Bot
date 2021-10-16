@@ -16,7 +16,7 @@ function vampire20thUpdateCommands()
     const slashCommand = new SlashCommandBuilder();
 
     slashCommand.setName('vampire' + '_update')
-	    .setDescription('Not the sparkly kind.')
+	    .setDescription('Update values for your Vampire 20th')
         .addStringOption(option =>
             option.setName("name")
             .setDescription("The name of your Character")

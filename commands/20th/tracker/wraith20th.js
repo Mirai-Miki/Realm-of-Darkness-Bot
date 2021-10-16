@@ -16,12 +16,11 @@ function wraith20thCommands()
 	const slashCommand = new SlashCommandBuilder();
 
     slashCommand.setName('wraith')
-	    .setDescription('Create a new World of Darkness Character ' +
-            'to be tracked.');
+	    .setDescription('x');
 
     slashCommand.addSubcommand(subcommand => subcommand
         .setName('new')
-        .setDescription("Create a new Wraith")
+        .setDescription("Create a new Wraith 20th")
         .addStringOption(option =>
             option.setName("name")
             .setDescription("The name of your Character")
@@ -78,7 +77,7 @@ function wraith20thCommands()
 
     slashCommand.addSubcommand(subcommand => subcommand
         .setName('set')
-        .setDescription('Set values for your Wraith')
+        .setDescription('Set values for your Wraith 20th')
         .addStringOption(option =>
             option.setName("name")
             .setDescription("The name of your Character")
@@ -136,7 +135,7 @@ function wraith20thCommands()
 
     slashCommand.addSubcommand(subcommand => subcommand
         .setName('update')
-        .setDescription('Update values for your Wraith.')
+        .setDescription('Update values for your Wraith 20th')
         .addStringOption(option =>
             option.setName("name")
             .setDescription("The name of your Character")

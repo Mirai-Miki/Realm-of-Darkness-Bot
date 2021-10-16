@@ -16,12 +16,11 @@ function mortal5thCommands()
 	const slashCommand = new SlashCommandBuilder();
 
     slashCommand.setName('mortal')
-	    .setDescription('Create a new World of Darkness Character ' +
-            'to be tracked.');
+	    .setDescription('x');
 
     slashCommand.addSubcommand(subcommand => subcommand
         .setName('new')
-        .setDescription("Create a new Mortal 5th Character.")
+        .setDescription("Create a new Mortal v5 Character.")
         .addStringOption(option =>
             option.setName("name")
             .setDescription("The name of your Character")
@@ -82,7 +81,7 @@ function mortal5thCommands()
 
     slashCommand.addSubcommand(subcommand => subcommand
         .setName('set')
-        .setDescription('Set values for your Mortal')
+        .setDescription('Set values for your v5 Mortal')
         .addStringOption(option =>
             option.setName("name")
             .setDescription("The name of your Character")
@@ -143,7 +142,7 @@ function mortal5thCommands()
 
     slashCommand.addSubcommand(subcommand => subcommand
         .setName('update')
-        .setDescription('Update values for your Mortal.')
+        .setDescription('Update values for your v5 Mortal.')
         .addStringOption(option =>
             option.setName("name")
             .setDescription("The name of your Character")
