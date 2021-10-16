@@ -261,43 +261,128 @@ module.exports = class DatabaseAPI
         }
     }
 
-    static async sendUserInfo()
+    static async setSTRole(guild, roleId)
     {
-        // create or update user info.
+        const host = `http://${IP}:${PORT}/bot/chronicle/storyteller/role/set`;
 
-        /*
-        {
-            id: string,
-            username: string,
-            discriminator: string,
-            avatarURL: string,
+        const data = {
+            APIKey: APIKey,
+            guild: {
+                id: guild.id,
+                member_count: guild.memberCount,
+                icon_url: guild.iconURL() ?? '',
+            },
+            role_id: roleId,
         }
-        */
+
+        let res;
+        try
+        {
+            res = await Axios.post(host, data, config);
+        }
+        catch (error)
+        {
+            if (error.code === 'ECONNREFUSED')
+            {
+                console.error("Error Database refused connection.\nCode: " +
+                    "ECONNREFUSED")
+            }
+            else console.error(error);
+            return undefined;
+        }
+
+        if (res.status == 200 && res.data)
+        {
+            const response = res.data;
+            return response;
+        }
+        else
+        {
+            console.error("Error in DatabaseAPI.deleteCharacters()")
+            console.error(`Status: ${res.status}`)
+            return undefined;
+        }
     }
 
-    static async sendGuildInfo()
+    static async getSTRoles(guildId)
     {
-        // Create or update guild
+        const host = `http://${IP}:${PORT}/bot/chronicle/storyteller/role/get`;
 
-        /*
-        {
-            id: string,
-            name: string,
-            iconURL: string,
+        const data = {
+            APIKey: APIKey,
+            guild_id: guildId
         }
-        */
+
+        let res;
+        try
+        {
+            res = await Axios.post(host, data, config);
+        }
+        catch (error)
+        {
+            if (error.code === 'ECONNREFUSED')
+            {
+                console.error("Error Database refused connection.\nCode: " +
+                    "ECONNREFUSED")
+            }
+            else console.error(error);
+            return undefined;
+        }
+
+        if (res.status == 200 && res.data)
+        {
+            const response = res.data.roles;
+            return response;
+        }
+        else
+        {
+            console.error("Error in DatabaseAPI.deleteCharacters()")
+            console.error(`Status: ${res.status}`)
+            return undefined;
+        }
     }
 
-    static async sendMemberInfo()
+    static async DeleteSTRole(role)
     {
-        // Create or update member
+        const host = `http://${IP}:${PORT}/bot/chronicle/storyteller/role/delete`;
+        const guild = role.guild;
 
-        /*
-        {
-            guildId: string,
-            userId: string,
-            displayName: string,
+        const data = {
+            APIKey: APIKey,
+            guild: {
+                id: guild.id,
+                member_count: guild.memberCount,
+                icon_url: guild.iconURL() ?? '',
+            },
+            role_id: role.id,
         }
-        */
+
+        let res;
+        try
+        {
+            res = await Axios.post(host, data, config);
+        }
+        catch (error)
+        {
+            if (error.code === 'ECONNREFUSED')
+            {
+                console.error("Error Database refused connection.\nCode: " +
+                    "ECONNREFUSED")
+            }
+            else console.error(error);
+            return undefined;
+        }
+
+        if (res.status == 200 && res.data)
+        {
+            const response = res.data;
+            return response;
+        }
+        else
+        {
+            console.error("Error in DatabaseAPI.deleteCharacters()")
+            console.error(`Status: ${res.status}`)
+            return undefined;
+        }
     }
 }

@@ -170,7 +170,8 @@ module.exports = class HandleCharacter
         }
         content += (parsedArgs.join(', ') + ' }');
 
-        sendToTrackerChannel(this.response, content, this.interaction);
+        sendToTrackerChannel(this.response, content, 
+            this.character.guild.id, this.interaction.client);
         try
         {
             await this.interaction.reply(this.response);

@@ -6,10 +6,11 @@
 - Threads now supported
 
 # v20 rolls
-- Redesigned the look of the v20 Roll
-- Redesigned the look of v20 Init
-- Added a willpower option
-- Added a character option
+- Redesigned the look of the 20th Roll
+- Redesigned the look of 20th Init
+- Added a willpower option 20th roll
+- Added a character option 20th roll
+- Added a spec option to 20th roll
 - The roller has been tied into the tracker. Using willpower and Character options will automaticly update you willpower. It will also warn you if you attempt to use willpower with none available.
 
 # v5 rolls

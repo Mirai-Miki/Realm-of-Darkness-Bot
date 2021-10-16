@@ -1,12 +1,12 @@
 'use strict';
 const DatabaseAPI = require('../../util/DatabaseAPI');
+const { canSendMessage, canEmbed } = require('../../util/misc')
 
-module.exports = async function (embed, content, interaction)
+module.exports = async function (embed, content, guildId, client)
 {
-    const client = interaction.client;
-    if (!interaction.guildId) return;
+    if (!guildId) return;
 
-    const channelId = await DatabaseAPI.getTrackerChannel(interaction.guildId);
+    const channelId = await DatabaseAPI.getTrackerChannel(guildId);
     let channel;
     if (channelId)
     {
@@ -15,6 +15,19 @@ module.exports = async function (embed, content, interaction)
     else return;
 
     // Check Channel Permissions
+    if (!canSendMessage(channel))
+    {
+        const debugChannel = await client.channels.fetch('776761322859266050');
+        debugChannel.send(`Missing "View Channel" or "Send Message" Permission` +
+            ` for ${channel.guild.name}: #${channel.name}`);
+        return;
+    }
+    else if (!canEmbed(channel))
+    {
+        channel.send(`Sorry, I need the "Embed Links" permission` +
+            ' to work in this channel.');
+        return;
+    }
 
     embed.ephemeral = false;
     embed.content = content;

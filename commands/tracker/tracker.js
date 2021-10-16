@@ -2,7 +2,9 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const Find = require('../../modules/Tracker/commands/FindCharacter');
 const TrackerChannel = require('../../modules/Tracker/commands/TrackerChannel');
-const DeleteCharacters = require('../../modules/Tracker/commands/DeleteCharacters')
+const DeleteCharacters = require('../../modules/Tracker/commands/DeleteCharacters');
+const StorytellerPermissions = 
+    require('../../modules/Tracker/commands/StorytellerPermissions');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -28,6 +30,14 @@ module.exports = {
             .setDescription("The channel to be selected. Or removes a channel" +
                 " if already selected.")
             .setRequired(true))  
+    )
+    .addSubcommand(subcommand => subcommand
+        .setName('storytellers')
+        .setDescription('Sets the ST permissions for the ST only commands' +
+            '. [Admin only]')
+        .addRoleOption(option =>
+            option.setName("role")
+            .setDescription("The ST role to be added or removed."))  
     ),      
 	
 	async execute(interaction) {
@@ -56,6 +66,10 @@ module.exports = {
             case 'channel':
                 const trackerChannel = new TrackerChannel(interaction);
                 trackerChannel.setChannel();
+                break;
+
+            case 'storytellers':
+                new StorytellerPermissions(interaction);
                 break;
         }
 	}
