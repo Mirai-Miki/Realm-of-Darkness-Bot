@@ -59,7 +59,7 @@ module.exports = class Character
         this.name = name;
     }
 
-    updateHistory(charArgs, notes, mode)
+    updateHistory(charArgs, mode)
     {
         const history = {args: {}, notes: '', mode: ''};
         
@@ -70,13 +70,13 @@ module.exports = class Character
             if (key === 'name') continue;
             else if (key === 'thumbnail') continue;
             else if (key === 'colour') continue;
+            else if (key === 'notes') continue;
             if (value != null) history.args[key] = value;
         }
         
-        history.notes = notes;
+        history.notes = charArgs['notes'] ?? undefined;
         history.mode = mode;
-        this.history.push(history);
-        if (this.history.length > 10) this.history.shift();
+        this.history.unshift(history);
     }
 
     deserilize(json)

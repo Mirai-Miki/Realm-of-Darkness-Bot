@@ -1,7 +1,6 @@
 'use strict';
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const execute = require('../../../modules/Tracker/executeCommand.js');
-const { Splats } = require('../../../modules/util/Constants')
 
 module.exports = {
 	data: changeling20thNewCommands(),      

@@ -38,6 +38,10 @@ module.exports =
         {
             response = "Character Name must not be longer than 50.";
         }
+        else if (args.notes.length > 150)
+        {
+            response = "Notes cannot be more then 150 characters long.";
+        }
         else if (args.exp && (args.exp < 0 || args.exp > 10000))
         {
             response = "exp must be between 0 and 10000.";
@@ -284,6 +288,10 @@ module.exports =
         if (!wasProvided) 
         {
             response = 'You must include at least one argument.'
+        }
+        else if (args.notes.length > 150)
+        {
+            response = "Notes cannot be more then 150 characters long.";
         }
         else if (args.exp && (args.exp < -10000 || args.exp > 10000))
         {

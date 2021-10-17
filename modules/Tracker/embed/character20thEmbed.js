@@ -10,7 +10,7 @@ const DotColour =
     yellowBlack: 4,
 }
 
-module.exports.character20thEmbed = (char, client, args) =>
+module.exports.character20thEmbed = (char, client, notes) =>
 {   
     let embed = new MessageEmbed()
         .setColor(char.colour)
@@ -179,22 +179,10 @@ module.exports.character20thEmbed = (char, client, args) =>
             embed.addField("Experience", 
             consumableTracker(char.exp, 0, client, 0, true), false);
 
-        if (args?.notes) embed.setFooter(args.notes);
-
-        // Adding History if History flag is Set
-        let history = '';
-        if (args?.history && char.history)
-        {
-            history = `__**History for ${char.name}**__\n`;
-            for (const record of char.history)
-            {
-                history += `${record}ﾠ\n`;
-            }
-        }
+        if (notes) embed.setFooter(notes);
 
         const response = {embeds: [embed], ephemeral: true};
-        if (history) response['content'] = history;
-        return response;  
+        return response;
 }
 
 function damageTracker(health, client) {

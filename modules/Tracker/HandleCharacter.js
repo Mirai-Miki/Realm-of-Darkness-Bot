@@ -76,7 +76,7 @@ module.exports = class HandleCharacter
         const char = new Character(this.interaction);
         char.setName(this.args.name);
         setFields(this.args, char);
-        char.updateHistory(this.args, this.notes, "New");
+        char.updateHistory(this.args, "New");
 
         this.character = char;
         return char;
@@ -102,7 +102,7 @@ module.exports = class HandleCharacter
         }
 
         updateFields(this.args, char);
-        char.updateHistory(this.args, this.notes, "update");
+        char.updateHistory(this.args, "update");
 
         this.character = char;
         return char;
@@ -128,7 +128,7 @@ module.exports = class HandleCharacter
         }
 
         setFields(this.args, char);
-        char.updateHistory(this.args, this.notes, "Set");
+        char.updateHistory(this.args, "Set");
 
         this.character = char;
         return char;
@@ -141,7 +141,7 @@ module.exports = class HandleCharacter
             this.response = character5thEmbed(
                 this.character, 
                 this.interaction.client,
-                this.args
+                this.args.notes
             );
         }
         else
@@ -149,7 +149,7 @@ module.exports = class HandleCharacter
             this.response = character20thEmbed(
                 this.character, 
                 this.interaction.client, 
-                this.args
+                this.args.notes
             );
         }
         
@@ -157,10 +157,11 @@ module.exports = class HandleCharacter
     }
 
     async reply()
-    {
-        const args = this.character.history[0].args
+    {        
         const parsedArgs = [];
-        let content = `Command: ${this.character.history[0].mode} { `;
+        const history = this.character.history[0];
+        let content = `Command: ${history.mode} { `;
+        const args = history.args;
 
         for (const key of Object.keys(args))
         {
@@ -169,6 +170,7 @@ module.exports = class HandleCharacter
             parsedArgs.push(`${key}: ${value}`);
         }
         content += (parsedArgs.join(', ') + ' }');
+        if (history.notes) content += ` ${history.notes}`;
 
         sendToTrackerChannel(this.response, content, 
             this.character.guild.id, this.interaction.client);

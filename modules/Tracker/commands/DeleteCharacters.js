@@ -116,7 +116,7 @@ module.exports = class DeleteCharacters
         this.response['content'] = `Are you sure you want to delete ` +
             `${this.toDelete.names.join(', ')}? This cannot be undone.`;
 
-        const actionRow = new MessageActionRow()
+        const actionRow = new MessageActionRow();
         actionRow.addComponents(
             new MessageButton()
                 .setCustomId('cancel')

@@ -3,7 +3,7 @@ const { minToMilli } = require('../../util/misc.js');
 const DatabaseAPI = require('../../util/DatabaseAPI');
 const { character20thEmbed } = require('../embed/character20thEmbed.js');
 const { character5thEmbed } = require('../embed/character5thEmbed.js');
-const { MessageActionRow, MessageSelectMenu } = require('discord.js');
+const { MessageActionRow, MessageSelectMenu, MessageButton } = require('discord.js');
 const { Versions } = require('../../util/Constants.js');
 
 module.exports = class FindCharacter
@@ -13,6 +13,7 @@ module.exports = class FindCharacter
         this.interaction = interaction;
 
         this.player = interaction.options.getUser('player');
+        this.showHistory = interaction.options.getBoolean('history');
         this.character;
         this.splat;
         this.pk;
@@ -136,12 +137,18 @@ module.exports = class FindCharacter
         if (this.character.version == Versions.v20)
         {
             this.response = 
-                character20thEmbed(this.character, this.interaction.client);
+                character20thEmbed(
+                    this.character, 
+                    this.interaction.client
+                );
         }
         else
         {
             this.response = 
-                character5thEmbed(this.character, this.interaction.client);
+                character5thEmbed(
+                    this.character, 
+                    this.interaction.client
+                );
         }
         
         return this.response;
@@ -183,16 +190,103 @@ module.exports = class FindCharacter
             });
         
         this.collector.on('collect', async i => {
-            const char = this.nameDict[i.values[0]]
-            this.pk = char.id;
-            this.splat = char.splat;
-            this.name = char.name;
-            if (!await this.getCharacter()) return this.collector.stop();
-            this.constructEmbed();
-            this.response['components'] = [];
-            this.response['content'] = null;
-            await i.update(this.response);
-            this.collector.stop();
+            if (!this.history)
+            {
+                const char = this.nameDict[i.values[0]]
+                this.pk = char.id;
+                this.splat = char.splat;
+                this.name = char.name;
+                if (!await this.getCharacter()) return this.collector.stop();
+                this.constructEmbed();
+                if (this.showHistory == null) 
+                {
+                    this.response['contant'] = null;
+                    this.response['components'] = [];
+                    await i.update(this.response);
+                    return this.collector.stop();
+                }
+                this.history = this.parseHistory();                
+                this.response['components'] = this.getHistoryButtons(0);
+                this.response['content'] = this.history.pages[0];
+                await i.update(this.response); 
+            }
+            else
+            {
+                // History button pressed
+                if (i.customId === 'previous')
+                {
+                    this.history.currentPage--;
+                }
+                else
+                {
+                    this.history.currentPage++;
+                }
+
+                const currentPage = this.history.currentPage;
+
+                this.response['content'] = 
+                    this.history.pages[currentPage];
+                this.response['components'] = this.getHistoryButtons(currentPage);
+                await i.update(this.response);
+            }
         });
     }
+
+    parseHistory()
+    {
+        const history = {currentPage: 0, pages: []}
+        let historyStr = ``;
+        const charHistory = this.character.history;
+        let count = 1;
+        let page = 1;
+        for (const record of charHistory)
+        {
+            if (count === 1) historyStr += 
+                `__**History for ${this.character.name} || Page ${page}**__\n`;
+            const args = JSON.parse(record.args);
+            
+            historyStr += `${record.date} Command: ${record.mode}, { `;
+            const parsedArgs = [];
+            for (const key of Object.keys(args))
+            {
+                const value = args[key];                
+                parsedArgs.push(`${key}: ${value}`);
+            }
+            historyStr += (parsedArgs.join(', ') + ' }');
+            if (record.notes) historyStr += ` ${record.notes}\n`;
+            else historyStr += '\n';
+
+            if (count == 5)
+            {
+                history.pages.push(historyStr);
+                historyStr = '';
+                count = 1;
+                page++;
+            }
+            else count++;
+        }
+        if (count != 1) history.pages.push(historyStr);
+        return history
+    }
+
+    getHistoryButtons(currentPage)
+    {
+        const actionRow = new MessageActionRow();
+        let button = new MessageButton()
+            .setCustomId('previous')
+            .setStyle('DANGER')
+            .setLabel("Previous")
+        if (currentPage === 0) button.setDisabled();
+        actionRow.addComponents(button);
+
+        button = new MessageButton()
+            .setCustomId('next')
+            .setStyle('SUCCESS')
+            .setLabel("Next")
+        if (currentPage === (this.history.pages.length - 1)) button.setDisabled();
+        actionRow.addComponents(button);
+
+        return [actionRow];
+    }
 }
+

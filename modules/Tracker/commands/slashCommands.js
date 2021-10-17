@@ -14,13 +14,20 @@ module.exports.trackerSlashCommands = () =>
         .addSubcommand(subcommand => subcommand
             .setName('find')
             .setDescription('Finds one or a specific Character')
+            .addBooleanOption(option =>
+                option.setName("history")
+                .setDescription("Select if you would like to display" +
+                    " the history information."))
             .addUserOption(option =>
                 option.setName("player")
                 .setDescription("The player the character belongs to. [ST Only]"))
         )
         .addSubcommand(subcommand => subcommand
             .setName('delete')
-            .setDescription('Choose which Character you wish to Delete.')      
+            .setDescription('Choose which Character you wish to Delete.') 
+            .addUserOption(option =>
+                option.setName("player")
+                .setDescription("The player the character belongs to. [ST Only]"))     
         )
         .addSubcommand(subcommand => subcommand
             .setName('channel')
