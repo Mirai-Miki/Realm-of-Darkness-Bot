@@ -142,8 +142,9 @@ module.exports.character20thEmbed = (char, tracker, unknownKeys) =>
             }
         }
 
-        embed.setFooter("All commands are being replaced by Slash Commands on the 27/10.\nPlease note that a database reset will also occur at this time.\nPlease make sure you note your character details before that.\n"+
-            "For more info please visit the RoD Server.")
+        embed.setFooter("This bot is becoming v5 specific on the 27/10.\n" +
+        "For more info and links to the 20th edition bot please visit the RoD Server.\n" +
+        "Please add the new bot as soon as possible.\nPlease note that a database reset will also occur at this time.\nPlease make sure you note your character details before that.\n")
 
         if (history) return {embed: embed, history: history};
         else return embed;        

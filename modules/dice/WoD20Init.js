@@ -86,8 +86,9 @@ module.exports = class WoD20Roll
             embed.addField('Notes', results.reason);
         }
 
-        embed.setFooter("All commands are being replaced by Slash Commands on the 27/10.\n" +
-            "For more info please visit the RoD Server.")
+        embed.setFooter("This bot is becoming v5 specific on the 27/10.\n" +
+        "For more info and links to the 20th edition bot please visit the RoD Server.\n" +
+        "Please add the new bot as soon as possible.")
 
         return embed;
     }
