@@ -4,7 +4,8 @@ const Rouse = require('./Rouse.js');
 const { MessageActionRow, MessageSelectMenu, 
     MessageButton, MessageEmbed } = require('discord.js');
 const { minToMilli } = require('../../util/misc.js');
-
+const DatabaseAPI = require('../../util/DatabaseAPI.js');
+const { Versions } = require('../../util/Constants')
 
 const Result = 
 {
@@ -23,6 +24,8 @@ module.exports = class WoD5thRoll
         this.interaction = interaction;
         this.results = {roll: {}, total: 0, type: 0, fails: 0};
         this.response = {embed: [], content: '', interactions: []};
+        this.statsResult;
+        this.isReroll = false;
 
         this.pool = this.interaction.options.getInteger('pool');
         this.hunger = this.interaction.options.getInteger('hunger');
@@ -107,6 +110,7 @@ module.exports = class WoD5thRoll
             else hunger.push(dice);
         } 
         
+        this.isReroll = true;
         this.results.roll = reg.concat(hunger);
         calculateResults(this.results, (this.diff ?? 1));
     }
@@ -135,31 +139,37 @@ module.exports = class WoD5thRoll
         let color = [0, 0 , 0]; // Black
         if (this.results.type == Result.bestialFail)
         {
+            this.statsResult = 'bestial_fail';
             resultMessage += '\n```diff\n- Bestial Failure -\n```';
             color = [205, 14, 14]; // Blood Red
         }
         else if (this.results.type == Result.totalFail)
         {
+            this.statsResult = 'total_fail';
             resultMessage += '\n```fix\n Total Failure \n```';
             color = [255, 204, 0]; // Yellow
         }
         else if (this.results.type == Result.fail)
         {
+            this.statsResult = 'failed';
             resultMessage += '\n```fix\n Failed \n```';
             color = [224, 113, 2]; // Black
         }
         else if (this.results.type == Result.messyCrit)
         {
+            this.statsResult = 'messy_critical';
             resultMessage += '\n```diff\n- Messy Critical -\n```';
             color = [255, 0, 102]; // Bright Red
         }
         else if (this.results.type == Result.crit)
         {
+            this.statsResult = 'critical';
             resultMessage += '\n```cs\n\' Critical \'\n```';
             color = [102, 255, 204]; // Auqa
         }
         else
         {
+            this.statsResult = 'passed';
             resultMessage += '\n```diff\n+ Success +\n```';
             color = [102, 255, 51]; // Green
         }
@@ -394,6 +404,18 @@ module.exports = class WoD5thRoll
 
         this.collector.on('end', i => {
             this.interaction.editReply({components: []});
+            const user = this.interaction.user;
+            DatabaseAPI.diceStatsUpdate(
+                {
+                    'id': user.id,
+                    'username': user.username,
+                    'discriminator': user.discriminator,
+                    'avatarURL': user.avatarURL() ?? ''
+                },
+                Versions.v5,
+                this.statsResult,
+                this.isReroll
+            );
         });
     }
     

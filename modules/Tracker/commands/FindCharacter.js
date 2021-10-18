@@ -22,12 +22,41 @@ module.exports = class FindCharacter
         this.userId = interaction.user.id;
     }
 
-    isArgsValid()
+    async isArgsValid()
     {
+        let error = '';
         if (this.player)
         {
-            // Check if user is ST or Admin
+            if (!this.interaction.guild)
+            {
+                error = 'Sorry, selecting a player can only be used in a server.';
+                this.interaction.reply({content: error, ephemeral: true});
+                return false;
+            }
+
+            const member = this.interaction.member;
+            const roles = await DatabaseAPI.getSTRoles(this.interaction.guild.id);
+
+            if (roles === undefined)
+            {
+                error = 'There was an error accessing the Database. Please try again' +
+                ' later.\nIf this issue persists please report it at the ' +
+                '[Realm of Darkness Server](<https://discord.gg/7xMqVrVeFt>).';
+            }
+            else if (member && (!member.permissions.has("ADMINISTRATOR") && 
+                !member.roles.cache.hasAny(...roles)))
+            {
+                error = 'Sorry, you must either be an Administrator or Storyteller' +
+                    ' to select another user.';
+            }
+            
             this.userId = this.player.id;
+        }        
+
+        if (error)
+        {
+            this.interaction.reply({content: error, ephemeral: true});
+            return false;
         }
         return true;
     }
@@ -64,7 +93,7 @@ module.exports = class FindCharacter
 
     async get_name_list()
     {
-        if (!this.isArgsValid()) return false;
+        if (!await this.isArgsValid()) return undefined;
 
         const guildId = this.interaction.guildId;
         const response = await DatabaseAPI.getNameList(this.userId, guildId);

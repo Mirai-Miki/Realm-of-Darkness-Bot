@@ -9,6 +9,86 @@ const PORT = '8000';
 
 module.exports = class DatabaseAPI
 {
+    static async diceStatsUpdate(user, version, result, reroll)
+    {
+        const host = `http://${IP}:${PORT}/bot/dice/stats/update`;
+        const data = 
+        {
+            APIKey: APIKey,
+            user: user,
+            version: version,
+            result: result,
+            reroll: reroll,
+        };
+        let res;
+        try
+        {
+            res = await Axios.post(host, data, config);
+        }
+        catch (error)
+        {
+            if (error.code === 'ECONNREFUSED')
+            {
+                console.error("Error Database refused connection.\nCode: " +
+                    "ECONNREFUSED")
+            }
+            else console.error(error);
+            return undefined;
+        }
+
+        if (res.status == 200 && res.data)
+        {
+            const response = res.data;
+            
+            return response;
+        }
+        else
+        {
+            console.error("Error in DatabaseAPI.getCharacter()")
+            console.error(`Status: ${res.status}`)
+            return undefined;
+        }
+    }
+
+    static async memberDelete(member)
+    {
+        const host = `http://${IP}:${PORT}/bot/member/delete`;
+        const data = 
+        {
+            APIKey: APIKey,
+            user_id: member.id,
+            guild_id: member.guild.id,
+        };
+        let res;
+        try
+        {
+            res = await Axios.post(host, data, config);
+        }
+        catch (error)
+        {
+            if (error.code === 'ECONNREFUSED')
+            {
+                console.error("Error Database refused connection.\nCode: " +
+                    "ECONNREFUSED")
+            }
+            else console.error(error);
+            return undefined;
+        }
+
+        if (res.status == 200 && res.data)
+        {
+            const response = res.data;
+            
+            return response;
+        }
+        else
+        {
+            console.error("Error in DatabaseAPI.getCharacter()")
+            console.error(`Status: ${res.status}`)
+            return undefined;
+        }
+    }
+
     static async saveCharacter(character)
     {
         const host = `http://${IP}:${PORT}/bot/character/save`;
@@ -144,12 +224,13 @@ module.exports = class DatabaseAPI
         }
     }
 
-    static async deleteCharacters(ids)
+    static async deleteCharacters(ids, disconnect)
     {
         const host = `http://${IP}:${PORT}/bot/character/delete`;
         const data = {
             APIKey: APIKey,
-            ids: ids
+            ids: ids,
+            disconnect: disconnect
         }
         let res;
         try

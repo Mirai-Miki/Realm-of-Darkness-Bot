@@ -9,19 +9,64 @@ module.exports = class DeleteCharacters
     {
         this.interaction = interaction;
 
-        this.name = interaction.options.getString('name');
+        this.player = interaction.options.getUser('player');
         this.character;
         this.toDelete;
         this.nameLists;
         this.nameDict;
-        this.response = {ephemeral: true}
+        this.response = {ephemeral: true};
+        this.userId = this.interaction.user.id;
+    }
+
+    async isArgsValid()
+    {
+        let error = '';
+        if (this.player && (this.player.id === this.userId))
+        {
+            this.player = null;
+        }
+        else if (this.player)
+        {
+            if (!this.interaction.guild)
+            {
+                error = 'Sorry, selecting a player can only be used in a server.';
+                this.interaction.reply({content: error, ephemeral: true});
+                return false;
+            }
+
+            const member = this.interaction.member;
+            const roles = await DatabaseAPI.getSTRoles(this.interaction.guild.id);
+
+            if (roles === undefined)
+            {
+                error = 'There was an error accessing the Database. Please try again' +
+                ' later.\nIf this issue persists please report it at the ' +
+                '[Realm of Darkness Server](<https://discord.gg/7xMqVrVeFt>).';
+            }
+            else if (member && (!member.permissions.has("ADMINISTRATOR") && 
+                !member.roles.cache.hasAny(...roles)))
+            {
+                error = 'Sorry, you must either be an Administrator or Storyteller' +
+                    ' to select another user.';
+            }
+            this.userId = this.player.id;
+        }        
+
+        if (error)
+        {
+            this.interaction.reply({content: error, ephemeral: true});
+            return false;
+        }
+        return true;
     }
 
     async getNameList()
     {
+        if (!await this.isArgsValid()) return undefined;
+
         const guildId = this.interaction.guildId;
         const response = await 
-            DatabaseAPI.getNameList(this.interaction.user.id, guildId);
+            DatabaseAPI.getNameList(this.userId, guildId);
         if (response === 'noChar')
         {
             this.interaction.reply({ 
@@ -76,7 +121,9 @@ module.exports = class DeleteCharacters
 
     async deleteCharacters()
     {
-        const response = await DatabaseAPI.deleteCharacters(this.toDelete.ids);
+        const response = await DatabaseAPI.deleteCharacters(
+            this.toDelete.ids, this.player ? true : false);
+        
         if (!response)
         {
             const content = 'There was an error accessing the Database. Please try again' +

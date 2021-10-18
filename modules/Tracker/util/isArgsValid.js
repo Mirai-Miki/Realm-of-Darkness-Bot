@@ -38,7 +38,7 @@ module.exports =
         {
             response = "Character Name must not be longer than 50.";
         }
-        else if (args.notes.length > 150)
+        else if (args.notes?.length > 150)
         {
             response = "Notes cannot be more then 150 characters long.";
         }
@@ -289,7 +289,7 @@ module.exports =
         {
             response = 'You must include at least one argument.'
         }
-        else if (args.notes.length > 150)
+        else if (args.notes?.length > 150)
         {
             response = "Notes cannot be more then 150 characters long.";
         }

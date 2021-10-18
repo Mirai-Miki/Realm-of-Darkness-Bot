@@ -37,6 +37,7 @@
 - Changeling banality now more accurately refelcts rules with permanant/temporary.
 - Changeling Nightmare/Imbalance changed to more accurately reflect the rules.
 - Demon temporary torment will now automaticly add +1 permanent torment when it hits 10 as well as reset to 0.
+- Finding characters with history will now display up to 30 records in groups of 5. Buttons are used to navigate the pages.
 
 # Known Bugs
 
@@ -66,11 +67,14 @@ User button and choice box to select the character to find.
 - Update v5 Emojis to look more like dice
 
 # Notes
-- When a member leaves a guild, disconnect their characters and delete the member
-- When a user deletes a character, the site checks if there are no more characters for that member. Before deleting that member check if the user is registered. If so don't delete.
-- Maybe swap v5 rouse checks to before the dice roll. or add a delay when posting the follow ups.
+- When a member leaves a guild, disconnect their characters and delete the member. Cannot do this without guild member intents (should request)
+- Maybe add v5 rouse and surge checks to the roll embed rather then follow ups.
 - Fix supporter stuff to work with new DB. Find a way to update From the role on my server
-- Need to delete old History
+
+# Priority List
+1. Add ST find/delete all functions
+2. Dice history Tracking
+3. tie v5 characters to dice rolls
 
 
 # Commands

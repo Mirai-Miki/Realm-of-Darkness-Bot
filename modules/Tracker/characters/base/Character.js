@@ -39,7 +39,7 @@ module.exports = class Character
             this.user.id = interaction.user.id;
             this.user.username = interaction.user.username;
             this.user.discriminator = interaction.user.discriminator;
-            this.user.avatarURL = interaction.user.avatarURL();    
+            this.user.avatarURL = interaction.user.avatarURL() ?? '';    
         }
     }
 
@@ -49,7 +49,7 @@ module.exports = class Character
         {
             this.guild.id = interaction.guildId;
             this.guild.name = interaction.guild.name;
-            this.guild.iconURL = interaction.guild.iconURL();
+            this.guild.iconURL = interaction.guild.iconURL() ?? '';
             this.guild.displayName = interaction.member?.displayName;
         }
     }
