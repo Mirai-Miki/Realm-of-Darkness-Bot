@@ -1,4 +1,6 @@
 'use strict';
+const v20config = require('../../config20th.json')
+const v5config = require('../../config5th.json')
 
 module.exports.Splats = 
 {
@@ -39,8 +41,8 @@ module.exports.SplatVersions =
 
 module.exports.clientVersions =
 {
-    v5: '699084843069341766',
-    v20: '898872627593097267',
-    '699084843069341766': this.Versions.v5,
-    '898872627593097267': this.Versions.v20
+    v5: v5config.clientId,
+    v20: v20config.clientId,
+    [v5config.clientId]: this.Versions.v5,
+    [v20config.clientId]: this.Versions.v20
 }
