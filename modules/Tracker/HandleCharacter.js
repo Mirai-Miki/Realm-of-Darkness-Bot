@@ -169,6 +169,7 @@ module.exports = class HandleCharacter
 
             parsedArgs.push(`${key}: ${value}`);
         }
+        
         content += (parsedArgs.join(', ') + ' }');
         if (history.notes) content += ` ${history.notes}`;
 

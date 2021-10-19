@@ -229,7 +229,7 @@ module.exports = class FindCharacter
                 this.constructEmbed();
                 if (this.showHistory == null) 
                 {
-                    this.response['contant'] = null;
+                    this.response['content'] = null;
                     this.response['components'] = [];
                     await i.update(this.response);
                     return this.collector.stop();

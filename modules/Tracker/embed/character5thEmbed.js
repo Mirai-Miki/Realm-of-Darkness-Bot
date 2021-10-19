@@ -69,22 +69,24 @@ module.exports.character5thEmbed = (char, client, args) =>
                 stainsOverflow),
             false)
         .setURL('https://discord.gg/Za738E6');
-                
-        if (char.splat === 'Vampire')
-        {
-            embed.addField("Hunger", 
-                (hungerTracker(char.hunger.current, client) + 
-                hungerOverflow), false);
-        }
+    
+    if (char.thumbnail) embed.setThumbnail(char.thumbnail);
 
-        if (char.exp.total) embed.addField("Experience", consumableTracker(
-            char.exp.current, char.exp.total, 0, client, true), false);
+    if (char.splat === 'Vampire')
+    {
+        embed.addField("Hunger", 
+            (hungerTracker(char.hunger.current, client) + 
+            hungerOverflow), false);
+    }
 
-        if (args?.notes) 
-            embed.addField("Notes", args.notes);
+    if (char.exp.total) embed.addField("Experience", consumableTracker(
+        char.exp.current, char.exp.total, 0, client, true), false);
 
-        const response = {embeds: [embed], ephemeral: true};
-        return response;        
+    if (args?.notes) 
+        embed.addField("Notes", args.notes);
+
+    const response = {embeds: [embed], ephemeral: true};
+    return response;        
 }
 
 function damageTracker(max, supDamage, aggDamage, client) {

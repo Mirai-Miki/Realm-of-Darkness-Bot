@@ -20,8 +20,11 @@
 - Added surge option to v5 roll
 - Added rouse option to v5 roll
 - Added spec option to v5 roll
+- Added character option to v5 roll
+- added character option to v5 rouse roll
 - removed /rr command in favor of Interactions on the main roll
 - Due to limitations on Discord Interactions and to clean up the channel, rerolls must be made within 15min of the roll
+- The roller has been tied into the tracker. Using willpower or gaining hunger with the Character options will automaticly update your character.
 
 # Tracker
 - names can now be more then one word
