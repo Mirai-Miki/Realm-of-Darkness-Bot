@@ -71,12 +71,6 @@ User button and choice box to select the character to find.
 - Maybe add v5 rouse and surge checks to the roll embed rather then follow ups.
 - Fix supporter stuff to work with new DB. Find a way to update From the role on my server
 
-# Priority List
-1. Add ST find/delete all functions
-2. Dice history Tracking
-3. tie v5 characters to dice rolls
-
-
 # Commands
 --------------------------------
 vampire20th {new, update, set}

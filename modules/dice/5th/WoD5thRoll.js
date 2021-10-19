@@ -1,11 +1,11 @@
 'use strict';
 const Roll = require('../Roll.js');
-const Rouse = require('./Rouse.js');
 const { MessageActionRow, MessageSelectMenu, 
     MessageButton, MessageEmbed } = require('discord.js');
-const { minToMilli } = require('../../util/misc.js');
+const { minToMilli, correctName } = require('../../util/misc.js');
 const DatabaseAPI = require('../../util/DatabaseAPI.js');
-const { Versions } = require('../../util/Constants')
+const { Versions } = require('../../util/Constants');
+const { character5thEmbed } = require('../../Tracker/embed/character5thEmbed');
 
 const Result = 
 {
@@ -24,6 +24,8 @@ module.exports = class WoD5thRoll
         this.interaction = interaction;
         this.results = {roll: {}, total: 0, type: 0, fails: 0};
         this.response = {embed: [], content: '', interactions: []};
+        this.bloodSurge;
+        this.rouseRoll;
         this.statsResult;
         this.isReroll = false;
 
@@ -34,11 +36,36 @@ module.exports = class WoD5thRoll
         this.spec = this.interaction.options.getString('speciality');
         this.rouse = this.interaction.options.getString('rouse');
         this.notes = this.interaction.options.getString('notes');
+        this.character = this.interaction.options.getString('character');
+        this.autoHunger = this.interaction.options.getBoolean('auto_hunger');
+
         this.totalPool = calculateTotalPool(this.pool, this.bp, this.spec);
     }
 
-    isArgsValid()
+    async isArgsValid()
     {
+        if (this.character) 
+        {
+            const name = correctName(this.character);
+            if (name.lenght > 50)
+            {
+                this.interaction.reply({ 
+                    content: ('Character name cannot be longer than 50 chars.'), 
+                    ephemeral: true 
+                });
+                return false;
+            }
+            let char = await DatabaseAPI.getCharacter(name, 
+                this.interaction.user.id, this.interaction);
+            if (char == 'noChar') char = undefined;
+            this.character = {
+                name: name, 
+                tracked: char,
+            };
+
+            if (char && this.autoHunger) this.hunger = char.hunger.current;
+        }
+
         if (this.pool < 1 || this.pool > 50)
         {
             this.interaction.reply({ 
@@ -81,6 +108,38 @@ module.exports = class WoD5thRoll
     {        
         this.results.roll = Roll.v5(this.totalPool, (this.hunger ?? 0));    
         calculateResults(this.results, (this.diff ?? 1));
+        
+        // Surging
+        if (this.bp)
+        {
+            this.bloodSurge = {
+                dice: [Roll.single(10)],
+                passed: false,
+                description: '- Hunger Increased -'
+            };
+            if (this.bloodSurge.dice[0] > 6)
+            {
+                this.bloodSurge.description = 'Hunger Unchanged';
+                this.bloodSurge.passed = true;
+            }
+        } 
+        if (this.rouse)
+        {
+            this.rouseRoll = {
+                dice: [Roll.single(10)],
+                passed: false,
+                description: '- Hunger Increased -'
+            };
+            if (this.rouse === 'Reroll') this.rouseRoll.dice.push(Roll.single(10));
+            for (const dice of this.rouseRoll?.dice)
+            {
+                if (dice >= 6)
+                {
+                    this.rouseRoll.description = 'Hunger Unchanged';
+                    this.rouseRoll.passed = true;
+                } 
+            }
+        } 
     }
 
     reroll(selected)
@@ -113,6 +172,8 @@ module.exports = class WoD5thRoll
         this.isReroll = true;
         this.results.roll = reg.concat(hunger);
         calculateResults(this.results, (this.diff ?? 1));
+
+        this.updateCharacter(0, true);
     }
 
     constructEmbed()
@@ -211,7 +272,15 @@ module.exports = class WoD5thRoll
             this.interaction.user.avatarURL()
         );
 
-        embed.setTitle(title);    
+        embed.setTitle(title); 
+        
+        if (this.character)
+        {
+            embed.addField("Character", this.character.name);
+            if (this.character.tracked?.thumbnail) 
+                embed.setThumbnail(this.character.tracked.thumbnail)
+        }
+
         if (blackResult.length) embed.addField(
             "Dice", `${blackResult.join(' ')}ﾠ`, true);
         if (this.hunger) embed.addField(
@@ -225,8 +294,22 @@ module.exports = class WoD5thRoll
         if (this.rerollCount) 
             embed.setDescription(`<† Rerolled ${this.rerollCount} Dice †>`);
 
-        //if (this.reroll.rrCount > 1) description += 
-        //    `ﾠ**Reroll Attempts: ${this.reroll.rrCount}**`;
+        if (this.bloodSurge)
+        {
+            embed.addField(
+                `Blood Surge Check [ ${this.bloodSurge.dice.join(" ")} ]`,
+                `\`\`\`diff\n${this.bloodSurge.description}\n\`\`\``
+            );
+        }
+
+        if (this.rouseRoll)
+        {
+            embed.addField(
+                `Rouse Check [ ${this.rouseRoll.dice.join(", ")} ]`,
+                `\`\`\`diff\n${this.rouseRoll.description}\n\`\`\``
+            );
+        }
+
         if (this.notes) embed.setFooter(this.notes);
         
         this.response.embed = embed;
@@ -338,6 +421,13 @@ module.exports = class WoD5thRoll
             components: this.response.interactions,
         });
 
+        // Need to update character if Hunger increased
+        let hunger = 0;
+        if (this.bloodSurge?.passed === false) hunger++;
+        if (this.rouseRoll?.passed === false) hunger++;
+        await this.updateCharacter(hunger, false);
+
+        /*
         if (this.bp)
         {
             const rouse = new Rouse(this.interaction, true);
@@ -352,7 +442,7 @@ module.exports = class WoD5thRoll
             rouse.constructEmbed();
             rouse.reply(true);          
         }
-
+        */
         const filter = i => (
             i.message.interaction.id == this.interaction.id &&
             (i.customId === 'autoReroll' || i.customId === 'selectReroll')         
@@ -469,7 +559,42 @@ module.exports = class WoD5thRoll
             );
         
         return [row];
-    }    
+    }   
+    
+    async updateCharacter(hunger, willpower)
+    {
+        if (!this.character?.tracked || 
+            this.character.tracked.version == Versions.v20 || 
+            (!hunger && !willpower)) return;
+
+        if (willpower)
+        {
+            this.character.tracked.willpower.takeSuperfical(1);
+        }
+
+        if (hunger)
+        {
+            this.character.tracked.hunger.updateCurrent(hunger);
+        }
+        
+        const resp = await DatabaseAPI.saveCharacter(this.character.tracked);
+        if (resp != 'saved')
+        {            
+            this.interaction.followUp({
+                content: "There was an error accessing the Database and" +
+                " the character was not updated."
+            });
+        }
+        else
+        {
+            this.interaction.followUp(
+                character5thEmbed(
+                    this.character.tracked, 
+                    this.interaction.client
+                )
+            );
+        }
+    }
 }
 
 function calculateResults(results, diff)

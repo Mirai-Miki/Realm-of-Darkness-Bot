@@ -1,8 +1,12 @@
 'use strict';
 const Roll = require('../Roll.js');
 const { MessageEmbed } = require('discord.js');
+const { correctName } = require('../../util/misc');
+const DatabaseAPI = require('../../util/DatabaseAPI.js');
+const { Versions } = require('../../util/Constants');
+const { character5thEmbed } = require('../../Tracker/embed/character5thEmbed');
 
-module.exports = class Resonance
+module.exports = class Rouse
 {
     constructor(interaction, surge=undefined)
     {
@@ -16,6 +20,7 @@ module.exports = class Resonance
             colour: [143, 6, 33]
         };
         this.response = {embeds: [], components: []};
+        this.character = this.interaction.options.getString('character');
 
         if (surge)
         {
@@ -32,15 +37,41 @@ module.exports = class Resonance
         }        
     }
 
+    async isArgsValid()
+    {
+        if (this.character) 
+        {
+            const name = correctName(this.character);
+            if (name.lenght > 50)
+            {
+                this.interaction.reply({ 
+                    content: ('Character name cannot be longer than 50 chars.'), 
+                    ephemeral: true 
+                });
+                return false;
+            }
+            let char = await DatabaseAPI.getCharacter(name, 
+                this.interaction.user.id, this.interaction);
+            if (char == 'noChar') char = undefined;
+            this.character = {
+                name: name, 
+                tracked: char,
+            };
+
+            if (char && this.autoHunger) this.hunger = char.hunger.current;
+        }
+        return true;
+    }
+
     roll()
-    {        
+    {
         this.results.dice.push(Roll.single(10));
         if (this.results.reroll) this.results.dice.push(Roll.single(10))
         for (const dice of this.results.dice)
         {
             if (dice >= 6) 
             {
-                this.results.description = "Unchanged";
+                this.results.description = "Hunger Unchanged";
                 this.results.colour = [48, 33, 33];
                 this.results.passed = true;
             }
@@ -97,6 +128,37 @@ module.exports = class Resonance
             await this.interaction.reply({
                 embeds: this.response.embeds
             });
+            if (!this.results.passed) await this.updateCharacter(1);
+        }
+    }
+
+    async updateCharacter(hunger)
+    {
+        if (!this.character?.tracked || 
+            this.character.tracked.version == Versions.v20 || 
+            !hunger) return;
+
+        if (hunger)
+        {
+            this.character.tracked.hunger.updateCurrent(hunger);
+        }
+        
+        const resp = await DatabaseAPI.saveCharacter(this.character.tracked);
+        if (resp != 'saved')
+        {            
+            this.interaction.followUp({
+                content: "There was an error accessing the Database and" +
+                " the character was not updated."
+            });
+        }
+        else
+        {
+            this.interaction.followUp(
+                character5thEmbed(
+                    this.character.tracked, 
+                    this.interaction.client
+                )
+            );
         }
     }
 }

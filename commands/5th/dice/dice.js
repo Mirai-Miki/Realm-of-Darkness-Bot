@@ -43,6 +43,13 @@ module.exports = {
                     .addChoice('No Reroll', 'No Reroll')
                     .addChoice('Reroll', 'Reroll'))
                 .addStringOption(option =>
+                    option.setName("character")
+                    .setDescription("Name of the character making the roll."))
+                .addBooleanOption(option =>
+                    option.setName("auto_hunger")
+                    .setDescription("Select if you would like you hunger" +
+                        " to be taken from your character."))
+                .addStringOption(option =>
                     option.setName("notes")
                     .setDescription("Any extra information you would like to" +
                         " include."))
@@ -54,6 +61,9 @@ module.exports = {
                 .addBooleanOption(option =>
                     option.setName("reroll")
                     .setDescription("Select if you are able to roll 2 dice. p211"))
+                .addStringOption(option =>
+                    option.setName("character")
+                    .setDescription("Name of the character making the roll."))
                 .addStringOption(option =>
                     option.setName("notes")
                     .setDescription("Any extra information you would like to" +
@@ -128,7 +138,7 @@ module.exports = {
         {
             case 'roll':
                 const roll = new WoD5thRoll(interaction);
-                if (roll.isArgsValid())
+                if (await roll.isArgsValid())
                 {
                     roll.roll();
                     roll.constructEmbed();
@@ -145,9 +155,12 @@ module.exports = {
                 break;
             case 'rouse':
                 const rouseRoll = new Rouse(interaction);
-                rouseRoll.roll();
-                rouseRoll.constructEmbed();
-                await rouseRoll.reply();
+                if (await rouseRoll.isArgsValid())
+                {
+                    rouseRoll.roll();
+                    rouseRoll.constructEmbed();
+                    await rouseRoll.reply();
+                }                
                 break;
             case 'general':
                 const generalRoll = new GeneralRoll(interaction);

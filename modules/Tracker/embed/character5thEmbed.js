@@ -83,19 +83,8 @@ module.exports.character5thEmbed = (char, client, args) =>
         if (args?.notes) 
             embed.addField("Notes", args.notes);
 
-        // Adding History if History flag is Set
-        if (false && char.history)
-        {
-            var history = `__**History for ${char.name}**__\n`;
-            for (const record of char.history)
-            {
-                history += `${record}ﾠ\n`;
-            }
-        }
-
         const response = {embeds: [embed], ephemeral: true};
-        if (false) return {embed: embed, history: history};
-        else return response;        
+        return response;        
 }
 
 function damageTracker(max, supDamage, aggDamage, client) {

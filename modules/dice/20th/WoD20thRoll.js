@@ -11,6 +11,7 @@ module.exports = class WoD20thRoll
     constructor(interaction)
     {
         this.interaction = interaction;
+        this.statsResult;
 
         this.pool = this.interaction.options.getInteger('pool');
         this.diff = this.interaction.options.getInteger('difficulty');
@@ -207,12 +208,14 @@ module.exports = class WoD20thRoll
             // Botched the roll
             embed.addField('Result', '```diff\n- Botched\n```');
             embed.setColor([204, 12, 47]);
+            this.statsResult = 'botched';
         }
         else if (!this.results.total)
         {
             // Failed the roll
             embed.addField('Result', '```fix\nFailed\n```');
             embed.setColor([224, 113, 2]);
+            this.statsResult = 'failed';
         }
         else
         {
@@ -220,6 +223,7 @@ module.exports = class WoD20thRoll
             embed.addField('Result', `\`\`\`diff\n+ ` +
                 `${this.results.total} success +\n\`\`\``);
             embed.setColor([50, 168, 82]);
+            this.statsResult = 'passed';
         }
 
         if (this.reason) embed.setFooter(this.reason);
@@ -311,6 +315,17 @@ module.exports = class WoD20thRoll
                 content: this.response.content,  
                 embeds: [this.response.embed] 
             });
+            DatabaseAPI.diceStatsUpdate(
+                {
+                    id: this.interaction.user.id,
+                    username: this.interaction.user.username,
+                    discriminator: this.interaction.user.discriminator,
+                    avatarURL: this.interaction.user.avatarURL() ?? ''
+                },
+                Versions.v20,
+                this.statsResult,
+                false
+            );
         }
         if (this.followUp)
         {
