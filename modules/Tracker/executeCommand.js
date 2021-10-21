@@ -1,6 +1,6 @@
 'use strict';
 const handleError = require("./util/handleError");
-const isArgsValid = require('./util/isArgsValid');
+const { isSetArgsValid, isUpdateArgsValid } = require('./util/isArgsValid');
 const Handler = require('./HandleCharacter');
 const { clientVersions } = require('../util/Constants');
 const DatabaseAPI = require('../util/DatabaseAPI')
@@ -26,7 +26,7 @@ module.exports = async function (interaction) {
     const handler = new Handler(interaction, commandName, version);
 
     if ((mode == 'new' || mode == 'set') &&
-        isArgsValid.set(handler.args, interaction, version))
+        await isSetArgsValid(handler.args, interaction, version))
     {
         if (mode == 'new' && handler.newCharacter())
         {
@@ -38,7 +38,7 @@ module.exports = async function (interaction) {
         }
     }
     else if (mode == 'update' && 
-        isArgsValid.update(handler.args, interaction) && 
+        await isUpdateArgsValid(handler.args, interaction) && 
         await handler.updateCharacter())
     {
         await saveCharacter(handler);

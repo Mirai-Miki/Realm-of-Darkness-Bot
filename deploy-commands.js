@@ -64,7 +64,7 @@ function v5 ()
 		try {
 			await rest.put(
 				Routes.applicationGuildCommands(clientId, guildId),
-				{ body: new Map },
+				{ body: commands },
 			);
 			
 			console.log('Successfully registered v5 application commands.');

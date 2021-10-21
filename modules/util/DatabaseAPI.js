@@ -9,6 +9,87 @@ const PORT = '8000';
 
 module.exports = class DatabaseAPI
 {
+    static async setSupporterLevel(interaction)
+    {
+        const host = `http://${IP}:${PORT}/bot/user/supporter/set`;
+        const data = 
+        {
+            APIKey: APIKey,
+            user: {
+                id: interaction.user.id,
+                username: interaction.user.username,
+                discriminator: interaction.user.discriminator,
+                avatar_url: interaction.user.avatarURL() ?? ''
+            },
+        };
+        let res;
+        try
+        {
+            res = await Axios.post(host, data, config);
+        }
+        catch (error)
+        {
+            if (error.code === 'ECONNREFUSED')
+            {
+                console.error("Error Database refused connection.\nCode: " +
+                    "ECONNREFUSED")
+            }
+            else console.error(error);
+            return undefined;
+        }
+
+        if (res.status == 200 && res.data)
+        {
+            const response = res.data;
+            
+            return response;
+        }
+        else
+        {
+            console.error("Error in DatabaseAPI.getCharacter()")
+            console.error(`Status: ${res.status}`)
+            return undefined;
+        }
+    }
+
+    static async getSupporterLevel(interaction)
+    {
+        const host = `http://${IP}:${PORT}/bot/user/supporter/get`;
+        const data = 
+        {
+            APIKey: APIKey,
+            user_id: interaction.user.id,
+        };
+        let res;
+        try
+        {
+            res = await Axios.post(host, data, config);
+        }
+        catch (error)
+        {
+            if (error.code === 'ECONNREFUSED')
+            {
+                console.error("Error Database refused connection.\nCode: " +
+                    "ECONNREFUSED")
+            }
+            else console.error(error);
+            return undefined;
+        }
+
+        if (res.status == 200 && res.data)
+        {
+            const response = res.data.level;
+            
+            return response;
+        }
+        else
+        {
+            console.error("Error in DatabaseAPI.getCharacter()")
+            console.error(`Status: ${res.status}`)
+            return undefined;
+        }
+    }
+
     static async diceStatsUpdate(user, version, result, reroll)
     {
         const host = `http://${IP}:${PORT}/bot/dice/stats/update`;

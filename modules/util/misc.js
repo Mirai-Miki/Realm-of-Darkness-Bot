@@ -1,16 +1,4 @@
 'use strict';
-const Database = require('./Database.js');
-
-module.exports.isSupporter = (userId) =>
-{
-    const db = new Database();
-    db.open('Supporters', 'Database');
-
-    const user = db.find(userId);
-
-    if (!user) return false;
-    return true;
-}
 
 module.exports.hourToMilli = (hour) =>
 {
