@@ -375,6 +375,7 @@ module.exports = class WoD5thRoll
                     content += this.v5AnkhCritRed.toString();
                 }
             }
+            content += ' ';
         }
 
         this.response.content = content;

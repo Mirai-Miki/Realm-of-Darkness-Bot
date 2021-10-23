@@ -235,25 +235,25 @@ module.exports = class WoD20thRoll
     constructContent()
     {
         const client = this.interaction.client;
-        const botch = client.emojis.resolve('886258888813469766');
-        const fail1 = client.emojis.resolve('886257732028596315');
-        const fail2 = client.emojis.resolve('886257745743999066');
-        const fail3 = client.emojis.resolve('886257759794888726');
-        const fail4 = client.emojis.resolve('886257774168797254');
-        const fail5 = client.emojis.resolve('886257791587741807');
-        const fail6 = client.emojis.resolve('886257808964734997');
-        const fail7 = client.emojis.resolve('886257824148107304');
-        const fail8 = client.emojis.resolve('886257842657579018');
-        const fail9 = client.emojis.resolve('886257860227514380');
-        const sux2 = client.emojis.resolve('886257880372752394');
-        const sux3 = client.emojis.resolve('886257915059654717');
-        const sux4 = client.emojis.resolve('886257935431368754');
-        const sux5 = client.emojis.resolve('886257951428452422');
-        const sux6 = client.emojis.resolve('886257965567471626');
-        const sux7 = client.emojis.resolve('886257979769368627');
-        const sux8 = client.emojis.resolve('886258001713971240');
-        const sux9 = client.emojis.resolve('886258017614561361');
-        const sux10 = client.emojis.resolve('886258032709865492');
+        const botch = client.emojis.resolve('901438266312650772');
+        const fail1 = client.emojis.resolve('901438193528881212');
+        const fail2 = client.emojis.resolve('901438197882564688');
+        const fail3 = client.emojis.resolve('901438198046134282');
+        const fail4 = client.emojis.resolve('901438197744152606');
+        const fail5 = client.emojis.resolve('901438198213910609');
+        const fail6 = client.emojis.resolve('901438198306197504');
+        const fail7 = client.emojis.resolve('901438197916123136');
+        const fail8 = client.emojis.resolve('901438199358963803');
+        const fail9 = client.emojis.resolve('901438198016774176');
+        const sux2 = client.emojis.resolve('901438140781326376');
+        const sux3 = client.emojis.resolve('901438140487720960');
+        const sux4 = client.emojis.resolve('901438140106035320');
+        const sux5 = client.emojis.resolve('901438141498544199');
+        const sux6 = client.emojis.resolve('901438140257017887');
+        const sux7 = client.emojis.resolve('901438141284614144');
+        const sux8 = client.emojis.resolve('901438140810682408');
+        const sux9 = client.emojis.resolve('901438141938941992');
+        const sux10 = client.emojis.resolve('901438140919709716');
         const crit = client.emojis.resolve('900379214715449475');
 
         const store = {
@@ -280,6 +280,7 @@ module.exports = class WoD20thRoll
             else if (dice < this.diff && (dice != 1 || this.cancelOnes))
                 mess += store[dice].fail.toString();
             else mess += botch.toString();
+            mess += ' ';
         }
 
         this.response.content = mess;
