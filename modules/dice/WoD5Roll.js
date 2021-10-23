@@ -228,7 +228,7 @@ module.exports = class WoD5Roll
         this.v5AnkhBlack = this.client.emojis.resolve('814396636793012254');
         this.v5AnkhCritBlack = this.client.emojis.resolve('814396519574143006');
         this.v5DotRed = this.client.emojis.resolve('814396574092361750');
-        this.v5DotBlack = this.client.emojis.resolve('814391880258682881');
+        this.v5DotBlack = this.client.emojis.resolve('901323344450818109');
 
         if (this.error) return this._getErrorMessage(this.error);
         let total = this.total;
