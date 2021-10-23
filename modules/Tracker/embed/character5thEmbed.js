@@ -220,7 +220,7 @@ function getEmoji(client)
         emoji.bloodDot = client.emojis.resolve("817642148794335253").toString();
         emoji.purpleDot = client.emojis.resolve("820913320378236939").toString();
         emoji.emptyDot = client.emojis.resolve("817641377826471936").toString();
-        emoji.blackDot = client.emojis.resolve("814391880258682881").toString();
+        emoji.blackDot = client.emojis.resolve("901323344450818109").toString();
         emoji.stain = client.emojis.resolve("814397402185728001").toString();
     }
     return emoji
