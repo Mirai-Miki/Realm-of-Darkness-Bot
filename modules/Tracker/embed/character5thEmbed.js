@@ -214,7 +214,7 @@ function getEmoji(client)
     if (client.emojis.resolve("817642148794335253") &&
         client.emojis.resolve("820913320378236939") &&
         client.emojis.resolve("817641377826471936") &&
-        client.emojis.resolve("814391880258682881") &&
+        client.emojis.resolve("901323344450818109") &&
         client.emojis.resolve("814397402185728001"))
     {
         emoji.bloodDot = client.emojis.resolve("817642148794335253").toString();
