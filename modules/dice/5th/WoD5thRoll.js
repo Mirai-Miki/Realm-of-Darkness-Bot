@@ -319,13 +319,13 @@ module.exports = class WoD5thRoll
     constructContent()
     {
         const client = this.interaction.client;
-        this.v5SkullRed = client.emojis.resolve('900379104099065896');
-        this.v5AnkhRed = client.emojis.resolve('900379132599341076');
-        this.v5AnkhCritRed = client.emojis.resolve('900379152560054332');
-        this.v5AnkhBlack = client.emojis.resolve('900379199171354624');
-        this.v5AnkhCritBlack = client.emojis.resolve('900379214715449475');
-        this.v5DotRed = client.emojis.resolve('900379078002110554');
-        this.v5DotBlack = client.emojis.resolve('900379176702468146');
+        this.v5SkullRed = client.emojis.resolve('901726472312590356');
+        this.v5AnkhRed = client.emojis.resolve('901726438561054743');
+        this.v5AnkhCritRed = client.emojis.resolve('901726454734290994');
+        this.v5AnkhBlack = client.emojis.resolve('901726406797582357');
+        this.v5AnkhCritBlack = client.emojis.resolve('901726422513614898');
+        this.v5DotRed = client.emojis.resolve('901721705981046835');
+        this.v5DotBlack = client.emojis.resolve('901721784976568360');
         let content = "";
         // Result Loop
         for (let dice of this.results.roll) 
