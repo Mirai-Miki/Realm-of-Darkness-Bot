@@ -254,7 +254,7 @@ module.exports = class WoD20thRoll
         const sux8 = client.emojis.resolve('901438140810682408');
         const sux9 = client.emojis.resolve('901438141938941992');
         const sux10 = client.emojis.resolve('901438140919709716');
-        const crit = client.emojis.resolve('900379214715449475');
+        const crit = client.emojis.resolve('901726422513614898');
 
         const store = {
             1: {fail: fail1},
