@@ -319,10 +319,10 @@ module.exports = class WoD5thRoll
     constructContent()
     {
         const client = this.interaction.client;
-        this.v5SkullRed = client.emojis.resolve('901726472312590356');
-        this.v5AnkhRed = client.emojis.resolve('901726438561054743');
+        this.v5SkullRed = client.emojis.resolve('901732920807546911');
+        this.v5AnkhRed = client.emojis.resolve('901731712558567474');
         this.v5AnkhCritRed = client.emojis.resolve('901726454734290994');
-        this.v5AnkhBlack = client.emojis.resolve('901726406797582357');
+        this.v5AnkhBlack = client.emojis.resolve('901731712487288852');
         this.v5AnkhCritBlack = client.emojis.resolve('901726422513614898');
         this.v5DotRed = client.emojis.resolve('901721705981046835');
         this.v5DotBlack = client.emojis.resolve('901721784976568360');
