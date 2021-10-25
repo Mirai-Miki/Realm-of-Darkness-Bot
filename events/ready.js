@@ -10,7 +10,7 @@ module.exports = {
 	once: true,
 	async execute(client) {
 		console.log("Connected as: " + client.user.tag);
-        //setActivity(client);
+        setActivity(client);
         //displayStats(client);
         //setInterval(function() {displayStats(client)}, 900000);
 

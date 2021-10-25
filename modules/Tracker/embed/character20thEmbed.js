@@ -356,7 +356,7 @@ function initEmoji(client)
     if (client.emojis.resolve("817642148794335253") &&
         client.emojis.resolve("820913320378236939") &&
         client.emojis.resolve("817641377826471936") &&
-        client.emojis.resolve("814391880258682881") &&
+        client.emojis.resolve("901323344450818109") &&
         client.emojis.resolve("894443295533584384") &&
         client.emojis.resolve("894443199140085780") &&
         client.emojis.resolve("894443929183871027"))
@@ -364,7 +364,7 @@ function initEmoji(client)
         emoji.bloodDot = client.emojis.resolve("817642148794335253").toString();
         emoji.purpleDot = client.emojis.resolve("820913320378236939").toString();
         emoji.emptyDot = client.emojis.resolve("817641377826471936").toString();
-        emoji.blackDot = client.emojis.resolve("814391880258682881").toString();
+        emoji.blackDot = client.emojis.resolve("901323344450818109").toString();
         emoji.overflow = client.emojis.resolve("894443295533584384").toString();
         emoji.royalWhite = client.emojis.resolve("894443199140085780").toString();
         emoji.royalBlack = client.emojis.resolve("894443929183871027").toString();
