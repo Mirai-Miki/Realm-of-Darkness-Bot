@@ -4,7 +4,7 @@ const { MessageActionRow, MessageSelectMenu,
     MessageButton, MessageEmbed } = require('discord.js');
 const { minToMilli, correctName } = require('../../util/misc.js');
 const DatabaseAPI = require('../../util/DatabaseAPI.js');
-const { Versions } = require('../../util/Constants');
+const { Versions, Splats } = require('../../util/Constants');
 const { character5thEmbed } = require('../../Tracker/embed/character5thEmbed');
 
 const Result = 
@@ -63,7 +63,8 @@ module.exports = class WoD5thRoll
                 tracked: char,
             };
 
-            if (char && this.autoHunger) this.hunger = char.hunger.current;
+            if (char && this.autoHunger && char.splat == Splats.vampire5th) 
+                this.hunger = char.hunger.current;
         }
 
         if (this.pool < 1 || this.pool > 50)
