@@ -8,24 +8,24 @@
 
 # v20 rolls
 - Redesigned the look of the 20th Roll
-- Redesigned the look of 20th Init
+- Redesigned the look of 20th Init Roll
 - Added a willpower option 20th roll
 - Added a character option 20th roll
 - Added a spec option to 20th roll
-- The roller has been tied into the tracker. Using willpower and Character options will automaticly update you willpower. It will also warn you if you attempt to use willpower with none available.
+- The roller has been tied into the tracker. Using the "willpower" and "character" options will automaticly update you willpower. It will also warn you if you attempt to use willpower with none available.
 
 # v5 rolls
 - Added a v5 Rouse roll
 - v5 Res roll can select resonance and or temp from a list
 - Redesigned the v5 Dice Emojis
-- Added surge option to v5 roll
-- Added rouse option to v5 roll
-- Added spec option to v5 roll
-- Added character option to v5 roll
-- added character option to v5 rouse roll
+- Added a surge option to v5 roll
+- Added a rouse option to v5 roll
+- Added a spec option to v5 roll
+- Added a character option to v5 roll
+- Added a character option to v5 rouse roll
 - removed /rr command in favor of Interactions on the main roll
 - Due to limitations on Discord Interactions and to clean up the channel, rerolls must be made within 15min of the roll
-- The roller has been tied into the tracker. Using willpower or gaining hunger with the Character options will automaticly update your character.
+- The roller has been tied into the tracker. Using a willpower reroll or gaining hunger with the 'character' option selected will automaticly update your tracked character.
 
 # Tracker
 - names can now be more then one word
@@ -35,7 +35,7 @@
 - Images can now be set [Supporter Only]
 - 20th edition vamipres can now define their morality
 - Find a character now brings up a drop down menu to select that character
-- Deleting characters is now done via a drop down menu and a confirmation will be asked before it is deleted.
+- Deleting characters is now done via a drop down menu and a confirmation will be asked before they are deleted.
 - Mage Quintessence and Paradox has been changed to more accuratly reflect the sheet wheel and rules.
 - Rage can now exceed its maximum as allowed by the rules.
 - Changeling banality now more accurately refelcts rules with permanant/temporary.
@@ -57,7 +57,6 @@
 - Chronicles of Darkness Dice roller
 
 # TODO
-- Display Tracked information in the RoD server from the Mirai-Helper Bot
 - Dice stats command
 - v5 compulsion
 
