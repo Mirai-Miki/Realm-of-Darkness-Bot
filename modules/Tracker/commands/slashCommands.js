@@ -13,7 +13,7 @@ module.exports.trackerSlashCommands = () =>
         .setDescription('Tracker Commands')
         .addSubcommand(subcommand => subcommand
             .setName('find')
-            .setDescription('Finds one or a specific Character')
+            .setDescription('Finds a tracked Character')
             .addBooleanOption(option =>
                 option.setName("history")
                 .setDescription("Select if you would like to display" +

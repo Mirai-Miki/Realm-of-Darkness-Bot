@@ -62,18 +62,22 @@
 
 # Commands
 --------------------------------
-vampire20th {new, update, set}
-vampire5th {new, update, set}
-werewolf {new, update set}
-changeling {new, update set}
-mage {new, update set}
-wraith {new, update set}
-demon {new, update set}
-mortal5th {new, update set}
-human20th {new, update set}
-ghoul20th {new, update set}
+Commands List
 
-tracker {find, delete, storytellers, channel}
+RoD v5
+/dice {roll, rouse, resonence, general}
+/vampire {new, update, set}
+/mortal5 {new, update set}
+/tracker {find, delete, storytellers, channel}
 
-v5 {roll, rouse, resonence, gener}
-20th {roll, init, general}
+RoD 20th
+/dice {roll, init, general}
+/vampire {new, update, set}
+/human {new, update set}
+/ghoul {new, update set}
+/werewolf {new, update set}
+/changeling {new, update set}
+/mage {new, update set}
+/wraith {new, update set}
+/demon {new, update set}
+/tracker {find, delete, storytellers, channel}

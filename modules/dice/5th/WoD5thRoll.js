@@ -681,7 +681,7 @@ function calculateTotalPool(pool, bp, spec)
 {
     let surge = 0;
 
-    if (bp)
+    if (bp != null)
     {
         switch (bp)
         {
