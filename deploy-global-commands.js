@@ -40,7 +40,6 @@ function v20 ()
 function v5 ()
 {
 	const { clientId, token, commandPath } = require('./config5th.json');
-
 	
 	const commands = [];
 	const commandFolders = fs.readdirSync(commandPath);
