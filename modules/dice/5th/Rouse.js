@@ -3,7 +3,7 @@ const Roll = require('../Roll.js');
 const { MessageEmbed } = require('discord.js');
 const { correctName } = require('../../util/misc');
 const DatabaseAPI = require('../../util/DatabaseAPI.js');
-const { Versions } = require('../../util/Constants');
+const { Versions, Splats } = require('../../util/Constants');
 const { character5thEmbed } = require('../../Tracker/embed/character5thEmbed');
 
 module.exports = class Rouse
@@ -104,6 +104,13 @@ module.exports = class Rouse
             embed.setThumbnail('https://cdn.discordapp.com/attachments/7140' +
             '50986947117076/886855116035084288/RealmOfDarknessSkullnoBNG.png');
         
+        if (this.character)
+        {
+            embed.addField("Character", this.character.name);
+            if (this.character.tracked?.thumbnail) 
+                embed.setThumbnail(this.character.tracked.thumbnail)
+        }
+
         embed.addField("Rouse Dice", `${diceMess.join(' ')}ﾠ`);
         
         embed.addField("Result", `\`\`\`diff\n` +
@@ -135,13 +142,10 @@ module.exports = class Rouse
     async updateCharacter(hunger)
     {
         if (!this.character?.tracked || 
-            this.character.tracked.version == Versions.v20 || 
+            this.character.tracked.splat != Splats.vampire5th ||
             !hunger) return;
-
-        if (hunger)
-        {
-            this.character.tracked.hunger.updateCurrent(hunger);
-        }
+        
+        this.character.tracked.hunger.updateCurrent(hunger);
         
         const resp = await DatabaseAPI.saveCharacter(this.character.tracked);
         if (resp != 'saved')
