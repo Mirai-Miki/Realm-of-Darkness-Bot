@@ -121,7 +121,7 @@ module.exports = class WoD5thRoll
                 passed: false,
                 description: '- Hunger Increased -'
             };
-            if (this.bloodSurge.dice[0] > 6)
+            if (this.bloodSurge.dice[0] >= 6)
             {
                 this.bloodSurge.description = 'Hunger Unchanged';
                 this.bloodSurge.passed = true;
