@@ -114,7 +114,7 @@ module.exports = class WoD5thRoll
         calculateResults(this.results, (this.diff ?? 1));
         
         // Surging
-        if (this.bp)
+        if (this.bp != null)
         {
             this.bloodSurge = {
                 dice: [Roll.single(10)],
