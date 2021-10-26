@@ -63,8 +63,11 @@ module.exports = class WoD5thRoll
                 tracked: char,
             };
 
-            if (char && this.autoHunger && char.splat == Splats.vampire5th) 
+            if (char && this.autoHunger && char.splat === 'Vampire' && 
+                char.version === '5th')
+            {
                 this.hunger = char.hunger.current;
+            }                 
         }
 
         if (this.pool < 1 || this.pool > 50)
