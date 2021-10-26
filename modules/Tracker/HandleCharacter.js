@@ -97,7 +97,7 @@ module.exports = class HandleCharacter
         }
         else if (!char)
         {
-            handleError(this.interaction, 'dbError');
+            handleError(this.interaction, 'dbError', this);
             return undefined;
         }
 
@@ -118,12 +118,12 @@ module.exports = class HandleCharacter
         );
         if (char === 'noChar')
         {
-            handleError(this.interaction, 'noChar');
+            handleError(this.interaction, 'noChar', this);
             return undefined;
         }
         else if (!char)
         {
-            handleError(this.interaction, 'dbError');
+            handleError(this.interaction, 'dbError', this);
             return undefined;
         }
 
@@ -185,9 +185,9 @@ module.exports = class HandleCharacter
             {
                 console.error("Error at Handler Reply");
                 console.error(error);
-                handleError(this.interaction, 'handlerReply');
+                handleError(this.interaction, 'handlerReply', this);
             }
-            else handleError(this.interaction, 'malformedURL');         
+            else handleError(this.interaction, 'malformedURL', this);         
             return false;
         }
         return true;
