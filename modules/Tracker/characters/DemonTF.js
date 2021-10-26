@@ -1,27 +1,22 @@
 'use strict';
-
-const Character20th = require("../characters/Character20th.js");
+const Character20th = require("./base/Character20th.js");
 const Consumable = require("../structures/Consumable");
-const StaticField = require("../structures/StaticField");
+const Counter = require("../structures/Counter");
+const { Splats } = require('../../util/Constants');
 
 module.exports = class DemonTF extends Character20th
 {
-    constructor(permTorment=1, faith=3, willpower=6) 
+    constructor(interaction, willpower=6) 
     {
-        super(willpower);
-        this.version = 'v20';
+        super(interaction, willpower);
         this.splat = 'Demon';          
-        this.faith = new Consumable(1);
-        this.permTorment = new StaticField(1, 1, 10);
-        this.tempTorment = new StaticField(0, 0, 10);
+        this.faith = new Consumable(10, 6, 1);
+        this.torment = new Counter(5, 0);
     }
 
-    resetOverflows()
+    static getSplat()
     {
-        super.resetOverflows();
-        this.faith.resetOverflow();
-        this.tempTorment.resetOverflow();
-        this.permTorment.resetOverflow();
+        return Splats.demonTF;
     }
 
     deserilize(char)
@@ -29,7 +24,24 @@ module.exports = class DemonTF extends Character20th
         super.deserilize(char);
         this.faith.setTotal(char.faith.total);
         this.faith.setCurrent(char.faith.current);
-        this.permTorment.setCurrent(char.permTorment.current);
-        this.tempTorment.setCurrent(char.tempTorment.current);
+        this.torment.setPermanant(char.torment.total);
+        this.torment.setTemporary(char.torment.current);
+    }
+
+    serialize()
+    {        
+        const s = super.serialize();
+        
+        s.character['splat'] = Splats.demonTF;        
+        s.character['faith'] = {
+            total: this.faith.total,
+            current: this.faith.current,
+        };
+        s.character['torment'] = { 
+            total: this.torment.permanant,
+            current: this.torment.temporary,
+        }
+        
+        return s;
     }
 }

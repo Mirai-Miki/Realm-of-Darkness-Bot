@@ -2,11 +2,6 @@
 
 module.exports = class Help
 {
-    constructor()
-    {
-
-    }
-
     static command(command)
     {
         if (!command) {

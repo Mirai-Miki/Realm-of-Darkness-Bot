@@ -1,5 +1,4 @@
 'use strict';
-
 module.exports = class Humanity5th
 {
     constructor(total)
@@ -11,14 +10,14 @@ module.exports = class Humanity5th
 
     takeStains(amount)
     {
-        this.resetOverflow();
+        this.overflow = 0;
         this.stains += amount;
         this.calculateStainsOverflow();
     }
 
     setStains(amount)
     {
-        this.resetOverflow();
+        this.overflow = 0;
 
         if (amount < 0)
         {
@@ -32,9 +31,9 @@ module.exports = class Humanity5th
         }
     }
 
-    setTotal(amount)
+    setCurrent(amount)
     {
-        this.resetOverflow();
+        this.overflow = 0;
         
         // If the player is losing humanity then stains get reset
         if (amount < this.total) this.stains = 0;
@@ -47,9 +46,9 @@ module.exports = class Humanity5th
         this.calculateStainsOverflow();        
     }
 
-    modifyTotal(amount)
+    updateCurrent(amount)
     {
-        this.resetOverflow();
+        this.overflow = 0;
 
         // If the player is losing humanity then stains get reset
         if (amount < 0) this.stains = 0;
@@ -60,11 +59,6 @@ module.exports = class Humanity5th
         if (this.total < 0) this.total = 0;
 
         this.calculateStainsOverflow();  
-    }
-
-    resetOverflow()
-    {
-        this.overflow = 0;
     }
 
     calculateStainsOverflow()

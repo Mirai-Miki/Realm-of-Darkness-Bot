@@ -1,12 +1,17 @@
 'use strict';
-
 module.exports = class Consumable
 {
-    constructor(total, current=total)
+    constructor(total, current=total, min=0)
     {
         this.total = total;
         this.current = current;
+        // The minimum amount the current pool can drop too. Not the total.
+        this.min = min;
+        this.modified = 0;
         this.overflow = 0;
+        // If unlocked a current is not limited by the total.
+        this.locked = true;
+        this.maxCurrent; // If unlocked the max current can reach.
 
         if (this.current > this.total)
         {
@@ -15,9 +20,16 @@ module.exports = class Consumable
         }
     }
 
-    modifiyCurrent(amount)
+    unlock(max)
     {
-        this.resetOverflow();
+        this.locked = false;
+        this.maxCurrent = max;
+    }
+
+    updateCurrent(amount)
+    {
+        this.overflow = 0;
+        const before = 0;
         this.current += amount;
 
         if (this.current < 0) 
@@ -26,19 +38,24 @@ module.exports = class Consumable
         }
         else if (this.current > this.total)
         {
-            this.overflow = this.current - this.total;
-            this.current = this.total;
+            if (this.locked)
+            {
+                this.overflow = this.current - this.total;
+                this.current = this.total;
+            }
+            else if (this.current > this.maxCurrent) 
+            {
+                this.overflow = this.current - this.maxCurrent;
+                this.current = this.maxCurrent;
+            }            
         }
-    }
-
-    resetOverflow()
-    {
-        this.overflow = 0;
+        this.modified += this.current - before;
     }
 
     setCurrent(amount)
     {
-        this.resetOverflow();
+        this.overflow = 0;
+        const before = this.current;
         this.current = amount;
 
         if (this.current < 0) 
@@ -47,32 +64,35 @@ module.exports = class Consumable
         }
         else if (this.current > this.total)
         {
-            this.current = this.total;
+            if (this.locked)
+            {
+                this.current = this.total
+            }
+            else if (this.current > this.maxCurrent)
+            {
+                this.current = this.maxCurrent;
+            }
         }
+        this.modified += this.current - before;
     }
 
-    setTotal(amount)
+    setTotal(amount, inc=true)
     {
-        this.resetOverflow();
-        this.total = amount;
-        if (this.current > this.total) this.current = this.total;
-    }
-
-    updateTotal(amount)
-    {
-        this.resetOverflow();
+        this.overflow = 0;
+        const before = this.total;
         let offset = amount - this.total;
         if (offset < 0) offset = 0;
         this.total = amount;
-        if (offset > 0) this.modifiyCurrent(offset);
+        if (inc) this.updateCurrent(offset);
         if (this.current > this.total) this.current = this.total;
+        this.modified += this.total - before;
     }
 
     incTotal(amount)
     {
-        this.resetOverflow();
+        this.overflow = 0;
         this.total += amount;
-        if (amount > 0) this.modifiyCurrent(amount);
+        if (amount > 0) this.updateCurrent(amount);
         if (this.current > this.total) this.current = this.total;
     }
 }

@@ -1,31 +1,50 @@
 'use strict';
-
 const Consumable = require("../structures/Consumable");
-const StaticField = require("../structures/StaticField");
-const Character20th = require("./Character20th");
+const Character20th = require("./base/Character20th");
+const { Splats } = require('../../util/Constants');
+const { slugifiy } = require('../../util/misc');
 
 module.exports = class Vampire20th extends Character20th
 {
-    constructor(humanity=7, blood=10, willpower=6) 
+    constructor(interaction=null, humanity=7, blood=10, willpower=6) 
     {
-        super(willpower);
+        super(interaction, willpower);
         this.splat = 'Vampire';
-        this.humanity = new StaticField(humanity, 0, 10);
-        this.blood = new Consumable(blood);
+        this.morality = {
+            name: 'Humanity', 
+            pool: new Consumable(10, humanity, 0),
+        };
+        this.blood = new Consumable(blood, blood, 0);
     }
 
-    resetOverflows()
+    static getSplat()
     {
-        super.resetOverflows();
-        this.blood.resetOverflow();
-        this.humanity.resetOverflow();
+        return Splats.vampire20th;
     }
 
-    deserilize(char)
+    deserilize(json)
     {
-        super.deserilize(char);
-        this.humanity.setCurrent(char.humanity.current);
-        this.blood.setTotal(char.blood.total);
-        this.blood.setCurrent(char.blood.current);
+        super.deserilize(json);
+        this.morality.pool.setCurrent(json.morality.current);
+        this.morality.name = json.morality.name;
+        this.blood.setTotal(json.blood.total);
+        this.blood.setCurrent(json.blood.current);
+    }
+
+    serialize()
+    {        
+        const s = super.serialize();
+        
+        s.character['splat'] = Splats.vampire20th;        
+        s.character['morality'] = {
+            name: slugifiy(this.morality.name),
+            current: this.morality.pool.current,
+        };
+        s.character['blood'] = {
+            total: this.blood.total,
+            current: this.blood.current,
+        };
+        
+        return s;
     }
 }

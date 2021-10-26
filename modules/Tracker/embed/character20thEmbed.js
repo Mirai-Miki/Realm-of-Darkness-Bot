@@ -1,92 +1,136 @@
 'use strict';
+const { MessageEmbed } = require("discord.js");
 
-const Discord = require("discord.js");
-const { getErrorMessage } = require('../getErrorMessage.js');
-
-module.exports.character20thEmbed = (char, tracker, unknownKeys) =>
+const DotColour =
 {
-    let client = tracker.recvMess.client;
-    let recvMess = tracker.recvMess;
-    if (tracker.error) return `<@${recvMess.author.id}> ` +
-        `${getErrorMessage(tracker.error)}`;
-   
-    let embed = new Discord.MessageEmbed()
+    bloodRed: 0,
+    purpleBlack: 1,
+    royalWhite: 2,
+    royalBlack: 3,
+    yellowBlack: 4,
+}
+
+module.exports.character20thEmbed = (char, client, notes) =>
+{   
+    let embed = new MessageEmbed()
         .setColor(char.colour)
-        .setAuthor(char.owner.username, char.owner.avatarURL)
-        .setTitle(char.name)
+        .setAuthor(
+            (
+                char.guild?.displayName ? 
+                char.guild.displayName : 
+                char.user.username
+            ), 
+            char.user.avatarURL
+        )
+        .setTitle(char.name)        
         .addField(`Willpower [${char.willpower.current}/${char.willpower.total}]`, 
-            consumableTracker(char.willpower, 1, client, 10),false)
+            consumableTracker(char.willpower, 1, client, 10), false)
         .setURL('https://discord.gg/Za738E6');
+
+        if (char.thumbnail) embed.setThumbnail(char.thumbnail);
 
         switch (char.splat)
         {
             case 'Ghoul':
                 embed.addField(`Vitae [${char.vitae.current}/5]`, 
-                consumableTracker(char.vitae, 0, client, 5), false);
+                consumableTracker(char.vitae, DotColour.bloodRed, client, 5), false);
 
             case 'Human':
                 embed.addField(`Blood [${char.blood.current}/10]`, 
-                consumableTracker(char.blood, 0, client, 10), false);
-                embed.addField(`Humanity ${char.humanity.current}`, 
-                    staticFieldTracker(char.humanity, 1, client), false);
+                consumableTracker(char.blood, DotColour.bloodRed, client, 10), false);
+                embed.addField(`Humanity ${char.morality.pool.current}`, 
+                    consumableTracker(
+                        char.morality.pool, DotColour.purpleBlack, client), false);
                 break;
 
             case 'Vampire':  
                 if (char.blood.total > 15)
                 {
                     embed.addField("Blood", consumableTracker(
-                        char.blood, 0, client), false);
+                        char.blood, DotColour.bloodRed, client), false);
                 }
                 else 
                 {
                     embed.addField(
                         `Blood [${char.blood.current}/${char.blood.total}]`, 
-                        consumableTracker(char.blood, 0, client, 10), false
+                        consumableTracker(char.blood, DotColour.bloodRed, client, 10), false
                     );
                 }
-                embed.addField(`Humanity ${char.humanity.current}`, 
-                    staticFieldTracker(char.humanity, 1, client));
+                embed.addField(`${char.morality.name} ${char.morality.pool.current}`, 
+                consumableTracker(char.morality.pool, DotColour.purpleBlack, client));
                 break;
             
             case 'Werewolf':  
                 embed.addField(
                     `Rage [${char.rage.current}/${char.rage.total}]`, 
-                    consumableTracker(char.rage, 0, client, 10), false
+                    consumableTracker(char.rage, DotColour.royalWhite, client, 10), false
                 );
                 embed.addField(
                     `Gnosis [${char.gnosis.current}/${char.gnosis.total}]`, 
-                    consumableTracker(char.gnosis, 1, client, 10), false
+                    consumableTracker(char.gnosis, DotColour.purpleBlack, client, 10), false
                 );
                 break;
 
             case 'Wraith':  
                 embed.addField(
                     `Corpus [${char.corpus.current}/${char.corpus.total}]`, 
-                    consumableTracker(char.corpus, 0, client, 10), false
+                    consumableTracker(char.corpus, DotColour.bloodRed, client, 10), false
                 );
                 embed.addField(
                     `Pathos ${char.pathos.current}`, 
-                    staticFieldTracker(char.pathos, 1, client), false
+                    consumableTracker(char.pathos, DotColour.royalBlack, client), false
                 );
                 break;
 
-            case 'Changeling':  
+            case 'Changeling':
+                embed.addField(
+                    `Imbalance ${char.nightmare.permanant}`, 
+                    consumableTracker(
+                        {
+                            total: 10,
+                            current: char.nightmare.permanant
+                        }, 
+                        DotColour.royalWhite, client
+                    ), 
+                    false
+                );
                 embed.addField(
                     `Glamour [${char.glamour.current}/${char.glamour.total}]`, 
-                    consumableTracker(char.glamour, 0, client, 10), false
+                    consumableTracker(char.glamour, DotColour.royalBlack, client, 10), false
                 );
                 embed.addField(
-                    `Banality [${char.banality.current}/${char.banality.total}]`, 
-                    consumableTracker(char.banality, 0, client, 10), false
+                    `Banality Permanant ${char.banality.permanant}`, 
+                    consumableTracker(
+                        {
+                            total: 10,
+                            current: char.banality.permanant
+                        }, 
+                    DotColour.royalWhite, client, 10
+                    ), 
+                    false
                 );
                 embed.addField(
-                    `Nightmare ${char.nightmare.current}`, 
-                    staticFieldTracker(char.nightmare, 0, client), false
+                    `Banality Temporary ${char.banality.temporary}`, 
+                    consumableTracker(
+                        {
+                            total: 10,
+                            current: char.banality.temporary
+                        },
+                        DotColour.yellowBlack, client, 10
+                    ), 
+                    false
                 );
                 embed.addField(
-                    `Imbalance ${char.imbalence.current}`, 
-                    staticFieldTracker(char.imbalence, 0, client), false
-                );
+                    `Nightmare ${char.nightmare.temporary}`, 
+                    consumableTracker(
+                        {
+                            total: 10,
+                            current: char.nightmare.temporary
+                        }, 
+                        DotColour.bloodRed, client
+                    ), 
+                    false
+                );                
                 embed.addField(
                     `Chimerical Health`, 
                     damageTracker(char.chimericalHealth, client), false
@@ -96,29 +140,36 @@ module.exports.character20thEmbed = (char, tracker, unknownKeys) =>
             case 'Mage':  
                 embed.addField(
                     `Arete ${char.arete.current}`, 
-                    staticFieldTracker(char.arete, 0, client), false
+                    consumableTracker(char.arete, DotColour.bloodRed, client), false
                 );
                 embed.addField(
-                    `quintessence ${char.quintessence.current}`, 
-                    staticFieldTracker(char.quintessence, 0, client), false
-                );
-                embed.addField(
-                    `Paradox ${char.paradox.current}`, 
-                    staticFieldTracker(char.paradox, 0, client), false
+                    `Quintessence ${char.quintParadox.current} ` +
+                    `& Paradox ${(20 - char.quintParadox.total)}`, 
+                    quintParaTracker(char.quintParadox, client), false
                 );
                 break;
             case 'Demon':  
                 embed.addField(
                     `Faith [${char.faith.current}/${char.faith.total}]`, 
-                    consumableTracker(char.faith, 1, client, 10), false
+                    consumableTracker(char.faith, DotColour.bloodRed, client, 10), false
                 );
                 embed.addField(
-                    `Permanent Torment ${char.permTorment.current}`, 
-                    staticFieldTracker(char.permTorment, 0, client), false
+                    `Torment - Permenent: ${char.torment.permanant}`, 
+                    consumableTracker(
+                        {total: 10, current: char.torment.permanant}, 
+                        DotColour.royalBlack, 
+                        client
+                    ), 
+                    false
                 );
                 embed.addField(
-                    `Temporary Torment ${char.tempTorment.current}`, 
-                    staticFieldTracker(char.tempTorment, 0, client), false
+                    `Torment - Temporary: ${char.torment.temporary}`, 
+                    consumableTracker(
+                        {total: 10, current: char.torment.temporary}, 
+                        DotColour.royalWhite, 
+                        client
+                    ), 
+                    false
                 );
                 break;
         }
@@ -128,26 +179,10 @@ module.exports.character20thEmbed = (char, tracker, unknownKeys) =>
             embed.addField("Experience", 
             consumableTracker(char.exp, 0, client, 0, true), false);
 
-        if (tracker.notes) embed.addField("Notes", tracker.notes);
-        if (unknownKeys.length) 
-            embed.addField("Unknown Keys", unknownKeys.join(' | '));
+        if (notes) embed.setFooter(notes);
 
-        // Adding History if History flag is Set
-        if (tracker.findHistory && char.history)
-        {
-            var history = `__**History for ${char.name}**__\n`;
-            for (let record of char.history)
-            {
-                history += `${record}ﾠ\n`;
-            }
-        }
-
-        embed.setFooter("This bot is becoming v5 specific on the 27/10.\n" +
-        "For more info and links to the 20th edition bot please visit the RoD Server.\n" +
-        "Please add the new bot as soon as possible.\nPlease note that a database reset will also occur at this time.\nPlease make sure you note your character details before that.\n")
-
-        if (history) return {embed: embed, history: history};
-        else return embed;        
+        const response = {embeds: [embed], ephemeral: true};
+        return response;
 }
 
 function damageTracker(health, client) {
@@ -163,7 +198,7 @@ function damageTracker(health, client) {
     for (let i = 0; i < totalHealth; i++) 
     {
         if (i == 2 || i == 4 || i == 6 || i == 8 || i == 10 || i == 12 || i == 14) 
-            tracker += 'ﾠ';
+            tracker += '⠀';
 
         if (agg) 
         {
@@ -187,7 +222,7 @@ function damageTracker(health, client) {
         }
         else console.error("Error in damageTracker()");        
     }
-    tracker += 'ﾠ';
+    tracker += '⠀';
     
     let total = health.getTotalDamage();
     if (health.overflow)
@@ -258,79 +293,81 @@ function consumableTracker(field, color, client, pad=0, noEmoji=false)
 
     for (let i = 0; i < total; i++) 
     {
-        if (i == 5 || i == 10) tracker += 'ﾠ';
+        if (i == 5 || i == 10) tracker += '⠀';
 
-        if (i < field.current) 
+        if (i >= field.total && i < field.current) tracker += emoji.overflow;
+        else if (i < field.current) 
         {
             switch (color)
             {
-                case 0:
+                case DotColour.bloodRed:
                     tracker += emoji.bloodDot;
                     break;
-                case 1:
+                case DotColour.purpleBlack:
                     tracker += emoji.purpleDot;
                     break;
+                case DotColour.royalBlack:
+                    tracker += emoji.royalBlack;
+                    break;
+                case DotColour.royalWhite:
+                    tracker += emoji.royalWhite;
+                    break;
+                case DotColour.yellowBlack:
+                    tracker += emoji.overflow;
             }
         }
         else if (i < field.total) tracker += emoji.emptyDot;
         else tracker += emoji.blackDot;                 
     }
-    tracker += 'ﾠ';
+    tracker += '⠀';
     return tracker;
 }
 
-function staticFieldTracker(field, color, client, noEmoji=false)
+function quintParaTracker(quintPara, client)
 {
     let emoji = initEmoji(client);
 
     let tracker = "";
 
-    if (field.current > 15 || noEmoji)
+    for (let i = 0; i < 20; i++) 
     {
-        tracker = `\`\`\`q\n[${field.current}]\n\`\`\``
-        return tracker;
-    }
+        if (i == 5 || i == 15) tracker += '⠀';
+        else if (i == 10) tracker += '\n';
 
-    for (let i = 0; i < field.max; i++) 
-    {
-        if (i == 5 || i == 10) tracker += 'ﾠ';
-
-        if (i < field.current) 
-        {
-            switch (color)
-            {
-                case 0:
-                    tracker += emoji.bloodDot;
-                    break;
-                case 1:
-                    tracker += emoji.purpleDot;
-                    break;
-            }
-        }
-        else if (field.max > 15) break;
+        if (i < quintPara.current) tracker += emoji.royalWhite;
+        else if (i >= quintPara.total) tracker += emoji.overflow;
         else tracker += emoji.emptyDot;                
     }
-    tracker += 'ﾠ';
     return tracker;
 }
 
 function initEmoji(client)
 {
-    let emoji = {}
-    emoji.bloodDot = '▣'
-    emoji.purpleDot = '▣'
-    emoji.emptyDot = '☐'
-    emoji.blackDot = '•'
+    let emoji = {
+        bloodDot: '▣',
+        purpleDot: '▣',
+        royalWhite: '▣',
+        royalBlack: '▣',
+        emptyDot: '☐',
+        overflow: '⧄',
+        blackDot: '•',
+    };
 
     if (client.emojis.resolve("817642148794335253") &&
         client.emojis.resolve("820913320378236939") &&
         client.emojis.resolve("817641377826471936") &&
-        client.emojis.resolve("901323344450818109"))
+        client.emojis.resolve("901323344450818109") &&
+        client.emojis.resolve("894443295533584384") &&
+        client.emojis.resolve("894443199140085780") &&
+        client.emojis.resolve("894443929183871027"))
     {
         emoji.bloodDot = client.emojis.resolve("817642148794335253").toString();
         emoji.purpleDot = client.emojis.resolve("820913320378236939").toString();
         emoji.emptyDot = client.emojis.resolve("817641377826471936").toString();
         emoji.blackDot = client.emojis.resolve("901323344450818109").toString();
+        emoji.overflow = client.emojis.resolve("894443295533584384").toString();
+        emoji.royalWhite = client.emojis.resolve("894443199140085780").toString();
+        emoji.royalBlack = client.emojis.resolve("894443929183871027").toString();
     }
     return emoji
 }

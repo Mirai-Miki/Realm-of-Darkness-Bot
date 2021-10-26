@@ -89,7 +89,7 @@ module.exports = class DamageTracker5th
         this.adjustSecondaryValues();
     }
 
-    modifyTotal(amount)
+    updateCurrent(amount)
     {
         this.total += amount;
         if (this.total < 1) this.total = 1;

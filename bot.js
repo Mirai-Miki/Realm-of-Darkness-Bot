@@ -1,330 +1,48 @@
 'use strict';
-
 const fs = require("fs");
-const Discord = require("discord.js");
-const config = require("./config.json");
-//const WebSocketServer = require("./modules/RoDApp/WebSocketServer.js");
-const Database = require("./modules/util/Database");
-const Tunnel = require("./modules/Tunnel/Tunnel.js");
+const { Client, Intents, Collection } = require("discord.js");
 
-const client = new Discord.Client();
-
-client.commands = new Discord.Collection();
-const commandFolders = fs.readdirSync(config.commandPath);
-
-//const PORT = 52723;
-//const wss = new WebSocketServer(client, PORT);
-
-for (const folder of commandFolders) {
-    const commandFiles = fs.readdirSync(
-        `${config.commandPath}${folder}`).filter(file => file.endsWith('.js'));
-    for (const file of commandFiles) {
-        const command = require(`${config.commandPath}${folder}/${file}`);
-        client.commands.set(command.name, command);
-    }
-}
-
-/* Event Listeners */
-
-client.on("ready", () => {
-    console.log("Connected as: " + client.user.tag);
-    setActivity(client);
-    displayStats();
-
-    let db = new Database();
-    db.open('Contests', 'Database');
-    db.deleteAll();
-});
-
-client.on('guildCreate', (guild) => {
-    setActivity(client);
-});
-
-client.on('guildDelete', (guild) => {
-    setActivity(client);
-});
-
-client.on('message', (mess) => {
-    const prefix = config.prefix;    
-    if (mess.author.bot)  { return };
-
-    if (mess.content.startsWith(prefix) || mess.content.startsWith('\\'))
+module.exports = class Bot
+{
+    constructor(config)
     {
-        if (!canSend(mess)) return;
+        const { token, commandPath } = config;
 
-        const args = mess.content.slice(prefix.length).trim().split(/ +/);
-        const commandName = args.shift().toLowerCase();
-        const content = 
-            mess.content.slice(prefix.length).trim().slice(commandName.length);
+        this.client = new Client({intents: [
+            Intents.FLAGS.GUILDS, 
+            Intents.FLAGS.GUILD_MESSAGES,
+            Intents.FLAGS.DIRECT_MESSAGES,
+            Intents.FLAGS.DIRECT_MESSAGE_REACTIONS
+        ]});
 
-        const command = client.commands.find(
-            cmd => cmd.aliases && cmd.aliases.includes(commandName));
+        this.client.commands = new Collection();
+        const commandFolders = fs.readdirSync(commandPath);
 
-	    if (command) 
-        {
-            commandCount(command.name);
-            userCount(mess.author.id);
-
-            try 
-            {
-            	command.execute(mess, args, content);
-            } 
-            catch (error) {
-            	console.error(error);
-            	mess.reply('there was an error trying to execute that command!\n' +
-                    'If see this error please let Mirai-Miki#6631 know.');
-            }
-            return;
-        }        
-    }
-
-    const db = new Database();
-    db.open("Tunnel", 'Database');
-    const toChannelID = db.find(mess.channel.id);
-    if (toChannelID)
-    {
-        if (!canSend(mess)) return;
-        else if (Tunnel.canTunnel(mess, toChannelID))
-        {
-            try 
-            {
-                Tunnel.toChannel(mess, toChannelID)
-            } 
-            catch (error) {
-            	console.error(error);
-            	mess.reply('there was an error trying to Tunnel!\n' +
-                    'If see this error please let Mirai-Miki#6631 know.');
+        for (const folder of commandFolders) {
+            const commandFiles = fs.readdirSync(
+                `${commandPath}${folder}`).filter(file => file.endsWith('.js'));
+            for (const file of commandFiles) {
+                const command = require(`${commandPath}${folder}/${file}`);
+                this.client.commands.set(command.data.name, command);
             }
         }
-    }
-});
 
-client.on('shardDisconnect', (closeEvent, id) => {
-    try {
-        client.channels.cache.get('776761322859266050').send(
-            `Shard ${String(id)} disconnected.\n` +
-            `Code: ${String(closeEvent.code)}\n` +
-            `Reason: ${closeEvent.reason}`
-        );
-    }
-    catch (error) {
-        console.error(
-            `The RoD Bot - ShardDisconnect.\n` +
-            `Shard ${String(id)} disconnected.\n` +
-            `Code: ${String(closeEvent.code)}\n\n` +
-            `There was also Error sending a message.\n` +
-            `${error}`
-        );
-    }    
-});
+        /* Event Listeners */
+        const eventFiles = fs.readdirSync('./events').filter(file => file.endsWith('.js'));
 
-client.on('shardError', (error, id) => {
-    try {
-        client.channels.cache.get('776761322859266050').send(
-            `Shard ${String(id)} encounted an error.\n` +
-            `Name: ${error.name}\n` +
-            `Message: ${error.message}`
-        );
-    }
-    catch (err) {
-        console.error(
-            `The RoD Bot - ShardError.` +
-            `Shard ${String(id)} encounted an error.\n` +
-            `Name: ${error.name}\n` +
-            `Message: ${error.message}\n\n` +
-            `There was also Error sending a message.\n`
-            `${err}`
-        );
-    }  
-});
+        for (const file of eventFiles) {
+        	const event = require(`./events/${file}`);
+        	if (event.once) {
+        		this.client.once(event.name, (...args) => event.execute(...args));
+        	} else {
+        		this.client.on(event.name, (...args) => event.execute(...args));
+        	}
+        }
 
-client.on('shardReady', (id, unavailGuilds) => {
-    try {
-        client.channels.cache.get('776761322859266050').send(
-            `Shard ${String(id)} is ready.\n` +
-            `There are ${unavailGuilds ? unavailGuilds.size : '0'}` +
-            ` unavailable guilds.`
-        );
-    }
-    catch (err) {
-        console.error(
-            `The RoD Bot - ShardReady.\n` +
-            `Shard ${String(id)} is ready.\n` +
-            `There are ${unavailGuilds ? unavailGuilds.size : '0'}` +
-            ` unavailable guilds.\n\n` +
-            `There was also Error sending a message.\n
-            ${err}`
-        );
-    }  
-});
-
-client.on('error', (error) => {
-    try {
-        client.channels.cache.get('776761322859266050').send(
-            `An Error was encounted.\n` +
-            `Error Name: ${error.name}\n` +
-            `Message: ${error.message}`
-        );
-    }
-    catch (err) {
-        console.error(
-            `The RoD Bot - Encounted an Error.\n` +
-            `Name: ${error.name}\n` +
-            `Message: ${error.message}\n\n` + 
-            `There was also Error sending a message.\n` +
-            `${err}`
-        );
-    } 
-});
-
-client.on('warn', (info) => {
-    try {
-        client.channels.cache.get('776761322859266050').send(
-            `${info}`
-        );
-    }
-    catch (err) {
-        console.error(
-            `The RoD Bot - Encounted a Warning.\n` +
-            `Message: ${info}\n\n` +
-            `There was also Error sending a message.\n` +
-            `${err}`
-        );
-    } 
-});
-
-function setActivity(client)
-{
-    let userCount = 0;
-    client.guilds.cache.each(guild => userCount += guild.memberCount);
-    client.user.setActivity(`${client.guilds.cache.size} Chronicles and` +
-        ` ${userCount} Players | Type ${config.prefix}rod for a list of commands`, 
-        { type: 'WATCHING' });
-}
-
-function canSend(mess)
-{
-    if (!mess.guild) return true; // Not sending in a guild
-    
-    if (!mess.channel.permissionsFor(client.user.id).has("SEND_MESSAGES"))
-    {
-        mess.author.send("Sorry, I do not have permission to post in the " +
-            `<${mess.guild.name} - #${mess.channel.name}> channel.\n` +
-            'Please enable "Send Messages" and "Embed Linds" in any channel' +
-            ' you want me to work in.')
-        .catch(error =>
-        {
-            if (error instanceof Discord.DiscordAPIError &&
-                error.code == 50007)
-            {
-                // Cannot send DM to user. Sending to debug log
-                client.channels.cache.get('776761322859266050').send(
-                    `DiscordAPIError: ${error.code}\n` +
-                    `Permissions not set in guild <${mess.guild.name}>, ` +
-                    `channel <${mess.channel.name}>` +
-                    `\nFailed to DM user ` +
-                    `${mess.author.username}#${mess.author.discriminator}` +
-                    `\n<@${mess.author.id}>`
-                );            
-            }
-            else throw error; // Unknown error
-        });
-        return false;
-    }
-    else if (!mess.channel.permissionsFor(client.user.id).has("EMBED_LINKS"))
-    {
-        mess.reply('Sorry, I need the "Embed Links" permissions in this' +
-            ' channel to function correctly.');
-        return false;
-    }
-    else return true;
-}
-
-function commandCount(commandName)
-{
-    const db = new Database();
-    db.open("CommandUsage", 'Database');
-    let count = db.find(commandName);
-    if (!count) count = 0;
-    count++;
-    db.add(commandName, count);
-    db.close();    
-}
-
-function userCount(userID)
-{
-    const db = new Database();
-    db.open("UserCount", 'Database');
-    let count = db.find(userID);
-    if (!count) count = 0;
-    count++;
-    db.add(userID, count);
-    db.close();
-}
-
-function displayStats()
-{
-    const channel = client.channels.cache.get(config.statChannel);
-    
-    const db = new Database();
-    db.open("StatMessages", 'Database');
-
-
-    const userDB = new Database();
-    userDB.open("UserCount", 'Database');
-    const userCountID = db.find("userCount");
-    const userEmbed = new Discord.MessageEmbed()
-        .setTitle("User Count")
-        .setDescription(`${userDB.length()}`)
-        .setTimestamp()
-        .setColor('#bf1bc4')
-    if (!userCountID)
-    {
-        channel.send(userEmbed)
-            .then(message =>
-                {
-                    db.add("userCount", message.id);
-                    db.close();
-                });
-    }
-    else
-    {
-        channel.messages.fetch(userCountID).then(message => 
-            {
-                message.edit(userEmbed)
-            });
-    }
-
-
-    const commandDB = new Database();
-    commandDB.open("CommandUsage", 'Database');
-    const commandUsageID = db.find("commandUsage");
-    const commandEmbed = new Discord.MessageEmbed()
-        .setTitle("Command Usage Information")
-        .setTimestamp()
-        .setColor('#199e1e')
-    for (const [key, value] of Object.entries(commandDB.db)) {
-            commandEmbed.addField(`${key}`, `${value}`);
-    }
-    if (!commandUsageID)
-    {
-        channel.send(commandEmbed)
-            .then(message =>
-                {
-                    db.add("commandUsage", message.id);
-                    db.close();
-                });
-    }
-    else
-    {
-        channel.messages.fetch(commandUsageID).then(message => 
-            {
-                message.edit(commandEmbed);
-            });
+        // Logs into the server using the secret token
+        this.client.login(token);
     }
 }
 
-// Logs into the server using the secret token
-client.login(config.token);
 
-setInterval(displayStats, 900000);
+

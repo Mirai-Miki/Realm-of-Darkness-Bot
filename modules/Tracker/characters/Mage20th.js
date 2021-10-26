@@ -1,32 +1,68 @@
 'use strict';
+const Consumable = require("../structures/Consumable");
+const Character20th = require("./base/Character20th");
+const { Splats } = require('../../util/Constants');
 
-const StaticField = require("../structures/StaticField");
-const Character20th = require("./Character20th");
-
-module.exports = class Mage20 extends Character20th 
+module.exports = class Mage extends Character20th 
 {
-    constructor(arete=1, quintessence=5, paradox=0, willpower=5) 
+    constructor(interaction, arete=1, quintessence=5, paradox=0, willpower=5) 
     {
-        super(willpower);
+        super(interaction, willpower);
         this.splat = 'Mage';
-        this.arete = new StaticField(arete, 0, 10);
-        this.quintessence = new StaticField(quintessence, 0, 10);
-        this.paradox = new StaticField(paradox, 0, 10);
+        this.arete = new Consumable(10, arete, 0);
+        this.quintParadox = new Consumable((20 - paradox), quintessence, 0);
     }
 
-    resetOverflows()
+    static getSplat()
     {
-        super.resetOverflows();
-        this.arete.resetOverflow();
-        this.quintessence.resetOverflow();
-        this.paradox.resetOverflow();
+        return Splats.mage20th;
+    }
+
+    updateQuint(amount)
+    {
+        this.quintParadox.updateCurrent(amount);
+    }
+
+    setQuint(amount)
+    {
+        this.quintParadox.setCurrent(amount);
+    }
+
+    updateParadox(amount)
+    {
+        const total = this.quintParadox.total;
+        const update = total - amount;
+
+        if (update > 20) update = 20;
+        else if (update < 0) update = 0;
+
+        this.quintParadox.setTotal(update, false);
+    }
+
+    setParadox(amount)
+    {
+        this.quintParadox.setTotal(20 - amount, false);
     }
 
     deserilize(char)
     {
         super.deserilize(char);
-        this.arete.setCurrent(char.arete.current);
-        this.quintessence.setCurrent(char.quintessence.current);
-        this.paradox.setCurrent(char.paradox.current);
+        this.arete.setCurrent(char.arete);
+        this.quintParadox.setCurrent(char.quint_paradox.current);
+        this.quintParadox.setTotal(char.quint_paradox.total);
+    }
+
+    serialize()
+    {        
+        const s = super.serialize();
+        
+        s.character['splat'] = Splats.mage20th;        
+        s.character['arete'] = this.arete.current;
+        s.character['quint_paradox'] = {
+            current: this.quintParadox.current,
+            total: this.quintParadox.total,
+        }
+        
+        return s;
     }
 }
