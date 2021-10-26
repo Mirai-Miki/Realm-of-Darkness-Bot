@@ -569,7 +569,8 @@ module.exports = class WoD5thRoll
     async updateCharacter(hunger, willpower)
     {
         if (!this.character?.tracked || 
-            this.character.tracked.splat != Splats.vampire5th || 
+            this.character.tracked.splat != 'Vampire' || 
+            this.character.tracked.version != '5th' || 
             (!hunger && !willpower)) return;
 
         if (willpower)

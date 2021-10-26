@@ -142,7 +142,8 @@ module.exports = class Rouse
     async updateCharacter(hunger)
     {
         if (!this.character?.tracked || 
-            this.character.tracked.splat != Splats.vampire5th ||
+            this.character.tracked.splat != 'Vampire' || 
+            this.character.tracked.version != '5th' ||
             !hunger) return;
         
         this.character.tracked.hunger.updateCurrent(hunger);
