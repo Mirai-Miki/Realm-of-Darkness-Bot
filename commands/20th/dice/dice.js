@@ -50,10 +50,15 @@ module.exports = {
                 .addIntegerOption(option =>
                     option.setName("dexterity_wits")
                     .setDescription("Your Dexterity plus you Wits." +
-                        " Must be between 0 and 50"))
+                        " Must be between 0 and 50")
+                    .setRequired(true))
                 .addStringOption(option =>
                     option.setName("character")
                     .setDescription("Name of the character making the roll."))
+                .addStringOption(option =>
+                    option.setName("notes")
+                    .setDescription("Any extra information you would like to" +
+                        " include."))
         )
         .addSubcommand(subcommand =>
             subcommand
@@ -109,7 +114,7 @@ module.exports = {
                 break;
             case 'initiative':
                 const init = new WoD20thInit(interaction);
-                if (init.isArgsValid())
+                if (await init.isArgsValid())
                 {
                     init.roll();
                     init.constructEmbed();

@@ -479,7 +479,7 @@ function vanityError()
 
 function isValidImageURL(url)
 {
-    if (!url.match(/^http(s)?:\/\/.(www\.)?.+\.((png)|(jpg)|(jpeg)|(gif))$/g))
+    if (!url.match(/^http(s)?:\/\/.(www\.)?.+\.((png)|(jpg)|(jpeg)|(gif))/ig))
     {
         return false;
     }

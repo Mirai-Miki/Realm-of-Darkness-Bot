@@ -28,6 +28,7 @@ module.exports = class WoD5thRoll
         this.rouseRoll;
         this.statsResult;
         this.isReroll = false;
+        this.rerollResults = [];
 
         this.pool = this.interaction.options.getInteger('pool');
         this.hunger = this.interaction.options.getInteger('hunger');
@@ -166,7 +167,9 @@ module.exports = class WoD5thRoll
                         if (index > -1) values.splice(index, 1);
                     }
                     this.rerollCount += 1;
-                    reg.push(Roll.v5(1, 0)[0]);
+                    const roll = Roll.v5(1, 0)[0];
+                    this.rerollResults.push(`${dice.result}>${roll.result}`)
+                    reg.push(roll);
                 }
                 else reg.push(dice);
             }
@@ -285,6 +288,12 @@ module.exports = class WoD5thRoll
                 embed.setThumbnail(this.character.tracked.thumbnail)
         }
 
+        if (this.rerollCount)
+        {
+            let description = `${this.rerollResults.join(', ')}`
+            embed.addField(`Rerolled ${this.rerollCount} Dice`, description);
+        }
+
         if (blackResult.length) embed.addField(
             "Dice", `${blackResult.join(' ')}ﾠ`, true);
         if (this.hunger) embed.addField(
@@ -295,9 +304,6 @@ module.exports = class WoD5thRoll
         embed.setURL('https://discord.gg/Za738E6');        
 
         // Finishing touches
-        if (this.rerollCount) 
-            embed.setDescription(`<† Rerolled ${this.rerollCount} Dice †>`);
-
         if (this.bloodSurge)
         {
             embed.addField(
