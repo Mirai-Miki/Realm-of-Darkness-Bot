@@ -43,7 +43,7 @@ module.exports = class TrackerChannel
         {
             content = 'There was an error accessing the Database. Please try again' +
                 ' later.\nIf this issue persists please report it at the ' +
-                '[Realm of Darkness Server](<https://discord.gg/7xMqVrVeFt>).';
+                '[Realm of Darkness Server](<https://discord.gg/Qrty3qKv95>).';
         }
         else if (response.removed)
         {
@@ -73,7 +73,7 @@ module.exports = class TrackerChannel
         {
             content = 'There was an error accessing the Database. Please try again' +
                 ' later.\nIf this issue persists please report it at the ' +
-                '[Realm of Darkness Server](<https://discord.gg/7xMqVrVeFt>).';
+                '[Realm of Darkness Server](<https://discord.gg/Qrty3qKv95>).';
         }
         else if (response.length === 0)
         {

@@ -47,7 +47,9 @@ module.exports = class FindCharacter
                 !member.roles.cache.hasAny(...roles)))
             {
                 error = 'Sorry, you must either be an Administrator or Storyteller' +
-                    ' to select another user.';
+                    ' to select another user.\n' +
+                    'If you are trying to find your own Character please' +
+                    ' remove this option and try again.';
             }
             
             this.userId = this.player.id;

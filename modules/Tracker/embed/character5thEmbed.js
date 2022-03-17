@@ -68,7 +68,7 @@ module.exports.character5thEmbed = (char, client, args) =>
                 char.humanity.stains, client) + 
                 stainsOverflow),
             false)
-        .setURL('https://discord.gg/Za738E6');
+        .setURL('https://discord.gg/Qrty3qKv95');
     
     if (char.thumbnail) embed.setThumbnail(char.thumbnail);
 

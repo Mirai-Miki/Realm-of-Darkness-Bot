@@ -98,7 +98,7 @@ module.exports = class Rouse
 
         embed.setTitle(`${this.surge ? 'Blood Surge Check' : 'Rouse Check'}`);
         embed.setColor(this.results.colour);
-        embed.setURL('https://discord.gg/Za738E6');
+        embed.setURL('https://discord.gg/Qrty3qKv95');
         
         if (!this.results.passed)
             embed.setThumbnail('https://cdn.discordapp.com/attachments/7140' +
@@ -111,7 +111,7 @@ module.exports = class Rouse
                 embed.setThumbnail(this.character.tracked.thumbnail)
         }
 
-        embed.addField("Rouse Dice", `${diceMess.join(' ')}ﾠ`);
+        embed.addField("Rouse Dice", `${diceMess.join(' ')}`);
         
         embed.addField("Result", `\`\`\`diff\n` +
             `${this.results.description}\n\`\`\``);

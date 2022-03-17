@@ -81,7 +81,7 @@ module.exports = class WoD20thInit
         embed.addField('Initiative of', 
             `\`\`\`fix\n${this.results.total}\n\`\`\``);
         embed.setColor([186, 61, 22]);
-        embed.setURL('https://discord.gg/Za738E6');
+        embed.setURL('https://discord.gg/Qrty3qKv95');
         if (this.notes) embed.setFooter(this.notes);
         this.response.embed = embed;
         return embed;

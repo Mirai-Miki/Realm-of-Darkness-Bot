@@ -19,6 +19,7 @@ module.exports = class WoD20thRoll
         this.mod = this.interaction.options.getInteger('modifier');
         this.spec = this.interaction.options.getString('speciality');
         this.reason = this.interaction.options.getString('notes');
+        this.nightmare = this.interaction.options.getInteger('nightmare');
         this.character = this.interaction.options.getString('character');
         this.cancelOnes = this.interaction.options.getBoolean('no_botch');
     }
@@ -79,15 +80,26 @@ module.exports = class WoD20thRoll
             resp['content'] = 'You are currently out of willpower.'
             this.interaction.reply(resp);
         }
+        else if (this.nightmare && (this.nightmare > this.pool ||
+            this.nightmare < 0))
+        {
+            this.interaction.reply({ 
+                content: ('Nightmare cannot be more then your pool or' +
+                    ' less then 0.'), 
+                ephemeral: true 
+            });
+        }
         else return true;
         return false;
     }
 
     async roll()
     {
+        let pool = this.pool - (this.nightmare ?? 0);
         const results = Roll.manySingle(this.pool, 10);
         this.results = {
-            rolls: [], 
+            rolls: [],
+            nightmareDice: [], 
             failed: [], 
             passed: [], 
             total: 0, 
@@ -95,10 +107,20 @@ module.exports = class WoD20thRoll
         }
         let removed = 0;
         let tens = 0;
+        let nightmareDice = false;
         
         for (let result of results['10'])
         {
-            this.results.rolls.push(result);
+            if (pool > 0)
+            {
+                this.results.rolls.push(result);
+                pool--;
+            }
+            else
+            {
+                nightmareDice = true;
+                this.results.nightmareDice.push(result);
+            }            
 
             if (result == 1)
             {               
@@ -115,6 +137,11 @@ module.exports = class WoD20thRoll
                 tens += 1;
                 this.results.total += 2;
                 this.results.passed.push(result);
+
+                if (nightmareDice)
+                {
+                    // do nightmare things
+                }
             }
             else if (result < this.diff)
             {
@@ -170,6 +197,7 @@ module.exports = class WoD20thRoll
         );
 
         let title = `Pool ${this.pool} | Diff ${this.diff}`;
+        if (this.nightmare) title += ` | Nightmare ${this.nightmare}`
         if (this.willpower) title += ` | WP`;
         if (this.mod) title += ` | Mod ${this.mod}`;
         if (this.spec) title += ` | Spec`;
@@ -178,6 +206,9 @@ module.exports = class WoD20thRoll
 
         const sortedResults = this.results.rolls.map((x) => x);
         sortedResults.sort((a, b) => b - a);
+
+        const sortedNightmareDice = this.results.nightmareDice.map((x) => x);
+        sortedNightmareDice.sort((a, b) => b - a);
         
         if (this.character)
         {
@@ -195,8 +226,22 @@ module.exports = class WoD20thRoll
                 mess.push(`~~${dice}~~`);
             else mess.push(`**~~1~~**`);            
         }
+
+        const nightmare = [];
+        for (let dice of sortedNightmareDice)
+        {           
+            if (dice == 10) nightmare.push('**10**');
+            else if (dice >= this.diff) nightmare.push(`${dice}`);
+            else if (dice < this.diff && (dice != 1 || this.cancelOnes))
+            nightmare.push(`~~${dice}~~`);
+            else nightmare.push(`**~~1~~**`);            
+        }
         
-        embed.addField("Dice", mess.join(", "), true)
+        if (mess.length) embed.addField("Dice", mess.join(", "), true);
+        if (nightmare.length) 
+        {
+            embed.addField("Nightmare", nightmare.join(", "), true);
+        }
 
         if (this.spec) embed.addField("Specialty", `${this.spec}`, true);
         
@@ -227,7 +272,7 @@ module.exports = class WoD20thRoll
         }
 
         if (this.reason) embed.setFooter(this.reason);
-        embed.setURL('https://discord.gg/Za738E6');
+        embed.setURL('https://discord.gg/Qrty3qKv95');
         this.response = { embed: embed };
         return embed;
     }
@@ -255,6 +300,8 @@ module.exports = class WoD20thRoll
         const sux9 = client.emojis.resolve('901438141938941992');
         const sux10 = client.emojis.resolve('901438140919709716');
         const crit = client.emojis.resolve('901726422513614898');
+        const nightmare = client.emojis.resolve('901432906227007488');
+        const seperator = client.emojis.resolve('953616399799037982');
 
         const store = {
             1: {fail: fail1},
@@ -275,6 +322,20 @@ module.exports = class WoD20thRoll
             {
                 if (this.spec) mess += crit.toString();
                 else mess += sux10.toString();
+            }
+            else if (dice >= this.diff) mess += store[dice].sux.toString();
+            else if (dice < this.diff && (dice != 1 || this.cancelOnes))
+                mess += store[dice].fail.toString();
+            else mess += botch.toString();
+            mess += ' ';
+        }
+
+        if (mess.length) mess += seperator.toString();
+        for (const dice of this.results.nightmareDice)
+        {
+            if (dice == 10)
+            {
+                mess += nightmare.toString();
             }
             else if (dice >= this.diff) mess += store[dice].sux.toString();
             else if (dice < this.diff && (dice != 1 || this.cancelOnes))

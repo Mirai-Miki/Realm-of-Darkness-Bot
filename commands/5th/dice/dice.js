@@ -104,6 +104,9 @@ module.exports = {
                         ' where (x) is the number of dice and (y) is the' +
                         ' number of sides.')
                     .setRequired(true))
+                .addIntegerOption(option =>
+                    option.setName("modifier")
+                    .setDescription('Adds or removes the number from the total.'))
                 .addStringOption(option =>
                     option.setName("dice_set_02")
                     .setDescription('A dice set is defined as "(x)d(y)"' +

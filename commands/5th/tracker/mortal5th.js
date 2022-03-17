@@ -145,7 +145,31 @@ function mortal5thCommands()
         .addStringOption(option =>
             option.setName("name")
             .setDescription("The name of your Character")
-            .setRequired(true))
+            .setRequired(true))               
+        .addIntegerOption(option =>
+            option.setName("willpower_superficial")
+            .setDescription("Updates you current SW Damage" +
+                " by the amount. Must be between -15 and 15. VtM v5 Corebook p126"))
+        .addIntegerOption(option =>
+            option.setName("health_superficial")
+            .setDescription("Updates you current SH Damage" +
+            " by the amount. Must be between -20 and 20. VtM v5 Corebook p126"))
+        .addIntegerOption(option =>
+            option.setName("willpower_agg")
+            .setDescription("Updates you current AW Damage" +
+            " by the amount. Must be between -15 and 15. VtM v5 Corebook p126"))        
+        .addIntegerOption(option =>
+            option.setName("health_agg")
+            .setDescription("Updates you current AH Damage" +
+            " by the amount. Must be between -15 and 15. VtM v5 Corebook p126"))
+        .addIntegerOption(option =>
+            option.setName("stains")
+            .setDescription("Updates your Stains by the amount. " +
+                "Must be between -15 and 15. VtM v5 Corebook p239"))
+        .addIntegerOption(option =>
+            option.setName("exp")
+            .setDescription("Updates you Current Exp by the amount." +
+                "+ values will also increase your total. VtM v5 Corebook p130")) 
         .addIntegerOption(option =>
             option.setName("willpower")
             .setDescription("Updates your Total Willpower by the amount. " +
@@ -158,30 +182,6 @@ function mortal5thCommands()
             option.setName("humanity")
             .setDescription("Updates your Humanity by the amount. " +
                 "Must be between -15 and 15. VtM v5 Corebook p236"))
-        .addIntegerOption(option =>
-            option.setName("exp")
-            .setDescription("Updates you Current Exp by the amount." +
-                "+ values will also increase your total. VtM v5 Corebook p130"))        
-        .addIntegerOption(option =>
-            option.setName("willpower_superficial")
-            .setDescription("Updates you current SW Damage" +
-                " by the amount. Must be between -15 and 15. VtM v5 Corebook p126"))
-        .addIntegerOption(option =>
-            option.setName("willpower_agg")
-            .setDescription("Updates you current AW Damage" +
-            " by the amount. Must be between -15 and 15. VtM v5 Corebook p126"))
-        .addIntegerOption(option =>
-            option.setName("health_superficial")
-            .setDescription("Updates you current SH Damage" +
-            " by the amount. Must be between -20 and 20. VtM v5 Corebook p126"))
-        .addIntegerOption(option =>
-            option.setName("health_agg")
-            .setDescription("Updates you current AH Damage" +
-            " by the amount. Must be between -15 and 15. VtM v5 Corebook p126"))
-        .addIntegerOption(option =>
-            option.setName("stains")
-            .setDescription("Updates your Stains by the amount. " +
-                "Must be between -15 and 15. VtM v5 Corebook p239"))
         .addStringOption(option =>
             option.setName("notes")
             .setDescription("Any aditional information you" +

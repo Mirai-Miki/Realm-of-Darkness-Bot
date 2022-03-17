@@ -35,6 +35,10 @@ module.exports = {
                     option.setName("notes")
                     .setDescription("Any extra information you would like to" +
                         " include."))
+                .addIntegerOption(option =>
+                    option.setName("nightmare")
+                    .setDescription("Replaces x number of dice in your" +
+                    " pool with Nightmare dice. p274"))
                 .addStringOption(option =>
                     option.setName("character")
                     .setDescription("Name of the character making the roll."))
@@ -70,6 +74,9 @@ module.exports = {
                         ' where (x) is the number of dice and (y) is the' +
                         ' number of sides.')
                     .setRequired(true))
+                .addIntegerOption(option =>
+                    option.setName("modifier")
+                    .setDescription('Adds or removes the modifier from the total.'))
                 .addStringOption(option =>
                     option.setName("dice_set_02")
                     .setDescription('A dice set is defined as "(x)d(y)"' +

@@ -295,13 +295,13 @@ module.exports = class WoD5thRoll
         }
 
         if (blackResult.length) embed.addField(
-            "Dice", `${blackResult.join(' ')}ﾠ`, true);
+            "Dice", `${blackResult.join(' ')}`, true);
         if (this.hunger) embed.addField(
-            "Hunger", `${hungerResult.join(' ')}ﾠ`, true);
+            "Hunger", `${hungerResult.join(' ')}`, true);
         if (this.spec) embed.addField("Specialty", this.spec);
         embed.addField("Result", `${resultMessage}`);
         embed.setColor(color);
-        embed.setURL('https://discord.gg/Za738E6');        
+        embed.setURL('https://discord.gg/Qrty3qKv95');        
 
         // Finishing touches
         if (this.bloodSurge)
@@ -400,7 +400,7 @@ module.exports = class WoD5thRoll
             buttonRow.addComponents(
                 new MessageButton()
                     .setCustomId('autoReroll')
-                    .setLabel('Auto Reroll')
+                    .setLabel('Reroll Failures')
                     .setStyle('PRIMARY'),
             );
         }

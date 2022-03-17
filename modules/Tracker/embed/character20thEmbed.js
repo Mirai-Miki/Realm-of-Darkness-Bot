@@ -25,7 +25,7 @@ module.exports.character20thEmbed = (char, client, notes) =>
         .setTitle(char.name)        
         .addField(`Willpower [${char.willpower.current}/${char.willpower.total}]`, 
             consumableTracker(char.willpower, 1, client, 10), false)
-        .setURL('https://discord.gg/Za738E6');
+        .setURL('https://discord.gg/Qrty3qKv95');
 
         if (char.thumbnail) embed.setThumbnail(char.thumbnail);
 

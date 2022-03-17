@@ -171,7 +171,7 @@ module.exports = class Resonance
         );
         embed.setTitle('Resonance Roll');
         embed.setColor(this.colour.hex);
-        embed.setURL('https://discord.gg/Za738E6');
+        embed.setURL('https://discord.gg/Qrty3qKv95');
 
         embed.addField("Result", `\`\`\`${this.temp.name}` +
             `${this.temp.name == 'Negligible' ? '' : (' '+this.res.name)}\`\`\``, 

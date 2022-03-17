@@ -41,7 +41,7 @@ module.exports = class DeleteCharacters
             {
                 error = 'There was an error accessing the Database. Please try again' +
                 ' later.\nIf this issue persists please report it at the ' +
-                '[Realm of Darkness Server](<https://discord.gg/7xMqVrVeFt>).';
+                '[Realm of Darkness Server](<https://discord.gg/Qrty3qKv95>).';
             }
             else if (member && (!member.permissions.has("ADMINISTRATOR") && 
                 !member.roles.cache.hasAny(...roles)))
@@ -80,7 +80,7 @@ module.exports = class DeleteCharacters
             this.interaction.reply({ 
                 content: ('There was an error accessing the Database. Please try again' +
                 ' later.\nIf this issue persists please report it at the ' +
-                '[Realm of Darkness Server](<https://discord.gg/7xMqVrVeFt>).'), 
+                '[Realm of Darkness Server](<https://discord.gg/Qrty3qKv95>).'), 
                 ephemeral: true 
             });
             return undefined;
@@ -128,7 +128,7 @@ module.exports = class DeleteCharacters
         {
             const content = 'There was an error accessing the Database. Please try again' +
                 ' later.\nIf this issue persists please report it at the ' +
-                '[Realm of Darkness Server](<https://discord.gg/7xMqVrVeFt>).';
+                '[Realm of Darkness Server](<https://discord.gg/Qrty3qKv95>).';
             return {status: 'error', content: content};
         }
         return {status: 'deleted'};

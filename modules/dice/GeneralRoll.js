@@ -16,6 +16,7 @@ module.exports = class GeneralRoll
             interaction.options.getString('dice_set_05'),
         ]
         this.sets = {};
+        this.modifier = interaction.options.getInteger('modifier');
         this.diff = interaction.options.getInteger('difficulty');
         this.notes = interaction.options.getString('notes');
         this.embed = [];
@@ -77,6 +78,7 @@ module.exports = class GeneralRoll
             set['results'] = Roll.manySingle(set.dice, set.sides);
             total += set.results.total;
         }
+        if (this.modifier) total += this.modifier;
         this.sets['total'] = total;
     }
 
@@ -108,6 +110,11 @@ module.exports = class GeneralRoll
             mess += '\n```'
             embed.addField(`${set.dice}d${set.sides}`, mess, true);
         }
+
+        if (this.modifier)
+        {
+            embed.addField("Modifier", `\`\`\`css\n${this.modifier}\n\`\`\``, true);
+        }
         
         if (this.diff)
         {
@@ -137,7 +144,7 @@ module.exports = class GeneralRoll
             embed.setColor([0,0,0]);
         }
         if (this.notes) embed.setFooter(this.notes);
-        embed.setURL('https://discord.gg/Za738E6');
+        embed.setURL('https://discord.gg/Qrty3qKv95');
 
         this.embed = [embed];
         return embed;

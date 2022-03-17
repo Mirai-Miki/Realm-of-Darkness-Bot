@@ -18,7 +18,7 @@ module.exports = {
             { 
                 content: 'There was an error while executing this command!\n' +
                     'If see this error please report it at the ' +
-					'[Realm of Darkness Server](<https://discord.gg/7xMqVrVeFt>).', 
+					'[Realm of Darkness Server](<https://discord.gg/Qrty3qKv95>).', 
                 ephemeral: true 
             });
 	    }

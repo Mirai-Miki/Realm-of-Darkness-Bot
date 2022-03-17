@@ -17,7 +17,7 @@ module.exports = function(interaction, error, handler)
     {
         errorMessage = 'There was an error accessing the Database. Please try again' +
         ' later.\nIf this issue persists please report it at the ' +
-        '[Realm of Darkness Server](<https://discord.gg/7xMqVrVeFt>).';
+        '[Realm of Darkness Server](<https://discord.gg/Qrty3qKv95>).';
     }
     else if (error === 'malformedURL')
     {
@@ -30,7 +30,7 @@ module.exports = function(interaction, error, handler)
     {
         errorMessage = 'There was an Error in the Character Handler' +
         '.\nIf you see this message please report it at the ' +
-        '[Realm of Darkness Server](<https://discord.gg/7xMqVrVeFt>).';
+        '[Realm of Darkness Server](<https://discord.gg/Qrty3qKv95>).';
     }
     else if (error === 'charOverflow')
     {
