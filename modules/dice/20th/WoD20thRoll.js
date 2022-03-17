@@ -330,7 +330,7 @@ module.exports = class WoD20thRoll
             mess += ' ';
         }
 
-        if (mess.length) mess += seperator.toString();
+        if (mess.length && this.nightmare) mess += seperator.toString();
         for (const dice of this.results.nightmareDice)
         {
             if (dice == 10)
