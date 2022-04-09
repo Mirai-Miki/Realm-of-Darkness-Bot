@@ -271,12 +271,14 @@ module.exports = class WoD5thRoll
         let embed = new MessageEmbed();
         
         embed.setAuthor(
-            (
-                this.interaction.member ? 
-                this.interaction.member.displayName : 
-                this.interaction.user.username
-            ), 
-            this.interaction.user.avatarURL()
+            {
+                name: (
+                    this.interaction.member?.displayName ??
+                    this.interaction.user.username
+                ), 
+                iconURL: this.interaction.member?.displayAvatarURL() ??
+                    this.interaction.user.displayAvatarURL()
+            }
         );
 
         embed.setTitle(title); 
@@ -438,22 +440,6 @@ module.exports = class WoD5thRoll
         if (this.rouseRoll?.passed === false) hunger++;
         await this.updateCharacter(hunger, false);
 
-        /*
-        if (this.bp)
-        {
-            const rouse = new Rouse(this.interaction, true);
-            rouse.roll();
-            rouse.constructEmbed();
-            rouse.reply(true);          
-        }
-        if (this.rouse)
-        {
-            const rouse = new Rouse(this.interaction);
-            rouse.roll();
-            rouse.constructEmbed();
-            rouse.reply(true);          
-        }
-        */
         const filter = i => (
             i.message.interaction.id == this.interaction.id &&
             (i.customId === 'autoReroll' || i.customId === 'selectReroll')         
@@ -503,8 +489,22 @@ module.exports = class WoD5thRoll
             }
         });
 
-        this.collector.on('end', i => {
-            this.interaction.editReply({components: []});
+        this.collector.on('end', async i => {
+            try
+            {
+                await this.interaction.editReply({components: []});
+            }
+            catch(error) 
+            {
+                if (error.code === 10008) return;
+                else 
+                {
+                    console.error("Error removing Components.")
+                    console.error(error);                    
+                    return;
+                }
+            }
+
             const user = this.interaction.user;
             DatabaseAPI.diceStatsUpdate(
                 {

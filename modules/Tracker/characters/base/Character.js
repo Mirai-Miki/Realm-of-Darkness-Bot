@@ -27,19 +27,41 @@ module.exports = class Character
             Math.floor(Math.random() * 256),
         ]
         this.history = [];
-        this.interaction = interaction;
-        this.setUser(this.interaction);
+        this.interaction = interaction;        
         this.setGuild(this.interaction);
     }
 
-    setUser(interaction)
+    async build()
+    {
+        await this.setUser(this.interaction);
+    }
+
+    async setUser(interaction)
     {
         if (interaction)
         {
-            this.user.id = interaction.user.id;
-            this.user.username = interaction.user.username;
-            this.user.discriminator = interaction.user.discriminator;
-            this.user.avatarURL = interaction.user.avatarURL() ?? '';    
+            let user = interaction.options?.getUser('player') ?? interaction.user
+            this.user.id = user.id;
+            this.user.username = user.username;
+            this.user.discriminator = user.discriminator;
+            // set avatarURL to guildAvatarURL if available
+
+            if (interaction.guild)
+            {
+                let member = await interaction.guild.members.fetch(user.id);
+                this.user.avatarURL = member.displayAvatarURL() ?? '';
+            }
+            else if (this.guild.id)
+            {
+                this.user.avatarURL = await interaction.client
+                    .guilds.fetch(this.guild.id)
+                    ?.members.fetch(user.id)
+                    ?.displayAvatarURL() ?? '';
+            }
+            else
+            {
+                this.user.avatarURL = user.displayAvatarURL() ?? '';
+            }                
         }
     }
 
@@ -71,6 +93,10 @@ module.exports = class Character
             else if ((key === 'thumbnail' || key === 'colour') && value != null) 
             {
                 history.args[key] = 'set';
+            }
+            else if (key === 'player' && value != null)
+            {
+                history.args["Updated by"] = "Storyteller";
             }
             else if (key === 'notes') continue;
             else if (value != null) history.args[key] = value;

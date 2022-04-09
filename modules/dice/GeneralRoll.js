@@ -87,12 +87,14 @@ module.exports = class GeneralRoll
         let embed = new MessageEmbed();        
         
         embed.setAuthor(
-            (
-                this.interaction.member ? 
-                this.interaction.member.displayName : 
-                this.interaction.user.username
-            ), 
-            this.interaction.user.avatarURL()
+            {
+                name: (
+                    this.interaction.member?.displayName ??
+                    this.interaction.user.username
+                ), 
+                iconURL: this.interaction.member?.displayAvatarURL() ??
+                    this.interaction.user.displayAvatarURL()
+            }
         );
 
         embed.setTitle(`General Roll`);

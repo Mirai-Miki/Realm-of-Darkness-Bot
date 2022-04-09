@@ -37,6 +37,19 @@ module.exports = function(interaction, error, handler)
         errorMessage = 'Sorry you have too many Characters. Please' +
             ' delete some to free up some space.';
     }
+    else if (error === 'missingPerm')
+    {
+        errorMessage = 'Sorry, you must either be an Administrator or ' +
+        'Storyteller to select a user.\n' +
+        'If you are trying to update your own Character please' +
+        ' remove the "player" option and try again.';
+    }
+    else if (error === 'noGuild')
+    {
+        errorMessage = 'Sorry, selecting a player can only be used in a server.' +
+        '\nIf you trying to update your own Character please' +
+        ' remove the "player" option and try again.';
+    }
 
     interaction.reply({content: errorMessage, ephemeral: true});
 }

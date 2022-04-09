@@ -44,12 +44,12 @@ module.exports.character5thEmbed = (char, client, args) =>
     let embed = new Discord.MessageEmbed()
         .setColor(char.colour)
         .setAuthor(
-            (
-                char.guild?.displayName ? 
-                char.guild.displayName : 
-                char.user.username
-            ), 
-            char.user.avatarURL
+            {
+                name: (
+                    char.guild?.displayName ?? char.user.username
+                ), 
+                iconURL: char.user.avatarURL
+            }
         )
         .setTitle(char.name)
         .addField("Willpower", 

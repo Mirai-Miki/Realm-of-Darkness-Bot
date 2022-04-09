@@ -171,6 +171,10 @@ function wraith20thCommands()
             option.setName("agg_damage")
             .setDescription("Updates your Agg damage by the amount. " +
                 "WtO 20th Corebook p294"))
+        .addUserOption(option =>
+            option.setName("player")
+            .setDescription("The player the character belongs to. Used by STs" +
+            " to update another players Char [ST Only]"))
         .addStringOption(option =>
             option.setName("notes")
             .setDescription("Any aditional information you" +

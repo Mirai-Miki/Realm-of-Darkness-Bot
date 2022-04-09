@@ -28,7 +28,7 @@ module.exports = async function (interaction) {
     if ((mode == 'new' || mode == 'set') &&
         await isSetArgsValid(handler.args, interaction, version))
     {
-        if (mode == 'new' && handler.newCharacter())
+        if (mode == 'new' && await handler.newCharacter())
         {
             await saveCharacter(handler);
         }

@@ -59,12 +59,14 @@ module.exports = class WoD20thInit
         let embed = new MessageEmbed();    
         
         embed.setAuthor(
-            (
-                this.interaction.member ? 
-                this.interaction.member.displayName : 
-                this.interaction.user.username
-            ), 
-            this.interaction.user.avatarURL()
+            {
+                name: (
+                    this.interaction.member?.displayName ??
+                    this.interaction.user.username
+                ), 
+                iconURL: this.interaction.member?.displayAvatarURL() ??
+                    this.interaction.user.displayAvatarURL()
+            }
         );
 
         if (this.character)

@@ -15,12 +15,12 @@ module.exports.character20thEmbed = (char, client, notes) =>
     let embed = new MessageEmbed()
         .setColor(char.colour)
         .setAuthor(
-            (
-                char.guild?.displayName ? 
-                char.guild.displayName : 
-                char.user.username
-            ), 
-            char.user.avatarURL
+            {
+                name: (
+                    char.guild?.displayName ?? char.user.username
+                ), 
+                iconURL: char.user.avatarURL
+            }
         )
         .setTitle(char.name)        
         .addField(`Willpower [${char.willpower.current}/${char.willpower.total}]`, 

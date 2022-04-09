@@ -29,7 +29,9 @@ module.exports = class FindCharacter
         {
             if (!this.interaction.guild)
             {
-                error = 'Sorry, selecting a player can only be used in a server.';
+                error = 'Sorry, selecting a player can only be used in a server.' +
+                '\nIf you trying to find your own Character please' +
+                ' remove the "player" option and try again.';
                 this.interaction.reply({content: error, ephemeral: true});
                 return false;
             }
@@ -49,7 +51,7 @@ module.exports = class FindCharacter
                 error = 'Sorry, you must either be an Administrator or Storyteller' +
                     ' to select another user.\n' +
                     'If you are trying to find your own Character please' +
-                    ' remove this option and try again.';
+                    ' remove the "player" option and try again.';
             }
             
             this.userId = this.player.id;

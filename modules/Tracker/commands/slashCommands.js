@@ -20,7 +20,8 @@ module.exports.trackerSlashCommands = () =>
                     " the history information."))
             .addUserOption(option =>
                 option.setName("player")
-                .setDescription("The player the character belongs to. [ST Only]"))
+                .setDescription("The player the character belongs to. Used by" +
+                " STs to find another players Char [ST Only]"))
         )
         .addSubcommand(subcommand => subcommand
             .setName('delete')

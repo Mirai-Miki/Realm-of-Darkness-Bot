@@ -251,6 +251,7 @@ module.exports = class DatabaseAPI
 
             const Character = getCharacterClass(character.splat);
             const char = new Character(interaction);
+            await char.build();
             char.deserilize(character);
             
             return char;

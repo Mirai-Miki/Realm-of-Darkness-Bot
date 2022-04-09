@@ -182,6 +182,10 @@ function mortal5thCommands()
             option.setName("humanity")
             .setDescription("Updates your Humanity by the amount. " +
                 "Must be between -15 and 15. VtM v5 Corebook p236"))
+        .addUserOption(option =>
+            option.setName("player")
+            .setDescription("The player the character belongs to. Used by STs" +
+            " to update another players Char [ST Only]"))
         .addStringOption(option =>
             option.setName("notes")
             .setDescription("Any aditional information you" +

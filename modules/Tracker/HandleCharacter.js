@@ -17,6 +17,7 @@ module.exports = class HandleCharacter
         this.character;
 
         this.args = {
+            player: interaction.options.getUser('player'),
             name: interaction.options.getString('name'),
             exp: interaction.options.getInteger('exp'),                      
             notes: interaction.options.getString('notes'),
@@ -70,10 +71,11 @@ module.exports = class HandleCharacter
         }
     }
 
-    newCharacter()
+    async newCharacter()
     {
         const Character = getCharacterClass(this.splat + this.version);
         const char = new Character(this.interaction);
+        await char.build();
         char.setName(this.args.name);
         setFields(this.args, char);
         char.updateHistory(this.args, "New");
@@ -84,9 +86,38 @@ module.exports = class HandleCharacter
 
     async updateCharacter()
     {
+        let requestedUserId = this.interaction.user.id;
+
+        // Checks if an Admin or ST is trying to update another players char
+        if (this.args.player)
+        {
+            if (!this.interaction.guild)
+            {
+                handleError(this.interaction, 'noGuild', this);
+                return undefined;
+            }
+
+            const member = this.interaction.member;
+            const roles = await DatabaseAPI.getSTRoles(this.interaction.guild.id);
+
+            if (roles === undefined)
+            {
+                handleError(this.interaction, 'dbError', this);
+                return undefined;
+            }
+            else if (member && (!member.permissions.has("ADMINISTRATOR") && 
+                !member.roles.cache.hasAny(...roles)))
+            {
+                handleError(this.interaction, 'missingPerm', this);
+                return undefined;
+            }
+            
+            requestedUserId = this.args.player.id;
+        }
+
         const char = await DatabaseAPI.getCharacter(
             this.args.name, 
-            this.interaction.user.id,
+            requestedUserId,
             undefined,
             (this.splat + this.version)
         );
