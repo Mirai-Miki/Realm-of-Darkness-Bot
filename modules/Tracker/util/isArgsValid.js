@@ -99,7 +99,7 @@ module.exports.isSetArgsValid = async (args, interaction, version) =>
 
     if (response)
     {
-        interaction.reply(r);
+        interaction.editReply(r);
         return false;
     }
     return true;
@@ -132,7 +132,7 @@ module.exports.isUpdateArgsValid = async (args, interaction) =>
 
     if (response)
     {
-        interaction.reply({content: response, ephemeral: true});
+        interaction.editReply({content: response, ephemeral: true});
         return false;
     }
     return true;
