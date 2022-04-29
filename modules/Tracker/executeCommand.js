@@ -7,6 +7,7 @@ const DatabaseAPI = require('../util/DatabaseAPI')
 
 module.exports = async function (interaction) { 
     let mode = '';
+    await interaction.deferReply({ ephemeral: true });
     const subcommand = interaction.options.getSubcommand(false);
     let commandName = interaction.commandName;
 
@@ -42,7 +43,8 @@ module.exports = async function (interaction) {
         await handler.updateCharacter())
     {
         await saveCharacter(handler);
-    }    
+    }
+    await handler.cleanup();
 }
 
 async function saveCharacter(handler)
@@ -53,7 +55,10 @@ async function saveCharacter(handler)
         handler.constructEmbed();
         await handler.reply();
     }
-    else if (result === 'exists') handleError(handler.interaction, 'exists');
-    else if (result === 'charOverflow') handleError(handler.interaction, 'charOverflow');
-    else handleError(handler.interaction, 'dbError');
+    else if (result === 'exists') 
+        await handleError(handler.interaction, 'exists');
+    else if (result === 'charOverflow') 
+        await handleError(handler.interaction, 'charOverflow');
+    else 
+        await handleError(handler.interaction, 'dbError');
 }

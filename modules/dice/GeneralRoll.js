@@ -22,7 +22,7 @@ module.exports = class GeneralRoll
         this.embed = [];
     }
 
-    isArgsValid()
+    async isArgsValid()
     {
         for (const set of this.args)
         {
@@ -69,7 +69,7 @@ module.exports = class GeneralRoll
         return true;
     }
 
-    roll()
+    async roll()
     {
         let total = 0;
         for (const key of Object.keys(this.sets))
@@ -82,7 +82,7 @@ module.exports = class GeneralRoll
         this.sets['total'] = total;
     }
 
-    contructEmbed()
+    async contructEmbed()
     {
         let embed = new MessageEmbed();        
         
@@ -145,15 +145,23 @@ module.exports = class GeneralRoll
             embed.addField('Result', `Total of ${this.sets.total}`);
             embed.setColor([0,0,0]);
         }
-        if (this.notes) embed.setFooter(this.notes);
+        if (this.notes) embed.setFooter({text: this.notes});
         embed.setURL('https://discord.gg/Qrty3qKv95');
 
         this.embed = [embed];
         return embed;
     }
 
-    reply()
+    async reply()
     {
-        this.interaction.reply({embeds: this.embed});
+        await this.interaction.editReply({embeds: this.embed});
+    }
+
+    async cleanup()
+    {
+        this.interaction = undefined;
+        this.args = undefined;
+        this.sets = undefined;
+        this.embed = undefined;
     }
 }

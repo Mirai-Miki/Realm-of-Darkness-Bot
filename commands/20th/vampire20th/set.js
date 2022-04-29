@@ -23,63 +23,81 @@ function vampire20thSetCommands()
         .addIntegerOption(option =>
             option.setName("willpower")
             .setDescription("Sets you total Willpower to the number. " +
-                "Must be between 1 and 10. VtM 20th Corebook p120"))
+                "Must be between 1 and 10. VtM 20th Corebook p120")
+            .setMinValue(1)
+            .setMaxValue(10))
         .addIntegerOption(option =>
             option.setName("blood")
             .setDescription("Sets you total Blood Pool to the number. " +
-                "Must be between 1 and 100. VtM 20th Corebook p121"))
+                "Must be between 1 and 100. VtM 20th Corebook p121")
+            .setMinValue(1)
+            .setMaxValue(10))
         .addIntegerOption(option =>
             option.setName("morality")
             .setDescription("Sets your Mortality to the number. " +
-                "Must be between 0 and 10. VtM 20th Corebook p309"))
+                "Must be between 0 and 10. VtM 20th Corebook p309")
+            .setMinValue(0)
+            .setMaxValue(10))
         .addStringOption(option =>
             option.setName("morality_name")
             .setDescription("Sets the name of your chosen Morality. " +
                 "VtM 20th Corebook p309")
-                .addChoice('Humanity', 'Humanity')
-			    .addChoice('Path of Asakku', 'Path of Asakku')
-			    .addChoice('Path of Blood', 'Path of Blood')
-                .addChoice('Path of the Bones', 'Path of the Bones')
-			    .addChoice('Path of Caine', 'Path of Caine')
-			    .addChoice('Path of Cathari', 'Path of Cathari')
-                .addChoice('Path of Death and the Soul', 'Path of Death and the Soul')
-			    .addChoice('Path of Ecstasy', 'Path of Ecstasy')                
-			    .addChoice('Path of Entelechy', 'Path of Entelechy')
-			    .addChoice('Path of Evil Revelations', 'Path of Evil Revelations')
-                .addChoice('Path of the Feral Heart', 'Path of the Feral Heart')
-			    .addChoice('Path of Harmony', 'Path of Harmony')
-			    .addChoice('Path of the Hive', 'Path of the Hive')
-                .addChoice('Path of Honorable Accord', 'Path of Honorable Accord')
-			    .addChoice('Path of Lilith', 'Path of Lilith')
-			    .addChoice('Path of Metamorphosis', 'Path of Metamorphosis')
-                .addChoice('Path of Night', 'Path of Night')
-			    .addChoice('Path of Paradox', 'Path of Paradox')
-			    .addChoice('Path of Power and the Inner Voice', 'Path of Power and the Inner Voice')
-                .addChoice('Path of the Scorched Heart', 'Path of the Scorched Heart')
-			    .addChoice('Path of Self-Focus', 'Path of Self-Focus')
-			    .addChoice('Path of Typhon', 'Path of Typhon')
-                .addChoice('Path of the Warrior', 'Path of the Warrior'))
+                .addChoices(
+                    {name: 'Humanity', value: 'Humanity'},
+			        {name: 'Path of Asakku', value: 'Path of Asakku'},
+			        {name: 'Path of Blood', value: 'Path of Blood'},
+                    {name: 'Path of the Bones', value: 'Path of the Bones'},
+			        {name: 'Path of Caine', value: 'Path of Caine'},
+			        {name: 'Path of Cathari', value: 'Path of Cathari'},
+                    {name: 'Path of Death and the Soul', value: 'Path of Death and the Soul'},
+			        {name: 'Path of Ecstasy', value: 'Path of Ecstasy'},                
+			        {name: 'Path of Entelechy', value: 'Path of Entelechy'},
+			        {name: 'Path of Evil Revelations', value: 'Path of Evil Revelations'},
+                    {name: 'Path of the Feral Heart', value: 'Path of the Feral Heart'},
+			        {name: 'Path of Harmony', value: 'Path of Harmony'},
+			        {name: 'Path of the Hive', value: 'Path of the Hive'},
+                    {name: 'Path of Honorable Accord', value: 'Path of Honorable Accord'},
+			        {name: 'Path of Lilith', value: 'Path of Lilith'},
+			        {name: 'Path of Metamorphosis', value: 'Path of Metamorphosis'},
+                    {name: 'Path of Night', value: 'Path of Night'},
+			        {name: 'Path of Paradox', value: 'Path of Paradox'},
+			        {name: 'Path of Power and the Inner Voice', value: 'Path of Power and the Inner Voice'},
+                    {name: 'Path of the Scorched Heart', value: 'Path of the Scorched Heart'},
+			        {name: 'Path of Self-Focus', value: 'Path of Self-Focus'},
+			        {name: 'Path of Typhon', value: 'Path of Typhon'},
+                    {name: 'Path of the Warrior', value: 'Path of the Warrior'}
+                ))
         .addIntegerOption(option =>
             option.setName("exp")
             .setDescription("Sets your total Exp to the number. " +
                 "Positive value will update current exp as well." +
-                " V20 Core p122"))
+                " V20 Core p122")
+            .setMinValue(0)
+            .setMaxValue(1000))
         .addIntegerOption(option =>
             option.setName("health")
             .setDescription("Sets your Health to the number. " +
-                "Must be between 7 and 15. VtM 20th Corebook p282"))
+                "Must be between 7 and 15. VtM 20th Corebook p282")
+            .setMinValue(7)
+            .setMaxValue(15))
         .addIntegerOption(option =>
             option.setName("bashing_damage")
             .setDescription("The total bashing damage inflicted. " +
-                "VtM 20th Corebook p285"))
+                "VtM 20th Corebook p285")
+            .setMinValue(0)
+            .setMaxValue(15))
         .addIntegerOption(option =>
             option.setName("lethal_damage")
             .setDescription("The total lethal damage inflicted. " +
-                "VtM 20th Corebook p285"))
+                "VtM 20th Corebook p285")
+            .setMinValue(0)
+            .setMaxValue(15))
         .addIntegerOption(option =>
             option.setName("agg_damage")
             .setDescription("The total Agg damage inflicted. " +
-                "VtM 20th Corebook p285"))
+                "VtM 20th Corebook p285")
+            .setMinValue(0)
+            .setMaxValue(15))
         .addStringOption(option =>
             option.setName("notes")
             .setDescription("Any aditional information you" +

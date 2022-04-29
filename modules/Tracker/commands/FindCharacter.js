@@ -32,7 +32,8 @@ module.exports = class FindCharacter
                 error = 'Sorry, selecting a player can only be used in a server.' +
                 '\nIf you trying to find your own Character please' +
                 ' remove the "player" option and try again.';
-                this.interaction.reply({content: error, ephemeral: true});
+                await this.editReply(this.interaction, 
+                    {content: error, ephemeral: true}, "1");
                 return false;
             }
 
@@ -59,7 +60,8 @@ module.exports = class FindCharacter
 
         if (error)
         {
-            this.interaction.reply({content: error, ephemeral: true});
+            await this.editReply(this.interaction, 
+                {content: error, ephemeral: true}, "2");
             return false;
         }
         return true;
@@ -73,22 +75,22 @@ module.exports = class FindCharacter
             this.name, this.userId, inter, this.splat, this.pk);
         if (char == 'noChar')
         {
-            this.interaction.editReply({ 
+            await this.editReply(this.interaction, { 
                 content: (`Cannot find the character ${this.name}.`), 
                 ephemeral: true,
                 components: []
-            });
+            }, "3");
             return undefined;
         }
         else if (!char)
         {
-            this.interaction.editReply({ 
+            await this.editReply(this.interaction, { 
                 content: ('There was an error accessing the Database. Please try again' +
                 ' later.\nIf this issue persists please report it at the ' +
                 '[Realm of Darkness Server](<https://discord.gg/7xMqVrVeFt>).'), 
                 ephemeral: true,
                 components: []
-            });
+            }, "4");
             return undefined;
         }
         this.character = char;
@@ -104,20 +106,20 @@ module.exports = class FindCharacter
 
         if (response === 'noChar')
         {
-            this.interaction.reply({ 
+            await this.editReply(this.interaction, { 
                 content: (`This player has no Characters.`), 
                 ephemeral: true 
-            });
+            }, "5");
             return undefined;
         }
         else if (!response)
         {
-            this.interaction.reply({ 
+            await this.editReply(this.interaction, { 
                 content: ('There was an error accessing the Database. Please try again' +
                 ' later.\nIf this issue persists please report it at the ' +
                 '[Realm of Darkness Server](<https://discord.gg/7xMqVrVeFt>).'), 
                 ephemeral: true 
-            });
+            }, "6");
             return undefined;
         }
 
@@ -159,8 +161,7 @@ module.exports = class FindCharacter
         if (!this.character) 
         {
             this.response = {
-                content: 'Please select the character you wish to find.',  
-                ephemeral: true           
+                content: 'Please select the character you wish to find.'        
             };
         }
     }
@@ -210,12 +211,15 @@ module.exports = class FindCharacter
 
     async reply()
     {
-        await this.interaction.reply(this.response);
+        if (!await this.editReply(this.interaction, this.response, "7"))
+        {
+            return;
+        }
+        
         const filter = i => (
             i.message.interaction.id == this.interaction.id          
         );
-        const channel = 
-            await this.interaction.client.channels.fetch(this.interaction.channelId);
+        const channel = this.interaction.channel;
         this.collector = channel.createMessageComponentCollector(
             {
                 filter,
@@ -223,6 +227,7 @@ module.exports = class FindCharacter
             });
         
         this.collector.on('collect', async i => {
+            await i.deferUpdate();
             if (!this.history)
             {
                 const char = this.nameDict[i.values[0]]
@@ -235,13 +240,13 @@ module.exports = class FindCharacter
                 {
                     this.response['content'] = null;
                     this.response['components'] = [];
-                    await i.update(this.response);
+                    await updateInteraction(i, this.response, "1");
                     return this.collector.stop();
                 }
                 this.history = this.parseHistory();                
                 this.response['components'] = this.getHistoryButtons(0);
                 this.response['content'] = this.history.pages[0];
-                await i.update(this.response); 
+                await updateInteraction(i, this.response, "2"); 
             }
             else
             {
@@ -260,8 +265,14 @@ module.exports = class FindCharacter
                 this.response['content'] = 
                     this.history.pages[currentPage];
                 this.response['components'] = this.getHistoryButtons(currentPage);
-                await i.update(this.response);
+                await updateInteraction(i, this.response, "3");
             }
+        });
+
+        this.collector.on('end', async i => {  
+            await updateInteraction(this.interaction, 
+                {components: []}, "4");          
+            this.cleanup();
         });
     }
 
@@ -321,5 +332,44 @@ module.exports = class FindCharacter
 
         return [actionRow];
     }
+
+    async editReply(interaction, response, code)
+    {
+        try
+        {
+            await interaction.editReply(response);
+        }
+        catch(error)
+        {
+            console.error(`\n\nFailed to editReply Find Character: ${code}`);
+            console.error(error);
+            this.cleanup();
+            return false;
+        }
+        return true;
+    }
+
+    async cleanup()
+    {
+        this.interaction = undefined;
+        this.character = undefined;
+        this.splat = undefined;
+        this.response = undefined;
+        this.collector = undefined;
+        this.nameDict = undefined;
+        this.nameLists = undefined;
+    }
 }
 
+async function updateInteraction(interaction, response, updateCode)
+{
+    try
+    {
+        await interaction.editReply(response);
+    }
+    catch(error)
+    {
+        console.error(`\n\nFailed to update Find Character: ${updateCode}`);
+        console.error(error);
+    }
+}

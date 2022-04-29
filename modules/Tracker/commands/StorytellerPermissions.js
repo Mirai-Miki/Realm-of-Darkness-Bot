@@ -1,22 +1,17 @@
 'use strict';
 const DatabaseAPI = require('../../util/DatabaseAPI');
 
-module.exports = class TrackerChannel
+module.exports = class StorytellerPermissions
 {
     constructor(interaction)
     {
         this.interaction = interaction;
 
         this.role = interaction.options.getRole('role');
-
-        if (this.role) this.setSTRole();
-        else this.getSTRoles();
     }
 
     isArgsValid()
     {
-        // TODO check is user is ST
-
         if (!this.interaction.guild)
         {
             return 'Sorry, this command can only be used in a server.'
@@ -33,7 +28,7 @@ module.exports = class TrackerChannel
         let content = this.isArgsValid();
         if (content)
         {
-            this.interaction.reply({content: content, ephemeral: true});
+            await editReply(this.interaction, content, "1")
             return;
         }
         const response = await DatabaseAPI.setSTRole(
@@ -54,7 +49,7 @@ module.exports = class TrackerChannel
             content = `<@&${this.role.id}> has been set as an ST role.`;
         }
 
-        this.interaction.reply({content: content, ephemeral: true});
+        await editReply(this.interaction, content, "2")
     }
 
     async getSTRoles()
@@ -62,7 +57,7 @@ module.exports = class TrackerChannel
         let content = this.isArgsValid();
         if (content)
         {
-            this.interaction.reply({content: content, ephemeral: true});
+            await editReply(this.interaction, content, "3")       
             return;
         }
 
@@ -85,7 +80,24 @@ module.exports = class TrackerChannel
             for (const role of response) roles.push(`<@&${role}> <${role}>`);
             content = `The Storyteller roles are:\n${roles.join('\n')}`;
         }
-
-        this.interaction.reply({content: content, ephemeral: true});
+        await editReply(this.interaction, content, "4")
     }
+
+    async cleanup()
+    {
+        this.interaction = undefined;
+    }
+}
+
+async function editReply(interaction, content, code)
+{
+    try
+    {
+        interaction.editReply({content: content, ephemeral: true});
+    }
+    catch (error)
+    {
+        console.error(`\n\nFailed to reply to ST Perms: ${code}`);
+        console.error(error);
+    }  
 }

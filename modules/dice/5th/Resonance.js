@@ -22,13 +22,13 @@ module.exports = class Resonance
         this.notes = this.interaction.options.getString('notes');
     }
 
-    roll()
+    async roll()
     {
-        this.rollTemp();
-        this.rollRes();
+        await this.rollTemp();
+        await this.rollRes();
     }
 
-    rollTemp()
+    async rollTemp()
     {
         let temp;
         if (!this.temp.name)
@@ -69,7 +69,7 @@ module.exports = class Resonance
         else this.temp.name = "Negligible";
     }
 
-    rollRes()
+    async rollRes()
     {
         if (this.temp.name == 'Negligible') return;
         let dice;
@@ -157,7 +157,7 @@ module.exports = class Resonance
         }
     }
 
-    constructEmbed()
+    async constructEmbed()
     {
         // Create the embed
         let embed = new MessageEmbed();
@@ -186,23 +186,36 @@ module.exports = class Resonance
             embed.addField("Resonance", 
                 `\`\`\`${this.res.dice ? this.res.dice : this.res.name}\`\`\``, 
                 true);
-        }
-            
-        
+        }       
         
         if (this.res.mechanic) 
             embed.addField("Disciplines", this.res.mechanic, true);
         if (this.res.description) 
             embed.addField("Emotions", this.res.description, true);
 
-        if (this.notes) embed.setFooter(this.notes);
+        if (this.notes) embed.setFooter({text: this.notes});
         
         this.embed = embed;
         return embed;
     }
 
-    reply()
+    async reply()
     {
-        this.interaction.reply({embeds: [this.embed]});
+        try 
+        {
+            this.interaction.editReply({embeds: [this.embed]});
+        }
+        catch (error)
+        {
+            console.error("Failed to reply to v5 Res roll.");
+            console.error(error);
+        }
+    }
+
+    async cleanup()
+    {
+        this.interaction = undefined;
+        this.temp = undefined;
+        this.res = undefined;
     }
 }

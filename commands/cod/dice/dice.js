@@ -1,71 +1,54 @@
 'use strict';
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const WoD20thRoll = require('../../../modules/dice/20th/WoD20thRoll.js');
-const WoD20thInit = require('../../../modules/dice/20th/WoD20thInit.js');
 const GeneralRoll = require('../../../modules/dice/GeneralRoll');
+const CoDRoll = require('../../../modules/dice/CoD/CoDRoll.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('dice')
-		.setDescription('Dice rolls for the 20th Anniversary Edition Game.')
-		.addSubcommand(subcommand =>        
+		.setDescription('Dice rolls for the v5 Game.')
+		.addSubcommand(subcommand =>
             subcommand
 				.setName('roll')
-				.setDescription('Standard roll p246')
+				.setDescription('Standard roll. p69 CoD')
                 .addIntegerOption(option =>
                     option.setName("pool")
-                    .setDescription("The Number of dice to roll. " +
-                        "Must be between 1 and 50. p247")
-                    .setMaxValue(50)
-                    .setMinValue(1)    
+                    .setDescription("The Number of dice to roll.")
+                    .setMaxValue(30)
+                    .setMinValue(1)
                     .setRequired(true))
                 .addIntegerOption(option =>
-                    option.setName("difficulty")
-                    .setDescription("The Difficulty of the roll." +
-                        " Must be between 2 to 10. p249")
-                    .setMaxValue(10)
-                    .setMinValue(2)
-                    .setRequired(true))
-                .addBooleanOption(option =>
-                    option.setName("willpower")
-                    .setDescription("Select to add 1 auto success. p250"))
+                    option.setName("bonus")
+                    .setDescription("Adds bonus dice from the total pool.")
+                    .setMaxValue(30)
+                    .setMinValue(1))
                 .addIntegerOption(option =>
-                    option.setName("modifier")
-                    .setDescription("The number of automatic successes. p250")
-                    .setMaxValue(20)
-                    .setMinValue(-20))
-                .addStringOption(option =>
-                    option.setName("speciality")
-                    .setDescription("The speciality applied to the roll. p96"))
-                .addStringOption(option =>
-                    option.setName("notes")
-                    .setDescription("Any extra information you would like to" +
-                        " include."))
-                .addIntegerOption(option =>
-                    option.setName("nightmare")
-                    .setDescription("Replaces x number of dice in your" +
-                    " pool with Nightmare dice. p274")
-                    .setMaxValue(50)
+                    option.setName("penalty")
+                    .setDescription("Removes dice from the total pool.")
+                    .setMaxValue(30)
                     .setMinValue(1))
                 .addStringOption(option =>
-                    option.setName("character")
-                    .setDescription("Name of the character making the roll."))
+                    option.setName("speciality")
+                    .setDescription("Name of the specialty used in the roll." +
+                    " Adds one die to the pool"))
                 .addBooleanOption(option =>
-                    option.setName("no_botch")
-                        .setDescription("Stops any 1s from removing successes" +
-                            " from the result."))
-        )
-        .addSubcommand(subcommand =>        
-            subcommand
-                .setName('initiative')
-                .setDescription('Initiative roll using Dex + Wits')
+                    option.setName("willpower")
+                    .setDescription("Adds +3 dice to your pool. p73 CoD"))
+                .addBooleanOption(option =>
+                    option.setName("rote")
+                    .setDescription("Rerolls each failed dice once. p72 CoD"))
                 .addIntegerOption(option =>
-                    option.setName("dexterity_wits")
-                    .setDescription("Your Dexterity plus you Wits." +
-                        " Must be between 0 and 50")
-                    .setMaxValue(50)
-                    .setMinValue(0)
-                    .setRequired(true))
+                    option.setName("target")
+                    .setDescription("The target number needed for a dice " +
+                        " to succed. Defaults to 8.")
+                    .setMaxValue(10)
+                    .setMinValue(2))
+                .addIntegerOption(option =>
+                    option.setName("reroll")
+                    .setDescription("Lowest dice number in which a reroll will" +
+                        " occur. Setting to 11 will disable rerolls. Defaults to 10.")
+                    .setMaxValue(11)
+                    .setMinValue(8))
                 .addStringOption(option =>
                     option.setName("character")
                     .setDescription("Name of the character making the roll."))
@@ -121,32 +104,16 @@ module.exports = {
         ),
 	
 	async execute(interaction) {
-        switch (interaction.options.getSubcommand())
+		switch (interaction.options.getSubcommand())
         {
             case 'roll':
-                let roll = new WoD20thRoll(interaction);
-                if (await roll.isArgsValid())
-                {
-                    await interaction.deferReply();
-                    await roll.roll();
-                    await roll.constructEmbed();
-                    await roll.constructContent();
-                    await roll.reply();
-                }
-                await roll.cleanup();
+                let roll = new CoDRoll(interaction);
+                await interaction.deferReply();
+                await roll.roll();
+                await roll.constructEmbed();
+                await roll.constructContent();
+                await roll.reply();
                 roll = undefined;
-                break;
-            case 'initiative':
-                let init = new WoD20thInit(interaction);
-                if (await init.isArgsValid())
-                {
-                    await interaction.deferReply();
-                    await init.roll();
-                    await init.constructEmbed();
-                    await init.reply();
-                }
-                await init.cleanup();
-                init = undefined;
                 break;
             case 'general':
                 let generalRoll = new GeneralRoll(interaction);
@@ -161,5 +128,6 @@ module.exports = {
                 generalRoll = undefined;
                 break;
         }
-	},
+	}
 };
+

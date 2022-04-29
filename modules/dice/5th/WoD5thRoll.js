@@ -4,7 +4,7 @@ const { MessageActionRow, MessageSelectMenu,
     MessageButton, MessageEmbed } = require('discord.js');
 const { minToMilli, correctName } = require('../../util/misc.js');
 const DatabaseAPI = require('../../util/DatabaseAPI.js');
-const { Versions, Splats } = require('../../util/Constants');
+const { Versions } = require('../../util/Constants');
 const { character5thEmbed } = require('../../Tracker/embed/character5thEmbed');
 
 const Result = 
@@ -45,17 +45,36 @@ module.exports = class WoD5thRoll
 
     async isArgsValid()
     {
-        if (this.character) 
+        if (this.character?.length > 50)
+        {
+            this.interaction.reply({ 
+                content: ('Character name cannot be longer than 50 chars.'), 
+                ephemeral: true 
+            });
+        }
+        else if (this.spec?.length > 100)
+        {
+            this.interaction.reply({ 
+                content: ('Speciality cannot be longer than 100 characters.'), 
+                ephemeral: true 
+            });
+        }
+        else if (this.notes?.length > 300)
+        {
+            this.interaction.reply({ 
+                content: ('Notes cannot be longer than 300 characters.'), 
+                ephemeral: true 
+            });
+        }
+        else return true;
+        return false;
+    }
+
+    async roll()
+    {    
+        if (this.character)
         {
             const name = correctName(this.character);
-            if (name.lenght > 50)
-            {
-                this.interaction.reply({ 
-                    content: ('Character name cannot be longer than 50 chars.'), 
-                    ephemeral: true 
-                });
-                return false;
-            }
             let char = await DatabaseAPI.getCharacter(name, 
                 this.interaction.user.id, this.interaction);
             if (char == 'noChar') char = undefined;
@@ -68,49 +87,9 @@ module.exports = class WoD5thRoll
                 char.version === '5th')
             {
                 this.hunger = char.hunger.current;
-            }                 
-        }
+            }     
+        } 
 
-        if (this.pool < 1 || this.pool > 50)
-        {
-            this.interaction.reply({ 
-                content: ('Your pool must be between 1 and 50.\n' +
-                    'Pool is the number of dice you are rolling.'), 
-                ephemeral: true 
-            });
-        }
-        else if (this.hunger && (this.hunger < 0 || this.hunger > 5))
-        {
-            this.interaction.reply({ 
-                content: ('Your hunger must be between 0 and 5.\n' +
-                    'Hunger is the amount of hunger dice inclucded in your' +
-                    ' pool.'), 
-                ephemeral: true 
-            });
-        }
-        else if (this.diff && (this.diff < 1 || this.diff > 10))
-        {
-            this.interaction.reply({ 
-                content: ('Your difficulty must be between 1 and 50.\n' +
-                    'Difficulty is the number the dice that landed on a 6+' +
-                    ' needed to pass the roll.'), 
-                ephemeral: true 
-            });
-        }
-        else if (this.bp && (this.bp < 0 || this.bp > 10))
-        {
-            this.interaction.reply({ 
-                content: ('The number entered is you current Blood Potency' +
-                    '. This must be between 0 and 10.'), 
-                ephemeral: true 
-            });
-        }
-        else return true;
-        return false;
-    }
-
-    roll()
-    {        
         this.results.roll = Roll.v5(this.totalPool, (this.hunger ?? 0));    
         calculateResults(this.results, (this.diff ?? 1));
         
@@ -147,7 +126,7 @@ module.exports = class WoD5thRoll
         } 
     }
 
-    reroll(selected)
+    async reroll(selected)
     {       
         const reg = [];
         const hunger = [];
@@ -180,12 +159,11 @@ module.exports = class WoD5thRoll
         this.results.roll = reg.concat(hunger);
         calculateResults(this.results, (this.diff ?? 1));
 
-        this.updateCharacter(0, true);
+        await this.updateCharacter(0, true);
     }
 
-    constructEmbed()
-    {        
-        
+    async constructEmbed()
+    { 
         let blackResult = [];
         let hungerResult = [];
 
@@ -204,7 +182,7 @@ module.exports = class WoD5thRoll
         }
 
         let resultMessage = "";
-        let color = [0, 0 , 0]; // Black
+        let color = [0, 0, 0]; // Black
         if (this.results.type == Result.bestialFail)
         {
             this.statsResult = 'bestial_fail';
@@ -322,22 +300,26 @@ module.exports = class WoD5thRoll
             );
         }
 
-        if (this.notes) embed.setFooter(this.notes);
+        if (this.notes) embed.setFooter({text: this.notes});
         
         this.response.embed = embed;
         return embed;
     }
 
-    constructContent()
+    async constructContent()
     {
-        const client = this.interaction.client;
-        this.v5SkullRed = client.emojis.resolve('901732920807546911');
-        this.v5AnkhRed = client.emojis.resolve('901731712558567474');
-        this.v5AnkhCritRed = client.emojis.resolve('901726454734290994');
-        this.v5AnkhBlack = client.emojis.resolve('901731712487288852');
-        this.v5AnkhCritBlack = client.emojis.resolve('901726422513614898');
-        this.v5DotRed = client.emojis.resolve('901721705981046835');
-        this.v5DotBlack = client.emojis.resolve('901721784976568360');
+        let client = this.interaction.client;
+        const emotes = {
+            v5SkullRed: client.emojis.resolve('901732920807546911').toString(),
+            v5AnkhRed: client.emojis.resolve('901731712558567474').toString(),
+            v5AnkhCritRed: client.emojis.resolve('901726454734290994').toString(),
+            v5AnkhBlack: client.emojis.resolve('901731712487288852').toString(),
+            v5AnkhCritBlack: client.emojis.resolve('901726422513614898').toString(),
+            v5DotRed: client.emojis.resolve('901721705981046835').toString(),
+            v5DotBlack: client.emojis.resolve('901721784976568360').toString()
+        }
+        client = undefined;
+
         let content = "";
         // Result Loop
         for (let dice of this.results.roll) 
@@ -347,44 +329,44 @@ module.exports = class WoD5thRoll
             {
                 if (dice.type == 'v5b')
                 {
-                    content += this.v5DotBlack.toString();
+                    content += emotes.v5DotBlack;
                 }
                 else
                 {
-                    content += this.v5SkullRed.toString();
+                    content += emotes.v5SkullRed;
                 }
             }
             else if (dice.result <= 5)
             {
                 if (dice.type == 'v5b')
                 {
-                    content += this.v5DotBlack.toString();
+                    content += emotes.v5DotBlack;
                 }
                 else
                 {
-                    content += this.v5DotRed.toString();
+                    content += emotes.v5DotRed;
                 }
             }
             else if (dice.result <= 9)
             {
                 if (dice.type == 'v5b')
                 {
-                    content += this.v5AnkhBlack.toString();
+                    content += emotes.v5AnkhBlack;
                 }
                 else
                 {
-                    content += this.v5AnkhRed.toString();
+                    content += emotes.v5AnkhRed;
                 }
             }
             else
             {
                 if (dice.type == 'v5b')
                 {
-                    content += this.v5AnkhCritBlack.toString();
+                    content += emotes.v5AnkhCritBlack;
                 }
                 else
                 {
-                    content += this.v5AnkhCritRed.toString();
+                    content += emotes.v5AnkhCritRed;
                 }
             }
             content += ' ';
@@ -394,7 +376,7 @@ module.exports = class WoD5thRoll
         return content;
     }
 
-    constructInteractions()
+    async constructInteractions()
     {
         const buttonRow = new MessageActionRow()
         if (this.results.fails)
@@ -427,12 +409,22 @@ module.exports = class WoD5thRoll
     {
         if (!this.response.embed) return;
 
-        await this.interaction.reply(
-        { 
-            content: this.response.content,  
-            embeds: [this.response.embed],
-            components: this.response.interactions,
-        });
+        try
+        {
+            await this.interaction.editReply(
+                { 
+                    content: this.response.content,  
+                    embeds: [this.response.embed],
+                    components: this.response.interactions,
+                });
+        }
+        catch(error)
+        {
+            console.error("Failed to reply to v5 Roll.");
+            console.error(error);
+            this.cleanup();
+            return;
+        }        
 
         // Need to update character if Hunger increased
         let hunger = 0;
@@ -444,13 +436,12 @@ module.exports = class WoD5thRoll
             i.message.interaction.id == this.interaction.id &&
             (i.customId === 'autoReroll' || i.customId === 'selectReroll')         
         );
-        const channel = 
-            await this.interaction.client.channels.fetch(this.interaction.channelId);
+        const channel = this.interaction.channel;
         
         this.collector = channel.createMessageComponentCollector(
             {
                 filter,
-                time: minToMilli(14)
+                time: minToMilli(13)
             });
         
         this.collector.on('collect', async i => {
@@ -458,34 +449,67 @@ module.exports = class WoD5thRoll
                 if (i.customId == 'autoReroll')
                 {
                     // reroll
-                    this.reroll();
-                    this.constructEmbed();
-                    this.constructContent();
-                    await i.update({ 
-                        content: this.response.content,
-                        embeds: [this.response.embed],                        
-                        components: []
-                    });
+                    await this.reroll();
+                    await this.constructEmbed();
+                    await this.constructContent();
+                    try
+                    {
+                        await i.update({ 
+                            content: this.response.content,
+                            embeds: [this.response.embed],                        
+                            components: []
+                        });
+                    }
+                    catch(error)
+                    {
+                        console.error("Failed to update v5 auto reroll");
+                        console.error(error);
+                    }                    
                     this.collector.stop();
                 }
                 else if (i.customId == 'selectReroll' && i.isButton())
                 {
-                    i.update({components: this.createRerollSelect()});
+                    try
+                    {
+                        await i.update({components: await this.createRerollSelect()});
+                    }
+                    catch(error)
+                    {
+                        console.error("Failed to update v5 select reroll button");
+                        console.error(error);
+                    }                      
                 }
                 else if (i.customId == 'selectReroll' && i.isSelectMenu())
                 {
-                    this.reroll(i.values);
-                    this.constructEmbed();
-                    this.constructContent();
-                    await i.update({ 
-                        content: this.response.content,
-                        embeds: [this.response.embed],                        
-                        components: []
-                    });
+                    await this.reroll(i.values);
+                    await this.constructEmbed();
+                    await this.constructContent();
+                    try
+                    {
+                        await i.update({ 
+                            content: this.response.content,
+                            embeds: [this.response.embed],                        
+                            components: []
+                        });
+                    }
+                    catch(error)
+                    {
+                        console.error("Failed to update v5 select reroll");
+                        console.error(error);
+                    }                      
                     this.collector.stop();
                 }
             } else {
-                i.reply({ content: `These buttons aren't for you!`, ephemeral: true });
+                try
+                {
+                    await i.reply({ content: `These buttons aren't for you!`, 
+                        ephemeral: true });
+                }
+                catch(error)
+                {
+                    console.error("Failed to send Ephemeral error in v5 roll");
+                    console.error(error);
+                }                
             }
         });
 
@@ -496,17 +520,18 @@ module.exports = class WoD5thRoll
             }
             catch(error) 
             {
-                if (error.code === 10008) return;
+                if (error.code === 10008); //Do nothing;
                 else 
                 {
-                    console.error("Error removing Components.")
+                    console.error("Error removing v5 roll Components.")
                     console.error(error);                    
-                    return;
                 }
+                await this.cleanup();
+                return;
             }
 
             const user = this.interaction.user;
-            DatabaseAPI.diceStatsUpdate(
+            await DatabaseAPI.diceStatsUpdate(
                 {
                     'id': user.id,
                     'username': user.username,
@@ -517,10 +542,11 @@ module.exports = class WoD5thRoll
                 this.statsResult,
                 this.isReroll
             );
+            await this.cleanup();
         });
     }
     
-    createRerollSelect()
+    async createRerollSelect()
     {
         let sortedRolls = this.results.roll.map(x => x);
         sortedRolls.sort((a, b) => a.result - b.result);
@@ -606,6 +632,17 @@ module.exports = class WoD5thRoll
                 )
             );
         }
+    }
+
+    async cleanup()
+    {
+        this.interaction = undefined;
+        this.character = undefined;
+        this.response = undefined;
+        this.statsResult = undefined;
+        this.rerollResults = undefined;
+        this.collector = undefined;
+        this.results = undefined;
     }
 }
 

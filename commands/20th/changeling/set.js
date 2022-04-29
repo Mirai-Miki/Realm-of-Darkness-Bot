@@ -23,60 +23,88 @@ function changeling20thSetCommands()
         .addIntegerOption(option =>
             option.setName("willpower")
             .setDescription("Sets you total Willpower to the number. " +
-                "Must be between 1 and 10. CtD 20th Corebook p258"))
+                "Must be between 1 and 10. CtD 20th Corebook p258")
+            .setMinValue(1)
+            .setMaxValue(10))
         .addIntegerOption(option =>
             option.setName("glamour")
             .setDescription("Sets you total Glamour to the number. " +
-                "Must be between 1 and 10. CtD 20th Corebook p259"))        
+                "Must be between 1 and 10. CtD 20th Corebook p259")
+            .setMinValue(1)
+            .setMaxValue(10))        
         .addIntegerOption(option =>
             option.setName("banality")
             .setDescription("Sets you total Banality to the number. " +
-                "Must be between 1 and 10. CtD 20th Corebook p267"))
+                "Must be between 1 and 10. CtD 20th Corebook p267")
+            .setMinValue(1)
+            .setMaxValue(10))
         .addIntegerOption(option =>
             option.setName("nightmare")
             .setDescription("Sets you Nightmare to the number. " +
-                "Must be between 0 and 10. CtD 20th Corebook p274"))
+                "Must be between 0 and 10. CtD 20th Corebook p274")
+            .setMinValue(0)
+            .setMaxValue(10))
         .addIntegerOption(option =>
             option.setName("imbalance")
             .setDescription("Sets you imbalance to the number. " +
-                "Must be between 0 and 10. CtD 20th Corebook p275"))
+                "Must be between 0 and 10. CtD 20th Corebook p275")
+            .setMinValue(0)
+            .setMaxValue(10))
         .addIntegerOption(option =>
             option.setName("exp")
             .setDescription("Sets your total Exp to the number. " +
                 "+ values will update current exp as well." +
-                " CtD 20th Corebook p175"))
+                " CtD 20th Corebook p175")
+            .setMinValue(0)
+            .setMaxValue(1000))
         .addIntegerOption(option =>
             option.setName("health")
             .setDescription("Sets your Health to the number. " +
-                "Must be between 7 and 15. CtD 20th Corebook p290"))
+                "Must be between 7 and 15. CtD 20th Corebook p290")
+            .setMinValue(7)
+            .setMaxValue(15))
         .addIntegerOption(option =>
             option.setName("bashing_damage")
             .setDescription("The total bashing damage inflicted. " +
-                "CtD 20th Corebook p290"))
+                "CtD 20th Corebook p290")
+            .setMinValue(0)
+            .setMaxValue(15))
         .addIntegerOption(option =>
             option.setName("lethal_damage")
             .setDescription("The total lethal damage inflicted. " +
-                "CtD 20th Corebook p290"))
+                "CtD 20th Corebook p290")
+            .setMinValue(0)
+            .setMaxValue(15))
         .addIntegerOption(option =>
             option.setName("agg_damage")
             .setDescription("The total Agg damage inflicted. " +
-                "CtD 20th Corebook p290"))
+                "CtD 20th Corebook p290")
+            .setMinValue(0)
+            .setMaxValue(15))
         .addIntegerOption(option =>
             option.setName("health_chimerical")
             .setDescription("Your total Chimerical Health. Defaults to 7. " +
-                "Must be between 7 and 15. CtD 20th Corebook p290"))
+                "Must be between 7 and 15. CtD 20th Corebook p290")
+            .setMinValue(7)
+            .setMaxValue(15))
         .addIntegerOption(option =>
             option.setName("bashing_chimerical")
             .setDescription("The total Chimerical bashing damage inflicted. " +
-                "CtD 20th Corebook p290"))
+                "CtD 20th Corebook p290")
+            .setMinValue(0)
+            .setMaxValue(15))
         .addIntegerOption(option =>
             option.setName("lethal_chimerical")
             .setDescription("The total Chimerical lethal damage inflicted. " +
-                "CtD 20th Corebook p290"))
+                "CtD 20th Corebook p290")
+            .setMinValue(0)
+            .setMaxValue(15))
         .addIntegerOption(option =>
             option.setName("agg_chimerical")
             .setDescription("The total Chimerical Agg damage inflicted. " +
-                "CtD 20th Corebook p290"))
+                "CtD 20th Corebook p290")
+            .setMinValue(0)
+            .setMaxValue(15))
         .addStringOption(option =>
             option.setName("notes")
             .setDescription("Any aditional information you" +

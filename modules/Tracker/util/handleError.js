@@ -1,5 +1,5 @@
 
-module.exports = function(interaction, error, handler)
+module.exports = async function(interaction, error, handler)
 {
     let errorMessage = '';
 
@@ -51,5 +51,13 @@ module.exports = function(interaction, error, handler)
         ' remove the "player" option and try again.';
     }
 
-    interaction.reply({content: errorMessage, ephemeral: true});
+    try
+    {
+        await interaction.editReply({content: errorMessage, ephemeral: true});
+    }
+    catch(error)
+    {
+        console.error("Error sending tracker error.")
+        console.error(error);
+    }
 }

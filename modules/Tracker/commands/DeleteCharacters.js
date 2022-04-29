@@ -134,7 +134,7 @@ module.exports = class DeleteCharacters
         return {status: 'deleted'};
     }
 
-    constructComponents()
+    async constructComponents()
     {
         this.response['content'] = 'Please select which Characters you would' +
             " like to delete. Please note that this is permanent.";
@@ -182,7 +182,17 @@ module.exports = class DeleteCharacters
 
     async reply()
     {
-        await this.interaction.reply(this.response);
+        try
+        {
+            await this.interaction.editReply(this.response);
+        }
+        catch(error)
+        {
+            console.error("\n\nFailed to reply to Delete Character");
+            console.error(error);
+            this.cleanup();
+            return;
+        }
 
         const filter = i => (
             i.message.interaction.id == this.interaction.id           
@@ -196,34 +206,35 @@ module.exports = class DeleteCharacters
             });
         
         this.collector.on('collect', async i => {
+            await i.deferUpdate();
             this.toDelete = {ids: i.values, names: []}
             for (const pk of i.values) 
                 this.toDelete.names.push(this.nameDict[pk].name);
-            this.confirmButton();                
-            await i.update(this.response);
-            
+                        
             const filter = i => (
                 i.message.interaction.id == this.interaction.id &&
                 (i.customId === 'cancel' || i.customId === 'confirm')
             );
-            const confirmChannel = 
-                await this.interaction.client.channels.fetch(this.interaction.channelId);
+
+            const confirmChannel = this.interaction.channel;
             this.confirmCollector = 
                 confirmChannel.createMessageComponentCollector(
             {
                 filter,
                 time: minToMilli(14),
             });
+
             this.confirmCollector.on('collect', async i => {
+                await i.deferUpdate();
+                await editReply(i, {content: "Loading...", components: []}, "1");
+                
                 if (i.customId === 'cancel')
                 {
                     this.response['content'] = "Canceled";
                     this.response['components'] = [];                        
-                    await i.update(this.response);
+                    await updateInteraction(i, this.response, "2");
                     return this.confirmCollector.stop();
-                }                
-                await i.deferUpdate();
-                await i.editReply({content: "Loading...", components: []});
+                }               
                 
                 const response = await this.deleteCharacters();
                 if (response.status == 'error') 
@@ -233,22 +244,70 @@ module.exports = class DeleteCharacters
                 else
                 {
                     this.response['content'] = 
-                    `${this.toDelete.names.join(', ')}, Deleted.`;
+                    `**Deleted**: ${this.toDelete.names.join(', ')}.`;
                 }                    
                 this.response['components'] = []
-                await i.editReply(this.response);
+                await editReply(i, this.response, "2");
                 this.confirmCollector.stop();
             });
-            this.confirmCollector.on('end', i => {
-                this.interaction.editReply({components: []});
-            });
-            
+
+            this.confirmCollector.on('end', async i => {
+                await editReply(this.interaction, {components: []}, "3");
+                this.cleanup();
+                // End of interaction: Character deleted
+            });   
+
+            this.confirmButton();                
+            await updateInteraction(i, this.response, "1");           
             this.collector.stop();
         });
 
-        this.collector.on('end', (i, reason) => {
-            if (reason === 'user') return;
-            this.interaction.editReply({components: []});
+        this.collector.on('end', async (i, reason) => {
+            if (reason === 'user') 
+            {
+                return; // Moved on to confirm buttons
+            }
+            // Timeout
+            await editReply(this.interaction, {components: []}, "4");
+            this.cleanup();
         });
+    }
+
+    async cleanup()
+    {
+        this.interaction = undefined;
+        this.character = undefined;
+        this.toDelete = undefined;
+        this.response = undefined;
+        this.collector = undefined;
+        this.confirmCollector = undefined;
+        this.nameDict = undefined;
+        this.nameLists = undefined;
+    }
+}
+
+async function updateInteraction(interaction, response, updateCode)
+{
+    try
+    {
+        await interaction.editReply(response);
+    }
+    catch(error)
+    {
+        console.error(`\n\nFailed to update Delete Character: ${updateCode}`);
+        console.error(error);
+    }
+}
+
+async function editReply(interaction, response, editCode)
+{
+    try
+    {
+        await interaction.editReply(response);
+    }
+    catch(error)
+    {
+        console.error(`\n\nFailed to edit Reply Delete Character: ${editCode}`);
+        console.error(error);
     }
 }

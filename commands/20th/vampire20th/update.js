@@ -23,35 +23,51 @@ function vampire20thUpdateCommands()
         .addIntegerOption(option =>
             option.setName("willpower")
             .setDescription("Updates your Willpower by the amount. " +
-                "Must be between -15 and 15. VtM 20th Corebook p120"))
+                "Must be between -15 and 15. VtM 20th Corebook p120")
+            .setMinValue(-15)
+            .setMaxValue(15))
         .addIntegerOption(option =>
             option.setName("blood")
             .setDescription("Updates you Blood Pool by the amount. " +
-                "Must be between -200 and 200. VtM 20th Corebook p121"))
+                "Must be between -200 and 200. VtM 20th Corebook p121")
+            .setMinValue(-200)
+            .setMaxValue(200))
         .addIntegerOption(option =>
             option.setName("morality")
             .setDescription("Updates your Morality by the amount. " +
-                "Must be between -20 and 20. VtM 20th Corebook p309"))
+                "Must be between -20 and 20. VtM 20th Corebook p309")
+            .setMinValue(-20)
+            .setMaxValue(20))
         .addIntegerOption(option =>
             option.setName("exp")
             .setDescription("Updates your current exp. + values will increase" +
-                " total as well. VtM 20th Corebook p122"))
+                " total as well. VtM 20th Corebook p122")
+            .setMinValue(-3000)
+            .setMaxValue(3000))
         .addIntegerOption(option =>
             option.setName("health")
             .setDescription("Updates your Health by the amount. " +
-                "Must be between -20 and 20. VtM 20th Corebook p282"))
+                "Must be between -20 and 20. VtM 20th Corebook p282")
+            .setMinValue(-20)
+            .setMaxValue(20))
         .addIntegerOption(option =>
             option.setName("bashing_damage")
             .setDescription("Updates your Bashing damage by the amount. " +
-                "VtM 20th Corebook p285"))
+                "VtM 20th Corebook p285")
+            .setMinValue(-50)
+            .setMaxValue(50))
         .addIntegerOption(option =>
             option.setName("lethal_damage")
             .setDescription("Updates your Lethal damage by the amount. " +
-                "VtM 20th Corebook p285"))
+                "VtM 20th Corebook p285")
+            .setMinValue(-50)
+            .setMaxValue(50))
         .addIntegerOption(option =>
             option.setName("agg_damage")
             .setDescription("Updates your Agg damage by the amount. " +
-                "VtM 20th Corebook p285"))
+                "VtM 20th Corebook p285")
+            .setMinValue(-50)
+            .setMaxValue(50))
         .addUserOption(option =>
             option.setName("player")
             .setDescription("The player the character belongs to. Used by STs" +

@@ -33,14 +33,14 @@ module.exports = class TrackerChannel
         {
             return 'Sorry, you must either be an Administrator or Storyteller' +
                 ' to use this command.';
+        }        
+        else if (this.channel.isThread())
+        {
+            return 'Sorry, the channel cannot be a Thread.'
         }
         else if (!this.channel.isText())
         {
             return 'Sorry, Please select a text channel.';
-        }
-        else if (this.channel.isThread())
-        {
-            return 'Sorry, the channel cannot be a Thread.'
         }
         else if (!canSendMessage(this.channel))
         {
@@ -61,7 +61,7 @@ module.exports = class TrackerChannel
         let content = await this.isArgsValid();
         if (content)
         {
-            this.interaction.reply({content: content, ephemeral: true});
+            await editReply(this.interaction, {content: content, ephemeral: true}, "1");
             return;
         }
 
@@ -81,7 +81,25 @@ module.exports = class TrackerChannel
         {
             content = `#${this.channel.name} has been set as the tracker Channel.`;
         }
+        await editReply(this.interaction, {content: content, ephemeral: true}, "2");
+    }
 
-        this.interaction.reply({content: content, ephemeral: true});
+    async cleanup()
+    {
+        this.interaction = undefined;
+        this.channel = undefined;
+    }
+}
+
+async function editReply(interaction, response, code)
+{
+    try
+    {
+        await interaction.editReply(response);
+    }
+    catch(error)
+    {
+        console.error(`\n\nFailed to editReply at Tracker Channel: ${code}`);
+        console.error(error);
     }
 }

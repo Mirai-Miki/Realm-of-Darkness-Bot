@@ -28,37 +28,53 @@ function wraith20thCommands()
             option.setName("willpower")
             .setDescription("Your total Willpower. " +
                 "Must be between 1 and 10. WtO 20th Corebook p115")
+            .setMinValue(1)
+            .setMaxValue(10)
             .setRequired(true))
         .addIntegerOption(option =>
             option.setName("corpus")
             .setDescription("Your total Corpus. " +
                 "Must be between 0 and 10. WtO 20th Corebook p291")
+            .setMinValue(0)
+            .setMaxValue(10)
             .setRequired(true))
         .addIntegerOption(option =>
             option.setName("pathos")
             .setDescription("Your Pathos rating. " +
                 "Must be between 0 and 10. WtO 20th Corebook p114")
+            .setMinValue(0)
+            .setMaxValue(10)
             .setRequired(true))
         .addIntegerOption(option =>
             option.setName("exp")
             .setDescription("Your total Experiance. " +
-                "WtO 20th Corebook p301"))
+                "WtO 20th Corebook p301")
+            .setMinValue(0)
+            .setMaxValue(1000))
         .addIntegerOption(option =>
             option.setName("health")
             .setDescription("Your total Health. Defaults to 7. " +
-                "Must be between 7 and 15. WtO 20th Corebook p293"))
+                "Must be between 7 and 15. WtO 20th Corebook p293")
+            .setMinValue(7)
+            .setMaxValue(15))
         .addIntegerOption(option =>
             option.setName("bashing_damage")
             .setDescription("The total bashing damage inflicted. " +
-                "WtO 20th Corebook p293"))
+                "WtO 20th Corebook p293")
+            .setMinValue(0)
+            .setMaxValue(15))
         .addIntegerOption(option =>
             option.setName("lethal_damage")
             .setDescription("The total lethal damage inflicted. " +
-                "WtO 20th Corebook p294"))
+                "WtO 20th Corebook p294")
+            .setMinValue(0)
+            .setMaxValue(15))
         .addIntegerOption(option =>
             option.setName("agg_damage")
             .setDescription("The total Agg damage inflicted. " +
-                "WtO 20th Corebook p294"))
+                "WtO 20th Corebook p294")
+            .setMinValue(0)
+            .setMaxValue(15))
         .addStringOption(option =>
             option.setName("notes")
             .setDescription("Any aditional information you" +
@@ -84,36 +100,52 @@ function wraith20thCommands()
         .addIntegerOption(option =>
             option.setName("willpower")
             .setDescription("Sets you total Willpower to the number. " +
-                "Must be between 1 and 10. WtO 20th Corebook p115"))
+                "Must be between 1 and 10. WtO 20th Corebook p115")
+            .setMinValue(1)
+            .setMaxValue(10))
         .addIntegerOption(option =>
             option.setName("corpus")
             .setDescription("Sets you Total Corpus to the number. " +
-                "Must be between 1 and 10. WtO 20th Corebook p291"))
+                "Must be between 0 and 10. WtO 20th Corebook p291")
+            .setMinValue(0)
+            .setMaxValue(10))
         .addIntegerOption(option =>
             option.setName("pathos")
             .setDescription("Sets your Pathos to the number. " +
-                "Must be between 0 and 10. WtO 20th Corebook p114"))
+                "Must be between 0 and 10. WtO 20th Corebook p114")
+            .setMinValue(0)
+            .setMaxValue(10))
         .addIntegerOption(option =>
             option.setName("exp")
             .setDescription("Sets your total Exp to the number. " +
                 "+ values will update current exp as well." +
-                " WtO 20th Corebook p301"))
+                " WtO 20th Corebook p301")
+            .setMinValue(0)
+            .setMaxValue(1000))
         .addIntegerOption(option =>
             option.setName("health")
             .setDescription("Sets your Health to the number. " +
-                "Must be between 7 and 15. WtO 20th Corebook p293"))
+                "Must be between 7 and 15. WtO 20th Corebook p293")
+            .setMinValue(7)
+            .setMaxValue(15))
         .addIntegerOption(option =>
             option.setName("bashing_damage")
             .setDescription("The total bashing damage inflicted. " +
-                "WtO 20th Corebook p293"))
+                "WtO 20th Corebook p293")
+            .setMinValue(0)
+            .setMaxValue(15))
         .addIntegerOption(option =>
             option.setName("lethal_damage")
             .setDescription("The total lethal damage inflicted. " +
-                "WtO 20th Corebook p294"))
+                "WtO 20th Corebook p294")
+            .setMinValue(0)
+            .setMaxValue(15))
         .addIntegerOption(option =>
             option.setName("agg_damage")
             .setDescription("The total Agg damage inflicted. " +
-                "WtO 20th Corebook p294"))
+                "WtO 20th Corebook p294")
+            .setMinValue(0)
+            .setMaxValue(10))
         .addStringOption(option =>
             option.setName("notes")
             .setDescription("Any aditional information you" +
@@ -142,35 +174,51 @@ function wraith20thCommands()
         .addIntegerOption(option =>
             option.setName("willpower")
             .setDescription("Updates your Willpower by the amount. " +
-                "Must be between -15 and 15. WtO 20th Corebook p115"))
+                "Must be between -15 and 15. WtO 20th Corebook p115")
+            .setMinValue(-15)
+            .setMaxValue(15))
         .addIntegerOption(option =>
             option.setName("corpus")
             .setDescription("Updates you current Corpus by the amount. " +
-                "Must be between -20 and 20. WtO 20th Corebook p291"))
+                "Must be between -20 and 20. WtO 20th Corebook p291")
+            .setMinValue(-20)
+            .setMaxValue(20))
         .addIntegerOption(option =>
             option.setName("pathos")
             .setDescription("Updates your Pathos by the amount. " +
-                "Must be between -20 and 20. WtO 20th Corebook p114"))
+                "Must be between -20 and 20. WtO 20th Corebook p114")
+            .setMinValue(-20)
+            .setMaxValue(20))
         .addIntegerOption(option =>
             option.setName("exp")
             .setDescription("Updates your current exp. + values will increase" +
-                " total as well. WtO 20th Corebook p301"))
+                " total as well. WtO 20th Corebook p301")
+            .setMinValue(-3000)
+            .setMaxValue(3000))
         .addIntegerOption(option =>
             option.setName("health")
             .setDescription("Updates your Health by the amount. " +
-                "Must be between -20 and 20. WtO 20th Corebook p293"))
+                "Must be between -20 and 20. WtO 20th Corebook p293")
+            .setMinValue(-20)
+            .setMaxValue(20))
         .addIntegerOption(option =>
             option.setName("bashing_damage")
             .setDescription("Updates your Bashing damage by the amount. " +
-                "WtO 20th Corebook p293"))
+                "WtO 20th Corebook p293")
+            .setMinValue(-50)
+            .setMaxValue(50))
         .addIntegerOption(option =>
             option.setName("lethal_damage")
             .setDescription("Updates your Lethal damage by the amount. " +
-                "WtO 20th Corebook p294"))
+                "WtO 20th Corebook p294")
+            .setMinValue(-50)
+            .setMaxValue(50))
         .addIntegerOption(option =>
             option.setName("agg_damage")
             .setDescription("Updates your Agg damage by the amount. " +
-                "WtO 20th Corebook p294"))
+                "WtO 20th Corebook p294")
+            .setMinValue(-50)
+            .setMaxValue(50))
         .addUserOption(option =>
             option.setName("player")
             .setDescription("The player the character belongs to. Used by STs" +

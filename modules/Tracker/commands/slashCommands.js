@@ -52,10 +52,11 @@ module.exports.trackerSlashCommands = () =>
 
 module.exports.trackerExecute = async (interaction) =>
 {
+    await interaction.deferReply({ ephemeral: true });
     switch (interaction.options.getSubcommand())
     {
         case 'find':
-            const find = new Find(interaction);
+            let find = new Find(interaction);
             const char_list = await find.get_name_list();
             if (char_list)
             {
@@ -63,22 +64,29 @@ module.exports.trackerExecute = async (interaction) =>
                 find.constructComponents();
                 await find.reply();
             }
+            find = undefined;
             break;
         case 'delete':
             const deleteChars = new DeleteCharacters(interaction);
             const chars = await deleteChars.getNameList()
             if (chars)
             {
-                deleteChars.constructComponents();
+                await deleteChars.constructComponents();
                 await deleteChars.reply();
             }
             break;
         case 'channel':
-            const trackerChannel = new TrackerChannel(interaction);
-            trackerChannel.setChannel();
+            let trackerChannel = new TrackerChannel(interaction);
+            await trackerChannel.setChannel();
+            await trackerChannel.cleanup();
+            trackerChannel = undefined;
             break;
         case 'storytellers':
-            new StorytellerPermissions(interaction);
+            let perms = new StorytellerPermissions(interaction);
+            if (perms.role) await perms.setSTRole();
+            else await perms.getSTRoles();
+            await perms.cleanup();
+            perms = undefined;
             break;
     }
 }

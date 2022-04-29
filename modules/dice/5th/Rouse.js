@@ -3,12 +3,11 @@ const Roll = require('../Roll.js');
 const { MessageEmbed } = require('discord.js');
 const { correctName } = require('../../util/misc');
 const DatabaseAPI = require('../../util/DatabaseAPI.js');
-const { Versions, Splats } = require('../../util/Constants');
 const { character5thEmbed } = require('../../Tracker/embed/character5thEmbed');
 
 module.exports = class Rouse
 {
-    constructor(interaction, surge=undefined)
+    constructor(interaction)
     {
         this.interaction = interaction;
         this.notes = this.interaction.options.getString('notes');
@@ -22,48 +21,31 @@ module.exports = class Rouse
         this.response = {embeds: [], components: []};
         this.character = this.interaction.options.getString('character');
 
-        if (surge)
-        {
-            this.surge = this.interaction.options.getInteger('blood_surge');
-            // No reroll on surge
-        }
-        else
-        {
-            const rerollv5 = this.interaction.options.getString('rouse');
-            const reroll = this.interaction.options.getBoolean('reroll');
-
-            if (rerollv5 === 'Reroll') this.results.reroll = true;
-            if (reroll) this.results.reroll = true;
-        }        
+        if (this.interaction.options.getBoolean('reroll')) 
+            this.results.reroll = true;
     }
 
     async isArgsValid()
     {
-        if (this.character) 
+        if (this.character?.length > 50)
         {
-            const name = correctName(this.character);
-            if (name.lenght > 50)
-            {
-                this.interaction.reply({ 
-                    content: ('Character name cannot be longer than 50 chars.'), 
-                    ephemeral: true 
-                });
-                return false;
-            }
-            let char = await DatabaseAPI.getCharacter(name, 
-                this.interaction.user.id, this.interaction);
-            if (char == 'noChar') char = undefined;
-            this.character = {
-                name: name, 
-                tracked: char,
-            };
-
-            if (char && this.autoHunger) this.hunger = char.hunger.current;
+            this.interaction.reply({ 
+                content: ('Character name cannot be longer than 50 chars.'), 
+                ephemeral: true 
+            });
         }
-        return true;
+        else if (this.notes?.length > 300)
+        {
+            this.interaction.reply({ 
+                content: ('Notes cannot be longer than 300 chars.'), 
+                ephemeral: true 
+            });
+        }
+        else return true;
+        return false;
     }
 
-    roll()
+    async roll()
     {
         this.results.dice.push(Roll.single(10));
         if (this.results.reroll) this.results.dice.push(Roll.single(10))
@@ -78,8 +60,20 @@ module.exports = class Rouse
         }
     }
 
-    constructEmbed()
+    async constructEmbed()
     {
+        if (this.character)
+        {
+            const name = correctName(this.character);
+            let char = await DatabaseAPI.getCharacter(name, 
+                this.interaction.user.id, this.interaction);
+            if (char == 'noChar') char = undefined;
+            this.character = {
+                name: name, 
+                tracked: char,
+            };
+        }
+        
         const diceMess = [];
         for (const dice of this.results.dice)
         {
@@ -118,27 +112,25 @@ module.exports = class Rouse
         embed.addField("Result", `\`\`\`diff\n` +
             `${this.results.description}\n\`\`\``);
 
-        if (this.notes) embed.setFooter(this.notes);
+        if (this.notes) embed.setFooter({text: this.notes});
         
         this.response.embeds = [embed];
         return embed;
     }
 
-    async reply(followUp)
+    async reply()
     {
-        if (followUp)
+        try
         {
-           await this.interaction.followUp({
-                embeds: this.response.embeds
-            });
-        }
-        else
+            await this.interaction.editReply({embeds: this.response.embeds});
+        }   
+        catch(error)
         {
-            await this.interaction.reply({
-                embeds: this.response.embeds
-            });
-            if (!this.results.passed) await this.updateCharacter(1);
-        }
+            console.error("Failed to send reply for v5 Rouse roll");
+            console.error(error);
+        }       
+
+        if (!this.results.passed) await this.updateCharacter(1);
     }
 
     async updateCharacter(hunger)
@@ -167,5 +159,13 @@ module.exports = class Rouse
                 )
             );
         }
+    }
+
+    async cleanup()
+    {
+        this.interaction = undefined;
+        this.character = undefined;
+        this.results = undefined;
+        this.response = undefined;
     }
 }

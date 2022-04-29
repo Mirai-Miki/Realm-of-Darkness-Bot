@@ -26,49 +26,10 @@ module.exports = class WoD20thRoll
 
     async isArgsValid()
     {
-        if (this.character) 
-        {
-            const name = correctName(this.character);
-            if (name.lenght > 50)
-            {
-                this.interaction.reply({ 
-                    content: ('Character name cannot be longer than 50 chars.'), 
-                    ephemeral: true 
-                });
-                return false;
-            }
-            let char = await DatabaseAPI.getCharacter(name, 
-                this.interaction.user.id, this.interaction);
-            if (char == 'noChar') char = undefined;
-            this.character = {
-                name: name, 
-                tracked: char,
-            };
-        }
-
-        if (this.pool < 1 || this.pool > 50)
+        if (this.character?.length > 50)
         {
             this.interaction.reply({ 
-                content: ('Your pool must be between 1 and 50.\n' +
-                    'Pool is the number of dice you are rolling.'), 
-                ephemeral: true 
-            });
-        }
-        else if (this.diff < 2 || this.diff > 10)
-        {
-            this.interaction.reply({ 
-                content: ('Your difficulty must be between 2 and 10.\n' +
-                    'Difficulty is the number the dice needs to get or higher' +
-                    ' to count as a success'), 
-                ephemeral: true 
-            });
-        }
-        else if (this.mod && (this.mod < -50 || this.mod > 50))
-        {
-            this.interaction.reply({ 
-                content: ('Your modifier must be between -50 and 50.\n' +
-                    'Modifier will either grant a number of success or remove' +
-                    ' them. Generally used for Willpower.'), 
+                content: ('Character name cannot be longer than 50 chars.'), 
                 ephemeral: true 
             });
         }
@@ -80,12 +41,24 @@ module.exports = class WoD20thRoll
             resp['content'] = 'You are currently out of willpower.'
             this.interaction.reply(resp);
         }
-        else if (this.nightmare && (this.nightmare > this.pool ||
-            this.nightmare < 0))
+        else if (this.nightmare && (this.nightmare > this.pool))
         {
             this.interaction.reply({ 
-                content: ('Nightmare cannot be more then your pool or' +
-                    ' less then 0.'), 
+                content: ('Nightmare cannot be more then your pool'), 
+                ephemeral: true 
+            });
+        }
+        else if (this.spec?.length >= 100)
+        {
+            this.interaction.reply({ 
+                content: ('Speciality cannot be longer then 100 characters.'), 
+                ephemeral: true 
+            });
+        }
+        else if (this.notes?.length >= 200)
+        {
+            this.interaction.reply({ 
+                content: ('Notes cannot be longer then 200 characters.'), 
                 ephemeral: true 
             });
         }
@@ -178,14 +151,27 @@ module.exports = class WoD20thRoll
         if (this.mod) this.results.total += this.mod; 
         if (this.results.total < 0) this.results.total = 0;
 
-        await this.updateCharacter();
         return;
     }
 
-    constructEmbed()
+    async constructEmbed()
     {
         // Create the embed
         let embed = new MessageEmbed();
+
+        if (this.character) 
+        {
+            const name = correctName(this.character);            
+            let char = await DatabaseAPI.getCharacter(name, 
+                this.interaction.user.id, this.interaction);
+
+            if (char == 'noChar') char = undefined;
+            this.character = {
+                name: name, 
+                tracked: char,
+            };
+        }
+        await this.updateCharacter();
         
         embed.setAuthor(
             {
@@ -273,48 +259,39 @@ module.exports = class WoD20thRoll
             this.statsResult = 'passed';
         }
 
-        if (this.reason) embed.setFooter(this.reason);
+        if (this.reason) embed.setFooter({text: this.reason});
         embed.setURL('https://discord.gg/Qrty3qKv95');
         this.response = { embed: embed };
         return embed;
     }
 
-    constructContent()
+    async constructContent()
     {
         const client = this.interaction.client;
-        const botch = client.emojis.resolve('901438266312650772');
-        const fail1 = client.emojis.resolve('901438193528881212');
-        const fail2 = client.emojis.resolve('901438197882564688');
-        const fail3 = client.emojis.resolve('901438198046134282');
-        const fail4 = client.emojis.resolve('901438197744152606');
-        const fail5 = client.emojis.resolve('901438198213910609');
-        const fail6 = client.emojis.resolve('901438198306197504');
-        const fail7 = client.emojis.resolve('901438197916123136');
-        const fail8 = client.emojis.resolve('901438199358963803');
-        const fail9 = client.emojis.resolve('901438198016774176');
-        const sux2 = client.emojis.resolve('901438140781326376');
-        const sux3 = client.emojis.resolve('901438140487720960');
-        const sux4 = client.emojis.resolve('901438140106035320');
-        const sux5 = client.emojis.resolve('901438141498544199');
-        const sux6 = client.emojis.resolve('901438140257017887');
-        const sux7 = client.emojis.resolve('901438141284614144');
-        const sux8 = client.emojis.resolve('901438140810682408');
-        const sux9 = client.emojis.resolve('901438141938941992');
-        const sux10 = client.emojis.resolve('901438140919709716');
-        const crit = client.emojis.resolve('901726422513614898');
-        const nightmare = client.emojis.resolve('901432906227007488');
-        const seperator = client.emojis.resolve('953616399799037982');
 
-        const store = {
-            1: {fail: fail1},
-            2: {fail: fail2, sux: sux2},
-            3: {fail: fail3, sux: sux3},
-            4: {fail: fail4, sux: sux4},
-            5: {fail: fail5, sux: sux5},
-            6: {fail: fail6, sux: sux6},
-            7: {fail: fail7, sux: sux7},
-            8: {fail: fail8, sux: sux8},
-            9: {fail: fail9, sux: sux9},
+        const emotes = {
+            botch: client.emojis.resolve('901438266312650772').toString(),
+            1: {fail: client.emojis.resolve('901438193528881212').toString()},
+            2: {fail: client.emojis.resolve('901438197882564688').toString(), 
+                sux: client.emojis.resolve('901438140781326376').toString()},
+            3: {fail: client.emojis.resolve('901438198046134282').toString(), 
+                sux: client.emojis.resolve('901438140487720960').toString()},
+            4: {fail: client.emojis.resolve('901438197744152606').toString(), 
+                sux: client.emojis.resolve('901438140106035320').toString()},
+            5: {fail: client.emojis.resolve('901438198213910609').toString(), 
+                sux: client.emojis.resolve('901438141498544199').toString()},
+            6: {fail: client.emojis.resolve('901438198306197504').toString(), 
+                sux: client.emojis.resolve('901438140257017887').toString()},
+            7: {fail: client.emojis.resolve('901438197916123136').toString(), 
+                sux: client.emojis.resolve('901438141284614144').toString()},
+            8: {fail: client.emojis.resolve('901438199358963803').toString(), 
+                sux: client.emojis.resolve('901438140810682408').toString()},
+            9: {fail: client.emojis.resolve('901438198016774176').toString(), 
+                sux: client.emojis.resolve('901438141938941992').toString()},
+            sux10: client.emojis.resolve('901438140919709716').toString(),
+            crit: client.emojis.resolve('901726422513614898').toString(),
+            nightmare: client.emojis.resolve('901432906227007488').toString(),
+            seperator: client.emojis.resolve('953616399799037982').toString()
         }
         
         let mess = '';
@@ -322,27 +299,27 @@ module.exports = class WoD20thRoll
         {
             if (dice == 10)
             {
-                if (this.spec) mess += crit.toString();
-                else mess += sux10.toString();
+                if (this.spec) mess += emotes.crit;
+                else mess += emotes.sux10;
             }
-            else if (dice >= this.diff) mess += store[dice].sux.toString();
+            else if (dice >= this.diff) mess += emotes[dice].sux;
             else if (dice < this.diff && (dice != 1 || this.cancelOnes))
-                mess += store[dice].fail.toString();
-            else mess += botch.toString();
+                mess += emotes[dice].fail;
+            else mess += emotes.botch;
             mess += ' ';
         }
 
-        if (mess.length && this.nightmare) mess += seperator.toString();
+        if (mess.length && this.nightmare) mess += emotes.seperator;
         for (const dice of this.results.nightmareDice)
         {
             if (dice == 10)
             {
-                mess += nightmare.toString();
+                mess += emotes.nightmare;
             }
-            else if (dice >= this.diff) mess += store[dice].sux.toString();
+            else if (dice >= this.diff) mess += emotes[dice].sux;
             else if (dice < this.diff && (dice != 1 || this.cancelOnes))
-                mess += store[dice].fail.toString();
-            else mess += botch.toString();
+                mess += emotes[dice].fail;
+            else mess += emotes.botch;
             mess += ' ';
         }
 
@@ -371,15 +348,24 @@ module.exports = class WoD20thRoll
         }
     }
 
-    reply()
+    async reply()
     {
         if (this.response)
         {
-            this.interaction.reply({ 
-                content: this.response.content,  
-                embeds: [this.response.embed] 
-            });
-            DatabaseAPI.diceStatsUpdate(
+            try
+            {
+                await this.interaction.editReply({ 
+                    content: this.response.content,  
+                    embeds: [this.response.embed] 
+                });
+            }
+            catch(error)
+            {
+                console.error("Failed to reply to 20th roll");
+                console.error(error);
+            }
+            
+            await DatabaseAPI.diceStatsUpdate(
                 {
                     id: this.interaction.user.id,
                     username: this.interaction.user.username,
@@ -393,7 +379,23 @@ module.exports = class WoD20thRoll
         }
         if (this.followUp)
         {
-            this.interaction.followUp(this.followUp);
+            try
+            {
+                await this.interaction.followUp(this.followUp);
+            }   
+            catch(error)
+            {
+                console.error("Failed to follow up to 20th roll");
+                console.error(error);
+            }
         }       
+    }
+
+    async cleanup()
+    {
+        this.interaction = undefined;
+        this.character = undefined;
+        this.response = undefined;
+        this.followUp = undefined;
     }
 }

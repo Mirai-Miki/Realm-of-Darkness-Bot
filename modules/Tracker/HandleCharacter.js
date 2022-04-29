@@ -102,13 +102,13 @@ module.exports = class HandleCharacter
 
             if (roles === undefined)
             {
-                handleError(this.interaction, 'dbError', this);
+                await handleError(this.interaction, 'dbError', this);
                 return undefined;
             }
             else if (member && (!member.permissions.has("ADMINISTRATOR") && 
                 !member.roles.cache.hasAny(...roles)))
             {
-                handleError(this.interaction, 'missingPerm', this);
+                await handleError(this.interaction, 'missingPerm', this);
                 return undefined;
             }
             
@@ -123,12 +123,12 @@ module.exports = class HandleCharacter
         );
         if (char === 'noChar')
         {
-            handleError(this.interaction, 'noChar', this);
+            await handleError(this.interaction, 'noChar', this);
             return undefined;
         }
         else if (!char)
         {
-            handleError(this.interaction, 'dbError', this);
+            await handleError(this.interaction, 'dbError', this);
             return undefined;
         }
 
@@ -149,12 +149,12 @@ module.exports = class HandleCharacter
         );
         if (char === 'noChar')
         {
-            handleError(this.interaction, 'noChar', this);
+            await handleError(this.interaction, 'noChar', this);
             return undefined;
         }
         else if (!char)
         {
-            handleError(this.interaction, 'dbError', this);
+            await handleError(this.interaction, 'dbError', this);
             return undefined;
         }
 
@@ -208,7 +208,7 @@ module.exports = class HandleCharacter
             this.character.guild.id, this.interaction.client);
         try
         {
-            await this.interaction.reply(this.response);
+            await this.interaction.editReply(this.response);
         }
         catch (error)
         {
@@ -216,12 +216,21 @@ module.exports = class HandleCharacter
             {
                 console.error("Error at Handler Reply");
                 console.error(error);
-                handleError(this.interaction, 'handlerReply', this);
+                await handleError(this.interaction, 'handlerReply', this);
             }
-            else handleError(this.interaction, 'malformedURL', this);         
+            else await handleError(this.interaction, 'malformedURL', this);         
             return false;
         }
         return true;
+    }
+
+    async cleanup()
+    {
+        this.interaction = undefined;
+        this.response = undefined;
+        this.character = undefined;
+        this.version = undefined;
+        this.splat = undefined;
     }
 }
 

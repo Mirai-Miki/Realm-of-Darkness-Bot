@@ -17,45 +17,46 @@ module.exports = class WoD20thInit
 
     async isArgsValid()
     {
-        if (this.character) 
+        if (this.character?.length > 50)
         {
-            const name = correctName(this.character);
-            if (name.lenght > 50)
-            {
-                this.interaction.reply({ 
-                    content: ('Character name cannot be longer than 50 chars.'), 
-                    ephemeral: true 
-                });
-                return false;
-            }
-            let char = await DatabaseAPI.getCharacter(name, 
-                this.interaction.user.id, this.interaction);
-            if (char == 'noChar') char = undefined;
-            this.character = {
-                name: name, 
-                tracked: char,
-            };
+            this.interaction.reply({ 
+                content: ('Character name cannot be longer than 50 chars.'), 
+                ephemeral: true 
+            });
         }
-
-        if (this.modifier == null) this.modifier = 0; 
-        if (this.modifier < 0 || this.modifier > 50)
+        else if (this.notes?.length > 200)
         {
-            this.interaction.reply("Your Dex + Wits must be between" +
-                " 0 and 50.");
+            this.interaction.reply({ 
+                content: ('Notes cannot be longer then 200 characters.'), 
+                ephemeral: true 
+            });
         }
         else return true;
+
         return false;
     }
 
-    roll()
+    async roll()
     {
         this.results = {roll: 0, total: 0};
         this.results.roll = Roll.single(10);        
         this.results.total = this.modifier + this.results.roll;
     }
 
-    constructEmbed()
+    async constructEmbed()
     {
+        if (this.character)
+        {
+            const name = correctName(this.character);
+            let char = await DatabaseAPI.getCharacter(name, 
+                this.interaction.user.id, this.interaction);
+            if (char == 'noChar') char = undefined;
+            this.character = {
+                name: name, 
+                tracked: char,
+            }; 
+        }
+
         let embed = new MessageEmbed();    
         
         embed.setAuthor(
@@ -84,16 +85,31 @@ module.exports = class WoD20thInit
             `\`\`\`fix\n${this.results.total}\n\`\`\``);
         embed.setColor([186, 61, 22]);
         embed.setURL('https://discord.gg/Qrty3qKv95');
-        if (this.notes) embed.setFooter(this.notes);
+        if (this.notes) embed.setFooter({text: this.notes});
         this.response.embed = embed;
         return embed;
     }
 
-    reply()
+    async reply()
     {
         if (this.response.embed)
         {
-            this.interaction.reply({embeds: [this.response.embed]});
+            try
+            {
+                await this.interaction.editReply({embeds: [this.response.embed]});
+            }
+            catch(error)
+            {
+                console.error("Failed to reply to 20th Init roll");
+                console.error(error);
+            }
         }  
+    }
+
+    async cleanup()
+    {
+        this.interaction = undefined;
+        this.response = undefined;
+        this.character = undefined;
     }
 }
