@@ -31,7 +31,7 @@ function vampire20thSetCommands()
             .setDescription("Sets you total Blood Pool to the number. " +
                 "Must be between 1 and 100. VtM 20th Corebook p121")
             .setMinValue(1)
-            .setMaxValue(10))
+            .setMaxValue(100))
         .addIntegerOption(option =>
             option.setName("morality")
             .setDescription("Sets your Mortality to the number. " +
