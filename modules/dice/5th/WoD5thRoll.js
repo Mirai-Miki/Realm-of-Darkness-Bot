@@ -436,16 +436,18 @@ module.exports = class WoD5thRoll
             i.message.interaction.id == this.interaction.id &&
             (i.customId === 'autoReroll' || i.customId === 'selectReroll')         
         );
-        const channel = this.interaction.channel;
+        const channel = await this.interaction.client.channels
+            .fetch(this.interaction.channelId);
         
         this.collector = channel.createMessageComponentCollector(
             {
                 filter,
-                time: minToMilli(13)
+                time: minToMilli(14)
             });
         
         this.collector.on('collect', async i => {
             if (i.user.id === this.interaction.user.id) {
+                await i.deferUpdate();
                 if (i.customId == 'autoReroll')
                 {
                     // reroll
@@ -454,7 +456,7 @@ module.exports = class WoD5thRoll
                     await this.constructContent();
                     try
                     {
-                        await i.update({ 
+                        await i.editReply({ 
                             content: this.response.content,
                             embeds: [this.response.embed],                        
                             components: []
@@ -471,7 +473,7 @@ module.exports = class WoD5thRoll
                 {
                     try
                     {
-                        await i.update({components: await this.createRerollSelect()});
+                        await i.editReply({components: await this.createRerollSelect()});
                     }
                     catch(error)
                     {
@@ -486,7 +488,7 @@ module.exports = class WoD5thRoll
                     await this.constructContent();
                     try
                     {
-                        await i.update({ 
+                        await i.editReply({ 
                             content: this.response.content,
                             embeds: [this.response.embed],                        
                             components: []
@@ -500,9 +502,10 @@ module.exports = class WoD5thRoll
                     this.collector.stop();
                 }
             } else {
+                await i.deferReply({ ephemeral: true });
                 try
                 {
-                    await i.reply({ content: `These buttons aren't for you!`, 
+                    await i.editReply({ content: `These buttons aren't for you!`, 
                         ephemeral: true });
                 }
                 catch(error)

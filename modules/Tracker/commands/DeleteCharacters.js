@@ -30,7 +30,8 @@ module.exports = class DeleteCharacters
             if (!this.interaction.guild)
             {
                 error = 'Sorry, selecting a player can only be used in a server.';
-                this.interaction.reply({content: error, ephemeral: true});
+                await editReply(this.interaction, {content: error, ephemeral: true}, "1");
+                this.cleanup();
                 return false;
             }
 
@@ -54,7 +55,8 @@ module.exports = class DeleteCharacters
 
         if (error)
         {
-            this.interaction.reply({content: error, ephemeral: true});
+            await editReply(this.interaction, {content: error, ephemeral: true}, "2");
+            this.cleanup();
             return false;
         }
         return true;
@@ -69,20 +71,22 @@ module.exports = class DeleteCharacters
             DatabaseAPI.getNameList(this.userId, guildId);
         if (response === 'noChar')
         {
-            this.interaction.reply({ 
+            await editReply(this.interaction, { 
                 content: (`There are no Characters to delete.`), 
                 ephemeral: true 
-            });
+            }, "3");
+            this.cleanup();
             return undefined;
         }
         else if (!response)
         {
-            this.interaction.reply({ 
+            await editReply(this.interaction, { 
                 content: ('There was an error accessing the Database. Please try again' +
                 ' later.\nIf this issue persists please report it at the ' +
                 '[Realm of Darkness Server](<https://discord.gg/Qrty3qKv95>).'), 
                 ephemeral: true 
-            });
+            }, "4");
+            this.cleanup();
             return undefined;
         }
 
@@ -226,7 +230,7 @@ module.exports = class DeleteCharacters
 
             this.confirmCollector.on('collect', async i => {
                 await i.deferUpdate();
-                await editReply(i, {content: "Loading...", components: []}, "1");
+                await editReply(i, {content: "Loading...", components: []}, "5");
                 
                 if (i.customId === 'cancel')
                 {
@@ -247,12 +251,12 @@ module.exports = class DeleteCharacters
                     `**Deleted**: ${this.toDelete.names.join(', ')}.`;
                 }                    
                 this.response['components'] = []
-                await editReply(i, this.response, "2");
+                await editReply(i, this.response, "6");
                 this.confirmCollector.stop();
             });
 
             this.confirmCollector.on('end', async i => {
-                await editReply(this.interaction, {components: []}, "3");
+                await editReply(this.interaction, {components: []}, "7");
                 this.cleanup();
                 // End of interaction: Character deleted
             });   
@@ -268,7 +272,7 @@ module.exports = class DeleteCharacters
                 return; // Moved on to confirm buttons
             }
             // Timeout
-            await editReply(this.interaction, {components: []}, "4");
+            await editReply(this.interaction, {components: []}, "8");
             this.cleanup();
         });
     }

@@ -74,6 +74,7 @@ module.exports.trackerExecute = async (interaction) =>
                 await deleteChars.constructComponents();
                 await deleteChars.reply();
             }
+            else deleteChars.cleanup();
             break;
         case 'channel':
             let trackerChannel = new TrackerChannel(interaction);

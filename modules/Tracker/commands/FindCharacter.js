@@ -219,8 +219,10 @@ module.exports = class FindCharacter
         const filter = i => (
             i.message.interaction.id == this.interaction.id          
         );
-        const channel = this.interaction.channel;
-        this.collector = channel.createMessageComponentCollector(
+        const channel = await this.interaction.client.channels
+            .fetch(this.interaction.channelId);
+        
+            this.collector = channel.createMessageComponentCollector(
             {
                 filter,
                 time: minToMilli(14),
