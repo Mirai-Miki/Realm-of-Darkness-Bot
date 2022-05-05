@@ -516,17 +516,19 @@ module.exports = class WoD5thRoll
             }
         });
 
-        this.collector.on('end', async i => {
+        this.collector.on('end', async (i, reason) => {
             try
             {
-                await this.interaction.editReply({components: []});
+                if (reason !== 'user')
+                    await this.interaction.editReply({components: []});
             }
             catch(error) 
             {
                 if (error.code === 10008); //Do nothing;
                 else 
                 {
-                    console.error("Error removing v5 roll Components.")
+                    console.error("\n\nError removing v5 roll Components.");
+                    console.error(`Reason: ${reason}`)
                     console.error(error);                    
                 }
                 await this.cleanup();
