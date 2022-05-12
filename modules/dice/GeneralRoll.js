@@ -117,6 +117,8 @@ module.exports = class GeneralRoll
         {
             embed.addField("Modifier", `\`\`\`css\n${this.modifier}\n\`\`\``, true);
         }
+
+        if (this.notes) embed.addField("Notes", this.notes);
         
         if (this.diff)
         {
@@ -145,8 +147,11 @@ module.exports = class GeneralRoll
             embed.addField('Result', `Total of ${this.sets.total}`);
             embed.setColor([0,0,0]);
         }
-        if (this.notes) embed.setFooter({text: this.notes});
-        embed.setURL('https://discord.gg/Qrty3qKv95');
+
+        const links = "\n[RoD Server](https://discord.gg/Qrty3qKv95)" + 
+            " | [Patreon](https://www.patreon.com/MiraiMiki)";
+        embed.fields.at(-1).value += links;
+        embed.setURL('https://cdn.discordapp.com/attachments/699082447278702655/972058320611459102/banner.png');
 
         this.embed = [embed];
         return embed;

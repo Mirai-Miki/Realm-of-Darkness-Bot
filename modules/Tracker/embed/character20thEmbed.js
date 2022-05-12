@@ -25,7 +25,7 @@ module.exports.character20thEmbed = (char, client, notes) =>
         .setTitle(char.name)        
         .addField(`Willpower [${char.willpower.current}/${char.willpower.total}]`, 
             consumableTracker(char.willpower, 1, client, 10), false)
-        .setURL('https://discord.gg/Qrty3qKv95');
+        .setURL('https://cdn.discordapp.com/attachments/699082447278702655/972058320611459102/banner.png');
 
         if (char.thumbnail) embed.setThumbnail(char.thumbnail);
 
@@ -179,7 +179,9 @@ module.exports.character20thEmbed = (char, client, notes) =>
             embed.addField("Experience", 
             consumableTracker(char.exp, 0, client, 0, true), false);
 
-        if (notes) embed.setFooter(notes);
+        const links = "\n[RoD Server](https://discord.gg/Qrty3qKv95)" + 
+            " | [Patreon](https://www.patreon.com/MiraiMiki)";
+        embed.fields.at(-1).value += links;
 
         const response = {embeds: [embed], ephemeral: true};
         return response;

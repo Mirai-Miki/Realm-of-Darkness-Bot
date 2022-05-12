@@ -1,59 +1,75 @@
+'use strict';
+const { MessageEmbed } = require('discord.js');
 
 module.exports = async function(interaction, error, handler)
 {
-    let errorMessage = '';
+    const embed = new MessageEmbed()
+        .setColor("#db0f20")
+        .setThumbnail("https://cdn.discordapp.com/attachments/817275006311989268/974198094696689744/error.png")
 
     if (error === 'noChar')
     {
-        errorMessage = `Could not find a ${handler.splat} called` +
-        ` ${handler.args.name}.\nPlease check the name and splat.`;
+        embed.setTitle("No Character Error")
+        embed.setDescription(`Could not find a ${handler.splat} called` +
+            ` ${handler.args.name}.\nPlease check the name and splat.`);
     }
     else if (error === 'exists')
     {
-        errorMessage = "You already have a character" +
-        " with this name. Please choose another.";
+        embed.setTitle("Duplicate Name Error")
+        embed.setDescription("You already have a character" +
+        " with this name. Please choose another.");
     }
     else if (error === 'dbError')
     {
-        errorMessage = 'There was an error accessing the Database. Please try again' +
+        embed.setTitle("Database Error")
+        embed.setDescription('There was an error accessing the Database. Please try again' +
         ' later.\nIf this issue persists please report it at the ' +
-        '[Realm of Darkness Server](<https://discord.gg/Qrty3qKv95>).';
+        '[Realm of Darkness Server](<https://discord.gg/Qrty3qKv95>).');
     }
     else if (error === 'malformedURL')
     {
-        errorMessage = "The URL you sent was Malformed." +
+        embed.setTitle("Malformed URL Error")
+        embed.setDescription("The URL you sent was Malformed." +
         " Please enter a valid image URL." +
         "\nThe easiest way to do this is upload your file to discord and" +
-        " select the copy link option from it.";
+        " select the copy link option from it.");
     }
     else if (error === 'handlerReply')
     {
-        errorMessage = 'There was an Error in the Character Handler' +
+        embed.setTitle("Handler Error")
+        embed.setDescription('There was an Error in the Character Handler' +
         '.\nIf you see this message please report it at the ' +
-        '[Realm of Darkness Server](<https://discord.gg/Qrty3qKv95>).';
+        '[Realm of Darkness Server](<https://discord.gg/Qrty3qKv95>).');
     }
     else if (error === 'charOverflow')
     {
-        errorMessage = 'Sorry you have too many Characters. Please' +
-            ' delete some to free up some space.';
+        embed.setTitle("Max Character Error")
+        embed.setDescription('Sorry you have too many Characters. Please' +
+        ' delete some to free up some space.');
     }
     else if (error === 'missingPerm')
     {
-        errorMessage = 'Sorry, you must either be an Administrator or ' +
+        embed.setTitle("Missing Permission Error")
+        embed.setDescription('Sorry, you must either be an Administrator or ' +
         'Storyteller to select a user.\n' +
         'If you are trying to update your own Character please' +
-        ' remove the "player" option and try again.';
+        ' remove the "player" option and try again.');
     }
     else if (error === 'noGuild')
     {
-        errorMessage = 'Sorry, selecting a player can only be used in a server.' +
+        embed.setTitle("Direct Message Error")
+        embed.setDescription('Sorry, selecting a player can only be used in a server.' +
         '\nIf you trying to update your own Character please' +
-        ' remove the "player" option and try again.';
+        ' remove the "player" option and try again.');
     }
+
+    const links = "\n[RoD Server](https://discord.gg/Qrty3qKv95)" + 
+            " | [Patreon](https://www.patreon.com/MiraiMiki)";
+    embed.description += links;
 
     try
     {
-        await interaction.editReply({content: errorMessage, ephemeral: true});
+        await interaction.editReply({embeds: [embed], ephemeral: true});
     }
     catch(error)
     {

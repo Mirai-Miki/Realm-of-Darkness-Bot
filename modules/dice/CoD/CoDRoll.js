@@ -18,7 +18,7 @@ module.exports = class CoDRoll
         this.target = this.interaction.options.getInteger('target');
         this.reroll = this.interaction.options.getInteger('reroll');
         this.character = this.interaction.options.getString('character');        
-        this.reason = this.interaction.options.getString('notes');
+        this.notes = this.interaction.options.getString('notes');
         
         this.chance = false;
     }
@@ -193,6 +193,7 @@ module.exports = class CoDRoll
         if (reroll.length) embed.addField("Reroll Dice", reroll.join(", "), true);
 
         if (this.spec) embed.addField("Specialty", `${this.spec}`, false);
+        if (this.notes) embed.addField("Notes", this.notes);
 
         if (this.results.result === 'botch')
         {
@@ -225,8 +226,11 @@ module.exports = class CoDRoll
             this.statsResult = 'passed';
         }
 
-        if (this.reason) embed.setFooter({text: this.reason});
-        embed.setURL('https://discord.gg/Qrty3qKv95');
+        const links = "\n[RoD Server](https://discord.gg/Qrty3qKv95)" + 
+            " | [Patreon](https://www.patreon.com/MiraiMiki)";
+        embed.fields.at(-1).value += links;
+        
+        embed.setURL('https://cdn.discordapp.com/attachments/699082447278702655/972058320611459102/banner.png');
         this.response = { embeds: [embed] };
         return embed;
     }

@@ -89,7 +89,7 @@ function mage20thCommands()
         .addStringOption(option =>
             option.setName("colour")
             .setDescription("Changes the side bar colour." +
-                " Enter 3 space seperated RGB values. " +
+                " Enter a colour hex code eg #6f82ab. " +
                 "[Supporter Only]"))
         .addStringOption(option =>
             option.setName("image")
@@ -169,7 +169,7 @@ function mage20thCommands()
         .addStringOption(option =>
             option.setName("colour")
             .setDescription("Changes the side bar colour." +
-                " Enter 3 space seperated RGB values. " +
+                " Enter a colour hex code eg #6f82ab. " +
                 "[Supporter Only]"))
         .addStringOption(option =>
             option.setName("image")

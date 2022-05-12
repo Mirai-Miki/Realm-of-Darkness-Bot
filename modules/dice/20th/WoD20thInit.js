@@ -17,22 +17,26 @@ module.exports = class WoD20thInit
 
     async isArgsValid()
     {
+        let description;
         if (this.character?.length > 50)
         {
-            this.interaction.reply({ 
-                content: ('Character name cannot be longer than 50 chars.'), 
-                ephemeral: true 
-            });
+            description = "Character name cannot be longer than 50 chars.";
         }
-        else if (this.notes?.length > 200)
+        else if (this.notes?.length > 300)
         {
-            this.interaction.reply({ 
-                content: ('Notes cannot be longer then 200 characters.'), 
-                ephemeral: true 
-            });
+            description = "Notes cannot be longer than 300 chars.";
         }
         else return true;
 
+        const embed = new MessageEmbed()
+            .setTitle("String Length Error")
+            .setColor("#db0f20")
+            .setThumbnail("https://cdn.discordapp.com/attachments/817275006311989268/974198094696689744/error.png")
+            .setDescription(`${description}` +
+                "\n[RoD Server](https://discord.gg/Qrty3qKv95)" + 
+                " | [Patreon](https://www.patreon.com/MiraiMiki)");
+        
+        this.interaction.reply({embeds: [embed], ephemeral: true});
         return false;
     }
 
@@ -81,11 +85,16 @@ module.exports = class WoD20thInit
 
         embed.addField('Dex + Wits', `${this.modifier}`, true);
         embed.addField('1d10', `${this.results.roll}`, true);
+        if (this.notes) embed.addField("Notes", this.notes);
         embed.addField('Initiative of', 
             `\`\`\`fix\n${this.results.total}\n\`\`\``);
         embed.setColor([186, 61, 22]);
-        embed.setURL('https://discord.gg/Qrty3qKv95');
-        if (this.notes) embed.setFooter({text: this.notes});
+        embed.setURL('https://cdn.discordapp.com/attachments/699082447278702655/972058320611459102/banner.png');
+        
+        const links = "\n[RoD Server](https://discord.gg/Qrty3qKv95)" + 
+            " | [Patreon](https://www.patreon.com/MiraiMiki)";
+        embed.fields.at(-1).value += links;
+        
         this.response.embed = embed;
         return embed;
     }

@@ -45,28 +45,30 @@ module.exports = class WoD5thRoll
 
     async isArgsValid()
     {
+        let description;
         if (this.character?.length > 50)
         {
-            this.interaction.reply({ 
-                content: ('Character name cannot be longer than 50 chars.'), 
-                ephemeral: true 
-            });
-        }
+            description = "Character name cannot be longer than 50 chars.";
+        }        
         else if (this.spec?.length > 100)
         {
-            this.interaction.reply({ 
-                content: ('Speciality cannot be longer than 100 characters.'), 
-                ephemeral: true 
-            });
+            description = "Speciality cannot be longer than 100 characters.";
         }
         else if (this.notes?.length > 300)
         {
-            this.interaction.reply({ 
-                content: ('Notes cannot be longer than 300 characters.'), 
-                ephemeral: true 
-            });
+            description = "Notes cannot be longer than 300 chars.";
         }
         else return true;
+
+        const embed = new MessageEmbed()
+            .setTitle("String Length Error")
+            .setColor("#db0f20")
+            .setThumbnail("https://cdn.discordapp.com/attachments/817275006311989268/974198094696689744/error.png")
+            .setDescription(`${description}` +
+                "\n[RoD Server](https://discord.gg/Qrty3qKv95)" + 
+                " | [Patreon](https://www.patreon.com/MiraiMiki)");
+        
+        this.interaction.reply({embeds: [embed], ephemeral: true});
         return false;
     }
 
@@ -182,6 +184,24 @@ module.exports = class WoD5thRoll
         }
 
         let resultMessage = "";
+        // Total and diff added to Result Message
+        if (!this.diff) resultMessage += `Rolled: ${this.results.total} sux`;
+        else
+        {
+            resultMessage += `${this.results.total} sux`;
+            resultMessage += ` vs diff ${this.diff}`;
+        }
+
+        // Adding Margin to Result Message
+        if (this.diff && this.results.total > this.diff)
+        {
+            resultMessage += `\nMargin of ${this.results.total - this.diff}`;
+        }
+        else if (this.diff && this.results.total < this.diff)
+        {
+            resultMessage += `\nMissing ${this.diff - this.results.total}`;
+        }
+
         let color = [0, 0, 0]; // Black
         if (this.results.type == Result.bestialFail)
         {
@@ -218,24 +238,6 @@ module.exports = class WoD5thRoll
             this.statsResult = 'passed';
             resultMessage += '\n```diff\n+ Success +\n```';
             color = [102, 255, 51]; // Green
-        }
-
-        // Total and diff added to Result Message
-        if (!this.diff) resultMessage += `Rolled: ${this.results.total} sux`;
-        else
-        {
-            resultMessage += `${this.results.total} sux`;
-            resultMessage += ` vs diff ${this.diff}`;
-        }
-
-        // Adding Margin to Result Message
-        if (this.diff && this.results.total > this.diff)
-        {
-            resultMessage += `\nMargin of ${this.results.total - this.diff}`;
-        }
-        else if (this.diff && this.results.total < this.diff)
-        {
-            resultMessage += `\nMissing ${this.diff - this.results.total}`;
         }
 
         // Create Title
@@ -278,10 +280,11 @@ module.exports = class WoD5thRoll
             "Dice", `${blackResult.join(' ')}`, true);
         if (this.hunger) embed.addField(
             "Hunger", `${hungerResult.join(' ')}`, true);
-        if (this.spec) embed.addField("Specialty", this.spec);
+        if (this.spec) embed.addField("Specialty", this.spec);        
+        if (this.notes) embed.addField("Notes", this.notes);
         embed.addField("Result", `${resultMessage}`);
         embed.setColor(color);
-        embed.setURL('https://discord.gg/Qrty3qKv95');        
+        embed.setURL('https://cdn.discordapp.com/attachments/699082447278702655/972058320611459102/banner.png');        
 
         // Finishing touches
         if (this.bloodSurge)
@@ -299,8 +302,10 @@ module.exports = class WoD5thRoll
                 `\`\`\`diff\n${this.rouseRoll.description}\n\`\`\``
             );
         }
-
-        if (this.notes) embed.setFooter({text: this.notes});
+        
+        const links = "\n[RoD Server](https://discord.gg/Qrty3qKv95)" + 
+            " | [Patreon](https://www.patreon.com/MiraiMiki)";
+        embed.fields.at(-1).value += links;
         
         this.response.embed = embed;
         return embed;
@@ -436,8 +441,20 @@ module.exports = class WoD5thRoll
             i.message.interaction.id == this.interaction.id &&
             (i.customId === 'autoReroll' || i.customId === 'selectReroll')         
         );
-        const channel = await this.interaction.client.channels
-            .fetch(this.interaction.channelId);
+        
+        let channel;
+        try
+        {
+            channel = await this.interaction.client.channels
+                .fetch(this.interaction.channelId);
+        }
+        catch(error)
+        {
+            console.error("\n\nError: WoD5thRoll.js - reply()");
+            console.error(error);
+            this.cleanup();
+            return;
+        }        
         
         this.collector = channel.createMessageComponentCollector(
             {
@@ -519,8 +536,15 @@ module.exports = class WoD5thRoll
         this.collector.on('end', async (i, reason) => {
             try
             {
-                if (reason !== 'user')
+                if (reason === 'time')
+                {
                     await this.interaction.editReply({components: []});
+                }
+                else (reason === 'guildDelete')
+                {
+                    await this.cleanup();
+                    return;
+                }
             }
             catch(error) 
             {

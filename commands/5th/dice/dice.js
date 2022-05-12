@@ -103,6 +103,13 @@ module.exports = {
                         {name: 'Acute', value: 'Acute'}
                     ))
                 .addStringOption(option =>
+                    option.setName("min_temperament")
+                    .setDescription("The lowest the temperament will be.")
+                    .addChoices(
+                        {name: 'Fleeting', value: 'Fleeting'},
+                        {name: 'Intense', value: 'Intense'}
+                    ))
+                .addStringOption(option =>
                     option.setName("notes")
                     .setDescription("Any extra information you would like to" +
                         " include."))

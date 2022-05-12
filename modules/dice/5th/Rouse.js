@@ -27,21 +27,26 @@ module.exports = class Rouse
 
     async isArgsValid()
     {
+        let description;
         if (this.character?.length > 50)
         {
-            this.interaction.reply({ 
-                content: ('Character name cannot be longer than 50 chars.'), 
-                ephemeral: true 
-            });
+            description = "Character name cannot be longer than 50 chars.";
         }
         else if (this.notes?.length > 300)
         {
-            this.interaction.reply({ 
-                content: ('Notes cannot be longer than 300 chars.'), 
-                ephemeral: true 
-            });
+            description = "Notes cannot be longer than 300 chars.";
         }
         else return true;
+
+        const embed = new MessageEmbed()
+            .setTitle("String Length Error")
+            .setColor("#db0f20")
+            .setThumbnail("https://cdn.discordapp.com/attachments/817275006311989268/974198094696689744/error.png")
+            .setDescription(`${description}` +
+                "\n[RoD Server](https://discord.gg/Qrty3qKv95)" + 
+                " | [Patreon](https://www.patreon.com/MiraiMiki)");
+        
+        this.interaction.reply({embeds: [embed], ephemeral: true});
         return false;
     }
 
@@ -94,7 +99,7 @@ module.exports = class Rouse
 
         embed.setTitle(`${this.surge ? 'Blood Surge Check' : 'Rouse Check'}`);
         embed.setColor(this.results.colour);
-        embed.setURL('https://discord.gg/Qrty3qKv95');
+        embed.setURL('https://cdn.discordapp.com/attachments/699082447278702655/972058320611459102/banner.png');
         
         if (!this.results.passed)
             embed.setThumbnail('https://cdn.discordapp.com/attachments/7140' +
@@ -108,11 +113,14 @@ module.exports = class Rouse
         }
 
         embed.addField("Rouse Dice", `${diceMess.join(' ')}`);
-        
+        if (this.notes) embed.addField("Notes", this.notes);
         embed.addField("Result", `\`\`\`diff\n` +
             `${this.results.description}\n\`\`\``);
 
-        if (this.notes) embed.setFooter({text: this.notes});
+        
+        const links = "\n[RoD Server](https://discord.gg/Qrty3qKv95)" + 
+            " | [Patreon](https://www.patreon.com/MiraiMiki)";
+        embed.fields.at(-1).value += links;
         
         this.response.embeds = [embed];
         return embed;

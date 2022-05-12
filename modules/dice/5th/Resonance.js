@@ -19,6 +19,11 @@ module.exports = class Resonance
             mechanic: '',
             dice: '',
         }
+
+        if (!this.temp.name)
+        {
+            this.minTemp = this.interaction.options.getString('min_temperament');
+        }        
         this.notes = this.interaction.options.getString('notes');
     }
 
@@ -33,10 +38,19 @@ module.exports = class Resonance
         let temp;
         if (!this.temp.name)
         {
-            temp = Roll.single(10);
+            if (this.minTemp === 'Fleeting')
+            {
+                temp = Roll.single(5);
+                temp += 5;
+            }
+            else if (this.minTemp === 'Intense')
+            {
+                temp = 10;
+            }
+            else temp = Roll.single(10);
+
             this.temp.dice += `${temp}`;
-        }
-        
+        }        
 
         if (temp >= 9 || this.temp.name === 'Intense' || 
             this.temp.name === 'Acute')
@@ -159,6 +173,19 @@ module.exports = class Resonance
 
     async constructEmbed()
     {
+        if (this.notes?.length > 300)
+        {
+            const embed = new MessageEmbed()
+                .setTitle("String Length Error")
+                .setColor("#db0f20")
+                .setThumbnail("https://cdn.discordapp.com/attachments/817275006311989268/974198094696689744/error.png")
+                .setDescription("Notes cannot be longer than 300 chars." +
+                    "\n[RoD Server](https://discord.gg/Qrty3qKv95)" + 
+                    " | [Patreon](https://www.patreon.com/MiraiMiki)");
+            this.embed = embed;
+            return embed;
+        }
+
         // Create the embed
         let embed = new MessageEmbed();
         embed.setAuthor(
@@ -173,7 +200,9 @@ module.exports = class Resonance
         );
         embed.setTitle('Resonance Roll');
         embed.setColor(this.colour.hex);
-        embed.setURL('https://discord.gg/Qrty3qKv95');
+        embed.setURL('https://cdn.discordapp.com/attachments/699082447278702655/972058320611459102/banner.png');
+        
+        if (this.minTemp) embed.addField("Minimum Temperament", `${this.minTemp}`);
 
         embed.addField("Result", `\`\`\`${this.temp.name}` +
             `${this.temp.name == 'Negligible' ? '' : (' '+this.res.name)}\`\`\``, 
@@ -193,7 +222,13 @@ module.exports = class Resonance
         if (this.res.description) 
             embed.addField("Emotions", this.res.description, true);
 
-        if (this.notes) embed.setFooter({text: this.notes});
+        if (this.notes)
+        {
+            embed.addField("Notes", this.notes);
+            const links = "\n[RoD Server](https://discord.gg/Qrty3qKv95)" + 
+                " | [Patreon](https://www.patreon.com/MiraiMiki)";
+            embed.fields.at(-1).value += links;
+        } 
         
         this.embed = embed;
         return embed;

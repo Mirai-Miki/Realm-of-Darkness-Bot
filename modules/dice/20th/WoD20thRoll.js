@@ -26,12 +26,11 @@ module.exports = class WoD20thRoll
 
     async isArgsValid()
     {
+        let description;
+        let title = "String Length Error";
         if (this.character?.length > 50)
         {
-            this.interaction.reply({ 
-                content: ('Character name cannot be longer than 50 chars.'), 
-                ephemeral: true 
-            });
+            description = "Character name cannot be longer than 50 chars.";
         }
         else if (this.willpower && 
             this.character?.tracked?.willpower.current == 0)
@@ -40,29 +39,32 @@ module.exports = class WoD20thRoll
                 this.character.tracked, this.interaction.client);
             resp['content'] = 'You are currently out of willpower.'
             this.interaction.reply(resp);
+            return false;
         }
         else if (this.nightmare && (this.nightmare > this.pool))
         {
-            this.interaction.reply({ 
-                content: ('Nightmare cannot be more then your pool'), 
-                ephemeral: true 
-            });
-        }
-        else if (this.spec?.length >= 100)
+            title = "Invalid Nightmare Error";
+            description = 'Nightmare cannot be more then your pool';
+        }     
+        else if (this.spec?.length > 100)
         {
-            this.interaction.reply({ 
-                content: ('Speciality cannot be longer then 100 characters.'), 
-                ephemeral: true 
-            });
+            description = "Speciality cannot be longer than 100 characters.";
         }
-        else if (this.notes?.length >= 200)
+        else if (this.reason?.length > 300)
         {
-            this.interaction.reply({ 
-                content: ('Notes cannot be longer then 200 characters.'), 
-                ephemeral: true 
-            });
+            description = "Notes cannot be longer than 300 chars.";
         }
         else return true;
+
+        const embed = new MessageEmbed()
+            .setTitle(title)
+            .setColor("#db0f20")
+            .setThumbnail("https://cdn.discordapp.com/attachments/817275006311989268/974198094696689744/error.png")
+            .setDescription(`${description}` +
+                "\n[RoD Server](https://discord.gg/Qrty3qKv95)" + 
+                " | [Patreon](https://www.patreon.com/MiraiMiki)");
+        
+        this.interaction.reply({embeds: [embed], ephemeral: true});
         return false;
     }
 
@@ -234,6 +236,7 @@ module.exports = class WoD20thRoll
         if (this.spec) embed.addField("Specialty", `${this.spec}`, true);
         
         if (this.mod) embed.addField("Modifier", `${this.mod}`, true);  
+        if (this.reason) embed.addField("Notes", this.reason);
 
         if (!this.results.passed.length && !this.results.total && 
             this.results.botch)
@@ -258,9 +261,12 @@ module.exports = class WoD20thRoll
             embed.setColor([50, 168, 82]);
             this.statsResult = 'passed';
         }
+        
+        const links = "\n[RoD Server](https://discord.gg/Qrty3qKv95)" + 
+            " | [Patreon](https://www.patreon.com/MiraiMiki)";
+        embed.fields.at(-1).value += links;
 
-        if (this.reason) embed.setFooter({text: this.reason});
-        embed.setURL('https://discord.gg/Qrty3qKv95');
+        embed.setURL('https://cdn.discordapp.com/attachments/699082447278702655/972058320611459102/banner.png');
         this.response = { embed: embed };
         return embed;
     }

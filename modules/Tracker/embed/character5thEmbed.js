@@ -68,7 +68,7 @@ module.exports.character5thEmbed = (char, client, args) =>
                 char.humanity.stains, client) + 
                 stainsOverflow),
             false)
-        .setURL('https://discord.gg/Qrty3qKv95');
+        .setURL('https://cdn.discordapp.com/attachments/699082447278702655/972058320611459102/banner.png');
     
     if (char.thumbnail) embed.setThumbnail(char.thumbnail);
 
@@ -84,6 +84,10 @@ module.exports.character5thEmbed = (char, client, args) =>
 
     if (args?.notes) 
         embed.addField("Notes", args.notes);
+
+    const links = "\n[RoD Server](https://discord.gg/Qrty3qKv95)" + 
+        " | [Patreon](https://www.patreon.com/MiraiMiki)";
+    embed.fields.at(-1).value += links;
 
     const response = {embeds: [embed], ephemeral: true};
     return response;        
