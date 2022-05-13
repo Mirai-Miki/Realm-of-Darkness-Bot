@@ -276,6 +276,7 @@ module.exports = class CoDRoll
                 sux: client.emojis.resolve('901438140810682408').toString()},
             9: {fail: client.emojis.resolve('901438198016774176').toString(), 
                 sux: client.emojis.resolve('901438141938941992').toString()},
+            10: {sux: client.emojis.resolve('901438140919709716').toString()},
             roteSep: client.emojis.resolve('814396574092361750').toString(),
             rerollSep: client.emojis.resolve('901323344450818109').toString(),
             crit: client.emojis.resolve('901726422513614898').toString()
