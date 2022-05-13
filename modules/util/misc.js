@@ -12,15 +12,7 @@ module.exports.minToMilli = (min) =>
 
 module.exports.correctName = (name) =>
 {
-    const words = name.trim().toLowerCase().split(/\s+/);
-    const nameParts = []
-
-    for (const part of words)
-    {
-        nameParts.push(part[0].toUpperCase() + part.substring(1));
-    }
-
-    return nameParts.join(' ');
+    return name.trim().replace(/\s+/g, " ");
 }
 
 module.exports.slugifiy = (str) =>

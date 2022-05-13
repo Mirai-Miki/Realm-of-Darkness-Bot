@@ -179,6 +179,8 @@ module.exports.character20thEmbed = (char, client, notes) =>
             embed.addField("Experience", 
             consumableTracker(char.exp, 0, client, 0, true), false);
 
+        if (notes) embed.addField("Notes", notes);
+        
         const links = "\n[RoD Server](https://discord.gg/Qrty3qKv95)" + 
             " | [Patreon](https://www.patreon.com/MiraiMiki)";
         embed.fields.at(-1).value += links;

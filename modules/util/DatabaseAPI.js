@@ -22,27 +22,13 @@ module.exports = class DatabaseAPI
                 avatar_url: interaction.user.avatarURL() ?? ''
             },
         };
-        let res;
-        try
-        {
-            res = await Axios.post(host, data, config);
-        }
-        catch (error)
-        {
-            if (error.code === 'ECONNREFUSED')
-            {
-                console.error("Error Database refused connection.\nCode: " +
-                    "ECONNREFUSED")
-            }
-            else console.error(error);
-            return undefined;
-        }
+        
+        let res = await postData(host, data);
+        if (!res) return undefined;
 
         if (res.status == 200 && res.data)
         {
-            const response = res.data;
-            
-            return response;
+            return res.data;
         }
         else
         {
@@ -60,27 +46,13 @@ module.exports = class DatabaseAPI
             APIKey: APIKey,
             user_id: interaction.user.id,
         };
-        let res;
-        try
-        {
-            res = await Axios.post(host, data, config);
-        }
-        catch (error)
-        {
-            if (error.code === 'ECONNREFUSED')
-            {
-                console.error("Error Database refused connection.\nCode: " +
-                    "ECONNREFUSED")
-            }
-            else console.error(error);
-            return undefined;
-        }
+        
+        let res = await postData(host, data);
+        if (!res) return undefined;
 
         if (res.status == 200 && res.data)
         {
-            const response = res.data.level;
-            
-            return response;
+            return res.data.level;
         }
         else
         {
@@ -101,27 +73,13 @@ module.exports = class DatabaseAPI
             result: result,
             reroll: reroll,
         };
-        let res;
-        try
-        {
-            res = await Axios.post(host, data, config);
-        }
-        catch (error)
-        {
-            if (error.code === 'ECONNREFUSED')
-            {
-                console.error("Error Database refused connection.\nCode: " +
-                    "ECONNREFUSED")
-            }
-            else console.error(error);
-            return undefined;
-        }
+        
+        let res = await postData(host, data);
+        if (!res) return undefined;
 
         if (res.status == 200 && res.data)
         {
-            const response = res.data;
-            
-            return response;
+            return res.data;
         }
         else
         {
@@ -140,27 +98,13 @@ module.exports = class DatabaseAPI
             user_id: member.id,
             guild_id: member.guild.id,
         };
-        let res;
-        try
-        {
-            res = await Axios.post(host, data, config);
-        }
-        catch (error)
-        {
-            if (error.code === 'ECONNREFUSED')
-            {
-                console.error("Error Database refused connection.\nCode: " +
-                    "ECONNREFUSED")
-            }
-            else console.error(error);
-            return undefined;
-        }
+        
+        let res = await postData(host, data);
+        if (!res) return undefined;
 
         if (res.status == 200 && res.data)
-        {
-            const response = res.data;
-            
-            return response;
+        {            
+            return res.data;
         }
         else
         {
@@ -176,35 +120,12 @@ module.exports = class DatabaseAPI
         const data = character.serialize();
         data['APIKey'] = APIKey;
         
-        let res;
-        try
-        {
-            res = await Axios.post(host, data, config);
-        }
-        catch (error)
-        {
-            if (error.code === 'ECONNREFUSED')
-            {
-                console.error("Error Database refused connection.\nCode: " +
-                    "ECONNREFUSED")
-            }
-            else console.error(error);
-            return undefined;
-        }
+        let res = await postData(host, data);
+        if (!res) return undefined;
 
         if (res.status == 200 && res.data)
-        {
-            const response = res.data;
-            if (response.status === 'exists')
-            {
-                return 'exists';
-            }
-            else if (response.status === 'charOverflow')
-            {
-                return 'charOverflow';
-            }
-            
-            return 'saved';
+        {         
+            return res.data.status;
         }
         else
         {
@@ -224,21 +145,9 @@ module.exports = class DatabaseAPI
             splat: splat ?? undefined,
             pk: pk ?? undefined
         }
-        let res;
-        try
-        {
-            res = await Axios.post(host, data, config);
-        }
-        catch (error)
-        {
-            if (error.code === 'ECONNREFUSED')
-            {
-                console.error("Error Database refused connection.\nCode: " +
-                    "ECONNREFUSED")
-            }
-            else console.error(error);
-            return undefined;
-        }
+        
+        let res = await postData(host, data);
+        if (!res) return undefined;
 
         if (res.status == 200 && res.data)
         {
@@ -272,21 +181,9 @@ module.exports = class DatabaseAPI
             userId: userId, 
             guildId: guildId
         }
-        let res;
-        try
-        {
-            res = await Axios.post(host, data, config);
-        }
-        catch (error)
-        {
-            if (error.code === 'ECONNREFUSED')
-            {
-                console.error("Error Database refused connection.\nCode: " +
-                    "ECONNREFUSED")
-            }
-            else console.error(error);
-            return undefined;
-        }
+        
+        let res = await postData(host, data);
+        if (!res) return undefined;
 
         if (res.status == 200 && res.data)
         {
@@ -314,26 +211,13 @@ module.exports = class DatabaseAPI
             ids: ids,
             disconnect: disconnect
         }
-        let res;
-        try
-        {
-            res = await Axios.post(host, data, config);
-        }
-        catch (error)
-        {
-            if (error.code === 'ECONNREFUSED')
-            {
-                console.error("Error Database refused connection.\nCode: " +
-                    "ECONNREFUSED")
-            }
-            else console.error(error);
-            return undefined;
-        }
+
+        let res = await postData(host, data);
+        if (!res) return undefined;
 
         if (res.status == 200 && res.data)
         {
-            const response = res.data;
-            return response;
+            return res.data;
         }
         else
         {
@@ -357,26 +241,12 @@ module.exports = class DatabaseAPI
             channel_id: channelId,
         }
 
-        let res;
-        try
-        {
-            res = await Axios.post(host, data, config);
-        }
-        catch (error)
-        {
-            if (error.code === 'ECONNREFUSED')
-            {
-                console.error("Error Database refused connection.\nCode: " +
-                    "ECONNREFUSED")
-            }
-            else console.error(error);
-            return undefined;
-        }
+        let res = await postData(host, data);
+        if (!res) return undefined;
 
         if (res.status == 200 && res.data)
         {
-            const response = res.data;
-            return response;
+            return res.data;
         }
         else
         {
@@ -395,26 +265,12 @@ module.exports = class DatabaseAPI
             guild_id: guildId
         }
 
-        let res;
-        try
-        {
-            res = await Axios.post(host, data, config);
-        }
-        catch (error)
-        {
-            if (error.code === 'ECONNREFUSED')
-            {
-                console.error("Error Database refused connection.\nCode: " +
-                    "ECONNREFUSED")
-            }
-            else console.error(error);
-            return undefined;
-        }
+        let res = await postData(host, data);
+        if (!res) return undefined;
 
         if (res.status == 200 && res.data)
         {
-            const response = res.data.channel_id;
-            return response;
+            return res.data.channel_id;
         }
         else
         {
@@ -438,26 +294,12 @@ module.exports = class DatabaseAPI
             role_id: roleId,
         }
 
-        let res;
-        try
-        {
-            res = await Axios.post(host, data, config);
-        }
-        catch (error)
-        {
-            if (error.code === 'ECONNREFUSED')
-            {
-                console.error("Error Database refused connection.\nCode: " +
-                    "ECONNREFUSED")
-            }
-            else console.error(error);
-            return undefined;
-        }
+        let res = await postData(host, data);
+        if (!res) return undefined;
 
         if (res.status == 200 && res.data)
         {
-            const response = res.data;
-            return response;
+            return res.data;
         }
         else
         {
@@ -476,26 +318,12 @@ module.exports = class DatabaseAPI
             guild_id: guildId
         }
 
-        let res;
-        try
-        {
-            res = await Axios.post(host, data, config);
-        }
-        catch (error)
-        {
-            if (error.code === 'ECONNREFUSED')
-            {
-                console.error("Error Database refused connection.\nCode: " +
-                    "ECONNREFUSED")
-            }
-            else console.error(error);
-            return undefined;
-        }
+        let res = await postData(host, data);
+        if (!res) return undefined;
 
         if (res.status == 200 && res.data)
         {
-            const response = res.data.roles;
-            return response;
+            return res.data.roles;
         }
         else
         {
@@ -520,26 +348,12 @@ module.exports = class DatabaseAPI
             role_id: role.id,
         }
 
-        let res;
-        try
-        {
-            res = await Axios.post(host, data, config);
-        }
-        catch (error)
-        {
-            if (error.code === 'ECONNREFUSED')
-            {
-                console.error("Error Database refused connection.\nCode: " +
-                    "ECONNREFUSED")
-            }
-            else console.error(error);
-            return undefined;
-        }
+        let res = await postData(host, data);
+        if (!res) return undefined;
 
         if (res.status == 200 && res.data)
         {
-            const response = res.data;
-            return response;
+            return res.data;
         }
         else
         {
@@ -547,5 +361,23 @@ module.exports = class DatabaseAPI
             console.error(`Status: ${res.status}`)
             return undefined;
         }
+    }
+}
+
+async function postData(host, data)
+{
+    try
+    {
+        return await Axios.post(host, data, config);
+    }
+    catch (error)
+    {
+        if (error.code === 'ECONNREFUSED')
+        {
+            console.error("Error Database refused connection.\nCode: " +
+                "ECONNREFUSED")
+        }
+        else console.error(error);
+        return undefined;
     }
 }

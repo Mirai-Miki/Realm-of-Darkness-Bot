@@ -1,10 +1,10 @@
 'use strict';
-const { MessageActionRow, MessageButton, MessageEmbed } = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 const { correctName } = require('../../util/misc.js');
 const DatabaseAPI = require('../../util/DatabaseAPI.js');
 
 
-module.exports.isSetArgsValid = async (args, interaction, version) =>
+module.exports.isSetArgsValid = async (args, interaction) =>
 {
     const embed = new MessageEmbed()
         .setTitle("")
