@@ -1,9 +1,8 @@
 'use strict';
-const Axios = require('axios');
-const { APIKey } = require('../../config5th.json');
-const { getCharacterClass } = require('./getCharacterClass');
+const { APIKey } = require('../config5th.json');
+const { getCharacterClass } = require('../modules/util/getCharacterClass');
+const { postData } = require('./postData.js');
 
-const config = {headers: {'Content-Type': 'application/json'}};
 const IP = 'localhost';
 const PORT = '8000';
 
@@ -24,16 +23,14 @@ module.exports = class DatabaseAPI
         };
         
         let res = await postData(host, data);
-        if (!res) return undefined;
-
-        if (res.status == 200 && res.data)
+        if (res?.status === 200 && res?.data)
         {
             return res.data;
         }
         else
         {
             console.error("Error in DatabaseAPI.getCharacter()")
-            console.error(`Status: ${res.status}`)
+            console.error(`Status: ${res?.status}`)
             return undefined;
         }
     }
@@ -48,16 +45,14 @@ module.exports = class DatabaseAPI
         };
         
         let res = await postData(host, data);
-        if (!res) return undefined;
-
-        if (res.status == 200 && res.data)
+        if (res?.status === 200 && res?.data)
         {
             return res.data.level;
         }
         else
         {
             console.error("Error in DatabaseAPI.getCharacter()")
-            console.error(`Status: ${res.status}`)
+            console.error(`Status: ${res?.status}`)
             return undefined;
         }
     }
@@ -75,16 +70,14 @@ module.exports = class DatabaseAPI
         };
         
         let res = await postData(host, data);
-        if (!res) return undefined;
-
-        if (res.status == 200 && res.data)
+        if (res?.status === 200 && res?.data)
         {
             return res.data;
         }
         else
         {
             console.error("Error in DatabaseAPI.getCharacter()")
-            console.error(`Status: ${res.status}`)
+            console.error(`Status: ${res?.status}`)
             return undefined;
         }
     }
@@ -100,16 +93,14 @@ module.exports = class DatabaseAPI
         };
         
         let res = await postData(host, data);
-        if (!res) return undefined;
-
-        if (res.status == 200 && res.data)
+        if (res?.status === 200 && res?.data)
         {            
             return res.data;
         }
         else
         {
             console.error("Error in DatabaseAPI.getCharacter()")
-            console.error(`Status: ${res.status}`)
+            console.error(`Status: ${res?.status}`)
             return undefined;
         }
     }
@@ -121,16 +112,14 @@ module.exports = class DatabaseAPI
         data['APIKey'] = APIKey;
         
         let res = await postData(host, data);
-        if (!res) return undefined;
-
-        if (res.status == 200 && res.data)
+        if (res?.status === 200 && res?.data)
         {         
             return res.data.status;
         }
         else
         {
             console.error("Error in DatabaseAPI.saveCharacter()")
-            console.error(`Status: ${res.status}`)
+            console.error(`Status: ${res?.status}`)
             return undefined;
         }
     }
@@ -147,9 +136,7 @@ module.exports = class DatabaseAPI
         }
         
         let res = await postData(host, data);
-        if (!res) return undefined;
-
-        if (res.status == 200 && res.data)
+        if (res?.status === 200 && res?.data)
         {
             const response = res.data;
             if (!response.status)
@@ -168,7 +155,7 @@ module.exports = class DatabaseAPI
         else
         {
             console.error("Error in DatabaseAPI.getCharacter()")
-            console.error(`Status: ${res.status}`)
+            console.error(`Status: ${res?.status}`)
             return undefined;
         }
     }
@@ -183,9 +170,7 @@ module.exports = class DatabaseAPI
         }
         
         let res = await postData(host, data);
-        if (!res) return undefined;
-
-        if (res.status == 200 && res.data)
+        if (res?.status === 200 && res?.data)
         {
             const response = res.data;
             if (response.status == 'noChar')
@@ -198,7 +183,7 @@ module.exports = class DatabaseAPI
         else
         {
             console.error("Error in DatabaseAPI.getNameList()")
-            console.error(`Status: ${res.status}`)
+            console.error(`Status: ${res?.status}`)
             return undefined;
         }
     }
@@ -213,16 +198,14 @@ module.exports = class DatabaseAPI
         }
 
         let res = await postData(host, data);
-        if (!res) return undefined;
-
-        if (res.status == 200 && res.data)
+        if (res?.status === 200 && res?.data)
         {
             return res.data;
         }
         else
         {
             console.error("Error in DatabaseAPI.deleteCharacters()")
-            console.error(`Status: ${res.status}`)
+            console.error(`Status: ${res?.status}`)
             return undefined;
         }
     }
@@ -242,16 +225,14 @@ module.exports = class DatabaseAPI
         }
 
         let res = await postData(host, data);
-        if (!res) return undefined;
-
-        if (res.status == 200 && res.data)
+        if (res?.status === 200 && res?.data)
         {
             return res.data;
         }
         else
         {
             console.error("Error in DatabaseAPI.deleteCharacters()")
-            console.error(`Status: ${res.status}`)
+            console.error(`Status: ${res?.status}`)
             return undefined;
         }
     }
@@ -266,16 +247,14 @@ module.exports = class DatabaseAPI
         }
 
         let res = await postData(host, data);
-        if (!res) return undefined;
-
-        if (res.status == 200 && res.data)
+        if (res?.status === 200 && res?.data)
         {
             return res.data.channel_id;
         }
         else
         {
             console.error("Error in DatabaseAPI.deleteCharacters()")
-            console.error(`Status: ${res.status}`)
+            console.error(`Status: ${res?.status}`)
             return undefined;
         }
     }
@@ -295,16 +274,14 @@ module.exports = class DatabaseAPI
         }
 
         let res = await postData(host, data);
-        if (!res) return undefined;
-
-        if (res.status == 200 && res.data)
+        if (res?.status === 200 && res?.data)
         {
             return res.data;
         }
         else
         {
             console.error("Error in DatabaseAPI.deleteCharacters()")
-            console.error(`Status: ${res.status}`)
+            console.error(`Status: ${res?.status}`)
             return undefined;
         }
     }
@@ -319,16 +296,14 @@ module.exports = class DatabaseAPI
         }
 
         let res = await postData(host, data);
-        if (!res) return undefined;
-
-        if (res.status == 200 && res.data)
+        if (res?.status === 200 && res?.data)
         {
             return res.data.roles;
         }
         else
         {
             console.error("Error in DatabaseAPI.deleteCharacters()")
-            console.error(`Status: ${res.status}`)
+            console.error(`Status: ${res?.status}`)
             return undefined;
         }
     }
@@ -349,35 +324,15 @@ module.exports = class DatabaseAPI
         }
 
         let res = await postData(host, data);
-        if (!res) return undefined;
-
-        if (res.status == 200 && res.data)
+        if (res?.status === 200 && res?.data)
         {
             return res.data;
         }
         else
         {
             console.error("Error in DatabaseAPI.deleteCharacters()")
-            console.error(`Status: ${res.status}`)
+            console.error(`Status: ${res?.status}`)
             return undefined;
         }
-    }
-}
-
-async function postData(host, data)
-{
-    try
-    {
-        return await Axios.post(host, data, config);
-    }
-    catch (error)
-    {
-        if (error.code === 'ECONNREFUSED')
-        {
-            console.error("Error Database refused connection.\nCode: " +
-                "ECONNREFUSED")
-        }
-        else console.error(error);
-        return undefined;
     }
 }

@@ -2,7 +2,7 @@
 const Roll = require('../Roll.js');
 const { MessageEmbed } = require('discord.js');
 const { correctName } = require('../../util/misc');
-const DatabaseAPI = require('../../util/DatabaseAPI.js');
+const DatabaseAPI = require('../../../databaseAPI/DatabaseAPI.js');
 const { character5thEmbed } = require('../../Tracker/embed/character5thEmbed');
 
 module.exports = class Rouse

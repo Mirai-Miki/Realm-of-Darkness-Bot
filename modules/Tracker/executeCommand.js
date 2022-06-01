@@ -3,7 +3,7 @@ const handleError = require("./util/handleError");
 const { isSetArgsValid, isUpdateArgsValid } = require('./util/isArgsValid');
 const Handler = require('./HandleCharacter');
 const { clientVersions } = require('../util/Constants');
-const DatabaseAPI = require('../util/DatabaseAPI')
+const DatabaseAPI = require('../../databaseAPI/DatabaseAPI.js')
 
 module.exports = async function (interaction) { 
     let mode = '';

@@ -1,5 +1,5 @@
 'use strict';
-const DatabaseAPI = require('../modules/util/DatabaseAPI')
+const DatabaseAPI = require('../databaseAPI/DatabaseAPI')
 
 module.exports = {
 	name: 'roleDelete',

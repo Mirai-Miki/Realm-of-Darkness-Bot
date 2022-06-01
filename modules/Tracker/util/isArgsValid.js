@@ -1,7 +1,7 @@
 'use strict';
 const { MessageEmbed } = require('discord.js');
 const { correctName } = require('../../util/misc.js');
-const DatabaseAPI = require('../../util/DatabaseAPI.js');
+const DatabaseAPI = require('../../../databaseAPI/DatabaseAPI');
 
 
 module.exports.isSetArgsValid = async (args, interaction) =>

@@ -1,5 +1,5 @@
 'use strict';
-const DatabaseAPI = require('../../util/DatabaseAPI');
+const DatabaseAPI = require('../../../databaseAPI/DatabaseAPI');
 
 module.exports = class StorytellerPermissions
 {

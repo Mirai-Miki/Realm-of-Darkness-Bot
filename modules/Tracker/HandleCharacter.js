@@ -3,7 +3,7 @@ const { getCharacterClass } = require('../util/getCharacterClass')
 const handleError = require('./util/handleError.js');
 const { character20thEmbed } = require('./embed/character20thEmbed.js');
 const { character5thEmbed } = require('./embed/character5thEmbed');
-const DatabaseAPI = require("../util/DatabaseAPI");
+const DatabaseAPI = require("../../databaseAPI/DatabaseAPI");
 const { Versions } = require('../util/Constants');
 const sendToTrackerChannel = require('./util/sendToTrackerChan');
 

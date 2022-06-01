@@ -2,7 +2,7 @@
 const Roll = require('../Roll.js');
 const { MessageEmbed } = require('discord.js');
 const { correctName } = require('../../util/misc');
-const DatabaseAPI = require('../../util/DatabaseAPI');
+const DatabaseAPI = require('../../../databaseAPI/DatabaseAPI.js');
 const { character20thEmbed } = require('../../Tracker/embed/character20thEmbed.js');
 const { Versions } = require('../../util/Constants')
 

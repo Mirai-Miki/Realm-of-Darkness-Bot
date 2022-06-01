@@ -3,7 +3,7 @@ const Roll = require('../Roll.js');
 const { MessageActionRow, MessageSelectMenu, 
     MessageButton, MessageEmbed } = require('discord.js');
 const { minToMilli, correctName } = require('../../util/misc.js');
-const DatabaseAPI = require('../../util/DatabaseAPI.js');
+const DatabaseAPI = require('../../../databaseAPI/DatabaseAPI.js');
 const { Versions } = require('../../util/Constants');
 const { character5thEmbed } = require('../../Tracker/embed/character5thEmbed');
 
@@ -454,7 +454,8 @@ module.exports = class WoD5thRoll
             console.error(error);
             this.cleanup();
             return;
-        }        
+        }
+        if (!channel) return this.cleanup();        
         
         this.collector = channel.createMessageComponentCollector(
             {

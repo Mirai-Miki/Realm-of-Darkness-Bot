@@ -1,5 +1,5 @@
 'use strict';
-const DatabaseAPI = require('../../util/DatabaseAPI');
+const DatabaseAPI = require('../../../databaseAPI/DatabaseAPI');
 const { canSendMessage, canEmbed } = require('../../util/misc');
 
 module.exports = async function (embed, content, guildId, client)

@@ -294,7 +294,8 @@ module.exports = class CoDRoll
             mess += emotes.rerollSep;
             mess += this.toDiceString(this.results.rerolls, emotes);
         }
-        this.response.content = mess;
+        if (mess.length < 2000) this.response.content = mess;
+        else this.response.content = undefined;
         return mess;
     }
 

@@ -1,9 +1,11 @@
+'use strict'
 const { SlashCommandBuilder } = require('@discordjs/builders');
+const { Initiative } = require("../../../modules/Initiative/Initiative");
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('initiative')
-		.setDescription('')
+		.setName('init')
+		.setDescription('.')
 		.addSubcommand(subcommand =>        
             subcommand
 				.setName('new')
@@ -43,11 +45,8 @@ module.exports = {
         .addSubcommand(subcommand =>        
             subcommand
 				.setName('declare')
-				.setDescription('Declares the action for a specific character.')
-                .addStringOption(option =>
-                    option.setName("name")
-                    .setDescription("The name of the character rerolling.")
-                    .setRequired(true))
+				.setDescription('Declares the action for a specific character.' +
+                    " Can only be used on your turn.")
                 .addStringOption(option =>
                     option.setName("action")
                     .setDescription("The action you will take.")
@@ -59,18 +58,29 @@ module.exports = {
 				.setDescription('Reposts a current tracker.')
         ),
     
-    async execute(interaction) {
+    async execute(interaction) 
+    {
         switch (interaction.options.getSubcommand())
         {
             case 'new':
+                await interaction.deferReply({ephemeral: true});
+                await Initiative.newTracker(interaction);
                 break;
             case 'roll':
+                await interaction.deferReply({ephemeral: true});
+                await Initiative.roll(interaction);
                 break;
             case 'reroll':
+                await interaction.deferReply({ephemeral: true});
+                await Initiative.roll(interaction, true);
                 break;
             case 'declare':
+                await interaction.deferReply({ephemeral: true});
+                await Initiative.declare(interaction);
                 break;
             case 'repost':
+                await interaction.deferReply({ephemeral: true});
+                await Initiative.repostTracker(interaction);
                 break;
         }
     },

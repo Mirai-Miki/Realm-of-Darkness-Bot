@@ -1,7 +1,7 @@
 'use strict';
 const fs = require("fs");
 const { Client, Intents, Collection } = require("discord.js");
-const { token, commandPath } = require('./config20th.json');
+const { token, commandPath, componentPath } = require('./config20th.json');
 
 const client = new Client({intents: [
     Intents.FLAGS.GUILDS, 
@@ -16,6 +16,17 @@ for (const folder of commandFolders) {
     for (const file of commandFiles) {
         const command = require(`${commandPath}${folder}/${file}`);
         client.commands.set(command.data.name, command);
+    }
+}
+
+client.components = new Collection();
+const componentsFolders = fs.readdirSync(componentPath);
+for (const folder of componentsFolders) {
+    const componentFiles = fs.readdirSync(
+        `${componentPath}${folder}`).filter(file => file.endsWith('.js'));
+    for (const file of componentFiles) {
+        const component = require(`${componentPath}${folder}/${file}`);
+        client.components.set(component.name, component);
     }
 }
 
