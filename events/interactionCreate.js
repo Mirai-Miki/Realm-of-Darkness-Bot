@@ -27,7 +27,7 @@ module.exports = {
 		else if (interaction.isMessageComponent())
 		{
 			const customId = interaction.customId;
-			const component = interaction.client.components.get(customId);
+			const component = interaction.client.components?.get(customId);
 			if (!component) return;
 
 			try {

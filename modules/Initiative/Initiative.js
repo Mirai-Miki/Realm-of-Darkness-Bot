@@ -6,7 +6,6 @@ const { InitTracker } = require("./InitTracker.js");
 const { InitCharacter } = require("./InitCharacter.js");
 const { ComponentCID } = require("../../Constants/Constants20th");
 const { InitPhase } = require("../../Constants/Constants20th");
-const { canSendMessage, canEmbed } = require('../util/misc');
 const { Interaction } = require('discord.js');
 const { TextChannel } = require('discord.js');
 
