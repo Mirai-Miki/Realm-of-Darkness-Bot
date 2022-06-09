@@ -4,6 +4,7 @@ const Resonance = require('../../../modules/dice/5th/Resonance.js');
 const GeneralRoll = require('../../../modules/dice/GeneralRoll');
 const Rouse = require('../../../modules/dice/5th/Rouse.js');
 const WoD5thRoll = require('../../../modules/dice/5th/WoD5thRoll.js');
+const HunterRoll = require('../../../modules/dice/5th/HunterRoll.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -59,6 +60,42 @@ module.exports = {
                     option.setName("auto_hunger")
                     .setDescription("Select if you would like you hunger" +
                         " to be taken from your character."))
+                .addStringOption(option =>
+                    option.setName("notes")
+                    .setDescription("Any extra information you would like to" +
+                        " include."))
+        )
+        .addSubcommand(subcommand =>
+            subcommand
+				.setName('hunter')
+				.setDescription('Standard roll')
+                .addIntegerOption(option =>
+                    option.setName("pool")
+                    .setDescription("The Number of dice to roll. " +
+                        "Must be between 1 and 50")
+                    .setMaxValue(50)
+                    .setMinValue(1)
+                    .setRequired(true))
+                .addIntegerOption(option =>
+                    option.setName("desperation")
+                    .setDescription("The number of desperation dice to add to " +
+                        "the pool. Must be between 0 to 5. Defaults to 0.")
+                    .setMaxValue(5)
+                    .setMinValue(0))
+                .addIntegerOption(option =>
+                    option.setName("difficulty")
+                    .setDescription("The Difficulty is the number of dice " +
+                        " 6+ needed. Must be between 1 and 50." +
+                        " Defaults to 1.")
+                    .setMaxValue(50)
+                    .setMinValue(1))
+                .addStringOption(option =>
+                    option.setName("speciality")
+                    .setDescription("The speciality applied to the roll. " +
+                    " This adds one dice to your pool."))
+                .addStringOption(option =>
+                    option.setName("character")
+                    .setDescription("Name of the character making the roll."))
                 .addStringOption(option =>
                     option.setName("notes")
                     .setDescription("Any extra information you would like to" +
@@ -176,6 +213,10 @@ module.exports = {
                     await roll.reply();
                 }
                 roll = undefined;
+                break;
+            case 'hunter':
+                await interaction.deferReply();
+                HunterRoll(interaction);
                 break;
             case 'resonance':
                 let resRoll = new Resonance(interaction);

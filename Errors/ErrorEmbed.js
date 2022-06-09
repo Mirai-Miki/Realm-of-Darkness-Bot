@@ -190,4 +190,70 @@ module.exports.ErrorEmbed =
         components: [],
         ephemeral: true
     },
+
+    // Arg Checking errors
+
+    CHAR_LEN:
+    {
+        content: undefined,
+        embeds: [
+            new MessageEmbed()
+                .setTitle("String Parse Error")
+                .setDescription("Character name cannot be longer then 50 characters."
+                    + `\n${rodLink}`)
+                .setThumbnail(thumbnail)
+                .setColor(errorColour)
+                .setURL(rodBanner)
+        ],
+        components: [],
+        ephemeral: true
+    },
+
+    SPEC_LEN:
+    {
+        content: undefined,
+        embeds: [
+            new MessageEmbed()
+                .setTitle("String Parse Error")
+                .setDescription("Speciality cannot be longer then 100 characters."
+                    + `\n${rodLink}`)
+                .setThumbnail(thumbnail)
+                .setColor(errorColour)
+                .setURL(rodBanner)
+        ],
+        components: [],
+        ephemeral: true
+    },
+
+    NOTES_LEN:
+    {
+        content: undefined,
+        embeds: [
+            new MessageEmbed()
+                .setTitle("String Parse Error")
+                .setDescription("Notes cannot be longer then 300 characters."
+                    + `\n${rodLink}`)
+                .setThumbnail(thumbnail)
+                .setColor(errorColour)
+                .setURL(rodBanner)
+        ],
+        components: [],
+        ephemeral: true
+    },
+
+    BUTTON_PERM:
+    {
+        content: undefined,
+        embeds: [
+            new MessageEmbed()
+                .setTitle("Button Permission Error")
+                .setDescription("Sorry, these buttons are not for you."
+                    + `\n${rodLink}`)
+                .setThumbnail(thumbnail)
+                .setColor(errorColour)
+                .setURL(rodBanner)
+        ],
+        components: [],
+        ephemeral: true
+    },
 }

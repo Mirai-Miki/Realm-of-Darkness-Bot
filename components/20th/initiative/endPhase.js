@@ -6,7 +6,7 @@ module.exports = {
     name: ComponentCID.INIT_END,
     async execute(interaction) 
     {
-        await interaction.deferUpdate();
+        await interaction.deferReply({ephemeral: true});
         await Initiative.endInitiative(interaction);
     },
 }

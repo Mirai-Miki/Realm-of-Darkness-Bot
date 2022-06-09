@@ -301,16 +301,6 @@ module.exports.Initiative = class Initiative
         catch(error){} 
     }
 
-    /**
-     * Initiative Reroll Command.
-     * Rerolls the old Init, same as roll but uses last turns data
-     * @param {Interaction} interaction 
-     */
-    static async reroll(interaction)
-    {
-        
-    }
-
     /*
     Initiative Declare command
     Only available on declare phase
@@ -343,6 +333,10 @@ module.exports.Initiative = class Initiative
         {
             return await interaction.editReply(ErrorEmbed.INVALID_PHASE);
         }
+
+        tracker.characters.sort((a, b) => {
+            return a.init - b.init;
+        }); // Sorts members in reverse order of Initiative
         
         let currentChar;
         let nextChar = null;
@@ -362,6 +356,9 @@ module.exports.Initiative = class Initiative
                 break;
             }
         }
+        console.log(tracker.characters)
+        console.log(currentChar)
+        console.log(nextChar);
         
         if (!nextChar)
         {
@@ -494,9 +491,11 @@ module.exports.Initiative = class Initiative
         }
         else if (tracker.phase >= InitPhase.DECLARE)
         {
-            let currentChar;
             let nextChar = null;
             tag = null;
+            tracker.characters.sort((a, b) => {
+                return a.init - b.init;
+            }); // Sorts members in reverse order of Initiative
             for (const character of tracker.characters.values())
             {
                 if (character.rolled && !character.declared)
@@ -561,7 +560,8 @@ module.exports.Initiative = class Initiative
             }            
         }
 
-        await interaction.editReply({components: []});
+        await interaction.message.delete();
+        await interaction.editReply({content: "Initiative Ended!"});
     }
 }
 
