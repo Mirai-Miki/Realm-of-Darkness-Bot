@@ -89,9 +89,8 @@ module.exports.Initiative = class Initiative
         }
         if (phase === InitPhase.DECLARE)
         {       
-            tracker.characters.sort((a, b) => {
-                return a.init - b.init;
-            }); // Sorts members in reverse order of Initiative
+            tracker.characters.sort(sortInitDescending); 
+            // Sorts members in reverse order of Initiative
 
             nextChar = tracker.characters.first();
             nextChar = `<@${nextChar.memberId}>`;
@@ -334,9 +333,8 @@ module.exports.Initiative = class Initiative
             return await interaction.editReply(ErrorEmbed.INVALID_PHASE);
         }
 
-        tracker.characters.sort((a, b) => {
-            return a.init - b.init;
-        }); // Sorts members in reverse order of Initiative
+        tracker.characters.sort(sortInitDescending); 
+        // Sorts members in reverse order of Initiative
         
         let currentChar;
         let nextChar = null;
@@ -493,9 +491,9 @@ module.exports.Initiative = class Initiative
         {
             let nextChar = null;
             tag = null;
-            tracker.characters.sort((a, b) => {
-                return a.init - b.init;
-            }); // Sorts members in reverse order of Initiative
+            tracker.characters.sort(sortInitDescending); 
+            // Sorts members in reverse order of Initiative
+
             for (const character of tracker.characters.values())
             {
                 if (character.rolled && !character.declared)
@@ -828,9 +826,8 @@ class InitEmbed
         else if (tracker.phase === InitPhase.REVEAL)
         {
             let count = 1;            
-            tracker.characters.sort((a, b) => {
-                return b.init - a.init;
-            }); // Sorts members in order of Initiative
+            tracker.characters.sort(sortInitAscending); 
+            // Sorts members in order of Initiative
 
             tracker.characters.forEach((character) => {
                 if (!character.rolled) return;
@@ -997,4 +994,28 @@ async function canSendChannelMessage(interaction)
     else return channel;
 
     return undefined;
+}
+
+function sortInitAscending(a, b)
+{
+    if (a.init > b.init) return -1;
+    else if (a.init === b.init) // Handle Tie
+    {
+        if ((a.pool + a.mod) > (b.pool + b.mod)) return -1;
+        else if ((a.pool + a.mod) === (b.pool + b.mod)) return 0;
+        else return 1;
+    }
+    else return 1;
+}
+
+function sortInitDescending(a, b)
+{
+    if (a.init < b.init) return -1;
+    else if (a.init === b.init) // Handle Tie
+    {
+        if ((a.pool + a.mod) < (b.pool + b.mod)) return -1;
+        else if ((a.pool + a.mod) === (b.pool + b.mod)) return 0;
+        else return 1;
+    }
+    else return 1;
 }

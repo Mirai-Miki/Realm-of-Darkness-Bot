@@ -47,8 +47,7 @@ module.exports.InitCharacter = class InitCharacter
     {
         if (typeof modifier != "number") throw new TypeError();
         this.mod = modifier;
-        if (this.mod < 0) this.mod = 0;
-        else if (this.mod > 100) this.mod = 100;
+        if (this.mod > 100) this.mod = 100;
         return this;
     }
 
@@ -63,7 +62,9 @@ module.exports.InitCharacter = class InitCharacter
 
     rollInit()
     {
-        this.init = (Roll.single(10) + this.pool + this.mod);
+        const totalPool = (this.pool + this.mod);
+        this.init = (Roll.single(10) + totalPool);
+        if (this.init < 0) this.init = 0;
         return this.init;
     }
 

@@ -92,10 +92,10 @@ function calculateResults(roll)
     roll.total += crit;
     if(crit) roll.crit = true;
 
-    if ((roll.result === result.OVERREACH || 
+    if ((roll.result === result.OVERREACH || roll.result === result.OVERREACH_CRIT ||
         (roll.result === result.DESPAIR && roll.total >= roll.diff)) && crit) 
         roll.result = result.OVERREACH_CRIT;
-    else if (roll.result === result.OVERREACH || 
+    else if (roll.result === result.OVERREACH || roll.result === result.OVERREACH_CRIT ||
         (roll.result === result.DESPAIR && roll.total >= roll.diff)) 
         roll.result = result.OVERREACH;
     else if (roll.despair && roll.total < roll.diff) roll.result = result.DESPAIR;
@@ -119,13 +119,13 @@ function constructContent(roll, emojis)
 {
     const emotes =
     {
-        despair: emojis.resolve('901732920807546911').toString(),
-        desperationFail: emojis.resolve('901721705981046835').toString(),
-        desperationPass: emojis.resolve('901731712558567474').toString(),
-        desperationCrit: emojis.resolve('901726454734290994').toString(),
-        normalFail: emojis.resolve('901721784976568360').toString(),
-        normalPass: emojis.resolve('901731712487288852').toString(),
-        normalCrit: emojis.resolve('901726422513614898').toString(),
+        despair: emojis.resolve('984730957691113472').toString(),
+        desperationFail: emojis.resolve('984730964041281546').toString(),
+        desperationPass: emojis.resolve('984730967719694367').toString(),
+        desperationCrit: emojis.resolve('984730961054957609').toString(),
+        normalFail: emojis.resolve('984730246194561024').toString(),
+        normalPass: emojis.resolve('984730249260572692').toString(),
+        normalCrit: emojis.resolve('984730243229184010').toString(),
     }
 
     let content = '';
