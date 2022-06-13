@@ -7,5 +7,11 @@ module.exports = {
 	async execute(client) {
 		console.log("Connected as: " + client.user.tag);
         setActivity(client);
+		setInterval(updateActivity, 3600000);
 	},
 };
+
+function updateActivity(client)
+{
+	setActivity(client);
+}
