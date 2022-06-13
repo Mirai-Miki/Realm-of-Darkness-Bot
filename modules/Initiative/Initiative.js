@@ -354,9 +354,6 @@ module.exports.Initiative = class Initiative
                 break;
             }
         }
-        console.log(tracker.characters)
-        console.log(currentChar)
-        console.log(nextChar);
         
         if (!nextChar)
         {
