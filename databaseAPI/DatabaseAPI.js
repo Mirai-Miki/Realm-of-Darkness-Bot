@@ -4,7 +4,7 @@ const { getCharacterClass } = require('../modules/util/getCharacterClass');
 const { postData } = require('./postData.js');
 
 const IP = 'localhost';
-const PORT = '8000';
+const PORT = '80';
 
 module.exports = class DatabaseAPI
 {

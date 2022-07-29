@@ -3,7 +3,7 @@ const { APIKey } = require('../config5th.json');
 const { postData } = require('./postData.js');
 
 const IP = 'localhost';
-const PORT = '8000';
+const PORT = '80';
 
 module.exports.InitAPI = class InitAPI
 {
