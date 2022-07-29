@@ -5,12 +5,14 @@ const { postData } = require('./postData.js');
 
 const IP = 'localhost';
 const PORT = '80';
+const DOMAIN = `https://${IP}:${PORT}`
+
 
 module.exports = class DatabaseAPI
 {
     static async setSupporterLevel(interaction)
     {
-        const host = `https://${IP}:${PORT}/bot/user/supporter/set`;
+        const host = `${DOMAIN}/bot/user/supporter/set`;
         const data = 
         {
             APIKey: APIKey,
@@ -37,7 +39,7 @@ module.exports = class DatabaseAPI
 
     static async getSupporterLevel(interaction)
     {
-        const host = `http://${IP}:${PORT}/bot/user/supporter/get`;
+        const host = `${DOMAIN}/bot/user/supporter/get`;
         const data = 
         {
             APIKey: APIKey,
@@ -59,7 +61,7 @@ module.exports = class DatabaseAPI
 
     static async diceStatsUpdate(user, version, result, reroll)
     {
-        const host = `http://${IP}:${PORT}/bot/dice/stats/update`;
+        const host = `${DOMAIN}/bot/dice/stats/update`;
         const data = 
         {
             APIKey: APIKey,
@@ -84,7 +86,7 @@ module.exports = class DatabaseAPI
 
     static async memberDelete(member)
     {
-        const host = `http://${IP}:${PORT}/bot/member/delete`;
+        const host = `${DOMAIN}/bot/member/delete`;
         const data = 
         {
             APIKey: APIKey,
@@ -107,7 +109,7 @@ module.exports = class DatabaseAPI
 
     static async saveCharacter(character)
     {
-        const host = `http://${IP}:${PORT}/bot/character/save`;
+        const host = `${DOMAIN}/bot/character/save`;
         const data = character.serialize();
         data['APIKey'] = APIKey;
         
@@ -126,7 +128,7 @@ module.exports = class DatabaseAPI
 
     static async getCharacter(name, userId, interaction=null, splat=null, pk=null)
     {
-        const host = `http://${IP}:${PORT}/bot/character/get`;
+        const host = `${DOMAIN}/bot/character/get`;
         const data = {
             APIKey: APIKey, 
             name: name, 
@@ -162,7 +164,7 @@ module.exports = class DatabaseAPI
 
     static async getNameList(userId, guildId)
     {
-        const host = `http://${IP}:${PORT}/bot/character/name_list`;
+        const host = `${DOMAIN}/bot/character/name_list`;
         const data = {
             APIKey: APIKey, 
             userId: userId, 
@@ -190,7 +192,7 @@ module.exports = class DatabaseAPI
 
     static async deleteCharacters(ids, disconnect)
     {
-        const host = `http://${IP}:${PORT}/bot/character/delete`;
+        const host = `${DOMAIN}/bot/character/delete`;
         const data = {
             APIKey: APIKey,
             ids: ids,
@@ -212,7 +214,7 @@ module.exports = class DatabaseAPI
 
     static async setTrackerChannel(guild, channelId)
     {
-        const host = `http://${IP}:${PORT}/bot/chronicle/channel/set`;
+        const host = `${DOMAIN}/bot/chronicle/channel/set`;
 
         const data = {
             APIKey: APIKey,
@@ -239,7 +241,7 @@ module.exports = class DatabaseAPI
 
     static async getTrackerChannel(guildId)
     {
-        const host = `http://${IP}:${PORT}/bot/chronicle/channel/get`;
+        const host = `${DOMAIN}/bot/chronicle/channel/get`;
 
         const data = {
             APIKey: APIKey,
@@ -261,7 +263,7 @@ module.exports = class DatabaseAPI
 
     static async setSTRole(guild, roleId)
     {
-        const host = `http://${IP}:${PORT}/bot/chronicle/storyteller/role/set`;
+        const host = `${DOMAIN}/bot/chronicle/storyteller/role/set`;
 
         const data = {
             APIKey: APIKey,
@@ -288,7 +290,7 @@ module.exports = class DatabaseAPI
 
     static async getSTRoles(guildId)
     {
-        const host = `http://${IP}:${PORT}/bot/chronicle/storyteller/role/get`;
+        const host = `${DOMAIN}/bot/chronicle/storyteller/role/get`;
 
         const data = {
             APIKey: APIKey,
@@ -310,7 +312,7 @@ module.exports = class DatabaseAPI
 
     static async DeleteSTRole(role)
     {
-        const host = `http://${IP}:${PORT}/bot/chronicle/storyteller/role/delete`;
+        const host = `${DOMAIN}/bot/chronicle/storyteller/role/delete`;
         const guild = role.guild;
 
         const data = {

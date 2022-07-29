@@ -4,6 +4,7 @@ const { postData } = require('./postData.js');
 
 const IP = 'localhost';
 const PORT = '80';
+const DOMAIN = `https://${IP}:${PORT}`
 
 module.exports.InitAPI = class InitAPI
 {
@@ -28,7 +29,7 @@ module.exports.InitAPI = class InitAPI
     */
     static async setPhase(interaction, messageId, phase)
     {
-        const host = `https://${IP}:${PORT}/bot/init/phase`;
+        const host = `${DOMAIN}/bot/init/phase`;
         const data = 
         {
             APIKey: APIKey,
@@ -71,7 +72,7 @@ module.exports.InitAPI = class InitAPI
     */
     static async roll(tracker, character)
     {
-        const host = `http://${IP}:${PORT}/bot/init/roll`;
+        const host = `${DOMAIN}/bot/init/roll`;
         const data = 
         {
             APIKey: APIKey,
@@ -116,7 +117,7 @@ module.exports.InitAPI = class InitAPI
     */
     static async declare(interaction, tracker, character)
     {
-        const host = `http://${IP}:${PORT}/bot/init/declare`;
+        const host = `${DOMAIN}/bot/init/declare`;
         const data = 
         {
             APIKey: APIKey,
@@ -157,7 +158,7 @@ module.exports.InitAPI = class InitAPI
     */
     static async getTracker(interaction, lockout=false)
     {
-        const host = `http://${IP}:${PORT}/bot/init/get`;
+        const host = `${DOMAIN}/bot/init/get`;
         const data = 
         {
             APIKey: APIKey,
@@ -196,7 +197,7 @@ module.exports.InitAPI = class InitAPI
     */
     static async setMessageId(interaction, messageId)
     {
-        const host = `http://${IP}:${PORT}/bot/init/set`;
+        const host = `${DOMAIN}/bot/init/set`;
         const data = 
         {
             APIKey: APIKey,
