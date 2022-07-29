@@ -5,7 +5,7 @@ const { postData } = require('./postData.js');
 
 const IP = 'localhost';
 const PORT = '80';
-const DOMAIN = `https://${IP}:${PORT}`
+const DOMAIN = `http://${IP}:${PORT}`
 
 
 module.exports = class DatabaseAPI
