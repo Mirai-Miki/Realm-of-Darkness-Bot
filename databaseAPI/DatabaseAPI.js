@@ -10,7 +10,7 @@ module.exports = class DatabaseAPI
 {
     static async setSupporterLevel(interaction)
     {
-        const host = `http://${IP}:${PORT}/bot/user/supporter/set`;
+        const host = `https://${IP}:${PORT}/bot/user/supporter/set`;
         const data = 
         {
             APIKey: APIKey,

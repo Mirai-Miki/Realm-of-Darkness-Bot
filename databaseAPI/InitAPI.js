@@ -28,7 +28,7 @@ module.exports.InitAPI = class InitAPI
     */
     static async setPhase(interaction, messageId, phase)
     {
-        const host = `http://${IP}:${PORT}/bot/init/phase`;
+        const host = `https://${IP}:${PORT}/bot/init/phase`;
         const data = 
         {
             APIKey: APIKey,
