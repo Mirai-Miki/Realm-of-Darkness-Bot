@@ -3,7 +3,7 @@ const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 const fs = require('fs');
 
-function pushCommands (configFile, ver)
+function pushCommands (configFile, ver, toggle=true)
 {
 	const { clientId, token, commandPath } = require(configFile);
 
@@ -28,7 +28,7 @@ function pushCommands (configFile, ver)
 		try {
 			await rest.put(
 				Routes.applicationGuildCommands(clientId, guildId),
-				{ body: commands },
+				{ body: toggle ? commands : new Map},
 			);
 			
 			console.log(`Successfully registered ${ver} application commands.`);
@@ -38,6 +38,6 @@ function pushCommands (configFile, ver)
 	})();
 }
 
-pushCommands('./config5th.json', "v5");
-pushCommands('./config20th.json', "20th");
-pushCommands('./configCoD.json', "CoD");
+pushCommands('./config5th.json', "v5", false);
+pushCommands('./config20th.json', "20th", false);
+pushCommands('./configCoD.json', "CoD", false);

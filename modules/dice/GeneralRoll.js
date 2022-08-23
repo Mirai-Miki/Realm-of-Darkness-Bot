@@ -148,7 +148,8 @@ module.exports = class GeneralRoll
             embed.setColor([0,0,0]);
         }
 
-        const links = "\n[RoD Server](https://discord.gg/Qrty3qKv95)" + 
+        const links = "\n[Website](https://realmofdarkness.app/)" +
+            " | [Commands](https://realmofdarkness.app/v5/commands/)" +
             " | [Patreon](https://www.patreon.com/MiraiMiki)";
         embed.fields.at(-1).value += links;
         embed.setURL('https://cdn.discordapp.com/attachments/699082447278702655/972058320611459102/banner.png');

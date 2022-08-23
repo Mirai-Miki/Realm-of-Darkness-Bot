@@ -239,8 +239,9 @@ function constructEmbed(roll, interaction)
         embed.setColor("#cf1723"); // Red
     }
     embed.addField("Result", `${resultMessage}`);
-    const links = "\n[RoD Server](https://discord.gg/Qrty3qKv95)" + 
-            " | [Patreon](https://www.patreon.com/MiraiMiki)";
+    const links = "\n[Website](https://realmofdarkness.app/)" +
+        " | [Commands](https://realmofdarkness.app/v5/commands/)" +
+        " | [Patreon](https://www.patreon.com/MiraiMiki)";
     embed.fields.at(-1).value += links;
     return [embed];
 }

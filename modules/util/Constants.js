@@ -16,6 +16,7 @@ module.exports.Splats =
     // V5
     vampire5th: 'vampire5th',
     mortal5th: 'mortal5th',
+    hunter5th: 'hunter5th',
 }
 
 module.exports.Versions = 
@@ -37,6 +38,7 @@ module.exports.SplatVersions =
     [this.Splats.human20th]: this.Versions.v20,
     [this.Splats.vampire5th]: this.Versions.v5,
     [this.Splats.mortal5th]: this.Versions.v5,
+    [this.Splats.hunter5th]: this.Versions.v5,
 }
 
 module.exports.clientVersions =

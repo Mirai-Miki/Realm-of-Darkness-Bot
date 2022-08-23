@@ -226,7 +226,8 @@ module.exports = class CoDRoll
             this.statsResult = 'passed';
         }
 
-        const links = "\n[RoD Server](https://discord.gg/Qrty3qKv95)" + 
+        const links = "\n[Website](https://realmofdarkness.app/)" +
+            " | [Commands](https://realmofdarkness.app/cod/commands/)" +
             " | [Patreon](https://www.patreon.com/MiraiMiki)";
         embed.fields.at(-1).value += links;
         

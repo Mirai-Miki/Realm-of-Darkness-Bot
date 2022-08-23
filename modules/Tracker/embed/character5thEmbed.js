@@ -22,7 +22,7 @@ module.exports.character5thEmbed = (char, client, args) =>
         willImpairment = "You are currently Impaired. p126";
     }
 
-    if (char.humanity.overflow) {
+    if (char.humanity?.overflow) {
         stainsOverflow = `${char.humanity.overflow} `
         if (char.humanity.overflow)
         {
@@ -52,31 +52,58 @@ module.exports.character5thEmbed = (char, client, args) =>
             }
         )
         .setTitle(char.name)
-        .addField("Willpower", 
+        .addField(
+            "Willpower", 
             (damageTracker(char.willpower.total, 
                 char.willpower.superficial, 
                 char.willpower.aggravated, client) +
                 willImpairment),
             false)
-        .addField("Health", 
+        .addField(
+            "Health", 
             (damageTracker(char.health.total, 
                 char.health.superficial, char.health.aggravated, client) +
                 healthImpairment),
             false)
-        .addField("Humanity", 
-            (humanityTracker(char.humanity.total, 
-                char.humanity.stains, client) + 
-                stainsOverflow),
-            false)
         .setURL('https://cdn.discordapp.com/attachments/699082447278702655/972058320611459102/banner.png');
     
     if (char.thumbnail) embed.setThumbnail(char.thumbnail);
-
+    
+    if (char.splat === 'Vampire' || char.splat === 'Mortal')
+    {        
+        embed.addField(
+            "Humanity", 
+            (humanityTracker(char.humanity.total, char.humanity.stains, client) + 
+                stainsOverflow),
+            false
+        )
+    }
     if (char.splat === 'Vampire')
     {
-        embed.addField("Hunger", 
-            (hungerTracker(char.hunger.current, client) + 
+        embed.addField(
+            "Hunger", 
+            (fivePointTracker(char.hunger.current, client) + 
             hungerOverflow), false);
+    }
+    else if (char.splat === 'Hunter')
+    {        
+        let emoji = getDespairEmoji(client);
+        embed.addField(
+            "Desperation",
+            fivePointTracker(char.desperation.current, client),
+            true
+        );
+        embed.addField(
+            "Danger",
+            fivePointTracker(char.danger.current, client),
+            true
+        );
+        embed.addField(
+            "Despair",
+            `${char.despair ? emoji.despairOn: emoji.despairOff}`,
+            false
+        )
+
     }
 
     if (char.exp.total) embed.addField("Experience", consumableTracker(
@@ -85,7 +112,8 @@ module.exports.character5thEmbed = (char, client, args) =>
     if (args?.notes) 
         embed.addField("Notes", args.notes);
 
-    const links = "\n[RoD Server](https://discord.gg/Qrty3qKv95)" + 
+    const links = "\n[Website](https://realmofdarkness.app/)" +
+        " | [Commands](https://realmofdarkness.app/v5/commands/)" +
         " | [Patreon](https://www.patreon.com/MiraiMiki)";
     embed.fields.at(-1).value += links;
 
@@ -145,13 +173,13 @@ function humanityTracker(max, stains, client) {
     return tracker;
 }
 
-function hungerTracker(hunger, client) {
+function fivePointTracker(current, client) {
     let emoji = getEmoji(client);
     let count = 0;
 
     let tracker = "";
     for (let i = 0; i < 5; i++) {
-        if (count < hunger) 
+        if (count < current) 
         {
             tracker += emoji.bloodDot;
             count++;
@@ -218,13 +246,13 @@ function getEmoji(client)
 
 function getDamageEmoji(client)
 {
-    let emoji = {}
+    let emoji = {};
     // No Damage
-    emoji.greenBox = '☐'
+    emoji.greenBox = '☐';
     // Superficial Damage
-    emoji.yellowBox = '⧄'
+    emoji.yellowBox = '⧄';
     // Agg Damage
-    emoji.redBox = '☒'
+    emoji.redBox = '☒';
 
     if (client.emojis.resolve("820909151328141312") &&
         client.emojis.resolve("820909188154523649") &&
@@ -233,6 +261,21 @@ function getDamageEmoji(client)
         emoji.greenBox = client.emojis.resolve("820909151328141312").toString();
         emoji.yellowBox = client.emojis.resolve("820909188154523649").toString();
         emoji.redBox = client.emojis.resolve("820909202678743061").toString();
+    }
+    return emoji
+}
+
+function getDespairEmoji(client)
+{
+    let emoji = {};
+    emoji.despairOff = '⬜';
+    emoji.despairOn = '🟧';
+
+    if (client.emojis.resolve("984730246194561024") &&
+        client.emojis.resolve("984730249260572692"))
+    {
+        emoji.despairOff = client.emojis.resolve("984730246194561024").toString();
+        emoji.despairOn = client.emojis.resolve("984730249260572692").toString();
     }
     return emoji
 }

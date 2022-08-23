@@ -60,9 +60,11 @@ module.exports = class WoD20thRoll
             .setTitle(title)
             .setColor("#db0f20")
             .setThumbnail("https://cdn.discordapp.com/attachments/817275006311989268/974198094696689744/error.png")
-            .setDescription(`${description}` +
-                "\n[RoD Server](https://discord.gg/Qrty3qKv95)" + 
-                " | [Patreon](https://www.patreon.com/MiraiMiki)");
+            .setDescription(
+                `${description}` +
+                "\n[Website](https://realmofdarkness.app/)" +
+                " | [Patreon](https://www.patreon.com/MiraiMiki)"
+            );
         
         this.interaction.reply({embeds: [embed], ephemeral: true});
         return false;
@@ -262,7 +264,7 @@ module.exports = class WoD20thRoll
             this.statsResult = 'passed';
         }
         
-        const links = "\n[RoD Server](https://discord.gg/Qrty3qKv95)" + 
+        const links = "\n[Website](https://realmofdarkness.app/)" +
             " | [Patreon](https://www.patreon.com/MiraiMiki)";
         embed.fields.at(-1).value += links;
 

@@ -181,7 +181,7 @@ module.exports.character20thEmbed = (char, client, notes) =>
 
         if (notes) embed.addField("Notes", notes);
         
-        const links = "\n[RoD Server](https://discord.gg/Qrty3qKv95)" + 
+        const links = "\n[Website](https://realmofdarkness.app/)" +
             " | [Patreon](https://www.patreon.com/MiraiMiki)";
         embed.fields.at(-1).value += links;
 

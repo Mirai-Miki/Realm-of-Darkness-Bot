@@ -303,7 +303,8 @@ module.exports = class WoD5thRoll
             );
         }
         
-        const links = "\n[RoD Server](https://discord.gg/Qrty3qKv95)" + 
+        const links = "\n[Website](https://realmofdarkness.app/)" +
+            " | [Commands](https://realmofdarkness.app/v5/commands/)" +
             " | [Patreon](https://www.patreon.com/MiraiMiki)";
         embed.fields.at(-1).value += links;
         

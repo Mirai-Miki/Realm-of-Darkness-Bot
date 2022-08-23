@@ -1,6 +1,12 @@
 'use strict';
 module.exports = class Consumable
 {
+    /**
+     * 
+     * @param {Number} total The total the consumable can reach normally
+     * @param {Number} current The current value of the consumable
+     * @param {Number} min The minumum the current value can drop too.
+     */
     constructor(total, current=total, min=0)
     {
         this.total = total;
@@ -32,9 +38,10 @@ module.exports = class Consumable
         const before = 0;
         this.current += amount;
 
-        if (this.current < 0) 
+        console.log(`${this.current} ${amount}`)
+        if (this.current < this.min) 
         {
-            this.current = 0;
+            this.current = this.min;
         }
         else if (this.current > this.total)
         {
@@ -58,9 +65,9 @@ module.exports = class Consumable
         const before = this.current;
         this.current = amount;
 
-        if (this.current < 0) 
+        if (this.current < this.min) 
         {
-            this.current = 0;
+            this.current = this.min;
         }
         else if (this.current > this.total)
         {

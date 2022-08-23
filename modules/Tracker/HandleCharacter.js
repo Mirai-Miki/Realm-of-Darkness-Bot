@@ -68,6 +68,10 @@ module.exports = class HandleCharacter
             hunger: interaction.options.getInteger('hunger'),
             humanity: interaction.options.getInteger('humanity'),
             stains: interaction.options.getInteger('stains'),
+            // Hunter 5th
+            desperation: interaction.options.getInteger('desperation'),
+            danger: interaction.options.getInteger('danger'),
+            despair: interaction.options.getBoolean('despair'),
         }
     }
 
@@ -293,6 +297,10 @@ function setFields(args, char)
     if (args.hunger != null) char.hunger.setCurrent(args.hunger);
     if (args.humanity != null) char.humanity.setCurrent(args.humanity);
     if (args.stains != null) char.humanity.setStains(args.stains);
+    // Hunter 5th
+    if (args.desperation != null) char.desperation.setCurrent(args.desperation);
+    if (args.danger != null) char.danger.setCurrent(args.danger);
+    if (args.despair != null) char.despair = args.despair;
 }
 
 function updateFields(args, char)
@@ -347,4 +355,8 @@ function updateFields(args, char)
     if (args.hunger != null) char.hunger.updateCurrent(args.hunger);
     if (args.humanity != null) char.humanity.updateCurrent(args.humanity);
     if (args.stains != null) char.humanity.takeStains(args.stains);
+    // Hunter 5th
+    if (args.desperation != null) char.desperation.updateCurrent(args.desperation);
+    if (args.danger != null) char.danger.updateCurrent(args.danger);
+    if (args.despair != null) char.despair = args.despair;
 }
