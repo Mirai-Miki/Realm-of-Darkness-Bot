@@ -305,6 +305,7 @@ module.exports = class WoD5thRoll
         
         const links = "\n[Website](https://realmofdarkness.app/)" +
             " | [Commands](https://realmofdarkness.app/v5/commands/)" +
+            " | [Dice %](https://realmofdarkness.app/v5/dice/)" +
             " | [Patreon](https://www.patreon.com/MiraiMiki)";
         embed.fields.at(-1).value += links;
         
