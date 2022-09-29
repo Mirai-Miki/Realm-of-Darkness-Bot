@@ -10,8 +10,3 @@ module.exports = {
 		setInterval(() => {setActivity(client)}, 1800000);
 	},
 };
-
-function updateActivity(client)
-{
-	setActivity(client);
-}

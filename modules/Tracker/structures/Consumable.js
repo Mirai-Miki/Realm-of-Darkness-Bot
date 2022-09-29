@@ -38,7 +38,6 @@ module.exports = class Consumable
         const before = 0;
         this.current += amount;
 
-        console.log(`${this.current} ${amount}`)
         if (this.current < this.min) 
         {
             this.current = this.min;

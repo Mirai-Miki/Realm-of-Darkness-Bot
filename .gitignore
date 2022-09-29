@@ -4,3 +4,4 @@
 node_modules/
 database/
 .VSCodeCounter/
+deploy-commands.js
