@@ -93,14 +93,7 @@ module.exports.isSetArgsValid = async (args, interaction) =>
                 embed.setDescription(colourError);
                 embed.setTitle("Colour Parsing Error");
                 error = true;
-            }
-            else
-            {
-                let red = parseInt(args.colour.trim().substring(1, 3), 16);
-                let green = parseInt(args.colour.trim().substring(3, 5), 16);
-                let blue = parseInt(args.colour.trim().substring(5, 7), 16);             
-                args.colour = [red, green, blue];
-            }            
+            }        
         }
     }
 
