@@ -21,7 +21,7 @@ module.exports = class Character
         };
         this.exp = new Consumable(0);
         this.thumbnail;
-        this.colour = Math.floor(Math.random()*16777215).toString(16);
+        this.colour = '#000000';
         this.history = [];
         this.interaction = interaction;        
         this.setGuild(this.interaction);
