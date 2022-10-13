@@ -40,7 +40,7 @@ module.exports.character5thEmbed = (char, client, args) =>
         hungerOverflow = `Hunger is currently 5` +
             ". You can no longer intentionally rouse the blood. p211"
     }      
-   
+    
     let embed = new Discord.MessageEmbed()
         .setColor(char.colour)
         .setAuthor(

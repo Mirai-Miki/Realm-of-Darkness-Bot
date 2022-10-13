@@ -29,7 +29,6 @@ module.exports = class Hunter5th extends Character5th
         this.desperation.setCurrent(char.desperation);
         this.danger.setCurrent(char.danger);
         this.despair = char.despair;
-        console.log(char)
     }
 
     serialize()

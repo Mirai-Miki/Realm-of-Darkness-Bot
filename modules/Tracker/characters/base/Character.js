@@ -21,11 +21,7 @@ module.exports = class Character
         };
         this.exp = new Consumable(0);
         this.thumbnail;
-        this.colour = [
-            Math.floor(Math.random() * 256),
-            Math.floor(Math.random() * 256),
-            Math.floor(Math.random() * 256),
-        ]
+        this.colour = Math.floor(Math.random()*16777215).toString(16);
         this.history = [];
         this.interaction = interaction;        
         this.setGuild(this.interaction);
@@ -132,7 +128,7 @@ module.exports = class Character
         s.character['id'] = this.id;
         s.user = this.user;        
         s.guild = this.guild;        
-        s.character['colour'] = this.colour;
+        s.character['theme'] = this.colour;
         s.character['thumbnail'] = this.thumbnail ?? undefined;
         s.character['exp'] = {
             total: this.exp.total,
