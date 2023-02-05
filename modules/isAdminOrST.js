@@ -5,7 +5,7 @@ module.exports = async function isAdminOrST(member, guildId)
 {
   if (!member || !guildId) throw new Error('Need a member && guildID');
 
-  const roles = await API.getSTRoles(interaction.guild.id);
+  const roles = await API.getSTRoles(guildId);
   if (!member.permissions.has("ADMINISTRATOR") && 
     !member.roles.cache.hasAny(...roles))
   {

@@ -1,8 +1,7 @@
 'use strict';
 const Axios = require('axios');
 const { APIKey } = require('../config5th.json');
-const RealmAPIError = require('../Errors/RealmAPIError');
-const { APIErrorCodes } = require('../Errors/index');
+const { APIErrorCodes, RealmAPIError } = require('../Errors');
 
 /**
  * 
@@ -12,7 +11,10 @@ const { APIErrorCodes } = require('../Errors/index');
  */
 module.exports.postData = async (path, data) =>
 {
-  const config = {headers: {'Content-Type': 'application/json'}};
+  const config = {
+    headers: {'Content-Type': 'application/json'},
+    validateStatus: (status) => status >= 200 && status < 500
+  };
   data.APIKey = APIKey
     
   try
@@ -21,10 +23,10 @@ module.exports.postData = async (path, data) =>
   }
   catch (error)
   {
-    if (error.code === 'ECONNREFUSED') 
+    if (error.code === 'ECONNREFUSED')
       throw new RealmAPIError({
         cause: error.stack, 
-        type: APIErrorCodes.ConnectionRefused
+        code: APIErrorCodes.ConnectionRefused
       });
     else throw new RealmAPIError({cause:error.stack});
   }

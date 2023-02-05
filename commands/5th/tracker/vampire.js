@@ -6,15 +6,15 @@ module.exports = {
   data: getCommands(),
   async execute(interaction) 
   {
-    await interaction.deferReply();
+    await interaction.deferReply({ephemeral: true});
 		switch (interaction.options.getSubcommand())
     {
       case 'new':
         return await vampire5th.new(interaction);
       case 'update':
-        return null;
+        return await vampire5th.update(interaction);
       case 'set':   
-        return null;     
+        return await vampire5th.set(interaction);     
     }
 	}
 }

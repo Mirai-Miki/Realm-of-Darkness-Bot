@@ -1,5 +1,5 @@
 'use strict';
-const { getCharacterClass } = require('../util/getCharacterClass')
+const { getCharacterClass } = require('../getCharacterClass')
 const handleError = require('./util/handleError.js');
 const { character20thEmbed } = require('./embed/character20thEmbed.js');
 const { character5thEmbed } = require('./embed/character5thEmbed');

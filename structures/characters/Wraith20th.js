@@ -1,7 +1,7 @@
 'use strict';
-const Consumable = require("../structures/Consumable");
+const Consumable = require("../Consumable");
 const Character20th = require("./base/Character20th");
-const { Splats } = require('../../util/Constants');
+const { Splats } = require('../../Constants');
 
 module.exports = class Wraith20 extends Character20th 
 {

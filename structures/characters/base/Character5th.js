@@ -1,6 +1,5 @@
 'use strict';
-
-const DamageTracker5th = require("../../structures/DamageTracker5th");
+const DamageTracker5th = require("../../DamageTracker5th");
 const Character = require("./Character.js");
 
 module.exports = class Character5th extends Character
@@ -23,6 +22,7 @@ constructor({name, health=4, willpower=2, user, guild}={})
     this.health.setTotal(json.health.total);
     this.health.takeSuperfical(json.health.superficial);
     this.health.takeAgg(json.health.aggravated);
+    return this;
   }
 
   serialize()

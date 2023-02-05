@@ -1,7 +1,7 @@
 'use strict';
-const Consumable = require("../../modules/Tracker/structures/Consumable");
+const Consumable = require("../Consumable");
 const Character20th = require("./base/Character20th");
-const { Splats } = require('../../modules/util/Constants');
+const { Splats } = require('../../Constants');
 
 module.exports = class Mage extends Character20th 
 {

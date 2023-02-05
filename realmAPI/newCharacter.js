@@ -17,6 +17,8 @@ module.exports = async function saveCharacter(character)
         return;
       case 304: // Not Modified -- existing character
         throw new RealmAPIError({code: APIErrorCodes.CharacterExists});
+      case 409: // Conflict -- Too many characters
+        throw new RealmAPIError({code: APIErrorCodes.CharacterLimitReached});
       default:
         throw new RealmAPIError({cause: `res: ${res?.status}\ndata: ${res?.data}`});
     }

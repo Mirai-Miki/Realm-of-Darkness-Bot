@@ -1,9 +1,9 @@
 'use strict';
-const Consumable = require("../structures/Consumable");
-const Counter = require("../structures/Counter");
-const DamageTracker20th = require("../structures/DamageTracker20th");
+const Consumable = require("../Consumable");
+const Counter = require("../Counter");
+const DamageTracker20th = require("../DamageTracker20th");
 const Character20th = require("./base/Character20th");
-const { Splats } = require('../../util/Constants');
+const { Splats } = require('../../Constants');
 
 module.exports = class Changeling extends Character20th
 {

@@ -1,7 +1,7 @@
 'use strict';
-const Consumable = require("../structures/Consumable");
+const Consumable = require("../Consumable");
 const Character5th = require("./base/Character5th");
-const Humanity = require("../structures/humanity5th.js");
+const Humanity = require("../humanity5th.js");
 const { Splats } = require('../../Constants');
 const { EmbedBuilder } = require('discord.js');
 
@@ -24,7 +24,7 @@ module.exports = class Vampire5th extends Character5th
 
   static getSplat()
   {
-      return Splats.vampire5th;
+    return Splats.vampire5th;
   }
 
   deserilize(json)
@@ -33,76 +33,76 @@ module.exports = class Vampire5th extends Character5th
     this.hunger.setCurrent(json.hunger);
     this.humanity = new Humanity(json.humanity.total);
     this.humanity.takeStains(json.humanity.stains);
+    return this;
   }
 
   serialize()
   {        
     const s = super.serialize();
     
-    s.character['splat'] = Splats.vampire5th;        
+    s.character['splatSlug'] = Splats.vampire5th.slug;        
     s.character['hunger'] = this.hunger.current;
     s.character['humanity'] = {
       total: this.humanity.total,
       stains: this.humanity.stains,
-    }
-    
+    }    
     return s;
   }
 
-  getEmbed()
+  getEmbed(notes)
   {
     let hungerOverflow = '';
     // Adding Hunger messages if character has hunger
-    if (char.hunger.overflow > 0) {
-      hungerOverflow = `${char.hunger.overflow} hunger has ` +
+    if (this.hunger.overflow > 0) {
+      hungerOverflow = `${this.hunger.overflow} hunger has ` +
           "overflowed. You should now do a hunger frenzy check. p220"
     }
-    else if (char.hunger.current == 5) {
+    else if (this.hunger.current == 5) {
       hungerOverflow = `Hunger is currently 5` +
           ". You can no longer intentionally rouse the blood. p211"
     }
 
     const embed = new EmbedBuilder();
-    embed.setColor(char.colour)
+    embed.setColor(this.color)
     .setURL('https://cdn.discordapp.com/attachments/699082447278702655/972058320611459102/banner.png')
-    .setTitle(char.name)
+    .setTitle(this.name)
     .setAuthor({
-      name: (char.user.displayName ?? char.user.username), 
-      iconURL: char.user.avatarURL
+      name: (this.user.displayName ?? this.user.username), 
+      iconURL: this.user.avatarURL
     })
     
     embed.addFields({
       name: "Willpower", 
-      value: char.willpower.getTracker() + char.willpower.getHealthStatus('willpower'),
+      value: this.willpower.getTracker() + this.willpower.getHealthStatus('willpower'),
       inline: false
     })
     embed.addFields({
       name: "Health", 
-      value: char.health.getTracker() + char.health.getHealthStatus('health'),
+      value: this.health.getTracker() + this.health.getHealthStatus('health'),
       inline: false
     });
     
-    if (char.thumbnail) embed.setThumbnail(char.thumbnail);      
+    if (this.thumbnail) embed.setThumbnail(this.thumbnail);      
     
     embed.addFields({
       name: "Humanity", 
-      value: char.humanity.getTracker() + char.humanity.getDegenerationInfo(),
+      value: this.humanity.getTracker() + this.humanity.getDegenerationInfo(),
       inline: false
     })
     
     embed.addFields({
       name: "Hunger", 
-      value: char.hunger.getTracker() + hungerOverflow, 
+      value: this.hunger.getTracker() + hungerOverflow, 
       inline: false
     });
 
-    if (char.exp.total) embed.addFields({
+    if (this.exp.total) embed.addFields({
       name: "Experience", 
-      value: char.exp.getTracker({showEmoji: false}), 
+      value: this.exp.getTracker({showEmoji: false}), 
       inline: false
     });
 
-    if (args?.notes) embed.addFields({name: "Notes", value: args.notes});
+    if (notes) embed.addFields({name: "Notes", value: notes});
 
     const links = "\n[Website](https://realmofdarkness.app/)" +
       " | [Commands](https://realmofdarkness.app/v5/commands/)" +

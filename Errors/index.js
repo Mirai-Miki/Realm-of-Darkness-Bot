@@ -7,7 +7,9 @@ module.exports.ErrorCodes =
   DiscordAPIError: 1,
   InvalidGeneralRollSets: 2,
   InvalidGeneralRollDice: 3,
-	GuildRequired: 4
+	GuildRequired: 4,
+	NotAdminOrST: 5,
+	NoCharacter: 6,
 }
 
 module.exports.APIErrorCodes =
@@ -15,6 +17,7 @@ module.exports.APIErrorCodes =
   RealmAPIError: 1000,
   ConnectionRefused: 1001,
 	CharacterExists: 1002,
+	CharacterLimitReached: 1003
 }
 
 module.exports.RealmError = require('./RealmError');

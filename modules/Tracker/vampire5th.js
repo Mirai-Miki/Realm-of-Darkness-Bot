@@ -1,42 +1,75 @@
 'use strict'
 const { Vampire5th } = require('../../structures');
 const { RealmError, ErrorCodes } = require('../../Errors')
+const { isAdminOrST } = require('../index');
+const { Splats } = require('../../Constants');
 const API = require('../../realmAPI');
 
 module.exports.new = async function(interaction)
 {
-  interaction.args = getArgs(interaction);
+  const args = getArgs(interaction);
   const char = new Vampire5th({
-    name: interaction.args.name,
+    name: args.name,
     user: interaction.member ? interaction.member : interaction.user,
     guild: interaction.guild
   });
-  interaction.character = char;
   
-  setFields(interaction.args, char);
+  setFields(args, char);
+
+  //TODO Set history
   await API.newCharacter(char);
-  return char.getEmbed();
+  return {ephemeral: true, embeds: [char.getEmbed(args.notes)]};
 }
 
 module.exports.set = async function(interaction)
 {
+  const args = getArgs(interaction);
+  const char = await API.getCharacter(
+    args.name, 
+    requestedUserId,
+    {
+      guild: interaction.guild ?? null,
+      splatSlug: Splats.vampire5th.slug
+    }
+  );
+  
+  if (!char) throw new RealmError({code: ErrorCodes.NoCharacter});
+  setFields(args, char);
 
+  //TODO Update history
+  
+  await API.saveCharacter(char);
+  return {ephemeral: true, embeds: [char.getEmbed()]};
 }
 
 module.exports.update = async function(interaction)
 {
   const args = getArgs(interaction);
-  interaction.args = args;
-  const requestedUserId = this.interaction.user.id;
+  let requestedUser = interaction.user;
   
   // An ST is trying to change another players character
   if (args.player && !interaction.guild)
     throw new RealmError({code: ErrorCodes.GuildRequired});
-  else if (args.player)
-  {
-    const member = interaction.member;
-    const roles = await API.getSTRoles(interaction.guild.id)
-  }
+  else if (args.player && !await isAdminOrST(interaction.member, interaction.guild.id))
+    throw new RealmError({code: ErrorCodes.NotAdminOrST});
+  else if (args.player) requestedUserId = args.player.id;
+
+  const char = await API.getCharacter(
+    args.name, 
+    requestedUser,
+    {
+      guild: interaction.guild ?? null,
+      splatSlug: Splats.vampire5th.slug
+    }
+  );
+  
+  if (!char) throw new RealmError({code: ErrorCodes.NoCharacter});
+  updateFields(args, char);
+
+  //TODO Update history
+  
+  await API.saveCharacter(char);
+  return {ephemeral: true, embeds: [char.getEmbed()]};
 }
 
 function getArgs(interaction)
@@ -94,9 +127,4 @@ function updateFields(args, char)
   if (args.hunger != null) char.hunger.updateCurrent(args.hunger);
   if (args.humanity != null) char.humanity.updateCurrent(args.humanity);
   if (args.stains != null) char.humanity.takeStains(args.stains);
-}
-
-function getEmbed(interaction)
-{
-
 }

@@ -41,7 +41,7 @@ module.exports =
   },
   wraith20th: 
   {
-    name: 'wraith',
+    name: 'Wraith',
     version: '20th',
     slug: 'wraith20th',
   },    
@@ -55,19 +55,19 @@ module.exports =
   vampire5th: 
   {
     name: 'Vampire',
-    version: '20th',
+    version: '5th',
     slug: 'vampire5th',
   },
   mortal5th: 
   {
     name: 'Mortal',
-    version: '20th',
+    version: '5th',
     slug: 'mortal5th',
   },
   hunter5th: 
   {
     name: 'Hunter',
-    version: '20th',
+    version: '5th',
     slug: 'hunter5th',
   }
 }

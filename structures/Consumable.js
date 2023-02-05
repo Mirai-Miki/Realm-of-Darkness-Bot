@@ -107,7 +107,7 @@ module.exports = class Consumable
   {
     let tracker = "";
 
-    if (max > 15 || !showEmoji)
+    if (this.total > 15 || !showEmoji)
     {
       tracker = `\`\`\`q\n[${this.current}/${this.total}]\n\`\`\``
       return tracker;
@@ -115,7 +115,7 @@ module.exports = class Consumable
 
     for (let i = 0; i < this.total; i++) 
     {
-      if (i < current) tracker += emoji
+      if (i < this.current) tracker += emoji
       else tracker += Emoji.blank_dot;                
     }
     tracker += '⠀';

@@ -53,7 +53,7 @@ const ErrorInfo =
   [APIErrorCodes.ConnectionRefused]: 
   {
     system: 'API refused to connect - ECONNREFUSED',
-    embedTitle: 'Realm API Error',
+    embedTitle: 'Realm API Connection Error',
     embedMessage: oneLineTrim`
       Sorry! We are having trouble connecting to the Realm API. 
       Please try again later. If the problem persists please reach out in the 
@@ -69,6 +69,17 @@ const ErrorInfo =
     embedMessage: oneLineTrim`
       Sorry, you already have a character with this name.
       Please choose another name and try again.
+    `,
+    debug: false,
+    cause: false
+  },
+  [APIErrorCodes.CharacterLimitReached]:
+  {
+    system: 'Realm API - Character limit reached',
+    embedTitle: 'Character Limit Reached',
+    embedMessage: oneLineTrim`
+      Sorry, you already have too many characters. 
+      Please delete some and try again.
     `,
     debug: false,
     cause: false

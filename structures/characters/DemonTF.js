@@ -1,8 +1,8 @@
 'use strict';
-const Character20th = require("./base/Character20th.js");
-const Consumable = require("../structures/Consumable");
-const Counter = require("../structures/Counter");
-const { Splats } = require('../../util/Constants');
+const Consumable = require("../Consumable");
+const Counter = require("../Counter");
+const Character20th = require("./base/Character20th");
+const { Splats } = require('../../Constants');
 
 module.exports = class DemonTF extends Character20th
 {

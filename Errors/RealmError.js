@@ -93,4 +93,26 @@ const ErrorInfo =
     debug: false,
     cause: false
   },
+  [ErrorCodes.NotAdminOrST]:
+  {
+    system: "Permission Error: Missing Admin or ST",
+    embedTitle: 'Permission Error',
+    embedMessage: oneLineTrim`
+      This Command or an option of this Command requires you to have Admin 
+      or Storyteller permissions. Please check the Command and option descriptions.
+    `,
+    debug: false,
+    cause: false
+  },
+  [ErrorCodes.NoCharacter]:
+  {
+    system: "No Character Error",
+    embedTitle: 'No Character Error',
+    embedMessage: oneLineTrim`
+      We could not find a character with this name. Please check the name 
+      is correct or create a new character.
+    `,
+    debug: false,
+    cause: false
+  },
 }

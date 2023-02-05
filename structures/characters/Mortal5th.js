@@ -1,7 +1,8 @@
 'use strict';
 const Character5th = require("./base/Character5th");
-const Humanity = require("../structures/humanity5th.js");
-const { Splats } = require('../../util/Constants');
+const Humanity = require("../humanity5th.js");
+const { Splats } = require('../../Constants');
+const { EmbedBuilder } = require('discord.js');
 
 module.exports = class Mortal5th extends Character5th
 {

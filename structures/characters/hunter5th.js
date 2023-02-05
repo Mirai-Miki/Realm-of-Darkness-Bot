@@ -1,7 +1,8 @@
 'use strict';
-const Consumable = require("../structures/Consumable");
+const Consumable = require("../Consumable");
 const Character5th = require("./base/Character5th");
-const { Splats } = require('../../util/Constants');
+const { Splats } = require('../../Constants');
+const { EmbedBuilder } = require('discord.js');
 
 module.exports = class Hunter5th extends Character5th
 {
