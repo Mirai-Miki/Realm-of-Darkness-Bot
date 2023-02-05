@@ -18,11 +18,11 @@ function pushCommands (configFile, ver, toggle=true)
 	        `${commandPath}${folder}`).filter(file => file.endsWith('.js'));
 	    for (const file of commandFiles) {
 	        const command = require(`${commandPath}${folder}/${file}`);
-	        commands.push(command.data.toJSON());
+	        commands.push(command.data);
 	    }
 	}
 	
-	const rest = new REST({ version: '9' }).setToken(token);
+	const rest = new REST({ version: '10' }).setToken(token);
 	
 	(async () => {
 		try {
@@ -39,5 +39,5 @@ function pushCommands (configFile, ver, toggle=true)
 }
 
 pushCommands('./config5th.json', "v5", true);
-pushCommands('./config20th.json', "20th", false);
-pushCommands('./configCoD.json', "CoD", false);
+//pushCommands('./config20th.json', "20th", false);
+//pushCommands('./configCoD.json', "CoD", false);

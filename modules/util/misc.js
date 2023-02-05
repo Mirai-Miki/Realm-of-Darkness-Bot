@@ -10,9 +10,10 @@ module.exports.minToMilli = (min) =>
     return ((min*60)*1000);
 }
 
-module.exports.correctName = (name) =>
+module.exports.trimString = (string) =>
 {
-    return name.trim().replace(/\s+/g, " ");
+    if (!string) return undefined;
+    return string.trim().replace(/\s+/g, " ");
 }
 
 module.exports.slugifiy = (str) =>

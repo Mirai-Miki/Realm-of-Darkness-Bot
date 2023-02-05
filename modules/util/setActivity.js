@@ -1,6 +1,16 @@
 'use strict';
-module.exports = function (client) 
+const { ActivityType } = require('discord.js')
+
+module.exports = async function (client) 
 {
-    client.user.setActivity(`${client.guilds.cache.size} Chronicles`, 
-        { type: 'WATCHING' });
+  const guildSizes = await client.shard.fetchClientValues('guilds.cache.size');
+  const size = guildSizes.reduce(
+    ((accumulator, currentValue) => accumulator + currentValue), 0
+  );
+  
+  client.user.setActivity({ 
+    name: `${size} Chronicles`, 
+    type: ActivityType.Watching, 
+    shard: client.shard.ids 
+  });
 }

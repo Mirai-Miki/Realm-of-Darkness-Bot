@@ -1,11 +1,11 @@
 'use strict';
-const DatabaseAPI = require('../databaseAPI/DatabaseAPI')
+const DatabaseAPI = require('../realmAPI/DatabaseAPI')
 
 module.exports = {
 	name: 'roleDelete',
 	once: false,
 	async execute(role) 
-    {
-        DatabaseAPI.DeleteSTRole(role);
+  {
+    DatabaseAPI.DeleteSTRole(role);
 	},
 };

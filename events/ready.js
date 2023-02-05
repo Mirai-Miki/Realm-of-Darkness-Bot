@@ -5,8 +5,8 @@ module.exports = {
 	name: 'ready',
 	once: true,
 	async execute(client) {
-		console.log("Connected as: " + client.user.tag);
-        setActivity(client);
-		setInterval(() => {setActivity(client)}, 1800000);
+		console.log(`Connected as: ${client.user.tag}`);
+    setActivity(client);
+		setInterval(() => {setActivity(client)}, 300000);
 	},
 };

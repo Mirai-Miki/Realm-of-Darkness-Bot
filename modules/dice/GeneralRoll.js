@@ -1,173 +1,150 @@
-'use strict';
-const Roll = require('./Roll.js');
-const { MessageEmbed } = require('discord.js');
+'use strict'
+const Roll = require('./Roll');
+const { RealmError, ErrorCodes } = require('../../Errors/index');
+const { EmbedBuilder } = require('discord.js');
 
-module.exports = class GeneralRoll
+module.exports = function generalRoll(interaction)
 {
-    constructor(interaction)
-    {
-        this.interaction = interaction;
+  interaction.args = getArgs(interaction);
+  interaction.sets = parseSets(interaction);
+  roll(interaction);
+  return {embeds: [getEmbed(interaction)]};
+}
 
-        this.args = [
-            interaction.options.getString('dice_set_01'),
-            interaction.options.getString('dice_set_02'),
-            interaction.options.getString('dice_set_03'),
-            interaction.options.getString('dice_set_04'),
-            interaction.options.getString('dice_set_05'),
-        ]
-        this.sets = {};
-        this.modifier = interaction.options.getInteger('modifier');
-        this.diff = interaction.options.getInteger('difficulty');
-        this.notes = interaction.options.getString('notes');
-        this.embed = [];
+function getArgs(interaction)
+{
+  return {
+    set1: interaction.options.getString('dice_set_01'),
+    set2: interaction.options.getString('dice_set_02'),
+    set3: interaction.options.getString('dice_set_03'),
+    set4: interaction.options.getString('dice_set_04'),
+    set5: interaction.options.getString('dice_set_05'),
+    modifier: interaction.options.getInteger('modifier'),
+    difficulty: interaction.options.getInteger('difficulty'),
+    notes: interaction.options.getString('notes'), 
+  }
+}
+
+function parseSets(interaction)
+{
+  const args = interaction.args;
+  const argSets = [args.set1, args.set2, args.set3, args.set4, args.set5];
+  const sets = {};
+  for (const set of argSets)
+  {
+    if (!set) continue;
+    const valid = set.match(/^\s*\d+\s*d\s*\d+\s*$/i);
+    if (!valid)
+    {
+      throw new RealmError({code: ErrorCodes.InvalidGeneralRollSets});
     }
 
-    async isArgsValid()
+    let match = valid[0];
+    const dice = parseInt(match.match(/\d+/)[0]);
+    match = match.replace(/\d+/, '');
+    const sides = parseInt(match.match(/\d+/)[0]);
+
+    if (dice > 50 || sides > 500)
     {
-        for (const set of this.args)
-        {
-            if (!set) continue;
-
-            const valid = set.match(/^\s*\d+\s*d\s*\d+\s*$/i);
-            if (!valid)
-            {
-                this.interaction.reply({
-                    content: 
-                        'The arguments need to be' +
-                        ' in the format "(x)d(y)" where (x) is' +
-                        ' the number of dice in the set and (y) is the' +
-                        ' number of sides on the dice.\nExample: "5d6"' +
-                        ' is 5 dice with six sides each.',
-                    ephemeral: true});
-                return false;
-            }
-
-            let match = valid[0];
-            const dice = parseInt(match.match(/\d+/)[0]);
-            match = match.replace(/\d+/, '');
-            const sides = parseInt(match.match(/\d+/)[0]);
-
-            if (dice > 50 || sides > 500)
-            {
-                this.interaction.reply({
-                    content: 
-                        'The number of Dice cannot be more then 50.\n' +
-                        'The number of Dice Sides cannot be more than 500.',
-                    ephemeral: true});
-                return false;
-            }
-
-            if (this.sets[sides])
-            {
-                this.sets[sides].dice += dice;
-            }
-            else
-            {
-                this.sets[sides] = {sides: sides, dice: dice};
-            }
-        }
-        return true;
+      throw new RealmError({code: ErrorCodes.InvalidGeneralRollDice});
     }
 
-    async roll()
-    {
-        let total = 0;
-        for (const key of Object.keys(this.sets))
-        {
-            const set = this.sets[key];
-            set['results'] = Roll.manySingle(set.dice, set.sides);
-            total += set.results.total;
-        }
-        if (this.modifier) total += this.modifier;
-        this.sets['total'] = total;
-    }
+    if (sets[sides]) sets[sides].dice += dice;
+    else sets[sides] = {sides: sides, dice: dice};
+  }
+  return sets;
+}
 
-    async contructEmbed()
-    {
-        let embed = new MessageEmbed();        
+function roll(interaction)
+{
+  let total = 0;
+  for (const key of Object.keys(interaction.sets))
+  {
+      const set = interaction.sets[key];
+      set['results'] = Roll.manySingle(set.dice, set.sides);
+      total += set.results.total;
+  }
+  if (interaction.args.modifier) total += interaction.args.modifier;
+  interaction.sets['total'] = total;
+}
+
+function getEmbed(interaction)
+{
+  const args = interaction.args;
+  let embed = new EmbedBuilder();        
         
-        embed.setAuthor(
-            {
-                name: (
-                    this.interaction.member?.displayName ??
-                    this.interaction.user.username
-                ), 
-                iconURL: this.interaction.member?.displayAvatarURL() ??
-                    this.interaction.user.displayAvatarURL()
-            }
-        );
+  embed.setAuthor({
+    name: (interaction.member?.displayName ?? interaction.user.username), 
+    iconURL: interaction.member?.displayAvatarURL() ??
+      interaction.user.displayAvatarURL()
+  });
 
-        embed.setTitle(`General Roll`);
+  embed.setTitle(`General Roll`);
 
-        for (const key of Object.keys(this.sets))
-        {
-            if (key == 'total') continue;
-            const set = this.sets[key];
+  for (const key of Object.keys(interaction.sets))
+  {
+    if (key == 'total') continue;
+    const set = interaction.sets[key];
 
-            let mess = "```css\n "
-            for (const result of set.results[key])
-            {
-                mess += `${result.toString()} `;
-            }
-            mess += '\n```'
-            embed.addField(`${set.dice}d${set.sides}`, mess, true);
-        }
-
-        if (this.modifier)
-        {
-            embed.addField("Modifier", `\`\`\`css\n${this.modifier}\n\`\`\``, true);
-        }
-
-        if (this.notes) embed.addField("Notes", this.notes);
-        
-        if (this.diff)
-        {
-            if (this.sets.total < this.diff)
-            {
-                // Failed the roll
-                const total = this.diff - this.sets.total;
-                embed.addField('Result', `Total of ${this.sets.total} vs ` +
-                    `diff ${this.diff}\nMissing ${total}\n` +
-                    '```diff\n- Failed\n```');
-                embed.setColor([205, 14, 14]);
-            }
-            else
-            {
-                // Passed the roll
-                const total = this.sets.total - this.diff;
-                embed.addField('Result', `Total of ${this.sets.total} vs ` +
-                    `diff ${this.diff}\nMargin of ${total}\n` +
-                    '```diff\n+ Passed\n```');
-                embed.setColor([102, 255, 51]);
-            }
-        }
-        else
-        {
-            // No difficulty
-            embed.addField('Result', `Total of ${this.sets.total}`);
-            embed.setColor([0,0,0]);
-        }
-
-        const links = "\n[Website](https://realmofdarkness.app/)" +
-            " | [Commands](https://realmofdarkness.app/v5/commands/)" +
-            " | [Patreon](https://www.patreon.com/MiraiMiki)";
-        embed.fields.at(-1).value += links;
-        embed.setURL('https://cdn.discordapp.com/attachments/699082447278702655/972058320611459102/banner.png');
-
-        this.embed = [embed];
-        return embed;
-    }
-
-    async reply()
+    let mess = "```css\n "
+    for (const result of set.results[key])
     {
-        await this.interaction.editReply({embeds: this.embed});
+      mess += `${result.toString()} `;
     }
+    mess += '\n```'
+    embed.addFields({name: `${set.dice}d${set.sides}`, value: mess, inline: true});
+  }
 
-    async cleanup()
+  if (args.modifier)
+    embed.addFields({
+      name: "Modifier", 
+      value: `\`\`\`css\n${args.modifier}\n\`\`\``, 
+      inline: true
+    });
+
+  if (args.notes) embed.addFields({name: "Notes", value: args.notes});
+  
+  if (args.difficulty)
+  {
+    if (interaction.sets.total < args.difficulty)
     {
-        this.interaction = undefined;
-        this.args = undefined;
-        this.sets = undefined;
-        this.embed = undefined;
+      // Failed the roll
+      const total = args.difficulty - interaction.sets.total;
+      embed.addFields({
+        name: 'Result', 
+        value: 
+          `Total of ${interaction.sets.total} vs ` +
+          `diff ${args.difficulty}\nMissing ${total}\n` +
+          '```ansi\n[2;31mFailed[0m\n```'
+      });
+      embed.setColor('#cd0e0e');
     }
+    else
+    {
+      // Passed the roll
+      const total = interaction.sets.total - args.difficulty;
+      embed.addFields({
+        name: 'Result', 
+        value: 
+          `Total of ${interaction.sets.total} vs ` +
+          `diff ${args.difficulty}\nMargin of ${total}\n` +
+          '```ansi\n[2;32mPassed[0m\n```'
+      });
+      embed.setColor('#66ff33');
+    }
+  }
+  else
+  {
+    // No difficulty
+    embed.addFields({name: 'Result', value: `Total of ${interaction.sets.total}`});
+    embed.setColor('#000000');
+  }
+
+  const links = "\n[Website](https://realmofdarkness.app/)" +
+      " | [Commands](https://realmofdarkness.app/v5/commands/)" +
+      " | [Patreon](https://www.patreon.com/MiraiMiki)";
+  embed.data.fields.at(-1).value += links;
+  embed.setURL('https://cdn.discordapp.com/attachments/699082447278702655/972058320611459102/banner.png');
+
+  return embed;
 }
