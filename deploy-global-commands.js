@@ -8,19 +8,15 @@ function pushCommands (configFile, ver)
 	const { clientId, token, commandPath } = require(configFile);
 	
 	const commands = [];
-	const commandFolders = fs.readdirSync(commandPath);
-	
-	
-	for (const folder of commandFolders) {
-	    const commandFiles = fs.readdirSync(
-	        `${commandPath}${folder}`).filter(file => file.endsWith('.js'));
-	    for (const file of commandFiles) {
-	        const command = require(`${commandPath}${folder}/${file}`);
-	        commands.push(command.data.toJSON());
-	    }
+
+	const commandFiles = fs.readdirSync(
+	  `${commandPath}`).filter(file => file.endsWith('.js'));
+	for (const file of commandFiles) {
+	  const command = require(`${commandPath}/${file}`);
+    commands.push(command.data);
 	}
 	
-	const rest = new REST({ version: '9' }).setToken(token);
+	const rest = new REST({ version: '10' }).setToken(token);
 	
 	(async () => {
 		try {

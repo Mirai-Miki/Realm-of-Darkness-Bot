@@ -36,6 +36,7 @@ module.exports = class Changeling extends Character20th
         this.chimericalHealth.setBashing(char.chimerical.bashing);
         this.chimericalHealth.setLethal(char.chimerical.lethal);
         this.chimericalHealth.setAgg(char.chimerical.aggravated);
+        return this;
     }
 
     serialize()

@@ -27,6 +27,7 @@ module.exports = class Werewolf20th extends Character20th
         this.rage.setCurrent(char.rage.current);
         this.gnosis.setTotal(char.gnosis.total);
         this.gnosis.setCurrent(char.gnosis.current);
+        return this;
     }
 
     serialize()

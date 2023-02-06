@@ -10,6 +10,13 @@ module.exports.ErrorCodes =
 	GuildRequired: 4,
 	NotAdminOrST: 5,
 	NoCharacter: 6,
+	NotHexNumber: 7,
+	NotImageURL: 7,
+	RequiresFledgling: 100,
+	RequiresNeonate: 101,
+	RequiresAncilla: 102,
+	RequiresElder: 103,
+	RequiresMethuselah: 104,
 }
 
 module.exports.APIErrorCodes =

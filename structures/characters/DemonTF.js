@@ -26,6 +26,7 @@ module.exports = class DemonTF extends Character20th
         this.faith.setCurrent(char.faith.current);
         this.torment.setPermanant(char.torment.total);
         this.torment.setTemporary(char.torment.current);
+        return this;
     }
 
     serialize()

@@ -26,6 +26,7 @@ module.exports = class Human20th extends Character20th
         super.deserilize(char);
         this.morality.pool.setCurrent(char.morality);
         this.blood.setCurrent(char.blood);
+        return this;
     }
 
     serialize()

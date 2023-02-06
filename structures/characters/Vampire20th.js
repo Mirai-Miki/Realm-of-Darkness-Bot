@@ -29,6 +29,7 @@ module.exports = class Vampire20th extends Character20th
         this.morality.name = json.morality.name;
         this.blood.setTotal(json.blood.total);
         this.blood.setCurrent(json.blood.current);
+        return this;
     }
 
     serialize()

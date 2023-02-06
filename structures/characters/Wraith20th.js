@@ -24,6 +24,7 @@ module.exports = class Wraith20 extends Character20th
         this.corpus.setTotal(char.corpus.total);
         this.corpus.setCurrent(char.corpus.current);
         this.pathos.setCurrent(char.pathos);
+        return this;
     }
 
     serialize()

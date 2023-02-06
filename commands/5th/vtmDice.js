@@ -2,7 +2,7 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { oneLineTrim } = require('common-tags');
 const { vtmRoll, rouse, resonance, generalRoll } = 
-  require('../../../modules/dice/index');
+  require('../../modules/dice/index');
 
 
 const command = new SlashCommandBuilder()

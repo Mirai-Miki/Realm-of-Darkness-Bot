@@ -28,6 +28,7 @@ module.exports = class Ghoul20th extends Character20th
         this.morality.pool.setCurrent(char.morality);
         this.blood.setCurrent(char.blood);
         this.vitae.setCurrent(char.vitae);
+        return this;
     }
 
     serialize()

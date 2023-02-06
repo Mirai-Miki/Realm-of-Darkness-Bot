@@ -71,11 +71,26 @@ module.exports = class Character
     this.history.unshift(history);
   }
 
+  setFields(args)
+  {
+    if (args.nameChange != null) this.name = args.nameChange;  
+    if (args.exp != null) this.exp.setTotal(args.exp);
+    if (args.color != null) this.color = args.color;
+    if (args.thumbnail === 'none') this.thumbnail = null;
+    else if (args.thumbnail != null) this.thumbnail = args.thumbnail;
+  }
+
+  updateFields(args)
+  {
+    if (args.exp && args.exp < 0) this.exp.updateCurrent(args.exp);
+    else if (args.exp != null) this.exp.incTotal(args.exp);
+  }
+
   deserilize(json)
   {
     this.id = json.id;
     this.name = json.name;
-    this.colour = json.colour; 
+    this.color = json.theme; 
     this.thumbnail = json.thumbnail;
     this.exp.setTotal(json.exp.total);
     this.exp.setCurrent(json.exp.current); 

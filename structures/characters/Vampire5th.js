@@ -27,6 +27,22 @@ module.exports = class Vampire5th extends Character5th
     return Splats.vampire5th;
   }
 
+  setFields(args)
+  {
+    super.setFields(args);
+    if (args.hunger != null) this.hunger.setCurrent(args.hunger);
+    if (args.humanity != null) this.humanity.setCurrent(args.humanity);
+    if (args.stains != null) this.humanity.setStains(args.stains);
+  }
+
+  updateFields(args)
+  {
+    super.updateFields(args);
+    if (args.hunger != null) this.hunger.updateCurrent(args.hunger);
+    if (args.humanity != null) this.humanity.updateCurrent(args.humanity);
+    if (args.stains != null) this.humanity.takeStains(args.stains);
+  }
+
   deserilize(json)
   {
     super.deserilize(json);
@@ -38,9 +54,8 @@ module.exports = class Vampire5th extends Character5th
 
   serialize()
   {        
-    const s = super.serialize();
-    
-    s.character['splatSlug'] = Splats.vampire5th.slug;        
+    const s = super.serialize();    
+    s.character['splatSlug'] = this.splat.slug;        
     s.character['hunger'] = this.hunger.current;
     s.character['humanity'] = {
       total: this.humanity.total,

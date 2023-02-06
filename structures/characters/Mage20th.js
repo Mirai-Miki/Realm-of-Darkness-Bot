@@ -50,6 +50,7 @@ module.exports = class Mage extends Character20th
         this.arete.setCurrent(char.arete);
         this.quintParadox.setCurrent(char.quint_paradox.current);
         this.quintParadox.setTotal(char.quint_paradox.total);
+        return this;
     }
 
     serialize()

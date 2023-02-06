@@ -115,4 +115,41 @@ const ErrorInfo =
     debug: false,
     cause: false
   },
+  [ErrorCodes.NotHexNumber]:
+  {
+    system: "Input was not a Hex number",
+    embedTitle: 'Input was not a Hex number',
+    embedMessage: oneLineTrim`
+      The color option requires a hex number. 
+      A hex number looks like this #5c7c18 you can get one from any color picker 
+      like the one found [here](https://g.co/kgs/yM4p6k).
+    `,
+    debug: false,
+    cause: false
+  }, 
+  [ErrorCodes.NotImageURL]:
+  {
+    system: "Input was not an Image URL",
+    embedTitle: 'Input was not an Image URL',
+    embedMessage: oneLineTrim`
+      The image option requires a valid Image URL. 
+      The easiest way to get this, is to updload an image on discord. 
+      Right click that Image and select "Copy Link".
+    `,
+    debug: false,
+    cause: false
+  },  
+  [ErrorCodes.RequiresFledgling]:
+  {
+    system: "Permission Error: Requires Fledgling",
+    embedTitle: 'Permission Error: Fledgling Supporter Required.',
+    embedMessage: oneLineTrim`
+      This Command or an option in this command requires being a supporter 
+      of at least Fledgling or higher. 
+      You can become a supporter over on my 
+      [Patreon](https://www.patreon.com/MiraiMiki)
+    `,
+    debug: false,
+    cause: false
+  },
 }

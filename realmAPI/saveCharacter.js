@@ -14,7 +14,6 @@ module.exports = async function saveCharacter(character)
     const path = 'character/save';
     const data = character.serialize();
     data['APIKey'] = APIKey;
-    
     const res = await postData(path, data);
     switch(res?.status)
     {

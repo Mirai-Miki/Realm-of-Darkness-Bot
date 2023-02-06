@@ -2,7 +2,7 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
 const command = new SlashCommandBuilder();
-command.setName('hunter')
+command.setName('htr')
   .setDescription('Dice rolls for the hunter v5 game.')
  
 ///////////////////// Hunter Command ///////////////////

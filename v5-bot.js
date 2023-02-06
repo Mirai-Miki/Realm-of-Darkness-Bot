@@ -1,7 +1,7 @@
 'use strict';
 const fs = require("fs");
 const { Client, GatewayIntentBits, Collection } = require("discord.js");
-const { token, commandPath } = require('./config5th.json');
+const { token } = require('./config5th.json');
 
 const client = new Client({intents: [
   GatewayIntentBits.Guilds,
@@ -10,15 +10,11 @@ const client = new Client({intents: [
 
 /* Loading Commands in Client */
 client.commands = new Collection();
-const commandFolders = fs.readdirSync(commandPath);
-for (const folder of commandFolders) {
-  const commandFiles = fs.readdirSync(
-    `${commandPath}${folder}`).filter(file => file.endsWith('.js'));
-  
-    for (const file of commandFiles) {
-    const command = require(`${commandPath}${folder}/${file}`);
-    client.commands.set(command.data.name, command);
-  }
+const commandFiles = 
+  fs.readdirSync('./commands/5th').filter(file => file.endsWith('.js'));
+for (const file of commandFiles) {
+  const command = require(`./commands/5th/${file}`);
+  client.commands.set(command.data.name, command);
 }
 
 /* Event Listeners */

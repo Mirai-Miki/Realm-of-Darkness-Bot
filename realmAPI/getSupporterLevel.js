@@ -1,22 +1,24 @@
 'use strict';
+const { APIKey } = require('../config5th.json');
+const { postData } = require('./postData');
 
-module.exports = async function getSupporterLevel(user)
+module.exports = async function getSupporterLevel(userId)
 {
-  const path = 'bot/user/supporter/get';
+  const path = 'user/supporter/get';
   const data = 
   {
-    user_id: user.id,
+    APIKey: APIKey,
+    user_id: userId,
   };
         
   let res = await postData(path, data);
-  if (res?.status === 200 && res?.data)
-  {
-    return res.data.level;
-  }
-  else
-  {
-    console.error("Error in DatabaseAPI.getCharacter()")
-    console.error(`Status: ${res?.status}`)
-    return undefined;
-  }
+  switch(res?.status)
+    {
+      case 200: // Fetched level
+        return res.data.level;
+      case 204: // No User
+        return 0;
+      default:
+        throw new RealmAPIError({cause: `res: ${res?.status}\ndata: ${res?.data}`});
+    }
 }

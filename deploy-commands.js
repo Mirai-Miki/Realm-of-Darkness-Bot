@@ -10,16 +10,12 @@ function pushCommands (configFile, ver, toggle=true)
 	const guildId = "699082446729117746"
 	
 	const commands = [];
-	const commandFolders = fs.readdirSync(commandPath);
 	
-	
-	for (const folder of commandFolders) {
-	    const commandFiles = fs.readdirSync(
-	        `${commandPath}${folder}`).filter(file => file.endsWith('.js'));
-	    for (const file of commandFiles) {
-	        const command = require(`${commandPath}${folder}/${file}`);
-	        commands.push(command.data);
-	    }
+	const commandFiles = fs.readdirSync(
+	  `${commandPath}`).filter(file => file.endsWith('.js'));
+	for (const file of commandFiles) {
+	  const command = require(`${commandPath}/${file}`);
+    commands.push(command.data);
 	}
 	
 	const rest = new REST({ version: '10' }).setToken(token);
@@ -39,5 +35,5 @@ function pushCommands (configFile, ver, toggle=true)
 }
 
 pushCommands('./config5th.json', "v5", true);
-//pushCommands('./config20th.json', "20th", false);
+pushCommands('./config20th.json', "20th", true);
 //pushCommands('./configCoD.json', "CoD", false);
