@@ -1,4 +1,6 @@
 'use strict'
+const { postData } = require('./postData.js');
+const { APIKey } = require('../config5th.json');
 
 module.exports = async function getSTRoles(guildId)
 {

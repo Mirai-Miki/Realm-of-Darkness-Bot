@@ -12,7 +12,9 @@ module.exports = class RealmError extends Error
     this.discordResponse = 
     {
       embeds: [getErrorEmbed(code)],
-      ephemeral: true
+      ephemeral: true,
+      content: '',
+      components: []
     };
     this.debug = 
     {
@@ -103,6 +105,17 @@ const ErrorInfo =
     `,
     debug: false,
     cause: false
+  },  
+  [ErrorCodes.NotAdmin]:
+  {
+    system: "Permission Error: Missing Admin",
+    embedTitle: 'Permission Error',
+    embedMessage: oneLineTrim`
+      This Command or an option of this Command requires you to have Admin 
+      permissions. Please check the Command and option descriptions.
+    `,
+    debug: false,
+    cause: false
   },
   [ErrorCodes.NoCharacter]:
   {
@@ -149,6 +162,50 @@ const ErrorInfo =
       You can become a supporter over on my 
       [Patreon](https://www.patreon.com/MiraiMiki)
     `,
+    debug: false,
+    cause: false
+  },  
+  [ErrorCodes.NightmareOutOfRange]:
+  {
+    system: "Nightmare out of range",
+    embedTitle: 'Nightmare out of Range Error',
+    embedMessage: oneLineTrim`
+      The nightmare dice cannot be higher then your pool.
+    `,
+    debug: false,
+    cause: false
+  },  
+  [ErrorCodes.NoNamesList]:
+  {
+    system: "No Names List",
+    embedTitle: 'No Characters',
+    embedMessage: oneLineTrim`
+      We could not find any characters for this user. 
+      If you are using this from a server we are only looking for characters 
+      on this server. If you want to find all characters use this command 
+      in a DM with the Bot.
+    `,
+    debug: false,
+    cause: false
+  },   
+  [ErrorCodes.NotTextChannel]:
+  {
+    system: "Not a text channel",
+    embedTitle: 'Invalid Channel',
+    embedMessage: oneLineTrim`
+      The selected channel must be a test channel and cannot be a thread.
+    `,
+    debug: false,
+    cause: false
+  },   
+  [ErrorCodes.InvalidChannelPermissions]:
+  {
+    system: "Not a text channel",
+    embedTitle: 'Invalid Channel Permissions',
+    embedMessage: 
+      'The selected channel requires the following permissions to function.' +
+      '\n- View Channel\n- Send Messages\n- Embed Links'
+    ,
     debug: false,
     cause: false
   },

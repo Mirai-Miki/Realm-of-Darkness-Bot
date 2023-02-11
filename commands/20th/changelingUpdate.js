@@ -1,12 +1,7 @@
 'use strict';
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { Splats } = require('../../Constants');
-const { 
-  tracker, 
-  getHexColor , 
-  verifySupporterStatus, 
-  getValidImageURL
-} = require('../../modules');
+const { tracker } = require('../../modules');
 
 module.exports = 
 {

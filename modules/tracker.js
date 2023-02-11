@@ -24,9 +24,9 @@ module.exports.set = async function(interaction, splat)
 {
   const options = interaction.arguments;
   const char = await API.getCharacter(
-    options.name, 
-    interaction.user,
     {
+      name: options.name, 
+      user: interaction.user,    
       guild: interaction.guild ?? null,
       splatSlug: splat.slug
     }

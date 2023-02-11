@@ -1,5 +1,5 @@
 'use strict';
-const Consumable = require("../../Consumable");
+const { Consumable } = require("../../../structures");
 
 module.exports = class Character 
 {
@@ -27,6 +27,10 @@ module.exports = class Character
     if (user) this.setUser(user);
   }
 
+  /**
+   * Takes in a user of Guild member and sets the character user fields
+   * @param {User|GuildMember} user 
+   */
   setUser(user)
   {
     // User can be either a User or GuildMember
@@ -94,7 +98,23 @@ module.exports = class Character
     this.thumbnail = json.thumbnail;
     this.exp.setTotal(json.exp.total);
     this.exp.setCurrent(json.exp.current); 
-    //this.history = json.history;   
+    //this.history = json.history; 
+    
+    if (json.user)
+    {
+      this.user.id = json.user.id;
+      this.user.username = json.user.username;
+      this.user.discriminator = json.user.discriminator;
+      this.user.avatarURL = json.user.avatarURL;
+      this.user.displayName = json.user.displayName;
+    }
+
+    if(json.guild)
+    {
+      this.guild.id = json.guild.id;
+      this.guild.name = json.guild.name;
+      this.guild.iconURL = json.guild.iconURL;
+    }
     return this;
   }
 

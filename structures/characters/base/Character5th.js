@@ -1,5 +1,5 @@
 'use strict';
-const DamageTracker5th = require("../../DamageTracker5th");
+const { DamageTracker5th } = require("../../../structures");
 const Character = require("./Character.js");
 
 module.exports = class Character5th extends Character

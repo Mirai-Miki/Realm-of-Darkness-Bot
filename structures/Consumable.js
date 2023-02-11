@@ -113,9 +113,11 @@ module.exports = class Consumable
       return tracker;
     }
 
-    for (let i = 0; i < this.total; i++) 
+    const stop = this.current > this.total ? this.current : this.total;
+    for (let i = 0; i < stop; i++) 
     {
       if (i < this.current) tracker += emoji
+      else if (i > this.total) tracker += Emoji.yellow_dot
       else tracker += Emoji.blank_dot;                
     }
     tracker += '⠀';

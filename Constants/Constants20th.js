@@ -4,18 +4,6 @@
  */
 
 /**
- * Component Custom Identifiers
- */
-module.exports.ComponentCID =
-{
-    INIT_NEXT_ROUND: "InitNextRound",
-    INIT_END: "InitEnd",
-    INIT_REVEAL: "InitReveal",
-    INIT_DECLARE: "InitDeclare",
-    INIT_CONFIRM: "InitConfirm"
-}
-
-/**
  * Phases an Initiative tracker can be in
  */
 module.exports.InitPhase = 

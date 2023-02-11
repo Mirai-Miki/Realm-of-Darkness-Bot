@@ -1,11 +1,7 @@
 'use strict';
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { 
-  tracker, 
-  getHexColor , 
-  verifySupporterStatus, 
-  getValidImageURL
-} = require('../../modules');
+const { tracker, getHexColor} = require('../../modules');
+const { verifySupporterStatus, getValidImageURL} = require('../../modules');
 const { Splats } = require('../../Constants');
 
 module.exports = 
@@ -25,7 +21,7 @@ module.exports =
         return await tracker.set(interaction, Splats.vampire20th);     
     }
 	}
-};
+};  
 
 async function getArgs(interaction)
 {
@@ -46,8 +42,6 @@ async function getArgs(interaction)
     blood: interaction.options.getInteger('blood'),
     moralityName: interaction.options.getString('morality_name'),
     morality: interaction.options.getInteger('morality'),
-    humanity: interaction.options.getInteger('humanity'),             
-    vitae: interaction.options.getInteger('vitae'), 
   }
 
   if (args.color || args.thumbnail) 

@@ -17,6 +17,15 @@ for (const file of commandFiles) {
   client.commands.set(command.data.name, command);
 }
 
+/* Loading Component Events in Client */
+client.components = new Collection();
+const componentFiles = 
+  fs.readdirSync('./components/5th').filter(file => file.endsWith('.js'));
+for (const file of componentFiles) {
+  const component = require(`./components/5th/${file}`);
+  client.components.set(component.name, component);
+}
+
 /* Event Listeners */
 const eventFiles = fs.readdirSync('./events').filter(file => file.endsWith('.js'));
 for (const file of eventFiles) {
