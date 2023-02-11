@@ -8,3 +8,4 @@ module.exports.Consumable = require('./Consumable');
 module.exports.Quintessence = require('./Quintessence')
 module.exports.VtMV5RollResults = require('./VtmV5RollResults');
 module.exports.RollResults20th = require('./RollResults20th');
+module.exports.InitiativeTracker = require('./InitiativeTracker');

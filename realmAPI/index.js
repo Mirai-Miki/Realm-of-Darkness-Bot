@@ -10,3 +10,4 @@ exports.deleteCharacters = require('./deleteCharacters');
 exports.setStorytellers = require('./setStorytellers');
 exports.setTrackerChannel = require('./setTrackerChannel');
 exports.getTrackerChannel = require('./getTrackerChannel');
+exports.getInitTracker = require('./getInitTracker');

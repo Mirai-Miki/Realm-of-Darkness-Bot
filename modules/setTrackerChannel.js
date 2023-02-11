@@ -2,7 +2,8 @@
 const API = require('../realmAPI');
 const { RealmError, ErrorCodes } = require('../Errors');
 const isAdminOrST = require('./isAdminOrST');
-const { EmbedBuilder, PermissionFlagsBits } = require('discord.js');
+const canSendMessage = require('./canSendMessage');
+const { EmbedBuilder } = require('discord.js');
 
 module.exports = async function setTrackerChannel(interaction)
 {
@@ -33,7 +34,7 @@ async function getArgs(interaction)
   if (!args.channel) return args;
   else if (!args.channel.isTextBased() || args.channel.isThread()) 
     throw new RealmError({code: ErrorCodes.NotTextChannel});
-  else if (!canSendMessages(args.channel))
+  else if (!canSendMessage({channel: args.channel}))
     throw new RealmError({code: ErrorCodes.InvalidChannelPermissions});
   return args;
 }
@@ -46,16 +47,4 @@ function getEmbed(channelId)
     .setTitle("Tracker Channel")
     .setDescription(message)
     .setColor('#3bcc99')
-}
-
-function canSendMessages(channel)
-{  
-  if (!channel.guild) return true; // Not sending in a guild
-
-  if (!channel.permissionsFor(channel.client.user.id).has([
-    PermissionFlagsBits.ViewChannel, 
-    PermissionFlagsBits.SendMessages,
-    PermissionFlagsBits.EmbedLinks
-  ])) return false;
-  else return true;
 }
