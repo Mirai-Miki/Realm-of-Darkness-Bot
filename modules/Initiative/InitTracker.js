@@ -1,6 +1,6 @@
 'use strict'
 const { Collection } = require("discord.js");
-const { InitCharacter } = require("./InitCharacter.js")
+const { InitCharacter } = require("../../structures/InitiativeCharacter.js")
 
 module.exports.InitTracker = class InitTracker
 {

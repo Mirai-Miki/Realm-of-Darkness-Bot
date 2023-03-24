@@ -5,56 +5,6 @@ const { postData } = require('./postData.js');
 
 module.exports = class DatabaseAPI
 {
-    static async getNameList(userId, guildId)
-    {
-        const host = `${DOMAIN}/bot/character/name_list`;
-        const data = {
-            APIKey: APIKey, 
-            userId: userId, 
-            guildId: guildId
-        }
-        
-        let res = await postData(host, data);
-        if (res?.status === 200 && res?.data)
-        {
-            const response = res.data;
-            if (response.status == 'noChar')
-            {
-                return 'noChar';
-            }
-
-            return res.data.list;
-        }
-        else
-        {
-            console.error("Error in DatabaseAPI.getNameList()")
-            console.error(`Status: ${res?.status}`)
-            return undefined;
-        }
-    }
-
-    static async deleteCharacters(ids, disconnect)
-    {
-        const host = `${DOMAIN}/bot/character/delete`;
-        const data = {
-            APIKey: APIKey,
-            ids: ids,
-            disconnect: disconnect
-        }
-
-        let res = await postData(host, data);
-        if (res?.status === 200 && res?.data)
-        {
-            return res.data;
-        }
-        else
-        {
-            console.error("Error in DatabaseAPI.deleteCharacters()")
-            console.error(`Status: ${res?.status}`)
-            return undefined;
-        }
-    }
-
     static async setTrackerChannel(guild, channelId)
     {
         const host = `${DOMAIN}/bot/chronicle/channel/set`;

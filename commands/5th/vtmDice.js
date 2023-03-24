@@ -11,8 +11,8 @@ const command = new SlashCommandBuilder()
 
 
 ///////////////////////// VtM Roll Command //////////////////////
-command.addSubcommand((subcommand) => 
-  subcommand.setName('roll')
+command.addSubcommand((subcommand) => subcommand
+  .setName('roll')
   .setDescription(oneLineTrim`
     Makes a dice roll following the standard Vampire: 
     the Masquerade v5 rules. page 117 Corebook
@@ -197,7 +197,7 @@ command.addSubcommand(subcommand =>
     option.setName("dice_set_02")
     .setDescription('A dice set is defined as "(x)d(y)"' +
       ' where (x) is the number of dice and (y) is the number of sides.')
-      .setMaxLength(9)
+    .setMaxLength(9)
     return option;
   })
 
@@ -205,7 +205,7 @@ command.addSubcommand(subcommand =>
     option.setName("dice_set_03")
     .setDescription('A dice set is defined as "(x)d(y)"' +
       ' where (x) is the number of dice and (y) is the number of sides.')
-      .setMaxLength(9)
+    .setMaxLength(9)
     return option;
   })
 
@@ -213,7 +213,7 @@ command.addSubcommand(subcommand =>
     option.setName("dice_set_04")
     .setDescription('A dice set is defined as "(x)d(y)"' +
       ' where (x) is the number of dice and (y) is the number of sides.')
-      .setMaxLength(9)
+    .setMaxLength(9)
     return option;
   })
 
@@ -221,7 +221,7 @@ command.addSubcommand(subcommand =>
     option.setName("dice_set_05")
     .setDescription('A dice set is defined as "(x)d(y)"' +
       ' where (x) is the number of dice and (y) is the number of sides.')
-      .setMaxLength(9)
+    .setMaxLength(9)
     return option;
   })
 

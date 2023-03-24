@@ -1,12 +1,8 @@
 'use strict'
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { Splats } = require('../../Constants');
-const { 
-  tracker, 
-  getHexColor , 
-  verifySupporterStatus, 
-  getValidImageURL
-} = require('../../modules');
+const { tracker, getHexColor} = require('../../modules');
+const { verifySupporterStatus, getValidImageURL} = require('../../modules');
 
 
 module.exports = 
@@ -26,6 +22,33 @@ module.exports =
         return await tracker.set(interaction, Splats.vampire5th);     
     }
 	}
+}
+
+async function getArgs(interaction)
+{
+  const args = 
+  {
+    player: interaction.options.getUser('player'),
+    name: interaction.options.getString('name'),
+    exp: interaction.options.getInteger('exp'),                      
+    notes: interaction.options.getString('notes'),
+    nameChange: interaction.options.getString('change_name'),
+    thumbnail: getValidImageURL(interaction.options.getString('image')),
+    color: getHexColor(interaction.options.getString('color')),
+    willpower: interaction.options.getInteger('willpower'),            
+    health: interaction.options.getInteger('health'),
+    willpowerSup: interaction.options.getInteger('willpower_superficial'),
+    willpowerAgg: interaction.options.getInteger('willpower_agg'),
+    healthSup: interaction.options.getInteger('health_superficial'),
+    healthAgg: interaction.options.getInteger('health_agg'),
+    hunger: interaction.options.getInteger('hunger'),
+    humanity: interaction.options.getInteger('humanity'),
+    stains: interaction.options.getInteger('stains'),  
+  } 
+
+  if (args.color || args.thumbnail) 
+    await verifySupporterStatus.fledgling(interaction.user.id);
+  return args;
 }
 
 function getCommands()
@@ -375,31 +398,4 @@ function getCommands()
     )    
   );
   return command;
-}
-
-async function getArgs(interaction)
-{
-  const args = 
-  {
-    player: interaction.options.getUser('player'),
-    name: interaction.options.getString('name'),
-    exp: interaction.options.getInteger('exp'),                      
-    notes: interaction.options.getString('notes'),
-    nameChange: interaction.options.getString('change_name'),
-    thumbnail: getValidImageURL(interaction.options.getString('image')),
-    color: getHexColor(interaction.options.getString('color')),
-    willpower: interaction.options.getInteger('willpower'),            
-    health: interaction.options.getInteger('health'),
-    willpowerSup: interaction.options.getInteger('willpower_superficial'),
-    willpowerAgg: interaction.options.getInteger('willpower_agg'),
-    healthSup: interaction.options.getInteger('health_superficial'),
-    healthAgg: interaction.options.getInteger('health_agg'),
-    hunger: interaction.options.getInteger('hunger'),
-    humanity: interaction.options.getInteger('humanity'),
-    stains: interaction.options.getInteger('stains'),  
-  } 
-
-  if (args.color || args.thumbnail) 
-    await verifySupporterStatus.fledgling(interaction.user.id);
-  return args;
 }

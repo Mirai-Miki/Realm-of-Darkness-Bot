@@ -16,6 +16,7 @@ function pushCommands (configFile, ver, toggle=true)
 	for (const file of commandFiles) {
 	  const command = require(`${commandPath}/${file}`);
     commands.push(command.data);
+		console.log(`${commandPath}/${file}:` ,command.data?.name)
 	}
 	
 	const rest = new REST({ version: '10' }).setToken(token);
@@ -26,7 +27,6 @@ function pushCommands (configFile, ver, toggle=true)
 				Routes.applicationGuildCommands(clientId, guildId),
 				{ body: toggle ? commands : new Map},
 			);
-			
 			console.log(`Successfully registered ${ver} application commands.`);
 		} catch (error) {
 			console.error(error);
@@ -35,5 +35,5 @@ function pushCommands (configFile, ver, toggle=true)
 }
 
 pushCommands('./config5th.json', "v5", true);
-pushCommands('./config20th.json', "20th", true);
+//pushCommands('./config20th.json', "20th", false);
 //pushCommands('./configCoD.json', "CoD", false);

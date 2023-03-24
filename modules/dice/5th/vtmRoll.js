@@ -1,11 +1,9 @@
 'use strict';
-const { minToMilli, trimString } = require('../../util/misc.js');
-const { Interaction } = require('discord.js');
+const { minToMilli, trimString } = require('../../../modules');
 const getCharacter = require('./getCharacter');
 const { vtmResponse, getSelectRerollMenu } = require('./getRollResponse');
-const RollResults = require('../../../structures/vtmV5RollResults');
-const RealmError = require('../../../Errors/RealmError');
-const { ErrorCodes, handleErrorDebug } = require('../../../Errors/index')
+const { VtMV5RollResults } = require('../../../structures');
+const { ErrorCodes, handleErrorDebug, RealmError } = require('../../../Errors');
 
 
 /**
@@ -52,7 +50,7 @@ async function roll(args)
     args.hunger = args.character.tracked.hunger;
   }
 
-  const results = new RollResults({
+  const results = new VtMV5RollResults({
     difficulty: args.difficulty ?? 1,
     pool: args.pool,
     bp: args.bp,

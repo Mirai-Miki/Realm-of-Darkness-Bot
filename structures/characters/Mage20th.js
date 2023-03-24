@@ -1,69 +1,107 @@
 'use strict';
-const Consumable = require("../Consumable");
+const { Consumable, Quintessence } = require("../../structures");
 const Character20th = require("./base/Character20th");
-const { Splats } = require('../../Constants');
+const { Splats, Emoji } = require('../../Constants');
 
 module.exports = class Mage extends Character20th 
 {
-    constructor(interaction, arete=1, quintessence=5, paradox=0, willpower=5) 
-    {
-        super(interaction, willpower);
-        this.splat = 'Mage';
-        this.arete = new Consumable(10, arete, 0);
-        this.quintParadox = new Consumable((20 - paradox), quintessence, 0);
-    }
+  constructor({name, user, guild, willpower=5, arete=1, quintessence=5, paradox=0}={}) 
+  {
+    super({name:name, user:user, guild:guild, willpower:willpower});
+    this.splat = Splats.mage20th;
+    this.arete = new Consumable(10, arete, 0);
+    this.quint = new Quintessence({quintessence: quintessence, paradox: paradox});
+  }
 
-    static getSplat()
-    {
-        return Splats.mage20th;
-    }
+  static getSplat()
+  {
+    return Splats.mage20th;
+  }
 
-    updateQuint(amount)
-    {
-        this.quintParadox.updateCurrent(amount);
-    }
+  setFields(args)
+  {
+    super.setFields(args);
+    if (args.arete != null) this.arete.setCurrent(args.arete);
+    if (args.paradox != null) this.quint.setParadox(args.paradox);
+    if (args.quintessence != null) this.quint.setQuint(args.quintessence);  
+  }
 
-    setQuint(amount)
-    {
-        this.quintParadox.setCurrent(amount);
-    }
+  updateFields(args)
+  {
+    super.updateFields(args);
+    if (args.arete != null) this.arete.updateCurrent(args.arete);
+    if (args.quintessence != null) this.quint.updateQuint(args.quintessence);
+    if (args.paradox != null) this.quint.updateParadox(args.paradox);
+  }
 
-    updateParadox(amount)
-    {
-        const total = this.quintParadox.total;
-        const update = total - amount;
+  deserilize(char)
+  {
+    super.deserilize(char);
+    this.arete.setCurrent(char.arete);
+    this.quint.setQuint(char.quintessence);
+    this.quint.setParadox(char.paradox);
+    return this;
+  }
 
-        if (update > 20) update = 20;
-        else if (update < 0) update = 0;
+  serialize()
+  {        
+    const s = super.serialize();    
+    s.character['splat'] = this.splat.slug;        
+    s.character['arete'] = this.arete.current;
+    s.character['quintessence'] = this.quint.quintessence;
+    s.character['paradox'] = this.quint.paradox;    
+    return s;
+  }
 
-        this.quintParadox.setTotal(update, false);
-    }
+  getEmbed(notes)
+  {
+    const embed = new EmbedBuilder()
+    .setColor(this.color)
+    .setAuthor({
+      name: (this.user.displayName ?? this.user.username), 
+      iconURL: this.user.avatarURL
+    })
+    .setTitle(this.name)
+    .setURL('https://cdn.discordapp.com/attachments/699082447278702655/972058320611459102/banner.png');
 
-    setParadox(amount)
-    {
-        this.quintParadox.setTotal(20 - amount, false);
-    }
+    if (this.thumbnail) embed.setThumbnail(this.thumbnail);
 
-    deserilize(char)
-    {
-        super.deserilize(char);
-        this.arete.setCurrent(char.arete);
-        this.quintParadox.setCurrent(char.quint_paradox.current);
-        this.quintParadox.setTotal(char.quint_paradox.total);
-        return this;
-    }
+    embed.addFields({
+      name: `Willpower [${this.willpower.current}/${this.willpower.total}]`,
+      value: this.willpower.getTracker({emoji: Emoji.purple_dot_3}),
+      inline: false
+    });
 
-    serialize()
-    {        
-        const s = super.serialize();
-        
-        s.character['splat'] = Splats.mage20th;        
-        s.character['arete'] = this.arete.current;
-        s.character['quint_paradox'] = {
-            current: this.quintParadox.current,
-            total: this.quintParadox.total,
-        }
-        
-        return s;
-    }
+    embed.addFields({
+      name: `Arete ${this.arete.current}`, 
+      value: this.arete.getTracker({emoji: Emoji.red_dot}), 
+      inline: false
+    });
+
+    embed.addFields({
+      name: `Quintessence ${this.quint.quintessence} ` +
+        `& Paradox ${this.quint.paradox}`,
+      value: this.quint.getTracker(),
+      inline: false
+    });
+
+    embed.addFields({
+      name: 'Health',
+      value: this.health.getTracker(),
+      inline: false
+    });
+
+    if (this.exp.total) embed.addFields({
+      name: 'Experience',
+      value: this.exp.getTracker({showEmoji: false}),
+      inline: false
+    });
+
+    if (notes) embed.addFields({name: 'Notes', value: notes});
+    const links = "\n[Website](https://realmofdarkness.app/)" +
+        " | [Patreon](https://www.patreon.com/MiraiMiki)";
+    embed.fields.at(-1).value += links;
+
+    return embed;
+  }
 }

@@ -1,5 +1,5 @@
 'use strict'
-const { trimString } = require('../../util/misc.js');
+const { trimString } = require('../../../modules');
 const getCharacter = require('./getCharacter');
 const Roll = require('../Roll');
 const { EmbedBuilder } = require('discord.js');

@@ -2,47 +2,116 @@
 const Consumable = require("../Consumable");
 const Counter = require("../Counter");
 const Character20th = require("./base/Character20th");
-const { Splats } = require('../../Constants');
+const { Splats, Emoji } = require('../../Constants');
 
 module.exports = class DemonTF extends Character20th
 {
-    constructor(interaction, willpower=6) 
-    {
-        super(interaction, willpower);
-        this.splat = 'Demon';          
-        this.faith = new Consumable(10, 6, 1);
-        this.torment = new Counter(5, 0);
-    }
+  constructor({name, user, guild, willpower=6}={}) 
+  {
+    super({name:name, user:user, guild:guild, willpower:willpower});
+    this.splat = Splats.demonTF;          
+    this.faith = new Consumable(10, 6, 1);
+    this.torment = new Counter(5, 0);
+  }
 
-    static getSplat()
-    {
-        return Splats.demonTF;
-    }
+  static getSplat()
+  {
+    return Splats.demonTF;
+  }
 
-    deserilize(char)
-    {
-        super.deserilize(char);
-        this.faith.setTotal(char.faith.total);
-        this.faith.setCurrent(char.faith.current);
-        this.torment.setPermanant(char.torment.total);
-        this.torment.setTemporary(char.torment.current);
-        return this;
-    }
+  setFields(args)
+  {
+    super.setFields(args);
+    if (args.faith != null) this.faith.setTotal(args.faith);
+    if (args.torment != null) this.torment.setPrimary(args.torment);
+  }
 
-    serialize()
-    {        
-        const s = super.serialize();
-        
-        s.character['splat'] = Splats.demonTF;        
-        s.character['faith'] = {
-            total: this.faith.total,
-            current: this.faith.current,
-        };
-        s.character['torment'] = { 
-            total: this.torment.permanant,
-            current: this.torment.temporary,
-        }
-        
-        return s;
-    }
+  updateFields(args)
+  {
+    super.updateFields(args);
+    if (args.faith != null) this.faith.updateCurrent(args.faith);
+    if (args.torment != null) this.torment.updateSecondary(args.torment);
+  }
+
+  deserilize(char)
+  {
+    super.deserilize(char);
+    this.faith.setTotal(char.faith.total);
+    this.faith.setCurrent(char.faith.current);
+    this.torment.setPrimary(char.torment.total);
+    this.torment.setSecondary(char.torment.current);
+    return this;
+  }
+
+  serialize()
+  {        
+    const s = super.serialize();    
+    s.character['splat'] = this.splat.slug;        
+    s.character['faith'] = {
+        total: this.faith.total,
+        current: this.faith.current,
+    };
+    s.character['torment'] = { 
+        total: this.torment.permanant,
+        current: this.torment.temporary,
+    }    
+    return s;
+  }
+
+  getEmbed(notes)
+  {
+    const embed = new EmbedBuilder()
+    .setColor(this.color)
+    .setAuthor({
+      name: (this.user.displayName ?? this.user.username), 
+      iconURL: this.user.avatarURL
+    })
+    .setTitle(this.name)
+    .setURL('https://cdn.discordapp.com/attachments/699082447278702655/972058320611459102/banner.png');
+
+    if (this.thumbnail) embed.setThumbnail(this.thumbnail);
+
+    embed.addFields({
+      name: `Willpower [${this.willpower.current}/${this.willpower.total}]`,
+      value: this.willpower.getTracker({emoji: Emoji.purple_dot_3}),
+      inline: false
+    });
+
+    embed.addFields({
+      name: `Faith [${this.faith.current}/${this.faith.total}]`, 
+      value: this.faith.getTracker({emoji: Emoji.red_dot}), 
+      inline: false
+    });
+
+    embed.addFields({
+      name: `Torment - Permenent: ${this.torment.primary}`,
+      value: this.torment.getPrimaryTracker({emoji: Emoji.purple_dot_1}),
+      inline: false
+    });
+    
+    embed.addFields({
+      name: `Torment - Temporary: ${this.torment.secondary}`, 
+      value: this.torment.getSecondaryTracker({emoji: Emoji.purple_dot_2}), 
+      inline: false
+    }); 
+
+    embed.addFields({
+      name: 'Health',
+      value: this.health.getTracker(),
+      inline: false
+    });
+
+    if (this.exp.total) embed.addFields({
+      name: 'Experience',
+      value: this.exp.getTracker({showEmoji: false}),
+      inline: false
+    });
+
+    if (notes) embed.addFields({name: 'Notes', value: notes});
+    const links = "\n[Website](https://realmofdarkness.app/)" +
+        " | [Patreon](https://www.patreon.com/MiraiMiki)";
+    embed.fields.at(-1).value += links;
+
+    return embed;
+  }
 }

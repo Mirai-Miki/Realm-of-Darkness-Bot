@@ -1,8 +1,9 @@
 'use strict';
 const { postData } = require('./postData.js');
 const { APIKey } = require('../config5th.json');
-const { getCharacterClass } = require('../modules');
+const getCharacterClass = require('../modules/getCharacterClass');
 const RealmAPIError = require('../Errors/RealmAPIError');
+const { serializeGuild, serializeUserOrGuildMember } = require('./serializers');
 
 /**
  * Finds a character in the Database if one exists
@@ -13,16 +14,17 @@ const RealmAPIError = require('../Errors/RealmAPIError');
  * @param {String} pk Priamary Key of the character if known
  * @returns {Promise<Character>} Returns a Character class if one is found or null if not
  */
-module.exports = async function getCharacter(name, user, 
-  {guild=null, splatSlug=null, pk=null}={})
+module.exports = async function getCharacter({name=null, user=null, 
+  guild=null, splatSlug=null, pk=null}={})
 {
   const path = 'character/get';
   const data = {
     APIKey: APIKey, 
     name: name, 
-    userId: user.id, 
-    splatSlug: splatSlug ?? null,
-    pk: pk ?? null
+    user: serializeUserOrGuildMember(user),
+    guild: serializeGuild(guild),
+    splatSlug: splatSlug,
+    pk: pk
   }
 
   const res = await postData(path, data);
@@ -31,12 +33,11 @@ module.exports = async function getCharacter(name, user,
     case 200: // Found a character
       const json = res.data.character
       const CharacterClass = getCharacterClass(json.splat);
-      const char = new CharacterClass({
-        name: json.name,
-        user: user,
-        guild, guild
-      });
-      return char.deserilize(json);
+      const char = new CharacterClass({name: json.name});
+      char.deserilize(json);
+      if (user) char.setUser(user);
+      if (guild) char.setGuild(guild);
+      return char;
     case 204: // No character
       return null;
     default:

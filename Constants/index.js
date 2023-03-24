@@ -2,6 +2,7 @@
 
 module.exports.Emoji = require('./emoji');
 module.exports.Splats = require('./Splats');
+module.exports.ComponentCID = require('./ComponentCID');
 
 module.exports.Supporter = 
 {
