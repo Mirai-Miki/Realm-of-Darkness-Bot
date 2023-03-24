@@ -1,5 +1,5 @@
 'use strict';
-const { minToMilli, trimString } = require('../../../modules');
+const { minToMilli, trimString } = require('../../misc');
 const getCharacter = require('./getCharacter');
 const { vtmResponse, getSelectRerollMenu } = require('./getRollResponse');
 const { VtMV5RollResults } = require('../../../structures');

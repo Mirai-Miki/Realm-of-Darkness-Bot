@@ -1,11 +1,12 @@
 'use strict';
 const fs = require("fs");
-const { Client, Intents, Collection } = require("discord.js");
-const { token, componentPath } = require('./config20th.json');
+const { Client, GatewayIntentBits, Collection } = require("discord.js");
+const { token } = require('./config20th.json');
 
 const client = new Client({intents: [
-    Intents.FLAGS.GUILDS, 
-    Intents.FLAGS.DIRECT_MESSAGES
+  GatewayIntentBits.Guilds,
+  GatewayIntentBits.GuildMembers,
+  GatewayIntentBits.DirectMessages
 ]});
 
 /* Loading Commands in Client */
@@ -17,15 +18,13 @@ for (const file of commandFiles) {
   client.commands.set(command.data.name, command);
 }
 
+/* Loading Component Events in Client */
 client.components = new Collection();
-const componentsFolders = fs.readdirSync(componentPath);
-for (const folder of componentsFolders) {
-  const componentFiles = fs.readdirSync(
-    `${componentPath}${folder}`).filter(file => file.endsWith('.js'));
-  for (const file of componentFiles) {
-    const component = require(`${componentPath}${folder}/${file}`);
-    client.components.set(component.name, component);
-  }
+const componentFiles = 
+  fs.readdirSync('./components/20th').filter(file => file.endsWith('.js'));
+for (const file of componentFiles) {
+  const component = require(`./components/20th/${file}`);
+  client.components.set(component.name, component);
 }
 
 /* Event Listeners */

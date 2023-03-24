@@ -6,6 +6,7 @@ const { token } = require('./config5th.json');
 const client = new Client({intents: [
   GatewayIntentBits.Guilds,
   GatewayIntentBits.GuildMembers,
+  GatewayIntentBits.DirectMessages
 ]});
 
 /* Loading Commands in Client */

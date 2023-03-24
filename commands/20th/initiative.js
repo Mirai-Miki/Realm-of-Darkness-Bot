@@ -6,7 +6,6 @@ const { canSendMessage } = require('../../modules');
 const { getButtonRow } = require('../../modules/Initiative');
 const getButtonRow = require('./getButtonRow');
 const API = require('../../realmAPI');
-const { ComponentCID } = require("../../Constants");
 const { InitiativeTracker } = require('../../structures');
 
 module.exports = 
@@ -15,7 +14,7 @@ module.exports =
   async execute(interaction) 
   {
     await interaction.deferReply({ephemeral: true});    
-    const channel = getChannel(interaction);
+    const channel = await getChannel(interaction);
     const tracker = await API.getInitTracker(channel.id);
 
     switch (interaction.options.getSubcommand())
@@ -34,8 +33,12 @@ module.exports =
           components: [getButtonRow.confirmNewTracker]
         }
         
-        tracker = new InitiativeTracker({channelId: channel.id});
-        return tracker.rollPhase();
+        tracker = new InitiativeTracker({
+          channelId: channel.id,
+          guildId: interaction.guild.id,
+          startMemberId: interaction.member.id
+        });
+        return await tracker.rollPhase();
       case 'roll':
         if (!tracker) throw new RealmError() // No Tracker started
         return await tracker.characterRoll(interaction);
@@ -53,10 +56,10 @@ module.exports =
 }
 
 
-function getChannel(interaction)
+async function getChannel(interaction)
 {
   if (!interaction.guild) throw new RealmError({code: ErrorCodes.GuildRequired});
-  const channel = canSendMessage({channel: interaction.channel});
+  const channel = await canSendMessage({channel: interaction.channel});
   if (!channel) throw new RealmError({code: ErrorCodes.InvalidChannelPermissions});
   return channel;
 }

@@ -20,6 +20,8 @@ module.exports.ErrorCodes =
 	InitInvalidPhase: 13,
 	InitNoCharacter: 14,
 	InitInvalidTurn: 15,
+	InitInvalidButtonPerm: 16,
+	InitNoTracker: 17,
 	RequiresFledgling: 100,
 	RequiresNeonate: 101,
 	RequiresAncilla: 102,

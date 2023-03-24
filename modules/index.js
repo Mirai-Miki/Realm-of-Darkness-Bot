@@ -19,3 +19,4 @@ module.exports.deleteCharacterComponent =
 module.exports.getCharacterList = require('./getCharacterList');
 module.exports.setStorytellers = require('./setStorytellers');
 module.exports.setTrackerChannel = require('./setTrackerChannel');
+module.exports.canSendMessage = require('./canSendMessage');

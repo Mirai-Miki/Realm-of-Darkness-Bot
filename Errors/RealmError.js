@@ -237,4 +237,24 @@ const ErrorInfo =
     debug: false,
     cause: false
   },
+  [ErrorCodes.InitInvalidButtonPerm]:
+  {
+    system: "Initiative invalid button permissions",
+    embedTitle: 'Invalid Permissions',
+    embedMessage: 
+      'Only the person who started this Initiative or an Admin/Storyteller ' +
+      'can use these buttons.',
+    debug: false,
+    cause: false
+  },
+  [ErrorCodes.InitNoTracker]:
+  {
+    system: "Initiative no Tracker",
+    embedTitle: 'No Tracker Found',
+    embedMessage: 
+      'Sorry, no tracker was found. To start a tracker use the command ' +
+      '`/init new`',
+    debug: true,
+    cause: true
+  },
 }

@@ -24,6 +24,7 @@ module.exports = class InitiativeTracker
     this.characters = new Collection();
     this.actions = [];
     this.round = 0;
+    this.tag = null;
 
     if (json) this.deserialize(json);
   }
@@ -84,7 +85,6 @@ module.exports = class InitiativeTracker
 
     let currentChar;
     let nextChar = null;
-    let tag = null;
     for (const order of this.actions)
     {
       const character = this.characters.get(order.id);
@@ -98,7 +98,7 @@ module.exports = class InitiativeTracker
       else if (currentChar)
       {
         nextChar = character;
-        tag = `<@${nextChar.memberId}>`
+        this.tag = `<@${nextChar.memberId}>`
         break;
       }
     }
@@ -116,7 +116,7 @@ module.exports = class InitiativeTracker
 
   async repost(interaction)
   {
-
+    await this.post(interaction.client);
   }
 
   ////////////////////////// Button Interactions //////////////////////////////
@@ -124,14 +124,7 @@ module.exports = class InitiativeTracker
   {
     this.phase = InitPhase.ROLL;
     this.round++;
-    for (const character of this.characters.values())
-    {
-      character.joinedRound = false;
-      character.extraActions = 0;
-      character.declared = false;
-      character.action = null;
-    }
-
+    for (const character of this.characters.values()) {character.newRound()}
     await this.post(interaction.client);
     return {content: 'Ready to go!'};
   }
@@ -189,7 +182,7 @@ module.exports = class InitiativeTracker
 
   async endPhase(interaction)
   {
-    
+
   }
 
   ///////////////////////////// Utility Methods //////////////////////////////
@@ -210,7 +203,7 @@ module.exports = class InitiativeTracker
       embeds: [await getTrackerEmbed(this, channel.guild.members)],
       components: [getInitiativeButtonRow(this.phase)]
     }
-    if (this.phase === InitPhase.DECLARE) response.content = tag;
+    if (this.phase === InitPhase.DECLARE) response.content = this.tag;
     const message = await channel.send(response);
     this.messageId = message.id;
 
@@ -238,7 +231,8 @@ module.exports = class InitiativeTracker
       start_member_id: this.startMemberId,
       round: this.round,
       characters: characters,
-      actions: this.actions
+      actions: this.actions,
+      tag: this.tag
     }
   }
 
@@ -252,6 +246,7 @@ module.exports = class InitiativeTracker
     this.startMemberId = json.startMemberId;
     this.round = json.round;
     this.actions = json.actions;
+    this.tag = json.tag;
 
     for (const character of json.characters)
     {
