@@ -1,6 +1,5 @@
 'use strict';
 const { postData } = require('./postData.js');
-const { APIKey } = require('../config5th.json');
 const getCharacterClass = require('../modules/getCharacterClass');
 const RealmAPIError = require('../Errors/RealmAPIError');
 const { serializeGuild, serializeUserOrGuildMember } = require('./serializers');
@@ -19,7 +18,6 @@ module.exports = async function getCharacter({name=null, user=null,
 {
   const path = 'character/get';
   const data = {
-    APIKey: APIKey, 
     name: name, 
     user: serializeUserOrGuildMember(user),
     guild: serializeGuild(guild),

@@ -1,15 +1,11 @@
 'use strict'
 const { postData } = require('./postData.js');
-const { APIKey } = require('../config5th.json');
 
 module.exports = async function getSTRoles(guildId)
 {
   const path = 'chronicle/storyteller/roles/get'
 
-  const data = {
-      APIKey: APIKey,
-      guild_id: guildId
-  }
+  const data = {guild_id: guildId}
 
   const res = await postData(path, data);
   switch(res?.status)

@@ -1,38 +1,28 @@
 'use strict'
 const API = require('../realmAPI');
 const { Collection, EmbedBuilder } = require("discord.js");
-const { RealmAPIError, RealmError } = require('../Errors');
+const { RealmAPIError, RealmError, ErrorCodes } = require('../Errors');
 const initiativeCharacter = require('./InitiativeCharacter');
-const { InitiativeTracker } = require('.');
-const [ getInitiativeButtonRow ] = require('../modules/Initiative/getButtonRow');
+const { getInitiativeButtonRow } = require('../modules/Initiative/getButtonRow');
+const { InitPhase } = require('../Constants');
 
 module.exports = class InitiativeTracker
 {
-  static Phase = 
-  {
-    NEW: 0,
-    ROLL: 1,
-    REVEAL: 2,
-    DECLARE: 3,
-    DECLARED: 4,
-    JOIN: 5,
-    END: 6
-  }
-
   constructor({
-    phase=InitiativeTracker.Phase.ROLL,
     channelId=null,
     guildId=null,
-    messageId=null,
+    startMemberId=null,
     json=null}={}
   )
   {
-    this.phase = phase;
+    this.phase = InitPhase.ROLL;
     this.channelId = channelId;
     this.guildId = guildId;
     this.messageId = messageId;
+    this.startMemberId = startMemberId;
     
     this.characters = new Collection();
+    this.actions = [];
     this.round = 0;
 
     if (json) this.deserialize(json);
@@ -42,10 +32,10 @@ module.exports = class InitiativeTracker
   async characterRoll(interaction, reroll=false)
   {
     if (
-      this.phase !== InitiativeTracker.Phase.ROLL || 
-      this.phase !== InitiativeTracker.Phase.JOIN)
+      this.phase !== InitPhase.ROLL || 
+      this.phase !== InitPhase.JOIN)
     {
-      throw new RealmAPIError();
+      throw new RealmAPIError({code: ErrorCodes.InitInvalidPhase});
     }
 
     const name = interaction.options.getString('name');
@@ -56,12 +46,14 @@ module.exports = class InitiativeTracker
     let character = 
       this.characters.get(`${interaction.user.id}|${name.toLowerCase()}`);
     
-    if (reroll && !character) throw new RealmError() // no character
+    if (reroll && !character) 
+      throw new RealmError({code: ErrorCodes.InitNoCharacter});
     else if (reroll)
     {
       dexWits = character.dexWits;
       modifier = character.modifier;
-      extraActions = character.extraActions;
+      extraActions = interaction.options.getInteger('extra_actions') ?? 
+        character.extraActions;
     }
     else if (!character)
       character = new initiativeCharacter({name: name, member: interaction.member});
@@ -69,7 +61,7 @@ module.exports = class InitiativeTracker
     character.rollInitiative(dexWits, modifier, extraActions);
     this.character.set(`${interaction.user.id}|${name.toLowerCase()}`);
 
-    await this.post(interaction.clinet);
+    await this.post(interaction.client);
 
     let mod = ''
     if (character.modifier) mod = ` and a modifier of <${character.mod}>`;
@@ -85,19 +77,44 @@ module.exports = class InitiativeTracker
     }
   }
 
-  async characterDeclare()
+  async characterDeclare(interaction)
   {
-    if (this.phase !== InitiativeTracker.Phase.DECLARE)
-      throw new RealmAPIError();
+    if (this.phase !== InitPhase.DECLARE)
+      throw new RealmAPIError({code: ErrorCodes.InitInvalidPhase});
+
+    let currentChar;
+    let nextChar = null;
+    let tag = null;
+    for (const order of this.actions)
+    {
+      const character = this.characters.get(order.id);
+      if (!currentChar && !order.action)
+      {
+        if (character.memberId != interaction.member.id)
+          throw new RealmError({code: ErrorCodes.InitInvalidTurn});
+        currentChar = character;
+        order.action = interaction.options.getString("action");
+      }
+      else if (currentChar)
+      {
+        nextChar = character;
+        tag = `<@${nextChar.memberId}>`
+        break;
+      }
+    }
+    
+    if (!nextChar) tracker.phase = InitPhase.DECLARED;
+    this.post(interaction.client, tag);
+    return {content: 'Your action has been declared!'};
   }
 
-  async characterJoin()
+  async characterJoin(interaction)
   {
-    if (this.phase !== InitiativeTracker.Phase.JOIN)
-      throw new RealmAPIError();
+    if (this.phase !== InitPhase.JOIN)
+      throw new RealmAPIError({code: ErrorCodes.InitInvalidPhase});
   }
 
-  async repost()
+  async repost(interaction)
   {
 
   }
@@ -105,7 +122,7 @@ module.exports = class InitiativeTracker
   ////////////////////////// Button Interactions //////////////////////////////
   async rollPhase(interaction)
   {
-    this.phase = InitiativeTracker.Phase.ROLL;
+    this.phase = InitPhase.ROLL;
     this.round++;
     for (const character of this.characters.values())
     {
@@ -121,28 +138,43 @@ module.exports = class InitiativeTracker
 
   async revealPhase(interaction)
   {
-    this.phase = InitiativeTracker.Phase.REVEAL;
+    this.phase = InitPhase.REVEAL;
     await this.post(interaction.client);
     return {content: 'Ready to go!'}
   }
 
   async declarePhase(interaction)
   {
-    this.phase = InitiativeTracker.Phase.DECLARE;
+    this.phase = InitPhase.DECLARE;
+    this.characters.sort(sortInitAscending);
+    for (const character of this.characters.values())
+    { // Normal action order in reverse
+      if (!character.joinedRound) continue;
+      this.actions.unshift({id: character.id+'|'+character.name, action: null});
+    }
+    for (const character of this.characters.values())
+    { // extra actions
+      if (!character.joinedRound) continue;
+      let extraActions = character.extraActions;
+      for (extraActions; extraActions > 0; extraActions--)
+      {
+        this.actions.unshift({id: character.id+'|'+character.name, action: null});
+      }
+    }
     await this.post(interaction.client);
     return {content: 'Ready to go!'}
   }
 
   async declaredPhase(interaction)
   {
-    this.phase = InitiativeTracker.Phase.DECLARED    
+    this.phase = InitPhase.DECLARED    
     await this.post(interaction.client);
     return {content: 'Your action has been declared!'}
   }
 
   async joinPhase(interaction)
   {
-    this.phase = InitiativeTracker.Phase.JOIN;
+    this.phase = InitPhase.JOIN;
     this.round++;
     for (const character of this.characters.values())
     {
@@ -155,13 +187,18 @@ module.exports = class InitiativeTracker
     return {content: 'Ready to go!'}
   }
 
+  async endPhase(interaction)
+  {
+    
+  }
+
   ///////////////////////////// Utility Methods //////////////////////////////
   async save()
   {
     // Save tracker in its current state to the database
   }
 
-  async post(client)
+  async post(client, tag=null)
   {
     const channel = await client.channels.fetch(this.channelId);
     let oldMessage;
@@ -170,16 +207,14 @@ module.exports = class InitiativeTracker
     const response = 
     {
       content: null,
-      embeds: [getTrackerEmbed(this, channel.guild.members)],
-      components: getInitiativeButtonRow(this.phase)
+      embeds: [await getTrackerEmbed(this, channel.guild.members)],
+      components: [getInitiativeButtonRow(this.phase)]
     }
+    if (this.phase === InitPhase.DECLARE) response.content = tag;
     const message = await channel.send(response);
     this.messageId = message.id;
 
-    try
-    {
-      await this.save();
-    }
+    try {await this.save()}
     catch (error)
     {
       message.delete();
@@ -200,8 +235,10 @@ module.exports = class InitiativeTracker
       channel_id: this.channelId,
       guild_id: this.guildId,
       message_id: this.messageId,
+      start_member_id: this.startMemberId,
       round: this.round,
-      characters: characters
+      characters: characters,
+      actions: this.actions
     }
   }
 
@@ -212,7 +249,9 @@ module.exports = class InitiativeTracker
     this.channelId = json.channel_id;
     this.guildId = json.guild_id;
     this.messageId = json.message_id;
+    this.startMemberId = json.startMemberId;
     this.round = json.round;
+    this.actions = json.actions;
 
     for (const character of json.characters)
     {
@@ -237,19 +276,6 @@ function sortInitAscending(a, b)
     }
     else return 1;
 }
-
-function sortInitDescending(a, b)
-{
-    if (a.init < b.init) return -1;
-    else if (a.init === b.init) // Handle Tie
-    {
-        if ((a.pool + a.mod) < (b.pool + b.mod)) return -1;
-        else if ((a.pool + a.mod) === (b.pool + b.mod)) return 0;
-        else return 1;
-    }
-    else return 1;
-}
-
 
 //////////////////////////////////// Embed Shit ///////////////////////////////
 async function getTrackerEmbed(tracker, members)
@@ -299,14 +325,16 @@ async function getTrackerEmbed(tracker, members)
   {
     const fields = [];
     let current = false;
-    for (const character of tracker.characters.values())
+    for (const order of tracker.actions)
     {
+      const character = tracker.characters.get(order.id);      
+      const member = await members.fetch(character.memberId);
       if (!character.joinedRound) continue;
       // Go through and set each member and their action
       let value = "";
         
-      if (character.declared) value = character.action;
-      else if (!character.declared && !current)
+      if (order.action) value = order.action;
+      else if (!order.action && !current)
       {
         value = "📍 Please decalare your action!";
         current = true;
@@ -314,7 +342,7 @@ async function getTrackerEmbed(tracker, members)
       else value = "Undeclared";
 
        fields.unshift({
-         title: `${character.name} (${character.member.displayName})`,
+         title: `${character.name} (${member.displayName})`,
          value: value
        });
      }
@@ -333,8 +361,8 @@ function getTrackerEmbedInfo(tracker)
 
   switch (tracker.phase)
   {
-    case InitiativeTracker.Phase.NEW:
-    case InitiativeTracker.Phase.ROLL:
+    case InitPhase.NEW:
+    case InitPhase.ROLL:
       return {        
         title: `${round} Roll for Initiative!`,
         description: 
@@ -344,13 +372,13 @@ function getTrackerEmbedInfo(tracker)
           "\n----------------------------------",
         color: "#c41d71"
       }
-    case InitiativeTracker.Phase.REVEAL:      
+    case InitPhase.REVEAL:      
       return {
         title: `${round} Initiative Order!`,
         description: "----------------------------------",
         colour: "#c41d71"
       }
-    case InitiativeTracker.Phase.DECLARE:
+    case InitPhase.DECLARE:
       return {
         title: `${round} Declare Actions!`,
         description: 
@@ -360,7 +388,7 @@ function getTrackerEmbedInfo(tracker)
           "on your turn!\n----------------------------------",
         color: "#c41d71"
       }
-    case InitiativeTracker.Phase.DECLARED:
+    case InitPhase.DECLARED:
       return {
         title: `${round} Take your actions!!`,
         description: 
@@ -371,7 +399,7 @@ function getTrackerEmbedInfo(tracker)
           "\n----------------------------------",
         color: "#96150c"
       }
-    case InitiativeTracker.Phase.JOIN:
+    case InitPhase.JOIN:
       return {
         title: `${round} Join the next round!`,
         description: 

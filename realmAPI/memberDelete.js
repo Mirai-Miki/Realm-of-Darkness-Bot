@@ -10,10 +10,7 @@ module.exports = async function memberDelete(member)
   };
   
   let res = await postData(path, data);
-  if (res?.status === 200 && res?.data)
-  {            
-    return res.data;
-  }
+  if (res?.status === 200 && res?.data) return res.data;
   else
   {
     console.error("Error in DatabaseAPI.getCharacter()")

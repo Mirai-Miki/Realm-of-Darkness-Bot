@@ -12,3 +12,14 @@ module.exports.Supporter =
   elder: 4,
   methuselah: 5
 }
+
+module.exports.InitPhase =
+{
+  NEW: 0,
+  ROLL: 1,
+  REVEAL: 2,
+  DECLARE: 3,
+  DECLARED: 4,
+  JOIN: 5,
+  END: 6
+}

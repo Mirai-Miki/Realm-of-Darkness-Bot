@@ -1,15 +1,10 @@
 'use strict';
-const { APIKey } = require('../config5th.json');
 const { postData } = require('./postData');
 
 module.exports = async function getSupporterLevel(userId)
 {
   const path = 'user/supporter/get';
-  const data = 
-  {
-    APIKey: APIKey,
-    user_id: userId,
-  };
+  const data = {user_id: userId};
         
   let res = await postData(path, data);
   switch(res?.status)

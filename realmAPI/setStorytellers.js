@@ -1,13 +1,12 @@
 'use strict';
 const { postData } = require('./postData.js');
-const { APIKey } = require('../config5th.json');
 const RealmAPIError = require('../Errors/RealmAPIError');
 
 module.exports = async function setStorytellers(guildId, roleId)
 {
   const path = 'chronicle/storyteller/roles/set';
-  const data = {
-    APIKey: APIKey,
+  const data = 
+  {
     guild_id: guildId,
     role_id: roleId
   }

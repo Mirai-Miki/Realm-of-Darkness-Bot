@@ -1,5 +1,6 @@
 'use strict'
-const { ButtonBuilder, ActionRowBuilder } = require('discord.js')
+const { ButtonBuilder, ActionRowBuilder, ButtonStyle } = require('discord.js');
+const { InitPhase } = require('../../Constants');
 
 module.exports.getInitiativeButtonRow = function(phase)
 {
@@ -7,6 +8,8 @@ module.exports.getInitiativeButtonRow = function(phase)
   else if (phase === InitPhase.REVEAL) return revealPhase;
   else if (phase === InitPhase.DECLARE) return declarePhaseOne; 
 }
+
+
     /*
     Roll Phase:
         {End} - Less then 2 people have rolled
@@ -25,7 +28,7 @@ const rollPhaseOne = new ActionRowBuilder()
     new ButtonBuilder()
     .setCustomId(ComponentCID.INIT_END)
     .setLabel('End Initiative')
-    .setStyle('DANGER')
+    .setStyle(ButtonStyle.Danger)
   );
     
 const rollPhaseTwo = new ActionRowBuilder()
@@ -33,13 +36,13 @@ const rollPhaseTwo = new ActionRowBuilder()
     new ButtonBuilder()
     .setCustomId(ComponentCID.INIT_REVEAL)
     .setLabel('Reveal Initiative')
-    .setStyle('PRIMARY')
+    .setStyle(ButtonStyle.Primary)
   )
   .addComponents(
     new ButtonBuilder()
     .setCustomId(ComponentCID.INIT_END)
     .setLabel('End Initiative')
-    .setStyle('DANGER')
+    .setStyle(ButtonStyle.Danger)
   ); 
 
 const revealPhase = new ActionRowBuilder()
@@ -47,19 +50,19 @@ const revealPhase = new ActionRowBuilder()
     new ButtonBuilder()
     .setCustomId(ComponentCID.INIT_NEXT_ROUND)
     .setLabel('Next Round')
-    .setStyle('PRIMARY')
+    .setStyle(ButtonStyle.Primary)
   )
   .addComponents(
     new ButtonBuilder()
     .setCustomId(ComponentCID.INIT_DECLARE)
     .setLabel('Declare Actions')
-    .setStyle('SECONDARY')
+    .setStyle(ButtonStyle.Secondary)
   )
   .addComponents(
     new ButtonBuilder()
     .setCustomId(ComponentCID.INIT_END)
     .setLabel('End Initiative')
-    .setStyle('DANGER')
+    .setStyle(ButtonStyle.Danger)
   );
 
 const declarePhaseOne = new ActionRowBuilder()
@@ -67,7 +70,7 @@ const declarePhaseOne = new ActionRowBuilder()
     new ButtonBuilder()
     .setCustomId(ComponentCID.INIT_END)
     .setLabel('End Initiative')
-    .setStyle('DANGER')
+    .setStyle(ButtonStyle.Danger)
   );
     
 const declarePhaseTwo = new ActionRowBuilder()
@@ -75,13 +78,13 @@ const declarePhaseTwo = new ActionRowBuilder()
     new ButtonBuilder()
     .setCustomId(ComponentCID.INIT_NEXT_ROUND)
     .setLabel('Next Round')
-    .setStyle('PRIMARY')
+    .setStyle(ButtonStyle.Primary)
   )
   .addComponents(
     new ButtonBuilder()
     .setCustomId(ComponentCID.INIT_END)
     .setLabel('End Initiative')
-    .setStyle('DANGER')
+    .setStyle(ButtonStyle.Danger)
   );
     
 module.exports.confirmNewTracker = new ActionRowBuilder()
@@ -89,5 +92,5 @@ module.exports.confirmNewTracker = new ActionRowBuilder()
     new ButtonBuilder()
     .setCustomId(ComponentCID.INIT_CONFIRM)
     .setLabel('Confirm')
-    .setStyle('PRIMARY')
+    .setStyle(ButtonStyle.Primary)
   )

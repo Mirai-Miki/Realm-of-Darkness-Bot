@@ -204,8 +204,36 @@ const ErrorInfo =
     embedTitle: 'Invalid Channel Permissions',
     embedMessage: 
       'The selected channel requires the following permissions to function.' +
-      '\n- View Channel\n- Send Messages\n- Embed Links'
-    ,
+      '\n- View Channel\n- Send Messages\n- Embed Links',
+    debug: false,
+    cause: false
+  },   
+  [ErrorCodes.InitInvalidPhase]:
+  {
+    system: "Initiative invalid phase",
+    embedTitle: 'Invalid Phase',
+    embedMessage: 
+      'Sorry you can only use this command when the Initiative tracker says ' +
+      'you can.\nTo repost the tracker use the command `/init repost`',
+    debug: false,
+    cause: false
+  },  
+  [ErrorCodes.InitNoCharacter]:
+  {
+    system: "Initiative no character found",
+    embedTitle: 'Character not found',
+    embedMessage: 
+      'You can only use the reroll command if you have rolled ' +
+      'in a previous round with this character.',
+    debug: false,
+    cause: false
+  }, 
+  [ErrorCodes.InitInvalidTurn]:
+  {
+    system: "Initiative invalid turn",
+    embedTitle: 'Invalid turn',
+    embedMessage: 
+      'You can only declare an action on your turn.',
     debug: false,
     cause: false
   },

@@ -2,16 +2,20 @@
 const { postData } = require('./postData.js');
 const RealmAPIError = require('../Errors/RealmAPIError');
 
-module.exports = async function getTrackerChannel(guildId)
+module.exports = async function setInitTracker(channelId, guildId, tracker)
 {
-  const path = 'chronicle/channel/get';
-  const data = {guild_id: guildId}
+  const path = `initiative/set`;
+  const data = {
+    channel_id: channelId,
+    chronicle_id: guildId,
+    tracker: tracker
+  }
 
   const res = await postData(path, data);
   switch(res?.status)
   {
-    case 200: // Updated
-      return res.data.channel_id;
+    case 200: 
+      return
     default:
       throw new RealmAPIError({cause: `res: ${res?.status}\ndata: ${res?.data}`});
   }

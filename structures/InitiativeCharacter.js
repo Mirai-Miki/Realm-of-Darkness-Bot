@@ -3,10 +3,9 @@ const { Roll } = require("../modules/dice");
 
 module.exports = class initiativeCharacter
 {
-  constructor({name, member, json=null}={})
+  constructor({name, memberId, json=null}={})
   {
-    this.memberId = member?.id ?? null;
-    this.memberName = member?.displayName ?? null;
+    this.memberId = memberId ?? null;
     this.name = name ?? null;
     
     this.joinedRound = false;
@@ -16,9 +15,6 @@ module.exports = class initiativeCharacter
     this.modifier = 0;
     this.initiative = 0;
     this.extraActions = 0;
-    
-    this.declared = false;
-    this.action = null;
 
     if (json) this.deserialize(json);
   }
@@ -47,28 +43,36 @@ module.exports = class initiativeCharacter
     return this.initiative;
   }
 
-  declareAction(action)
+  newRound()
   {
-    if (typeof action != "string") throw new TypeError();
-    this.action = action;
-    if (this.action.length > 100) throw new StringParseError();
-    return this;
-  }
-
-  setDeclared(declared)
-  {
-    if (typeof declared != "boolean") throw new TypeError();
-    this.declared = declared;        
-    return this;
+    this.joinedRound = false;
+    this.rolled = false;
+    this.extraActions = 0;
   }
 
   serialize()
   {
-
+    return {
+      member_id: this.memberId,
+      name: this.name,
+      joined_round: this.joinedRound,
+      dex_wits: this.dexWits,
+      d10: this.d10,
+      modifier: this.modifier,
+      initiative: this.initiative,
+      extraActions: this.extraActions
+    }
   }
 
   deserialize(json)
   {
-
+    this.memberId = json.member_id;
+    this.name = json.name;
+    this.joinedRound = json.joined_round;
+    this.dexWits = json.dex_wits;
+    this.d10 = json.d10;
+    this.modifier = json.modifier;
+    this.initiative = json.initiative;
+    this.extraActions = json.extraActions;
   }
 }

@@ -1,17 +1,12 @@
 'use strict';
 const { postData } = require('./postData.js');
-const { APIKey } = require('../config5th.json');
 const RealmAPIError = require('../Errors/RealmAPIError');
 const { InitiativeTracker } = require('../structures');
 
-module.exports = async function getCharacter(channelId)
+module.exports = async function getInitTracker(channelId)
 {
   const path = 'character/get';
-  const data =  
-  {
-    APIKey: APIKey,
-    channel_id: channelId
-  };
+  const data =  {channel_id: channelId};
 
   const res = await postData(path, data);
   switch(res?.status)
