@@ -5,7 +5,7 @@ const { InitiativeTracker } = require('../structures');
 
 module.exports = async function getInitTracker(channelId)
 {
-  const path = 'character/get';
+  const path = 'initiative/get';
   const data =  {channel_id: channelId};
 
   const res = await postData(path, data);

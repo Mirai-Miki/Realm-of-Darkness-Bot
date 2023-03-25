@@ -1,10 +1,8 @@
 'use strict'
-const { SlashCommandBuilder } = require('@discordjs/builders');
-
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const { RealmError, ErrorCodes } = require('../../Errors');
 const { canSendMessage } = require('../../modules');
-const { getButtonRow } = require('../../modules/Initiative');
-const getButtonRow = require('./getButtonRow');
+const getButtonRow = require('../../modules/Initiative/getButtonRow');
 const API = require('../../realmAPI');
 const { InitiativeTracker } = require('../../structures');
 
@@ -15,21 +13,21 @@ module.exports =
   {
     await interaction.deferReply({ephemeral: true});    
     const channel = await getChannel(interaction);
-    const tracker = await API.getInitTracker(channel.id);
+    let tracker = await API.getInitTracker(channel.id);
 
     switch (interaction.options.getSubcommand())
     {
       case 'new':
         if (tracker) return { // Tracker Already active in channel
           embeds: 
-            new EmbedBuilder()        
+            [new EmbedBuilder()        
             .setTitle("Start New Initiative?")
             .setDescription(
               "There is still an active tracker in this channel " +
               "would you still like to create a new one?\n" +
               "Note starting a new tracker will end the old one."
             )
-            .setColor("#c914cc"),
+            .setColor("#c914cc")],
           components: [getButtonRow.confirmNewTracker]
         }
         
@@ -38,18 +36,18 @@ module.exports =
           guildId: interaction.guild.id,
           startMemberId: interaction.member.id
         });
-        return await tracker.rollPhase();
+        return await tracker.rollPhase(interaction);
       case 'roll':
-        if (!tracker) throw new RealmError() // No Tracker started
+        if (!tracker) throw new RealmError({code: ErrorCodes.InitNoTracker})
         return await tracker.characterRoll(interaction);
       case 'reroll':
-        if (!tracker) throw new RealmError() // No Tracker started
+        if (!tracker) throw new RealmError({code: ErrorCodes.InitNoTracker})
         return await tracker.characterRoll(interaction, true);
       case 'declare':
-        if (!tracker) throw new RealmError() // No Tracker started
+        if (!tracker) throw new RealmError({code: ErrorCodes.InitNoTracker})
         return await tracker.characterDeclare(interaction);
       case 'repost':
-        if (!tracker) throw new RealmError() // No Tracker started
+        if (!tracker) throw new RealmError({code: ErrorCodes.InitNoTracker})
         return await tracker.repost(interaction);
     }
   },

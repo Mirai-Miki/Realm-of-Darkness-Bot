@@ -1,9 +1,11 @@
 'use strict';
+const { Events } = require('discord.js');
 const RealmError = require('../Errors/RealmError');
 const { handleErrorDebug } = require('../Errors/index');
+const API = require('../realmAPI');
 
 module.exports = {
-	name: 'interactionCreate',
+	name: Events.InteractionCreate,
 	once: false,
 	async execute(interaction) 
 	{
@@ -15,6 +17,8 @@ module.exports = {
 
 	    try 
 			{
+				await API.updateUser(
+					interaction.member ? interaction.member : interaction.user, true);
 	    	const discordResponse = await command.execute(interaction);
 				if (discordResponse)
 				{

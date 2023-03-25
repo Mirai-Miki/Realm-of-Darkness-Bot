@@ -1,10 +1,13 @@
 'use strict';
+const { Events } = require('discord.js');
 const { setActivity } = require('../modules');
+const API = require('../realmAPI');
 
 module.exports = {
-	name: 'guildCreate',
+	name: Events.GuildCreate,
 	once: false,
-	execute(guild) {
+	async execute(guild) {
     setActivity(guild.client);
+		await API.updateGuild(guild);
 	},
 };

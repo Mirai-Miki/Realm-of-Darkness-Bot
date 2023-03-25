@@ -2,19 +2,17 @@
 const { postData } = require('./postData.js');
 const RealmAPIError = require('../Errors/RealmAPIError');
 
-module.exports = async function setTrackerChannel(guildId, channelId)
+
+module.exports = async function deleteGuild(guildId)
 {
-  const path = 'chronicle/channel/set';
-  const data = {
-    guild_id: guildId,
-    channel_id: channelId
-  }
+  const path = `chronicle/delete`;
+  const data = {guild_id: guildId}
 
   const res = await postData(path, data);
   switch(res?.status)
   {
-    case 200: // Updated
-      return res.data.channel_id;
+    case 200: // Deleted 
+      return;
     default:
       throw new RealmAPIError({cause: `res: ${res?.status}\ndata: ${res?.data}`});
   }

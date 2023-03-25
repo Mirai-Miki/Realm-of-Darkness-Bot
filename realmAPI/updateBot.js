@@ -2,23 +2,22 @@
 const { postData } = require('./postData.js');
 const RealmAPIError = require('../Errors/RealmAPIError');
 
-module.exports = async function updateGuild(guild)
+module.exports = async function updateBot(client)
 {
-  if (!guild.available) return;
-  const path = 'chronicle/set';
+  if (!client.shard.ids.includes(0)) return;
+  const path = 'data/set';
   const data = 
   {
-    guild: 
+    bot: 
     {
-      id: guild.id,
-      name: guild.name,
-      owner_id: guild.ownerId,
-      bot: guild.client.user.id,
-      shard: guild.shardId,
-      icon_url: guild.iconURL(),
+      id: client.user.id,
+      username: client.user.username,
+      discriminator: client.user.discriminator,
+      avatar_url: client.user.displayAvatarURL(),
+      shard_count: client.shard.count,
     }
   }
-  
+
   const res = await postData(path, data);
   switch(res?.status)
   {

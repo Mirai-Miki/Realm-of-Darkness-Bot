@@ -1,11 +1,12 @@
 'use strict';
-const DatabaseAPI = require('../realmAPI/DatabaseAPI')
+const { Events } = require('discord.js');
+const API = require('../realmAPI')
 
 module.exports = {
-	name: 'roleDelete',
+	name: Events.GuildRoleDelete,
 	once: false,
 	async execute(role) 
   {
-    DatabaseAPI.DeleteSTRole(role);
+    await API.deleteStRole(role);
 	},
 };

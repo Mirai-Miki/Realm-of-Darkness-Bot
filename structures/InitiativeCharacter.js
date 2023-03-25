@@ -1,7 +1,7 @@
 'use strict';
 const { Roll } = require("../modules/dice");
 
-module.exports = class initiativeCharacter
+module.exports = class InitiativeCharacter
 {
   constructor({name, memberId, json=null}={})
   {
@@ -36,9 +36,8 @@ module.exports = class initiativeCharacter
     this.rolled = true;
     this.joinedRound = true;
 
-    const totalPool = (this.pool + this.mod);
     this.d10 = Roll.single(10);
-    this.initiative = (this.d10 + totalPool);
+    this.initiative = (this.d10 + this.dexWits + this.modifier);
     if (this.initiative < 0) this.initiative = 0;
     return this.initiative;
   }

@@ -1,10 +1,11 @@
 'use strict'
 const { ButtonBuilder, ActionRowBuilder, ButtonStyle } = require('discord.js');
-const { InitPhase } = require('../../Constants');
+const { InitPhase, ComponentCID } = require('../../Constants');
 
 module.exports.getInitiativeButtonRow = function(phase)
 {
   if (phase <= InitPhase.ROLL) return rollPhaseOne;
+  else if (phase === InitPhase.ROLL2) return rollPhaseTwo;
   else if (phase === InitPhase.REVEAL) return revealPhase;
   else if (phase === InitPhase.DECLARE) return declarePhaseOne; 
 }

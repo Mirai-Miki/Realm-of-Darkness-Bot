@@ -2,7 +2,6 @@
 const { postData } = require('./postData.js');
 const getCharacterClass = require('../modules/getCharacterClass');
 const RealmAPIError = require('../Errors/RealmAPIError');
-const { serializeGuild, serializeUserOrGuildMember } = require('./serializers');
 
 /**
  * Finds a character in the Database if one exists
@@ -19,8 +18,6 @@ module.exports = async function getCharacter({name=null, user=null,
   const path = 'character/get';
   const data = {
     name: name, 
-    user: serializeUserOrGuildMember(user),
-    guild: serializeGuild(guild),
     splatSlug: splatSlug,
     pk: pk
   }

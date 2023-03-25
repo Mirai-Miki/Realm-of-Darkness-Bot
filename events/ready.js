@@ -1,12 +1,16 @@
 'use strict';
-const { setActivity } = require('../modules');
+const { Events } = require('discord.js');
+const { setActivity, updateAllGuilds } = require('../modules');
+const API = require('../realmAPI');
 
 module.exports = {
-	name: 'ready',
+	name: Events.ClientReady,
 	once: true,
 	async execute(client) {
-		console.log(`Connected as: ${client.user.tag}`);
     setActivity(client);
 		setInterval(() => {setActivity(client)}, 300000);
+		await API.updateBot(client);
+		await updateAllGuilds(client);		
+		console.log(`Connected as: ${client.user.tag}`);
 	},
 };

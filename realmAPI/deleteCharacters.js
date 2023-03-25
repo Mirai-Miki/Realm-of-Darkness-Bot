@@ -3,7 +3,7 @@ const { postData } = require('./postData.js');
 const RealmAPIError = require('../Errors/RealmAPIError');
 
 
-module.exports = async function getCharacter(ids, disconnect=false)
+module.exports = async function deleteCharacter(ids, disconnect=false)
 {
   const path = `character/delete`;
   const data = {

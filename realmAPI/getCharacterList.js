@@ -1,7 +1,6 @@
 'use strict';
 const { postData } = require('./postData.js');
 const RealmAPIError = require('../Errors/RealmAPIError');
-const { serializeGuild, serializeUserOrGuildMember } = require('./serializers');
 
 /**
  * Gets a list of user characters
@@ -13,8 +12,8 @@ module.exports = async function getCharacterList(user, guild)
 {  
   const path = 'character/name_list';
   const data = { 
-    user: serializeUserOrGuildMember(user),
-    guild: serializeGuild(guild),
+    user_id: user.id,
+    guild_id: guild.id,
   }
 
   const res = await postData(path, data);

@@ -1,13 +1,19 @@
 'use strict';
 const fs = require("fs");
-const { Client, GatewayIntentBits, Collection } = require("discord.js");
+const { Client, GatewayIntentBits, Collection, Partials } = require("discord.js");
 const { token } = require('./config20th.json');
 
-const client = new Client({intents: [
-  GatewayIntentBits.Guilds,
-  GatewayIntentBits.GuildMembers,
-  GatewayIntentBits.DirectMessages
-]});
+const client = new Client({
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.DirectMessages
+  ],
+  partials: [
+    Partials.GuildMember,
+    Partials.User
+  ]
+});
 
 /* Loading Commands in Client */
 client.commands = new Collection();

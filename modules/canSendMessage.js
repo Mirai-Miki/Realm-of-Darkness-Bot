@@ -1,4 +1,5 @@
 'use strict'
+const { PermissionFlagsBits } = require('discord.js');
 
 /**
  * Takes in a TextChannel || a (channelId && client) and returns the channel if the

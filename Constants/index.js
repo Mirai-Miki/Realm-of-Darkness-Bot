@@ -17,9 +17,10 @@ module.exports.InitPhase =
 {
   NEW: 0,
   ROLL: 1,
-  REVEAL: 2,
-  DECLARE: 3,
-  DECLARED: 4,
-  JOIN: 5,
-  END: 6
+  ROLL2: 2,
+  REVEAL: 3,
+  DECLARE: 4,
+  DECLARED: 5,
+  JOIN: 6,
+  END: 7
 }
