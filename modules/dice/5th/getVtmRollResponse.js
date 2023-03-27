@@ -1,19 +1,9 @@
 'use strict';
 const { EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder,
   ButtonBuilder, ButtonStyle } = require('discord.js');
+const { Emoji } = require('../../../Constants');
 
-module.exports.vtmResponse = async function(interaction, buttonState='noButtons')
-{
-  let buttons = [];
-  if (buttonState === 'reroll') buttons = getV5Buttons(interaction);
-  return {
-    content: getContent(interaction),
-    embeds: [vtmEmbed(interaction)],
-    components: buttons,
-  }
-}
-
-function vtmEmbed(interaction)
+module.exports.getEmbed = function(interaction)
 {
   const args = interaction.arguments;
   const results = interaction.rollResults;
@@ -55,14 +45,6 @@ function vtmEmbed(interaction)
 
     if (args.character.tracked?.thumbnail)
       embed.setThumbnail(args.character.tracked.thumbnail);
-  }
-
-  if (results.rerollCount)
-  {
-    embed.addFields({
-      name: `Rerolled ${results.reroll.count} Dice`,
-      value: `${results.reroll.dice.join(', ')}`
-    });
   }
 
   // Add Dice fields
@@ -157,43 +139,30 @@ function getV5Buttons(interaction)
   return null
 }
 
-function getContent(interaction)
+module.exports.getContent = function(interaction)
 {
-  const client = interaction.client;
-  const emotes = 
-  {
-    v5SkullRed: client.emojis.resolve('901732920807546911').toString(),
-    v5AnkhRed: client.emojis.resolve('901731712558567474').toString(),
-    v5AnkhCritRed: client.emojis.resolve('901726454734290994').toString(),
-    v5AnkhBlack: client.emojis.resolve('901731712487288852').toString(),
-    v5AnkhCritBlack: client.emojis.resolve('901726422513614898').toString(),
-    v5DotRed: client.emojis.resolve('901721705981046835').toString(),
-    v5DotBlack: client.emojis.resolve('901721784976568360').toString()
-  }
-
   let content = "";
   // Result Loop
   for (const dice of interaction.rollResults.blackDice) 
   {
     // Adding each dice emoji to the start of the message
-    if (dice == 1) content += emotes.v5DotBlack;
-    else if (dice <= 5) content += emotes.v5DotBlack;
-    else if (dice <= 9) content += emotes.v5AnkhBlack;
-    else content += emotes.v5AnkhCritBlack;
+    if (dice <= 5) content += Emoji.black_fail;
+    else if (dice <= 9) content += Emoji.black_pass;
+    else content += Emoji.black_crit;
     content += ' ';
   }
 
   for (const dice of interaction.rollResults.hungerDice)
   {
-    if (dice == 1) content += emotes.v5SkullRed;
-    else if (dice <= 5) content += emotes.v5DotRed;
-    else if (dice <= 9) content += emotes.v5AnkhRed;
-    else content += emotes.v5AnkhCritRed;
+    if (dice == 1) content += Emoji.bestial_fail;
+    else if (dice <= 5) content += Emoji.red_fail;
+    else if (dice <= 9) content += Emoji.red_pass;
+    else content += Emoji.red_crit;
   }
-  return content;
+  return ((content.length > 2000) ? null : content);
 }
 
-module.exports.getSelectRerollMenu = function(interaction)
+function getSelectRerollMenu(interaction)
 {
   let sortedRolls = interaction.rollResults.blackDice.map(x => x);
   sortedRolls.sort((a, b) => a - b);
@@ -236,4 +205,10 @@ module.exports.getSelectRerollMenu = function(interaction)
     );
   
   return [row];
+}
+
+module.exports.getComponents = function(interaction, type="Button")
+{  
+  if (type === "Buttons") return getV5Buttons(interaction);
+  else return getSelectRerollMenu(interaction);
 }

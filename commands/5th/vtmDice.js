@@ -1,12 +1,11 @@
 'use strict';
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { oneLineTrim } = require('common-tags');
-const { vtmRoll, rouse, resonance, generalRoll } = 
-  require('../../modules/dice/index');
+const { vtmRoll, rouse, resonance, generalRoll } = require('../../modules/dice/index');
 
 
 const command = new SlashCommandBuilder()
-  .setName('vtm')
+  .setName('v')
   .setDescription('Dice rolls for the vtm v5 Game.');
 
 

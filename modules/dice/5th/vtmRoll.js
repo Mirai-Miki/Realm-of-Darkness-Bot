@@ -1,9 +1,9 @@
 'use strict';
-const { minToMilli, trimString } = require('../../misc');
+const { trimString } = require('../../misc');
 const getCharacter = require('./getCharacter');
-const { vtmResponse, getSelectRerollMenu } = require('./getRollResponse');
+const { getEmbed, getContent, getComponents } = require('./getVtmRollResponse');
 const { VtMV5RollResults } = require('../../../structures');
-const { ErrorCodes, handleErrorDebug, RealmError } = require('../../../Errors');
+const handleRerollPress = require('./handleRerollPress');
 
 
 /**
@@ -15,9 +15,12 @@ module.exports.vtmRoll = async function(interaction)
   interaction.arguments = await getArgs(interaction);
   interaction.rollResults = await roll(interaction.arguments);
   
-  interaction.discordResponse = vtmResponse(interaction, 'reroll');
-  handleButtonPress(interaction);
-  return interaction.discordResponse;
+  handleRerollPress(interaction, getEmbed, getComponents);
+  return {
+    content: getContent(interaction),
+    embeds: [getEmbed(interaction)],
+    components: getComponents(interaction)
+  };
 }
 
 async function getArgs(interaction)
@@ -63,108 +66,4 @@ async function roll(args)
   if (args.bp != null) results.setBloodSurge(args.bp);
   if (args.rouse != null) results.setRouse(args.rouse);
   return results;
-}
-
-function handleButtonPress(interaction)
-{
-  const filter = i => (
-    i.message.interaction.id == interaction.id &&
-    (i.customId === 'autoReroll' || i.customId === 'selectReroll')         
-  );
-
-  const channel = interaction.channel;
-  interaction.collector = channel.createMessageComponentCollector({
-    filter,
-    time: minToMilli(14)
-  });  
-
-  // Start Collector and wait for a button press
-  interaction.collector.on('collect', async i => {
-    if (i.user.id !== interaction.user.id) {
-      await i.deferReply({ ephemeral: true });
-      try
-      {
-        await i.editReply({ content: `These buttons aren't for you!`, 
-          ephemeral: true });
-      }
-      catch(error)
-      {
-        const err = 
-          new RealmError({cause: error.stack, code: ErrorCodes.DiscordAPIError});
-        handleErrorDebug(err, interaction);
-      }      
-    }
-
-    await i.deferUpdate();
-    if (i.customId == 'autoReroll')
-    {
-      // reroll
-      interaction.rollResults.rerollDice();
-      try
-      {
-        await i.editReply(await vtmResponse(interaction));
-      }
-      catch(error)
-      {
-        const err = 
-          new RealmError({cause: error.stack, code: ErrorCodes.DiscordAPIError});
-        handleErrorDebug(err, interaction);
-        return;
-      }                  
-      interaction.collector.stop();
-    }
-    else if (i.customId == 'selectReroll' && i.isButton())
-    {
-      try
-      {
-        await i.editReply({components: getSelectRerollMenu(interaction)});
-      }
-      catch(error)
-      {
-        const err = 
-          new RealmError({cause: error.stack, code: ErrorCodes.DiscordAPIError});
-        handleErrorDebug(err, interaction);
-      }                      
-    }
-    else if (i.customId == 'selectReroll' && i.isStringSelectMenu())
-    {
-      interaction.rollResults.rerollDice(i.values);
-      try
-      {
-        await i.editReply(await vtmResponse(interaction));
-      }
-      catch(error)
-      {
-        const err = 
-          new RealmError({cause: error.stack, code: ErrorCodes.DiscordAPIError});
-        handleErrorDebug(err, interaction);
-        return;
-      }                      
-      interaction.collector.stop();
-    }
-  });
-
-  interaction.collector.on('end', async (i, reason) => {
-    try
-    {
-      if (reason === 'time')
-      {
-        await interaction.editReply({components: []});
-      }
-      else (reason === 'guildDelete')
-      {
-        return;
-      }
-    }
-    catch(error) 
-    {
-      if (error.code === 10008); //Do nothing (Unknown Message);
-      else 
-      {
-        const err = 
-          new RealmError({cause: error.stack, code: ErrorCodes.DiscordAPIError});
-        handleErrorDebug(err, interaction);    
-      }
-    }
-  });
 }

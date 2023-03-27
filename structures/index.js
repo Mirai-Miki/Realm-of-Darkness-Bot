@@ -9,3 +9,4 @@ module.exports.Quintessence = require('./Quintessence')
 module.exports.VtMV5RollResults = require('./VtmV5RollResults');
 module.exports.RollResults20th = require('./RollResults20th');
 module.exports.InitiativeTracker = require('./InitiativeTracker');
+module.exports.HunterV5RollResults = require('./hunterV5RollResults');
