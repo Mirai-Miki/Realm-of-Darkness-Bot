@@ -15,12 +15,12 @@ module.exports.Supporter =
 
 module.exports.InitPhase =
 {
-  NEW: 0,
-  ROLL: 1,
-  ROLL2: 2,
-  REVEAL: 3,
-  DECLARE: 4,
-  DECLARED: 5,
-  JOIN: 6,
+  JOIN: 0,
+  ROLL: 1,  
+  JOIN2: 2,
+  ROLL2: 3,
+  REVEAL: 4,
+  DECLARE: 5,
+  DECLARED: 6,
   END: 7
 }

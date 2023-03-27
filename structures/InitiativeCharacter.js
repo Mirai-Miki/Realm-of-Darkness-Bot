@@ -8,8 +8,7 @@ module.exports = class InitiativeCharacter
     this.memberId = memberId ?? null;
     this.name = name ?? null;
     
-    this.joinedRound = false;
-    this.rolled = false;    
+    this.joinedRound = false;   
     this.dexWits = 0;
     this.d10 = 0;
     this.modifier = 0;
@@ -33,7 +32,6 @@ module.exports = class InitiativeCharacter
     this.dexWits = dexWits;
     this.modifier = modifier;
     this.extraActions = extraActions;
-    this.rolled = true;
     this.joinedRound = true;
 
     this.d10 = Roll.single(10);
@@ -45,7 +43,6 @@ module.exports = class InitiativeCharacter
   newRound()
   {
     this.joinedRound = false;
-    this.rolled = false;
     this.extraActions = 0;
   }
 

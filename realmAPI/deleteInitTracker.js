@@ -13,6 +13,8 @@ module.exports = async function deleteInitTracker(channelId)
   {
     case 200: // Deleted 
       return;
+    case 204: // nothing to delete
+      return;
     default:
       throw new RealmAPIError({cause: `res: ${res?.status}\ndata: ${res?.data}`});
   }

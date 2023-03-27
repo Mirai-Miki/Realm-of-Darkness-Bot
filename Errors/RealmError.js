@@ -223,7 +223,7 @@ const ErrorInfo =
     system: "Initiative no character found",
     embedTitle: 'Character not found',
     embedMessage: 
-      'You can only use the reroll command if you have rolled ' +
+      'You can only use the reroll or join command if you have rolled ' +
       'in a previous round with this character.',
     debug: false,
     cause: false

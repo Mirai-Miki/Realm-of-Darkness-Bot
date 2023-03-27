@@ -1,5 +1,5 @@
 'use strict'
-const { ComponentCID } = require("../../Constants");
+const { ComponentCID } = require("../../Constants")
 const { RealmError, ErrorCodes } = require("../../Errors");
 const API = require('../../realmAPI');
 const checkPerms = require('../../modules/Initiative/checkButtonPerm');
@@ -15,6 +15,19 @@ module.exports = {
       cause: 'pressed end tracker button' 
     });
     await checkPerms(interaction, tracker);
-    return await tracker.endPhase(interaction);
+    
+    let message;
+    try
+    {
+      if (tracker.messageId) 
+        message = await interaction.channel.messages.fetch(tracker.messageId); 
+    }
+    catch (error)
+    {
+      message = null;
+    }
+    await API.deleteInitTracker(interaction.channel.id);
+    if (message) await message.delete();
+    return {content: "Tracker Ended", embeds: [], components: []};
   },
 }

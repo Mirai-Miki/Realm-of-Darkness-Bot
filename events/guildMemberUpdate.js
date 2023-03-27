@@ -7,6 +7,6 @@ module.exports = {
 	once: false,
 	async execute(oldMember, newMember) {
     if (newMember.partial) await newMember.fetch();
-		await API.updateUser(newUser);
+		await API.updateUser(newMember);
 	},
 };

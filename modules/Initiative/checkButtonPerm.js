@@ -5,6 +5,6 @@ const isAdminOrSt = require('../isAdminOrST');
 module.exports = async function checkButtonPermissions(interaction, tracker)
 {
   const admin = await isAdminOrSt(interaction.member, interaction.guild.id);
-  if (tracker.startMemberId != interaction.memberId || !admin)
+  if (tracker.startMemberId != interaction.member.id && !admin)
     throw new RealmError({code: ErrorCodes.InitInvalidButtonPerm});
 }

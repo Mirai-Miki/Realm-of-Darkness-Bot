@@ -5,24 +5,11 @@ const { InitPhase, ComponentCID } = require('../../Constants');
 module.exports.getInitiativeButtonRow = function(phase)
 {
   if (phase <= InitPhase.ROLL) return rollPhaseOne;
-  else if (phase === InitPhase.ROLL2) return rollPhaseTwo;
+  else if (phase <= InitPhase.ROLL2) return rollPhaseTwo;
   else if (phase === InitPhase.REVEAL) return revealPhase;
   else if (phase === InitPhase.DECLARE) return declarePhaseOne; 
+  else if (phase === InitPhase.DECLARED) return declarePhaseTwo; 
 }
-
-
-    /*
-    Roll Phase:
-        {End} - Less then 2 people have rolled
-        {Reveal Initiative, End} - 2 or more have rolled
-    
-    Reveal Phase:
-        {Next Round, Declare Actions, End}
-    
-    Decalare Phase:
-        {End} - When not everyone has declared
-        {Next Round, End} - When everyone has declared
-    */
    
 const rollPhaseOne = new ActionRowBuilder()
   .addComponents(
@@ -49,16 +36,22 @@ const rollPhaseTwo = new ActionRowBuilder()
 const revealPhase = new ActionRowBuilder()
   .addComponents(
     new ButtonBuilder()
-    .setCustomId(ComponentCID.INIT_NEXT_ROUND)
-    .setLabel('Next Round')
-    .setStyle(ButtonStyle.Primary)
-  )
-  .addComponents(
-    new ButtonBuilder()
     .setCustomId(ComponentCID.INIT_DECLARE)
     .setLabel('Declare Actions')
+    .setStyle(ButtonStyle.Primary)
+  )  
+  .addComponents(
+    new ButtonBuilder()
+    .setCustomId(ComponentCID.INIT_NEXT_ROUND)
+    .setLabel('Next Round (New Init)')
     .setStyle(ButtonStyle.Secondary)
-  )
+  ) 
+  .addComponents(
+    new ButtonBuilder()
+    .setCustomId(ComponentCID.INIT_JOIN)
+    .setLabel('Next Round (Same Init)')
+    .setStyle(ButtonStyle.Secondary)
+  ) 
   .addComponents(
     new ButtonBuilder()
     .setCustomId(ComponentCID.INIT_END)
@@ -66,7 +59,13 @@ const revealPhase = new ActionRowBuilder()
     .setStyle(ButtonStyle.Danger)
   );
 
-const declarePhaseOne = new ActionRowBuilder()
+const declarePhaseOne = new ActionRowBuilder()  
+  .addComponents(
+    new ButtonBuilder()
+    .setCustomId(ComponentCID.INIT_SKIP)
+    .setLabel('Skip action')
+    .setStyle(ButtonStyle.Secondary)
+  )   
   .addComponents(
     new ButtonBuilder()
     .setCustomId(ComponentCID.INIT_END)
@@ -78,7 +77,13 @@ const declarePhaseTwo = new ActionRowBuilder()
   .addComponents(
     new ButtonBuilder()
     .setCustomId(ComponentCID.INIT_NEXT_ROUND)
-    .setLabel('Next Round')
+    .setLabel('Next Round (New Init)')
+    .setStyle(ButtonStyle.Primary)
+  )
+  .addComponents(
+    new ButtonBuilder()
+    .setCustomId(ComponentCID.INIT_JOIN)
+    .setLabel('Next Round (Same Init)')
     .setStyle(ButtonStyle.Primary)
   )
   .addComponents(

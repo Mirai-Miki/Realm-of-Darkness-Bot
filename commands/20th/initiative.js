@@ -40,6 +40,9 @@ module.exports =
       case 'roll':
         if (!tracker) throw new RealmError({code: ErrorCodes.InitNoTracker})
         return await tracker.characterRoll(interaction);
+      case 'join':
+        if (!tracker) throw new RealmError({code: ErrorCodes.InitNoTracker})
+        return await tracker.characterJoin(interaction);
       case 'reroll':
         if (!tracker) throw new RealmError({code: ErrorCodes.InitNoTracker})
         return await tracker.characterRoll(interaction, true);
@@ -124,6 +127,24 @@ function getCommand()
         .setMaxLength(50)
         .setRequired(true)
       )
+
+      .addIntegerOption(option =>
+        option.setName("modifier")
+        .setDescription(
+          "Any bonus or penalties that apply. " +
+          "Must be between -50 and 50.")
+        .setMaxValue(50)
+        .setMinValue(-50)
+      )
+
+      .addIntegerOption(option =>
+        option.setName("extra_actions")
+        .setDescription(
+          "Any additional actions you are allowed to take. " +
+          "Must be between 1 and 5.")
+        .setMaxValue(5)
+        .setMinValue(1)
+      )
     )
   
   /////////////////////// Declare Init Command ///////////////////////////////
@@ -144,5 +165,27 @@ function getCommand()
     .addSubcommand(subcommand => subcommand
 		  .setName('repost')
 		  .setDescription('Reposts a current tracker.')
+    )
+
+  ////////////////////// Join Init Command //////////////////////////////////
+    .addSubcommand(subcommand => subcommand
+      .setName('join')
+      .setDescription('Joins the current round with the same Init')
+            
+      .addStringOption(option =>
+        option.setName("name")
+        .setDescription("The name of the character rerolling.")
+        .setMaxLength(50)
+        .setRequired(true)
+      )
+      
+      .addIntegerOption(option =>
+        option.setName("extra_actions")
+        .setDescription(
+          "Any additional actions you are allowed to take. " +
+          "Must be between 1 and 5.")
+        .setMaxValue(5)
+        .setMinValue(1)
+      )
     )
 }

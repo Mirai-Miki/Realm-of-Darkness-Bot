@@ -5,16 +5,16 @@ const API = require('../../realmAPI');
 const checkPerms = require('../../modules/Initiative/checkButtonPerm');
 
 module.exports = {
-  name: ComponentCID.INIT_REVEAL,
+  name: ComponentCID.INIT_SKIP,
   async execute(interaction) 
   {
     await interaction.deferReply({ephemeral: true});
     const tracker = await API.getInitTracker(interaction.channelId);
     if (!tracker) throw new RealmError({
       code: ErrorCodes.InitNoTracker,
-      cause: 'pressed reveal button' 
+      cause: 'pressed skip action button' 
     });
     await checkPerms(interaction, tracker);
-    return await tracker.revealPhase(interaction);
+    return await tracker.skipAction(interaction);
   },
 }

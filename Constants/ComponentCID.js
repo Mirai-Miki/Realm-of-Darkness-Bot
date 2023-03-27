@@ -12,4 +12,6 @@ module.exports =
   INIT_REVEAL: "InitReveal",
   INIT_DECLARE: "InitDeclare",
   INIT_CONFIRM: "InitConfirm",
+  INIT_JOIN: 'InitJoin',
+  INIT_SKIP: 'InitSkip',
 }
