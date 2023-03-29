@@ -1,6 +1,6 @@
 'use strict';
 const { trimString } = require('../../misc');
-const getCharacter = require('./getCharacter');
+const getCharacter = require('../getCharacter');
 const { getEmbed, getContent, getComponents } = require('./getVtmRollResponse');
 const { VtMV5RollResults } = require('../../../structures');
 const handleRerollPress = require('./handleRerollPress');
@@ -10,12 +10,12 @@ const handleRerollPress = require('./handleRerollPress');
  * 
  * @param {Interaction} interaction 
  */
-module.exports.vtmRoll = async function(interaction)
+module.exports = async function vtmRoll(interaction)
 {
   interaction.arguments = await getArgs(interaction);
-  interaction.rollResults = await roll(interaction.arguments);
+  interaction.rollResults = await roll(interaction);
   
-  handleRerollPress(interaction, getEmbed, getComponents);
+  handleRerollPress(interaction, getEmbed, getComponents, getContent);
   return {
     content: getContent(interaction),
     embeds: [getEmbed(interaction)],
@@ -45,8 +45,9 @@ async function getArgs(interaction)
  * Takes a set of arguments and performs a roll
  * @param {Object} args Arguments recieved from the interaction
  */
-async function roll(args)
+async function roll(interaction)
 {
+  const args = interaction.arguments;
   if (args.character?.tracked && args.autoHunger && 
     args.character.tracked.slug === 'vampire5th')
   {
@@ -60,10 +61,35 @@ async function roll(args)
     spec: args.spec,
     hunger: args.hunger ?? 0
   });
-  results.rollDice(args.hunger);
+  let hunger = args.hunger;
+  if (args.character.tracked && args.autoHunger) 
+    hunger = args.character.tracked.hunger.current;
+  results.rollDice(hunger);
   results.setOutcome();
   
   if (args.bp != null) results.setBloodSurge(args.bp);
   if (args.rouse != null) results.setRouse(args.rouse);
+  await updateHunger(interaction, results);
   return results;
+}
+
+async function updateHunger(interaction, results)
+{
+  let hunger = 0;
+  if (results.bloodSurge && !results.bloodSurge.passed)
+    hunger++;
+  if (results.rouse && !results.rouse.passed)
+    hunger++; 
+  
+  const character = interaction.arguments.character?.tracked;
+  if (character && hunger && character.version === '5th')
+  {
+    const change = {command: 'Dice Roll', hunger: hunger};
+    character.updateFields(change);
+    await character.save(interaction.client);
+    interaction.followUps = [{
+      embeds: [character.getEmbed()], 
+      ephemeral: true
+    }]
+  } 
 }

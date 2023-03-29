@@ -2,11 +2,11 @@
 const { postData } = require('./postData.js');
 const { RealmAPIError, APIErrorCodes } = require('../Errors');
 
-module.exports = async function saveCharacter(character)
+module.exports = async function saveCharacter(cData)
 {
   {
     const path = `character/new`;
-    const data = character.serialize();
+    const data = cData;
     
     const res = await postData(path, data);
     switch(res?.status)
@@ -18,7 +18,7 @@ module.exports = async function saveCharacter(character)
       case 409: // Conflict -- Too many characters
         throw new RealmAPIError({code: APIErrorCodes.CharacterLimitReached});
       default:
-        throw new RealmAPIError({cause: `res: ${res?.status}\ndata: ${res?.data}`});
+        throw new RealmAPIError({cause: `res: ${res?.status}\ndata: ${cdata}`});
     }
   }
 }

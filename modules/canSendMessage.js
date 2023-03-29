@@ -15,8 +15,16 @@ module.exports =  async function canSendMessages(
   if (!channel && !channelId) throw new Error("Need at least one argument");
   if (channelId && !client) throw new Error("Need a client with an Id");
 
-  if (!channel && channelId)
-    channel = await client.channels.fetch(channelId);
+  try
+  {
+    if (!channel && channelId)
+      channel = await client.channels.fetch(channelId);
+  }
+  catch (error)
+  {
+    if (error.code ===10003) return false; //Unknown Channel
+    else throw error;
+  }
 
   if (!channel.guild) return channel; // Not sending in a guild
   if (!channel.permissionsFor(channel.client.user.id).has([

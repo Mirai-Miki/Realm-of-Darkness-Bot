@@ -136,7 +136,7 @@ function getV5Buttons(interaction)
   {
     return [buttonRow];
   }
-  return null
+  return [];
 }
 
 module.exports.getContent = function(interaction)
@@ -158,6 +158,7 @@ module.exports.getContent = function(interaction)
     else if (dice <= 5) content += Emoji.red_fail;
     else if (dice <= 9) content += Emoji.red_pass;
     else content += Emoji.red_crit;
+    content += ' ';
   }
   return ((content.length > 2000) ? null : content);
 }
@@ -207,7 +208,7 @@ function getSelectRerollMenu(interaction)
   return [row];
 }
 
-module.exports.getComponents = function(interaction, type="Button")
+module.exports.getComponents = function(interaction, type="Buttons")
 {  
   if (type === "Buttons") return getV5Buttons(interaction);
   else return getSelectRerollMenu(interaction);

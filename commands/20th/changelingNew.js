@@ -177,9 +177,9 @@ function getCommands()
     )
 
     .addStringOption(option =>
-      option.setName("colour")
-      .setDescription("Changes the side bar colour." +
-        " Enter a colour hex code eg #6f82ab. [Supporter Only]")
+      option.setName("color")
+      .setDescription("Changes the side bar color." +
+        " Enter a color hex code eg #6f82ab. [Supporter Only]")
       .setMaxLength(7)
       .setMinLength(7)
     )

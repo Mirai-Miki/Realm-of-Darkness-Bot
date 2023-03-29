@@ -82,7 +82,7 @@ module.exports = class Vampire5th extends Character5th
     .setURL('https://cdn.discordapp.com/attachments/699082447278702655/972058320611459102/banner.png')
     .setTitle(this.name)
     .setAuthor({
-      name: (this.user.displayName ?? this.user.username), 
+      name: (this.user.displayName), 
       iconURL: this.user.avatarURL
     })
     
@@ -116,7 +116,7 @@ module.exports = class Vampire5th extends Character5th
       value: this.exp.getTracker({showEmoji: false}), 
       inline: false
     });
-
+    
     if (notes) embed.addFields({name: "Notes", value: notes});
 
     const links = "\n[Website](https://realmofdarkness.app/)" +

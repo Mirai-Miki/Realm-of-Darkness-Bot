@@ -136,6 +136,7 @@ module.exports = class DamageTracker20th
 
 const damageInfo = 
 {
+  0: '',
   1: 'Bruised\nCharacter is only bruised and suffers no dice pool penalties ' +
     'due to damage.',
   

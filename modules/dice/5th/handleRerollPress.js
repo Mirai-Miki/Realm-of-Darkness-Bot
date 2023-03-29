@@ -1,13 +1,14 @@
 'use strict'
 const { ErrorCodes, handleErrorDebug, RealmError } = require('../../../Errors');
-const { HunterV5RollResults } = require('../../../structures');
+const HunterV5RollResults = require('../../../structures/HunterV5RollResults');
 const { minToMilli } = require('../../misc');
 
-module.exports = function handleRerollPress(interaction, getEmbed, getComponents)
+module.exports = function handleRerollPress(interaction, getEmbed, getComponents, getContent)
 {
   const filter = i => (
-    i.message.interaction.id == interaction.id &&
-    (i.customId === 'autoReroll' || i.customId === 'selectReroll')         
+    i.message.interaction.id === interaction.id &&
+    (i.customId === 'autoReroll' || i.customId === 'selectReroll' ||
+    i.customId === 'chooseOverreach' || i.customId === 'chooseDespair')         
   );
 
   const channel = interaction.channel;
@@ -40,7 +41,13 @@ module.exports = function handleRerollPress(interaction, getEmbed, getComponents
       interaction.rollResults.rerollDice();
       try
       {
-        await i.editReply({embeds: [getEmbed(interaction)], components: null});
+        await i.editReply({
+          embeds: [getEmbed(interaction)], 
+          components: [],
+          content: getContent(interaction)
+        });
+        const update = await updateWillpower(interaction);
+        if (update) i.followUp(update);
       }
       catch(error)
       {
@@ -69,7 +76,13 @@ module.exports = function handleRerollPress(interaction, getEmbed, getComponents
       interaction.rollResults.rerollDice(i.values);
       try
       {
-        await i.editReply({embeds: [getEmbed(interaction)], components: null});
+        await i.editReply({
+          embeds: [getEmbed(interaction)], 
+          components: [],
+          content: getContent(interaction)
+        });
+        const update = await updateWillpower(interaction);
+        if (update) i.followUp(update);
       }
       catch(error)
       {
@@ -88,13 +101,13 @@ module.exports = function handleRerollPress(interaction, getEmbed, getComponents
       else if (i.customId === 'chooseOverreach')
         choice = HunterV5RollResults.ResultType.overreach;
       else choice = HunterV5RollResults.ResultType.despair
-      interaction.rollResults.resultType = choice;
 
+      interaction.rollResults.setOutcome(choice);      
       try
       {
         const message = {
           embeds: [getEmbed(interaction)], 
-          components: null
+          components: []
         };
         if (choice !== HunterV5RollResults.ResultType.despair)
           message.components = getComponents(interaction);
@@ -107,7 +120,8 @@ module.exports = function handleRerollPress(interaction, getEmbed, getComponents
         handleErrorDebug(err, interaction);
         return;
       } 
-      if (choice === HunterV5RollResults.ResultType.despair) collector.stop();
+      if (choice === HunterV5RollResults.ResultType.despair) 
+        interaction.collector.stop();
     }
   });
 
@@ -134,4 +148,15 @@ module.exports = function handleRerollPress(interaction, getEmbed, getComponents
       }
     }
   });
+}
+
+async function updateWillpower(interaction)
+{
+  const character = interaction.arguments.character?.tracked;
+  if (!character || character.version !== '5th') return;
+
+  const change = {command: 'Dice Roll', willpowerSup: 1};
+  character.updateFields(change);
+  await character.save(interaction.client)
+  return {embeds: [character.getEmbed()], ephemeral: true};
 }

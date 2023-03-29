@@ -2,7 +2,7 @@
 const { EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder,
   ButtonBuilder, ButtonStyle } = require('discord.js');
 const { Emoji } = require('../../../Constants');
-const { HunterV5RollResults } = require('../../../structures');
+const HunterV5RollResults = require('../../../structures/HunterV5RollResults');
 
 module.exports.getEmbed = function(interaction)
 {
@@ -100,16 +100,16 @@ function getV5Buttons(interaction)
   if (interaction.rollResults.resultType === HunterV5RollResults.ResultType.choose)
   {
     buttonRow.addComponents(
-        new MessageButton()
+        new ButtonBuilder()
             .setCustomId('chooseOverreach')
             .setLabel('Choose Overreach')
-            .setStyle('DANGER'),
+            .setStyle(ButtonStyle.Danger),
     );
     buttonRow.addComponents(
-        new MessageButton()
+        new ButtonBuilder()
             .setCustomId('chooseDespair')
             .setLabel('Choose Despair')
-            .setStyle('DANGER'),
+            .setStyle(ButtonStyle.Danger),
     );
     return [buttonRow];
   }
@@ -124,7 +124,7 @@ function getV5Buttons(interaction)
     );
   }
   
-  if (interaction.rollResults.blackDice.length)
+  if (interaction.rollResults.dice.length)
   { 
     buttonRow.addComponents(
       new ButtonBuilder()
@@ -135,7 +135,7 @@ function getV5Buttons(interaction)
   }
   
   if (buttonRow.components.length) return [buttonRow];
-  else return null;
+  else return [];
 }
 
 module.exports.getContent = function(interaction)

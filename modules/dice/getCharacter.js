@@ -1,5 +1,5 @@
 'use strict'
-const API = require('../../../realmAPI')
+const API = require('../../realmAPI')
 
 /**
  * Takes a name and interaction and searches the database for a tracked character
@@ -17,11 +17,11 @@ module.exports = async function getCharacter(name, interaction)
     tracked: null
   }
 
-  const tracked = await API.getCharacter(
-    name, 
-    interaction.user.id, 
-    interaction
-  );
+  const tracked = await API.getCharacter({
+    name: name,
+    user: interaction.member ? interaction.member : interaction.user,
+    guild: interaction.guild
+  });
 
   if (tracked) character.tracked = tracked;
   return character;

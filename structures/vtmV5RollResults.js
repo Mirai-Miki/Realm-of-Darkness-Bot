@@ -108,7 +108,7 @@ module.exports = class vtmV5RollResults
           const index = selected.indexOf(dice);
           if (index > -1) selected.splice(index, 1);
         }
-        const roll = Roll.d10(1);
+        const roll = Roll.d10(1)[0];
         this.reroll.push(`${dice}>${roll}`)
         bDice.push(roll);
       }

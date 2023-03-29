@@ -15,21 +15,21 @@ module.exports = class Character20th extends Character
   setFields(args)
   {
     super.setFields(args);
-    if (args.willpower != null) char.willpower.setTotal(args.willpower);
-    if (args.health != null) char.health.setTotal(args.health);
-    if (args.bashing != null) char.health.setBashing(args.bashing);
-    if (args.lethal != null) char.health.setLethal(args.lethal);
-    if (args.agg != null) char.health.setAgg(args.agg);
+    if (args.willpower != null) this.willpower.setTotal(args.willpower);
+    if (args.health != null) this.health.setTotal(args.health);
+    if (args.bashing != null) this.health.setBashing(args.bashing);
+    if (args.lethal != null) this.health.setLethal(args.lethal);
+    if (args.agg != null) this.health.setAgg(args.agg);
   }
   
   updateFields(args)
   {
     super.updateFields(args);
-    if (args.willpower != null) char.willpower.updateCurrent(args.willpower);  
-    if (args.health != null) char.health.updateCurrent(args.health);
-    if (args.bashing != null) char.health.updateBashing(args.bashing);
-    if (args.lethal != null) char.health.updateLethal(args.lethal);
-    if (args.agg != null) char.health.updateAgg(args.agg);
+    if (args.willpower != null) this.willpower.updateCurrent(args.willpower);  
+    if (args.health != null) this.health.updateCurrent(args.health);
+    if (args.bashing != null) this.health.updateBashing(args.bashing);
+    if (args.lethal != null) this.health.updateLethal(args.lethal);
+    if (args.agg != null) this.health.updateAgg(args.agg);
   }
 
   deserilize(json)

@@ -23,10 +23,17 @@ module.exports = {
 				if (discordResponse)
 				{
 					if (!interaction.replied && !interaction.deferred) 
-						interaction.reply(discordResponse);
-					else interaction.editReply(discordResponse);
+						await interaction.reply(discordResponse);
+					else await interaction.editReply(discordResponse);
 				}
 				else throw new Error("No discordResponse");
+				if (interaction.followUps)
+				{
+					for (const followUp of interaction.followUps)
+					{
+						await interaction.followUp(followUp);
+					}
+				}
 	    } 
 			catch (error)
 			{

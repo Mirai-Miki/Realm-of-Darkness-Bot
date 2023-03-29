@@ -1,5 +1,8 @@
 'use strict';
+const { GuildMember } = require("discord.js");
 const { Consumable } = require("../../../structures");
+const API = require('../../../realmAPI');
+const sendToTrackerChannel = require('../../../modules/sendToTrackerChannel');
 
 module.exports = class Character 
 {
@@ -22,7 +25,8 @@ module.exports = class Character
     this.exp = new Consumable(0);
     this.thumbnail = null;
     this.color = '#000000';
-    //this.history = [];
+    this.history = {};
+    this.changes = {};
     if (guild) this.setGuild(guild);
     if (user) this.setUser(user);
   }
@@ -31,14 +35,23 @@ module.exports = class Character
    * Takes in a user of Guild member and sets the character user fields
    * @param {User|GuildMember} user 
    */
-  setUser(user)
+  setUser(userData)
   {
+    let member;
+    let user;
+    if (userData instanceof GuildMember)
+    {
+      user = userData.user;
+      member = userData;
+    }
+    else user = userData;
+
     // User can be either a User or GuildMember
     this.user.id = user.id;
-    this.user.username = user?.user ? user.user.username : user.username;
-    this.user.discriminator = user?.user ? user.user.discriminator : user.discriminator;
-    this.user.avatarURL = user.displayAvatarURL() ?? '';
-    this.user.displayName = user.displayName ?? null;
+    this.user.username = user.username;
+    this.user.discriminator = user.discriminator;
+    this.user.avatarURL = member?.displayAvatarURL() ?? user.displayAvatarURL();
+    this.user.displayName = member?.displayName ?? user.username;
   }
 
   setGuild(guild)
@@ -49,45 +62,21 @@ module.exports = class Character
     this.guild.iconURL = guild.iconURL() ?? '';
   }
 
-  updateHistory(charArgs, mode)
-  {
-    const history = {args: {}, notes: '', mode: ''};
-      
-    for (const key of Object.keys(charArgs))
-    {
-      const value = charArgs[key];
-      
-      if (key === 'name') continue;
-      else if ((key === 'thumbnail' || key === 'colour') && value != null) 
-      {
-        history.args[key] = 'set';
-      }
-      else if (key === 'player' && value != null)
-      {
-        history.args["Updated by"] = "Storyteller";
-      }
-      else if (key === 'notes') continue;
-      else if (value != null) history.args[key] = value;
-    }
-    
-    history.notes = charArgs['notes'] ?? undefined;
-    history.mode = mode;
-    this.history.unshift(history);
-  }
-
   setFields(args)
   {
     if (args.nameChange != null) this.name = args.nameChange;  
     if (args.exp != null) this.exp.setTotal(args.exp);
     if (args.color != null) this.color = args.color;
-    if (args.thumbnail === 'none') this.thumbnail = null;
+    if (args.thumbnail?.toLowerCase() === 'none') this.thumbnail = null;
     else if (args.thumbnail != null) this.thumbnail = args.thumbnail;
+    this.changes = getChanges(args);
   }
 
   updateFields(args)
   {
     if (args.exp && args.exp < 0) this.exp.updateCurrent(args.exp);
-    else if (args.exp != null) this.exp.incTotal(args.exp);
+    else if (args.exp != null) this.exp.incTotal(args.exp);    
+    this.changes = getChanges(args);
   }
 
   deserilize(json)
@@ -120,18 +109,51 @@ module.exports = class Character
 
   serialize()
   {
-      const s = {character: {}, user: {}, guild: {}};
+      const s = {character: {}};
       s.character['name'] = this.name;
       s.character['id'] = this.id;
-      s.user = this.user.id ? this.user : null;        
-      s.guild = this.guild.id ? this.guild : null;        
+      s.user_id = this.user.id ? this.user.id : null;        
+      s.guild_id = this.guild.id ? this.guild.id : null;        
       s.character['theme'] = this.color;
       s.character['thumbnail'] = this.thumbnail ?? undefined;
       s.character['exp'] = {
           total: this.exp.total,
           current: this.exp.current,    
       };
-      //s.character['history'] = this.history;
+      s.character['log'] = this.changes;
       return s;
   }
+
+  async save(client)
+  {
+    if (Object.keys(this.changes).length > 1)
+    {
+      if (this.changes.command === 'New Character')
+        await API.newCharacter(this.serialize());
+      else
+        await API.saveCharacter(this.serialize());
+      await sendToTrackerChannel(client, this)
+    }
+  }
+}
+
+function getChanges(args)
+{
+  const changes = structuredClone(args);
+  delete changes.name;
+  for (const [key, value] of Object.entries(changes))
+  {
+    if (value === null) 
+    {
+      delete changes[key];
+      continue;
+    }
+    if (key === 'player')
+    {
+      changes.storytellerModified = 'True'
+      delete changes.player;
+    }
+    if (key === 'thumbnail') changes.thumbnail = 'Set';
+  }
+  return changes;
 }

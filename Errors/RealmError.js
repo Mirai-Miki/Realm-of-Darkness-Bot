@@ -257,4 +257,13 @@ const ErrorInfo =
     debug: true,
     cause: true
   },
+  [ErrorCodes.NoWillpower]:
+  {
+    system: "20th no Willpower",
+    embedTitle: 'No Willpower',
+    embedMessage: 
+      'You do not have any willpower remaining for this roll.',
+    debug: false,
+    cause: false
+  },
 }

@@ -17,42 +17,42 @@ module.exports = class HunterV5RollResults
 
   static OutcomeInfo =
   {    
-    [vtmV5RollResults.ResultType.totalFail]: 
+    [HunterV5RollResults.ResultType.totalFail]: 
     {
       toString: '```ansi\n[2;31m[2;35m[2;33m[2;36m[2;35m[2;33mTotal Failure[0m[2;35m[0m[2;36m[0m[2;33m[0m[2;35m[0m[2;31m[0m[2;31m[0m\n```',
       color: '#cf1723'
     },
-    [vtmV5RollResults.ResultType.despair]: 
+    [HunterV5RollResults.ResultType.despair]: 
     {
       toString: '```ansi\n[2;35m[2;31m[2;35m[2;33m[2;33m[2;32m[2;36m[2;37m[2;30m[2;32m[2;34m[2;33m[2;35m[2;33m[2;32m[2;31mDespair[0m[2;32m[0m[2;33m[0m[2;35m[0m[2;33m[0m[2;34m[0m[2;32m[0m[2;30m[0m[2;37m[0m[2;36m[0m[2;32m[0m[2;33m[0m[2;33m[0m[2;35m[0m[2;31m[0m[2;35m[0m```',
       color: '#a60016'
     },
-    [vtmV5RollResults.ResultType.fail]: 
+    [HunterV5RollResults.ResultType.fail]: 
     {
       toString: '```Failed```',
       color: '#000000'
     },
-    [vtmV5RollResults.ResultType.success]: 
+    [HunterV5RollResults.ResultType.success]: 
     {
-      toString: '```ansi[2;35m[2;31m[2;35m[2;33m[2;33m[2;32m[2;36m[2;37m[2;30m[2;32m[2;34m[2;33m[2;35m[2;33m[2;32mSuccess[0m[2;33m[0m[2;35m[0m[2;33m[0m[2;34m[0m[2;32m[0m[2;30m[0m[2;37m[0m[2;36m[0m[2;32m[0m[2;33m[0m[2;33m[0m[2;35m[0m[2;31m[0m[2;35m[0m\n```',
+      toString: '```ansi\n[2;35m[2;31m[2;35m[2;33m[2;33m[2;32m[2;36m[2;37m[2;30m[2;32m[2;34m[2;33m[2;35m[2;33m[2;32mSuccess[0m[2;33m[0m[2;35m[0m[2;33m[0m[2;34m[0m[2;32m[0m[2;30m[0m[2;37m[0m[2;36m[0m[2;32m[0m[2;33m[0m[2;33m[0m[2;35m[0m[2;31m[0m[2;35m[0m\n```',
       color: '#3ee33b',
     },
-    [vtmV5RollResults.ResultType.crit]:
+    [HunterV5RollResults.ResultType.crit]:
     {
       toString: '```ansi\n[2;32m[2;35m[2;34m[2;36mCritical[0m[2;34m[0m[2;35m[0m[2;32m[0m[2;31m[0m\n```',
       color: '#66ffcc'
     },  
-    [vtmV5RollResults.ResultType.overreach]:
+    [HunterV5RollResults.ResultType.overreach]:
     {
       toString: '```ansi\n[2;35m[2;31m[2;35m[2;33m[2;33m[2;32m[2;36m[2;37m[2;30m[2;32m[2;34m[2;33m[2;35m[2;33mOverreach[0m[2;35m[0m[2;33m[0m[2;34m[0m[2;32m[0m[2;30m[0m[2;37m[0m[2;36m[0m[2;32m[0m[2;33m[0m[2;33m[0m[2;35m[0m[2;31m[0m[2;35m[0m\n```',
       color: '#e6a35c'
     },  
-    [vtmV5RollResults.ResultType.overreachCrit]:
+    [HunterV5RollResults.ResultType.overreachCrit]:
     {
       toString: '```ansi\n[2;35m[2;31m[2;35m[2;33m[2;33m[2;32m[2;36m[2;37m[2;30m[2;32m[2;34m[2;33m[2;35m[2;33mCritical Overreach[0m[2;35m[0m[2;33m[0m[2;34m[0m[2;32m[0m[2;30m[0m[2;37m[0m[2;36m[0m[2;32m[0m[2;33m[0m[2;33m[0m[2;35m[0m[2;31m[0m[2;35m[0m\n```',
       color: '#fcbd79'
     },  
-    [vtmV5RollResults.ResultType.choose]:
+    [HunterV5RollResults.ResultType.choose]:
     {
       toString: '```ansi\n[2;35m[2;31m[2;35m[2;33m[2;33m[2;32m[2;36m[2;37m[2;30m[2;32m[2;34m[2;33m[2;35mChoose your fate![0m[2;33m[0m[2;34m[0m[2;32m[0m[2;30m[0m[2;37m[0m[2;36m[0m[2;32m[0m[2;33m[0m[2;33m[0m[2;35m[0m[2;31m[0m[2;35m[0m\n```',
       color: '#ba1ebd'
@@ -108,14 +108,14 @@ module.exports = class HunterV5RollResults
     for (const dice of this.dice)
     {
       if ((selected?.includes(dice)) || 
-          (!values && this.reroll.length < 3 && dice < 6))
+        (!values && this.reroll.length < 3 && dice < 6))
       {
         if (values)
         { // We pull the value out of selected so we cannot reread it
           const index = selected.indexOf(dice);
           if (index > -1) selected.splice(index, 1);
         }
-        const roll = Roll.d10(1);
+        const roll = Roll.d10(1)[0];
         this.reroll.push(`${dice}>${roll}`)
         rDice.push(roll);
       }
@@ -128,7 +128,7 @@ module.exports = class HunterV5RollResults
   /**
    * Modifies the this object to include the outcome, total and margin
   */
-  setOutcome()
+  setOutcome(choose=null)
   {
     let crit = 0;
     let total = 0;
@@ -153,22 +153,22 @@ module.exports = class HunterV5RollResults
       else if (dice >= 6) total++;
       else if (dice === 1) this.despair = true;
     }
-
+    
     // Calculating how many critals were scored and adding them to the total
     crit = (crit % 2) ? (crit - 1) : crit;
     total += crit;
 
     // set outcome
-    if ((this.resultType === HunterV5RollResults.ResultType.overreach ||
-      this.resultType === HunterV5RollResults.ResultType.overreachCrit ||
-      (this.resultType === HunterV5RollResults.ResultType.despair && 
-      total >= this.difficulty)) && crit)
+    if (choose === HunterV5RollResults.ResultType.despair) 
+      this._setOutcome(HunterV5RollResults.ResultType.despair);
+    else if (choose === HunterV5RollResults.ResultType.overreachCrit ||
+      (this.resultType >= HunterV5RollResults.ResultType.overreach  && 
+      total >= this.difficulty && crit))
     {
       this._setOutcome(HunterV5RollResults.ResultType.overreachCrit);
     }
-    else if (this.resultType === HunterV5RollResults.ResultType.overreach ||
-      this.resultType === HunterV5RollResults.ResultType.overreachCrit ||
-      (this.resultType === HunterV5RollResults.ResultType.despair && 
+    else if (choose === HunterV5RollResults.ResultType.overreach ||
+      (this.resultType >= HunterV5RollResults.ResultType.overreach && 
       total >= this.difficulty))
     {
       this._setOutcome(HunterV5RollResults.ResultType.overreach);

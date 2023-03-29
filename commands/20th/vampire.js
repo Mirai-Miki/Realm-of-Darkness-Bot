@@ -25,6 +25,9 @@ module.exports =
 
 async function getArgs(interaction)
 {
+  const moralityNameType = interaction.options.getString('morality_name');
+  let moralityName = null;
+  if (moralityNameType) moralityName = MortalityType[moralityNameType];
   const args = 
   {  
     player: interaction.options.getUser('player'),
@@ -40,7 +43,7 @@ async function getArgs(interaction)
     lethal: interaction.options.getInteger('lethal_damage'),
     agg: interaction.options.getInteger('agg_damage'),
     blood: interaction.options.getInteger('blood'),
-    moralityName: interaction.options.getString('morality_name'),
+    moralityName: moralityName,
     morality: interaction.options.getInteger('morality'),
   }
 
@@ -174,8 +177,8 @@ function getCommands()
 
     .addStringOption(option =>
       option.setName("color")
-      .setDescription("Changes the side bar colour." +
-        " Enter a colour hex code eg #6f82ab. [Supporter Only]")
+      .setDescription("Changes the side bar color." +
+        " Enter a color hex code eg #6f82ab. [Supporter Only]")
       .setMaxLength(7)
       .setMinLength(7)
     )
@@ -307,7 +310,7 @@ function getCommands()
     .addStringOption(option =>
       option.setName("color")
       .setDescription("Changes the side bar color." +
-          " Enter a colour hex code eg #6f82ab. [Supporter Only]")
+          " Enter a color hex code eg #6f82ab. [Supporter Only]")
       .setMaxLength(7)
       .setMinLength(7)
     )
@@ -409,4 +412,30 @@ function getCommands()
     ) 
   )
   return slashCommand;  
+}
+
+const MortalityType = {  
+  '1': 'Humanity',
+  '2': 'Path of Asakku',
+  '3': 'Path of Blood',
+  '4':  'Path of the Bones',
+  '5': 'Path of Caine',
+  '6': 'Path of Cathari',
+  '7': 'Path of Death and the Soul',
+  '8': 'Path of Ecstasy',
+  '9': 'Path of Entelechy',
+  '10': 'Path of Evil Revelations', 
+  '11': 'Path of the Feral Heart', 
+  '12': 'Path of Harmony', 
+  '13': 'Path of the Hive', 
+  '14': 'Path of Honorable Accord', 
+  '15': 'Path of Lilith', 
+  '16': 'Path of Metamorphosis', 
+  '17': 'Path of Night', 
+  '18': 'Path of Paradox', 
+  '19': 'Path of Power and the Inner Voice', 
+  '20': 'Path of the Scorched Heart', 
+  '21': 'Path of Self-Focus', 
+  '22': 'Path of Typhon', 
+  '23': 'Path of the Warrior',
 }

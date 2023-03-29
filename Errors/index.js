@@ -22,6 +22,7 @@ module.exports.ErrorCodes =
 	InitInvalidTurn: 15,
 	InitInvalidButtonPerm: 16,
 	InitNoTracker: 17,
+	NoWillpower: 18,
 	RequiresFledgling: 100,
 	RequiresNeonate: 101,
 	RequiresAncilla: 102,
@@ -47,7 +48,6 @@ module.exports.handleErrorDebug = async function(error, interaction)
   if (process.platform === 'win32')
 	{ // Print to console on dev enviorment
 		console.error(error);
-		return;
 	}
 
 	try

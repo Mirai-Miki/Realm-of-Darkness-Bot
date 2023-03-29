@@ -1,6 +1,6 @@
 'use strict';
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { vtmRoll, generalRoll } = require('../../modules/dice/index');
+const { hunterDice, generalRoll } = require('../../modules/dice/index');
 
 module.exports = 
 {
@@ -11,7 +11,7 @@ module.exports =
 		switch (interaction.options.getSubcommand())
     {
       case 'roll':
-        return await vtmRoll(interaction);   
+        return await hunterDice(interaction);   
       case 'general':
         return generalRoll(interaction);
     }
@@ -26,7 +26,7 @@ function getCommand()
     .setDescription('Dice rolls for the hunter v5 game.')
   
   ///////////////////// Hunter Command ///////////////////
-  command.addSubcommand(subcommand => subcommand.setName('hunter')
+  command.addSubcommand(subcommand => subcommand.setName('roll')
   	.setDescription('Standard roll')
 
     .addIntegerOption(option => option.setName("pool")
@@ -106,5 +106,6 @@ function getCommand()
       .setDescription('Any additional information you would like to include.')
       .setMaxLength(300))
   )
+  return command
 }
 

@@ -79,8 +79,8 @@ function getCommands()
     .addIntegerOption(option =>
       option.setName("willpower_superficial")
       .setDescription("Your current Superficial Willpower Damage. " +
-        "Must be between 0 and 15. VtM v5 Corebook p126")
-      .setMaxValue(15)
+        "Must be between 0 and 20. VtM v5 Corebook p126")
+      .setMaxValue(20)
       .setMinValue(0)
     )
         
@@ -88,7 +88,7 @@ function getCommands()
       option.setName("willpower_agg")
       .setDescription("Your current Aggravated Willpower Damage. " +
         "VtM v5 Corebook p126")
-      .setMaxValue(15)
+      .setMaxValue(20)
       .setMinValue(0)
     )
         
@@ -185,8 +185,8 @@ function getCommands()
     .addIntegerOption(option =>
       option.setName("willpower_superficial")
       .setDescription("Your current Superficial Willpower Damage. " +
-        "Must be between 0 and 15. VtM v5 Corebook p126")
-      .setMaxValue(15)
+        "Must be between 0 and 20. VtM v5 Corebook p126")
+      .setMaxValue(20)
       .setMinValue(0)
     )
     
@@ -194,7 +194,7 @@ function getCommands()
       option.setName("willpower_agg")
       .setDescription("Your current Aggravated Willpower Damage. " +
         "VtM v5 Corebook p126")
-      .setMaxValue(15)
+      .setMaxValue(20)
       .setMinValue(0)
     )
     
@@ -265,9 +265,9 @@ function getCommands()
     .addIntegerOption(option =>
       option.setName("willpower_superficial")
       .setDescription("Updates you current SW damage" +
-        " by the amount. Must be between -20 and 20. VtM v5 Corebook p126")
-      .setMaxValue(20)
-      .setMinValue(-20)
+        " by the amount. Must be between -30 and 30. VtM v5 Corebook p126")
+      .setMaxValue(30)
+      .setMinValue(-30)
     )
     
     .addIntegerOption(option =>
@@ -282,8 +282,8 @@ function getCommands()
       option.setName("willpower_agg")
       .setDescription("Updates you current AW Damage" +
         " by the amount. Must be between -20 and 20. VtM v5 Corebook p126")
-      .setMaxValue(20)
-      .setMinValue(-20)
+      .setMaxValue(30)
+      .setMinValue(-30)
     )        
     
     .addIntegerOption(option =>

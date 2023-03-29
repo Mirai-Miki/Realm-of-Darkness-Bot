@@ -3,6 +3,7 @@ const slugifiy = require('../../modules/misc').slugifiy;
 const Consumable = require("../Consumable");
 const Character20th = require("./base/Character20th");
 const { Splats, Emoji } = require('../../Constants');
+const { EmbedBuilder } = require('discord.js');
 
 module.exports = class Vampire20th extends Character20th
 {
@@ -50,7 +51,7 @@ module.exports = class Vampire20th extends Character20th
   serialize()
   {        
     const s = super.serialize();    
-    s.character['splat'] = this.splat.slug;        
+    s.character['splatSlug'] = this.splat.slug;        
     s.character['morality'] = {
         name: slugifiy(this.morality.name),
         current: this.morality.pool.current,
@@ -92,7 +93,7 @@ module.exports = class Vampire20th extends Character20th
     else
     {
       embed.addFields({
-        name: `Blood [${this.blood.current}/${this.blood.total}`, 
+        name: `Blood [${this.blood.current}/${this.blood.total}]`, 
         value: this.blood.getTracker({emoji: Emoji.red_dot}), 
         inline: false
       });
@@ -119,7 +120,7 @@ module.exports = class Vampire20th extends Character20th
     if (notes) embed.addFields({name: 'Notes', value: notes});
     const links = "\n[Website](https://realmofdarkness.app/)" +
         " | [Patreon](https://www.patreon.com/MiraiMiki)";
-    embed.fields.at(-1).value += links;
+    embed.data.fields.at(-1).value += links;
 
     return embed;
   }

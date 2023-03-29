@@ -28,13 +28,13 @@ function getCommands()
     .addSubcommand(subcommand => subcommand
       .setName('find')
       .setDescription('Finds a tracked Character')
-      
+      /*
       .addBooleanOption(option =>
         option.setName("history")
         .setDescription("Select if you would like to display" +
           " the history information.")
       )
-
+      */
       .addUserOption(option =>
         option.setName("player")
         .setDescription("The player the character belongs to. Used by" +

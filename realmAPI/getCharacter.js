@@ -19,7 +19,8 @@ module.exports = async function getCharacter({name=null, user=null,
   const data = {
     name: name, 
     splatSlug: splatSlug,
-    pk: pk
+    pk: pk,
+    user_id: user?.id
   }
 
   const res = await postData(path, data);

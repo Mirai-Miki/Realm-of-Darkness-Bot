@@ -1,17 +1,20 @@
 'use strict'
 const { EmbedBuilder } = require('discord.js');
+const { trimString } = require('../misc');
 const { RealmError, ErrorCodes } = require('../../Errors');
 const { RollResults20th } = require('../../structures');
 const { Emoji } = require('../../Constants');
+const getCharacter = require('./getCharacter');
 
 module.exports = async function roll20th(interaction)
 {
-  interaction.arguments = getArgs(interaction);
+  interaction.arguments = await getArgs(interaction);
   interaction.results = new RollResults20th(interaction.arguments);
+  await updateWillpower(interaction);
   return {content: getContent(interaction), embeds: [getEmbed(interaction)]};
 }
 
-function getArgs(interaction)
+async function getArgs(interaction)
 {
   const args = 
   {
@@ -22,11 +25,14 @@ function getArgs(interaction)
     spec: interaction.options.getString('speciality'),
     reason: interaction.options.getString('notes'),
     nightmare: interaction.options.getInteger('nightmare'),
-    character: interaction.options.getString('character'),
+    character: await getCharacter(
+      trimString(interaction.options.getString('character')),
+      interaction
+    ),
     cancelOnes: interaction.options.getBoolean('no_botch'),
   }
-
-  if (args.nightmare ?? 0 > args.pool) 
+  
+  if ((args.nightmare ?? 0) > args.pool) 
     throw new RealmError({code: ErrorCodes.NightmareOutOfRange});
   
   return args;
@@ -37,7 +43,7 @@ function getContent(interaction)
   const results = interaction.results;
   const args = interaction.arguments;
   const diff = args.difficulty ?? 1;
-  const content = '';
+  let content = '';
 
   for (const dice of results.blackDice)
   {
@@ -63,6 +69,21 @@ function getContent(interaction)
   return content;
 }
 
+
+async function updateWillpower(interaction)
+{
+  const character = interaction.arguments.character?.tracked;
+  if (!character || !interaction.arguments.willpower) return;
+  if (character.version !== '20th') return;
+  if (character.willpower.current === 0) 
+    throw new RealmError({code: ErrorCodes.NoWillpower})
+
+  const change = {command: 'Dice Roll', willpower: -1};
+  character.updateFields(change);
+  await character.save(interaction.client)
+  interaction.followUps = [{embeds: [character.getEmbed()], ephemeral: true}];
+}
+
 function getEmbed(interaction)
 {
   const args = interaction.arguments;
@@ -75,7 +96,7 @@ function getEmbed(interaction)
       interaction.user.displayAvatarURL()
   });
 
-  let title = `Pool ${args.pool} | Diff ${args.diff}`;
+  let title = `Pool ${args.pool} | Diff ${args.difficulty}`;
   if (args.nightmare) title += ` | Nightmare ${args.nightmare}`
   if (args.willpower) title += ` | WP`;
   if (args.mod) title += ` | Mod ${args.mod}`;
@@ -84,17 +105,17 @@ function getEmbed(interaction)
   embed.setTitle(title);
 
   if (args.character)
-    embed.addFields({name: 'Character', value: args.character});
+    embed.addFields({name: 'Character', value: args.character.name});
 
   if (results.blackDice.length) embed.addFields({
     name: 'Dice', 
-    value: results.getSrotedString(results.blackDice, args),
+    value: results.getSortedString(results.blackDice, args),
     inline: true
   });
   
   if (results.nightmareDice.length) embed.addFields({
     name: 'Nightmare',
-    value: results.getSrotedString(results.nightmareDice, args),
+    value: results.getSortedString(results.nightmareDice, args),
     inline: true
   });
 
@@ -106,7 +127,7 @@ function getEmbed(interaction)
 
   if (args.mod) embed.addFields({
     name: 'Modifier', 
-    value: args.mod, 
+    value: args.mod.toString(), 
     inline: true
   });
 
@@ -126,7 +147,7 @@ function getEmbed(interaction)
         
   const links = "\n[Website](https://realmofdarkness.app/)" +
     " | [Patreon](https://www.patreon.com/MiraiMiki)";
-  embed.fields.at(-1).value += links;
+  embed.data.fields.at(-1).value += links;
 
   embed.setURL('https://cdn.discordapp.com/attachments/699082447278702655/972058320611459102/banner.png');
   return embed;

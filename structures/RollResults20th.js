@@ -36,8 +36,8 @@ module.exports = class RollResults20th
     this.total = 0;
     this.outcome = null;
 
-    this.rollDice(args);
-    this.setOutcome(args);
+    this._rollDice(args);
+    this._setOutcome(args);
   }
 
   getSortedString(diceList, args)
@@ -45,7 +45,7 @@ module.exports = class RollResults20th
     const sorted = diceList.map((x) => x);
     sorted.sort((a, b) => b - a);
 
-    content = [];
+    const content = [];
     for (const dice of sorted)
     {
       if (dice === 10 && args.spec) content.push('**10**');      

@@ -124,22 +124,21 @@ module.exports = class DamageTracker5th
     let tracker = "";
     let aggDamage = this.aggravated;
     let supDamage = this.superficial;
-    let undamaged = (this.total - supDamage - aggDamage);
     for (let i = 0; i < this.total; i++) 
     {
       if (i == 5 || i == 10 || i == 15) tracker += '⠀';
 
-      if (undamaged) 
-      {
-          tracker += Emoji.greenBox;
-          undamaged--;
-      } 
-      else if (aggDamage) 
+      if (aggDamage > 0) 
       {
           tracker += Emoji.redBox;
           aggDamage--;
       } 
-      else if (supDamage) tracker += Emoji.yellowBox;   
+      else if (supDamage > 0) 
+      {
+        tracker += Emoji.yellowBox;
+        supDamage--;
+      }
+      else tracker += Emoji.greenBox;    
     }
     tracker += '⠀';
     return tracker;

@@ -76,7 +76,7 @@ module.exports = class Counter
 
   getTracker(value, {showEmoji=true, emoji=Emoji.purple_dot_1}={})
   {
-    if (!value) throw new Error("value not defined");
+    if (value === undefined) throw new Error("value not defined");
 
     let tracker = "";    
     if (this.max > 15 || !showEmoji)
@@ -87,7 +87,7 @@ module.exports = class Counter
 
     for (let i = 0; i < this.max; i++) 
     {
-      if (i < this.current) tracker += emoji
+      if (i < value) tracker += emoji
       else tracker += Emoji.blank_dot;                
     }
     tracker += '⠀';

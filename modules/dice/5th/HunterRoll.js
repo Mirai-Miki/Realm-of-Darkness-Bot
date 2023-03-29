@@ -1,8 +1,9 @@
 'use strict'
 const { trimString } = require('../../misc');
-const { HunterV5RollResults } = require('../../../structures');
+const HunterV5RollResults = require('../../../structures/HunterV5RollResults');
 const handleRerollPress = require('./handleRerollPress');
 const { getComponents, getEmbed, getContent } = require('./getHunterRollResponse');
+const getCharacter = require('../getCharacter');
 
 
 module.exports = async function HunterDice(interaction)
@@ -10,7 +11,7 @@ module.exports = async function HunterDice(interaction)
   interaction.arguments = await getArgs(interaction);
   interaction.rollResults = await roll(interaction.arguments);
   
-  handleRerollPress(interaction, getEmbed, getComponents);
+  handleRerollPress(interaction, getEmbed, getComponents, getContent);
   return {
     content: getContent(interaction),
     embeds: [getEmbed(interaction)],

@@ -7,11 +7,11 @@ const { RealmAPIError } = require('../Errors');
  * @param {Character} character The character class being saved 
  * @returns Returns true on save or throws an Error if not.
  */
-module.exports = async function saveCharacter(character)
+module.exports = async function saveCharacter(cData)
 {
   {
     const path = 'character/save';
-    const data = character.serialize();
+    const data = cData;
     const res = await postData(path, data);
     switch(res?.status)
     {
@@ -20,7 +20,7 @@ module.exports = async function saveCharacter(character)
       case 304: // Not Modified
         throw new RealmAPIError({cause: 'Status 304: Not Modified'});
       default:
-        throw new RealmAPIError({cause: `res: ${res?.status}\ndata: ${res?.data}`});
+        throw new RealmAPIError({cause: `res: ${res?.status}\ndata: ${cData}`});
     }
   }
 }

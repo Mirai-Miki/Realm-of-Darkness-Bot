@@ -15,7 +15,7 @@ module.exports = async function updateGuild(guild)
       owner_id: guild.ownerId,
       bot: guild.client.user.id,
       shard: guild.shardId,
-      icon_url: guild.iconURL(),
+      icon_url: guild.iconURL() ?? '',
     }
   }
   

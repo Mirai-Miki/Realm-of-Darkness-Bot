@@ -115,9 +115,9 @@ module.exports = class Consumable
 
     const stop = this.current > this.total ? this.current : this.total;
     for (let i = 0; i < stop; i++) 
-    {
-      if (i < this.current) tracker += emoji
-      else if (i > this.total) tracker += Emoji.yellow_dot
+    {      
+      if (i >= this.total) tracker += Emoji.yellow_dot
+      else if (i < this.current) tracker += emoji
       else tracker += Emoji.blank_dot;                
     }
     tracker += '⠀';
