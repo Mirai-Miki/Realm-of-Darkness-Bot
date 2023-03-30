@@ -7,7 +7,7 @@ module.exports = class RollResults20th
   {
     botched: 
     {
-      toString: '```ansi\n[2;31m[2;35m[2;33m[2;36m[2;35m[2;33m[2;31mBotched[0m[2;33m[0m[2;35m[0m[2;36m[0m[2;33m[0m[2;35m[0m[2;31m[0m[2;31m[0m\n```',
+      toString: '```ansi\n[2;31mBotched[0m\n```',
       color: '#cd0e0e'
     },
     failed: 

@@ -69,12 +69,6 @@ function getCommands()
       .setMaxLength(100)
     )
 
-    .addStringOption(option =>
-      option.setName("notes")
-      .setDescription("Any extra information you would like to include.")
-      .setMaxLength(300)
-    )
-
     .addIntegerOption(option =>
       option.setName("nightmare")
       .setDescription("Replaces x number of dice in your" +
@@ -92,6 +86,12 @@ function getCommands()
     .addBooleanOption(option =>
       option.setName("no_botch")
       .setDescription("Stops any 1s from removing successes from the result.")
+    )
+
+    .addStringOption(option =>
+      option.setName("notes")
+      .setDescription("Any extra information you would like to include.")
+      .setMaxLength(300)
     )
   )
 

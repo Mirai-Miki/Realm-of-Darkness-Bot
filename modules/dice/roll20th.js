@@ -23,7 +23,7 @@ async function getArgs(interaction)
     willpower: interaction.options.getBoolean('willpower'),
     mod: interaction.options.getInteger('modifier'),
     spec: interaction.options.getString('speciality'),
-    reason: interaction.options.getString('notes'),
+    notes: interaction.options.getString('notes'),
     nightmare: interaction.options.getInteger('nightmare'),
     character: await getCharacter(
       trimString(interaction.options.getString('character')),
