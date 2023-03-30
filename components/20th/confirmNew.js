@@ -1,6 +1,6 @@
 'use strict'
 const { ComponentCID } = require("../../Constants");
-const { InitiativeTracker } = require("../../structures");
+const InitiativeTracker = require("../../structures/InitiativeTracker");
 const API = require('../../realmAPI');
 
 module.exports = {

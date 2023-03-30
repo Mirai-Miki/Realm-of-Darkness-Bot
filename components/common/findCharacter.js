@@ -1,6 +1,6 @@
 'use strict'
 const { ComponentCID } = require("../../Constants");
-const { findCharacterComponent } = require('../../modules');
+const findCharacterComponent = require('../../modules/findCharacter');
 
 module.exports =
 {

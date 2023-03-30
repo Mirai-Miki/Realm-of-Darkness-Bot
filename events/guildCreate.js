@@ -1,6 +1,6 @@
 'use strict';
 const { Events } = require('discord.js');
-const { setActivity } = require('../modules');
+const setActivity = require('../modules/setActivity');
 const API = require('../realmAPI');
 
 module.exports = {

@@ -1,7 +1,7 @@
 'use strict';
-const { SlashCommandBuilder } = require('@discordjs/builders');
+const { SlashCommandBuilder } = require('discord.js');
 const { Splats } = require('../../Constants');
-const { tracker } = require('../../modules');
+const tracker = require('../../modules/tracker');
 
 module.exports = 
 {

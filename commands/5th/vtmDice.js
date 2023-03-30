@@ -1,7 +1,10 @@
 'use strict';
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { oneLineTrim } = require('common-tags');
-const { vtmRoll, rouse, resonance, generalRoll } = require('../../modules/dice/index');
+const vtmRoll = require('../../modules/dice/5th/vtmRoll');
+const rouse = require('../../modules/dice/5th/Rouse');
+const resonance = require('../../modules/dice/5th/Resonance');
+const generalRoll = require('../../modules/dice/GeneralRoll');
 
 module.exports = {
 	data: getCommand(),	

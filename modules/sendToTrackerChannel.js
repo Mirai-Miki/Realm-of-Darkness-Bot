@@ -2,7 +2,7 @@
 const API = require('../realmAPI');
 const canSendMessages = require('./canSendMessage');
 
-module.exports = async function(client, character)
+module.exports = async function sendToTrackerChannel(client, character)
 {
   const guildId = character.guild?.id;
   if (!guildId) return;

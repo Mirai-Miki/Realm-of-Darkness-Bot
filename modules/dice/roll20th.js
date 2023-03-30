@@ -2,7 +2,7 @@
 const { EmbedBuilder } = require('discord.js');
 const { trimString } = require('../misc');
 const { RealmError, ErrorCodes } = require('../../Errors');
-const { RollResults20th } = require('../../structures');
+const RollResults20th = require('../../structures/RollResults20th');
 const { Emoji } = require('../../Constants');
 const getCharacter = require('./getCharacter');
 

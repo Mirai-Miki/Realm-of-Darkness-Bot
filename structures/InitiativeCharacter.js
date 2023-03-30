@@ -1,5 +1,5 @@
 'use strict';
-const { Roll } = require("../modules/dice");
+const Roll = require("../modules/dice/Roll");
 
 module.exports = class InitiativeCharacter
 {

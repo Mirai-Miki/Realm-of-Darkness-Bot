@@ -1,10 +1,10 @@
 'use strict'
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const { RealmError, ErrorCodes } = require('../../Errors');
-const { canSendMessage } = require('../../modules');
+const canSendMessage = require('../../modules/canSendMessage');
 const getButtonRow = require('../../modules/Initiative/getButtonRow');
 const API = require('../../realmAPI');
-const { InitiativeTracker } = require('../../structures');
+const InitiativeTracker = require('../../structures/InitiativeTracker');
 
 module.exports = 
 {

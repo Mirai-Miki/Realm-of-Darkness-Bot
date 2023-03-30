@@ -1,7 +1,7 @@
 'use strict';
 const { postData } = require('./postData.js');
 const RealmAPIError = require('../Errors/RealmAPIError');
-const { InitiativeTracker } = require('../structures');
+const InitiativeTracker = require('../structures/InitiativeTracker');
 
 module.exports = async function getInitTracker(channelId)
 {

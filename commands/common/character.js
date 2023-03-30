@@ -1,6 +1,7 @@
 'use strict'
 const { SlashCommandBuilder } = require("discord.js");
-const { findCharacterCommand, deleteCharacterCommand } = require('../../modules');
+const findCharacterCommand = require('../../modules/findCharacter')
+const deleteCharacterCommand = require('../../modules/deleteCharacter');
 
 module.exports = 
 {

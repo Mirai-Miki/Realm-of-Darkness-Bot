@@ -1,6 +1,8 @@
 'use strict';
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { roll20th, roll20thInit, generalRoll } = require('../../modules/dice');
+const roll20th = require('../../modules/dice/roll20th');
+const roll20thInit = require('../../modules/dice/roll20thInit');
+const generalRoll = require('../../modules/dice/GeneralRoll');
 
 module.exports = 
 {

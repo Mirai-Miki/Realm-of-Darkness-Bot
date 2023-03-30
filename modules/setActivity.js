@@ -1,7 +1,7 @@
 'use strict';
 const { ActivityType } = require('discord.js')
 
-module.exports = async function (client) 
+module.exports = async function setActivity(client) 
 {
   const guildSizes = await client.shard.fetchClientValues('guilds.cache.size');
   const size = guildSizes.reduce(

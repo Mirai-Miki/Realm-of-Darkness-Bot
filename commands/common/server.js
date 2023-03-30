@@ -1,6 +1,7 @@
 'use strict'
 const { SlashCommandBuilder } = require("discord.js");
-const { setStorytellers, setTrackerChannel } = require('../../modules');
+const setStorytellers = require('../../modules/setStorytellers');
+const setTrackerChannel = require('../../modules/setTrackerChannel');
 
 module.exports = 
 {
