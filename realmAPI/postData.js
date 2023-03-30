@@ -23,7 +23,6 @@ module.exports.postData = async (path, data) =>
   }
   catch (error)
   {
-    console.log(error)
     if (error.code === 'ECONNREFUSED')
       throw new RealmAPIError({
         cause: error.stack, 
