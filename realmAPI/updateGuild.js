@@ -23,7 +23,6 @@ module.exports = async function updateGuild(guild)
   switch(res?.status)
   {
     case 200: // Updated
-      console.log("Updated")
       return true;
     default:
       throw new RealmAPIError({cause: `res: ${res?.status}\ndata: ${res?.data}`});

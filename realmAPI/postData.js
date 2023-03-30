@@ -28,11 +28,6 @@ module.exports.postData = async (path, data) =>
         cause: error.stack, 
         code: APIErrorCodes.ConnectionRefused
       });
-    else if (error.code === 'ECONNRESET')
-    { // Socket Hang up.
-      console.error("hung up")
-      return;
-    }
     else throw new RealmAPIError({cause:error.stack + `\n\nData:\n${JSON.stringify(data)}}`});
   }
 }
