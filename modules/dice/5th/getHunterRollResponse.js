@@ -2,7 +2,7 @@
 const { EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder,
   ButtonBuilder, ButtonStyle } = require('discord.js');
 const { Emoji } = require('../../../Constants');
-const HunterV5RollResults = require('../../../structures/HunterV5RollResults');
+const { HunterV5RollResults } = require('../../../structures');
 
 module.exports.getEmbed = function(interaction)
 {
