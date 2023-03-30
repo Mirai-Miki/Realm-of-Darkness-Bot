@@ -5,7 +5,7 @@ const { EmbedBuilder } = require('discord.js');
 module.exports = function roll20thInit(interaction)
 {
   interaction.arguments = getArgs(interaction);
-  interaction.results = roll(args);
+  interaction.results = roll(interaction.arguments);
   return {embeds: [getEmbed(interaction)]};
 }
 
@@ -27,6 +27,9 @@ function getArgs(interaction)
 
 function getEmbed(interaction)
 {
+  const args = interaction.arguments;
+  const results = interaction.results;
+
   const embed = new EmbedBuilder()
   embed.setTitle('Initiative');
   embed.setColor([186, 61, 22]);
@@ -39,19 +42,7 @@ function getEmbed(interaction)
   });
 
   if (args.character)
-    embed.addFields({name: 'Character', value: args.character});
-
-  if (results.blackDice.length) embed.addFields({
-    name: 'Dex + Wits', 
-    value: `${args.modifier}`,
-    inline: true
-  });
-  
-  if (results.nightmareDice.length) embed.addFields({
-    name: '1d10',
-    value: `${interaction.results.roll}`,
-    inline: true
-  });
+    embed.addFields({name: 'Character', value: args.character});      
 
   if (args.notes) embed.addFields({
     name: 'Notes', 
@@ -59,14 +50,22 @@ function getEmbed(interaction)
     inline: false
   });
 
-  if (args.spec) embed.addFields({
-    name: 'Initiative of', 
-    value: `\`\`\`${interaction.results.total}\`\`\``, 
+  embed.addFields({
+    name: 'Dex + Wits', 
+    value: `\`\`\`${args.modifier}\`\`\``,
     inline: true
   });
-        
-  const links = "\n[Website](https://realmofdarkness.app/)" +
-    " | [Patreon](https://www.patreon.com/MiraiMiki)";
-  embed.fields.at(-1).value += links;
+  
+  embed.addFields({
+    name: '1d10',
+    value: `\`\`\`${results.roll}\`\`\``,
+    inline: true
+  });
+
+  embed.addFields({
+    name: 'Initiative of', 
+    value: `\`\`\`${results.total}\`\`\``, 
+    inline: false
+  });
   return embed;
 }

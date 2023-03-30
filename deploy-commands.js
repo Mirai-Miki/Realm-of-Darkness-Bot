@@ -35,5 +35,5 @@ function pushCommands (configFile, ver, toggle=true)
 }
 
 pushCommands('./config5th.json', "v5", false);
-pushCommands('./config20th.json', "20th", false);
+pushCommands('./config20th.json', "20th", true);
 pushCommands('./configCoD.json', "CoD", false);
