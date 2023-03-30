@@ -20,20 +20,19 @@ module.exports.getEmbed = function(interaction)
   embed.setColor(results.outcome.color);
 
   embed.setAuthor({
-      name: (
-        interaction.member?.displayName ??
-        interaction.user.username
-      ), 
-      iconURL: interaction.member?.displayAvatarURL() ??
-          interaction.user.displayAvatarURL()
+    name: (
+      interaction.member?.displayName ?? interaction.user.username
+    ), 
+    iconURL: interaction.member?.displayAvatarURL() ??
+      interaction.user.displayAvatarURL()
   });
 
   if (results.reroll)
   {
-      embed.addFields({
-        name: `Rerolled ${results.reroll.length} Dice`, 
-        value: `${results.reroll.join(', ')}`
-      });
+    embed.addFields({
+      name: `Rerolled ${results.reroll.length} Dice`, 
+      value: `${results.reroll.join(', ')}`
+    });
   }
 
   if (args.character)

@@ -8,3 +8,4 @@ exports.generalRoll = require('./generalRoll');
 exports.roll20th = require('./roll20th');
 exports.roll20thInit = require('./roll20thInit');
 exports.Roll = require('./Roll');
+exports.codRoll = require('./codRoll');

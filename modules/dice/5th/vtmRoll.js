@@ -62,7 +62,7 @@ async function roll(interaction)
     hunger: args.hunger ?? 0
   });
   let hunger = args.hunger;
-  if (args.character.tracked && args.autoHunger) 
+  if (args.character?.tracked && args.autoHunger) 
     hunger = args.character.tracked.hunger.current;
   results.rollDice(hunger);
   results.setOutcome();

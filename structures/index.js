@@ -10,3 +10,4 @@ module.exports.VtMV5RollResults = require('./VtmV5RollResults');
 module.exports.RollResults20th = require('./RollResults20th');
 module.exports.InitiativeTracker = require('./InitiativeTracker');
 module.exports.HunterV5RollResults = require('./HunterV5RollResults');
+module.exports.CodRollResults = require('./CodRollResults');
