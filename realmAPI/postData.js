@@ -29,7 +29,7 @@ module.exports.postData = async (path, data) =>
         cause: error.stack, 
         code: APIErrorCodes.ConnectionRefused
       });
-    else if (error.code === 1000)
+    else if (error.code === 'ECONNRESET')
     { // Socket Hang up.
       console.error("hung up")
       return await Axios.post(`http://localhost/bot/${path}`, data, config);
