@@ -31,7 +31,7 @@ module.exports.postData = async (path, data) =>
     else if (error.code === 'ECONNRESET')
     { // Socket Hang up.
       console.error("hung up")
-      return await Axios.post(`http://localhost/bot/${path}`, data, config);
+      return;
     }
     else throw new RealmAPIError({cause:error.stack + `\n\nData:\n${JSON.stringify(data)}}`});
   }

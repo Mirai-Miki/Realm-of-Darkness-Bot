@@ -52,7 +52,6 @@ module.exports.handleErrorDebug = async function(error, interaction)
 
 	try
 	{
-    console.log(error.cause)
 		const debugChannel = 
 			await interaction.client.channels.fetch('776761322859266050');
 

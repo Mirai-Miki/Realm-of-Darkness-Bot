@@ -48,7 +48,9 @@ module.exports = {
 					
 					if (!interaction.replied && !interaction.deferred) 
 						interaction.reply(error.discordResponse);
-					else interaction.editReply(error.discordResponse);					
+					else interaction.editReply(error.discordResponse);	
+					
+					console.log("Error: code", error.code)
 					handleErrorDebug(error, interaction);
 				}
 				catch (e)

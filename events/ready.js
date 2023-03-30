@@ -11,7 +11,7 @@ module.exports = {
     setActivity(client);
 		setInterval(() => {setActivity(client)}, 300000);
 		await API.updateBot(client);
-		//await updateAllGuilds(client);		
-		console.log(`Connected as: ${client.user.tag}`);
+		await updateAllGuilds(client);		
+		console.log(`Connected as: ${client.user.tag} || Shard: ${client.shard?.ids}`);
 	},
 };
