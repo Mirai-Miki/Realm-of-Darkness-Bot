@@ -6,6 +6,7 @@ const generalRoll = require('../../modules/dice/GeneralRoll');
 module.exports = {
 	data: getCommand(),	
 	async execute(interaction) {
+    await interaction.deferReply();
 		switch (interaction.options.getSubcommand())
     {
       case 'roll':        
