@@ -28,6 +28,6 @@ module.exports.postData = async (path, data) =>
         cause: error.stack, 
         code: APIErrorCodes.ConnectionRefused
       });
-    else throw new RealmAPIError({cause:error.stack});
+    else throw new RealmAPIError({cause:error.stack + `\n\nData:\n${data}`});
   }
 }
