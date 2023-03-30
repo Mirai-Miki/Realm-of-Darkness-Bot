@@ -1,6 +1,6 @@
 'use strict'
 const { trimString } = require('../../misc');
-const HunterV5RollResults = require('../../../structures/HunterV5RollResults');
+const { HunterV5RollResults } = require('../../../structures');
 const handleRerollPress = require('./handleRerollPress');
 const { getComponents, getEmbed, getContent } = require('./getHunterRollResponse');
 const getCharacter = require('../getCharacter');
