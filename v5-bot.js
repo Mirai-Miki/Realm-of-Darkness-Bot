@@ -1,22 +1,36 @@
 'use strict';
 const fs = require("fs");
-const { Client, Intents, Collection } = require("discord.js");
-const { token, commandPath } = require('./config5th.json');
+const { Client, GatewayIntentBits, Collection, Partials } = require("discord.js");
+const { token } = require('./config5th.json');
 
-const client = new Client({intents: [
-    Intents.FLAGS.GUILDS,
-    Intents.FLAGS.DIRECT_MESSAGES
-]});
+const client = new Client({
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.DirectMessages
+  ],
+  partials: [
+    Partials.GuildMember,
+    Partials.User
+  ]
+});
 
+/* Loading Commands in Client */
 client.commands = new Collection();
-const commandFolders = fs.readdirSync(commandPath);
-for (const folder of commandFolders) {
-    const commandFiles = fs.readdirSync(
-        `${commandPath}${folder}`).filter(file => file.endsWith('.js'));
-    for (const file of commandFiles) {
-        const command = require(`${commandPath}${folder}/${file}`);
-        client.commands.set(command.data.name, command);
-    }
+const commandFiles = 
+  fs.readdirSync('./commands/5th').filter(file => file.endsWith('.js'));
+for (const file of commandFiles) {
+  const command = require(`./commands/5th/${file}`);
+  client.commands.set(command.data.name, command);
+}
+
+/* Loading Component Events in Client */
+client.components = new Collection();
+const componentFiles = 
+  fs.readdirSync('./components/5th').filter(file => file.endsWith('.js'));
+for (const file of componentFiles) {
+  const component = require(`./components/5th/${file}`);
+  client.components.set(component.name, component);
 }
 
 /* Event Listeners */

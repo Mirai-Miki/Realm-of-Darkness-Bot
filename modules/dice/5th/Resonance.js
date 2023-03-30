@@ -1,257 +1,200 @@
-'use strict';
-const Roll = require('../Roll.js');
-const { MessageEmbed } = require('discord.js');
+'use strict'
+const Roll = require('../Roll');
+const { EmbedBuilder } = require('discord.js');
 
-module.exports = class Resonance
+module.exports = function resonance(interaction)
 {
-    constructor(interaction)
+  interaction.args = getArgs(interaction);
+  interaction.rollResults = getResults(interaction);
+  return {embeds: [getEmbed(interaction)]};
+}
+
+function getArgs(interaction)
+{
+  return {
+    temperament: interaction.options.getString('temperament'),
+    resonance: interaction.options.getString('resonance'),
+    minTemp: interaction.options.getString('min_temperament'),
+    notes: interaction.options.getString('notes')
+  }
+}
+
+function getResults(interaction)
+{
+  const args = interaction.args;
+  const tdice = rollTemperament(args);
+  const rdice = args.resonance ? null : Roll.single(10)
+  return {
+    temperamentDice: tdice,
+    temperament: getTemperament(args, tdice),
+    resonanceDice: rdice,
+    resonance: getResonance(args, rdice),
+  }  
+}
+
+function rollTemperament(args)
+{
+  if (args.temperament) return null;
+
+  const dice = [];
+  if (args.minTemp === 'Fleeting') dice.push(Roll.single(5) + 5);
+  else if (args.minTemp === 'Intense') dice.push(10);
+  else dice.push(Roll.single(10));
+
+  if (dice[0] >= 9) dice.push(Roll.single(10));
+  return dice;
+}
+
+function getTemperament(args, dice)
+{
+  if (args.temperament) return TemperamentType[args.temperament];
+
+  if (dice.length > 1 && dice[1] >= 9) return TemperamentType.Acute;
+  else if (dice.length > 1) return TemperamentType.Intense;
+
+  if (dice[0] < 6) return TemperamentType.Negligible;
+  else return TemperamentType.Fleeting;
+}
+
+function getResonance(args, dice)
+{
+  if (args.resonance) return ResonanceInfo[args.resonance];
+
+  if (dice <= 3) return ResonanceInfo.Phlegmatic;
+  else if (dice <= 6) return ResonanceInfo.Melancholy;
+  else if (dice <= 8) return ResonanceInfo.Choleric;
+  else return ResonanceInfo.Sanguine;
+}
+
+function getEmbed(interaction)
+{
+  const results = interaction.rollResults;
+  const args = interaction.args;
+  const embed = new EmbedBuilder();
+  embed.setAuthor({
+    name: (interaction.member?.displayName ?? interaction.user.username), 
+    iconURL: interaction.member?.displayAvatarURL() ??
+      interaction.user.displayAvatarURL()
+  });
+  embed.setTitle('Resonance Roll');
+  embed.setColor(results.resonance.color[results.temperament.name] ?? '#000000');
+  embed.setURL('https://cdn.discordapp.com/attachments/699082447278702655/972058320611459102/banner.png');
+  
+  if (args.minTemp) embed.addFields({
+    name: "Minimum Temperament", 
+    value: `${args.minTemp}`
+  });
+
+  embed.addFields({
+    name: "Result",
+    value: `\`\`\`${results.temperament.name}` +
+      `${results.temperament.name === 'Negligible' ? '' : 
+      (' ' + results.resonance.name)}\`\`\``, 
+    inline: true
+  });
+
+  embed.addFields({
+    name: "Temperament", 
+    value: `\`\`\`${results.temperamentDice ? results.temperamentDice : 
+      results.temperament.name}\`\`\``, 
+    inline: true
+  });
+  
+  embed.addFields({
+    name: "Resonance", 
+    value: `\`\`\`${results.resonanceDice ? results.resonanceDice : 
+      results.resonance.name}\`\`\``, 
+    inline: true
+  });
+  
+  if (results.temperament.value > 0) 
+  {
+    embed.addFields({
+      name: "Disciplines", 
+      value: results.temperament.value > 1 ? 
+        results.resonance.powers + '\nAdd +1 dice' :
+        results.resonance.powers, 
+      inline: true
+    });
+    
+    embed.addFields({
+      name: "Emotions", 
+      value: results.resonance.description, 
+      inline: true
+    });
+  }
+  
+  const links = "[Website](https://realmofdarkness.app/)" +
+    " | [Commands](https://realmofdarkness.app/v5/commands/)" +
+    " | [Patreon](https://www.patreon.com/MiraiMiki)";
+
+  if (args.notes) 
+  {
+    embed.addFields({name: "Notes", value: args.notes});
+    embed.data.fields.at(-1).value += `\n${links}`;
+  }
+  else embed.addFields({name: '⠀', value: links});
+
+  return embed;
+}
+
+
+const TemperamentType = 
+{
+  Negligible: {name: 'Negligible', value: 0},
+  Fleeting: {name: 'Fleeting', value: 1},
+  Intense: {name: 'Intense', value: 2},
+  Acute: {name: 'Acute', value: 3},
+}
+
+const ResonanceInfo =
+{
+  Sanguine: 
+  {
+    name: 'Sanguine',
+    description: 'Horny, Happy, Addicted,\nActive, Flighty, Enthusiastic',
+    powers: 'Blood Sorcery, Presence',
+    color: 
     {
-        this.interaction = interaction;
-        this.colour = {hex: [0, 0, 0], mod: 0};
-
-        this.temp = {
-            name: this.interaction.options.getString('temperament') ?? '',
-            dice: '',
-        }
-        this.res = {
-            name: this.interaction.options.getString('resonance') ?? '', 
-            description: '',
-            mechanic: '',
-            dice: '',
-        }
-
-        if (!this.temp.name)
-        {
-            this.minTemp = this.interaction.options.getString('min_temperament');
-        }        
-        this.notes = this.interaction.options.getString('notes');
+      Fleeting: '#96008f',
+      Intense: '#c800c0',
+      Acute: '#ff00f2'
+    },
+  },
+  Choleric:
+  {
+    name: 'Choleric',
+    description: 'Angry, Violent, Bullying,\nPassionate, Envious',
+    powers: 'Celerity, Potence',
+    color:
+    {      
+      Fleeting: '#960000',
+      Intense: '#c80000',
+      Acute: '#ff0000'
     }
-
-    async roll()
-    {
-        await this.rollTemp();
-        await this.rollRes();
+  },
+  Melancholy:
+  {
+    name: 'Melancholy',
+    description: 'Sad, Scared, Intellectual,\nDepressed, Grounded',
+    powers: 'Fortitude, Obfuscate',
+    color:
+    {      
+      Fleeting: '#008596',
+      Intense: '#00b1c8',
+      Acute: '#00e1ff'
     }
-
-    async rollTemp()
-    {
-        let temp;
-        if (!this.temp.name)
-        {
-            if (this.minTemp === 'Fleeting')
-            {
-                temp = Roll.single(5);
-                temp += 5;
-            }
-            else if (this.minTemp === 'Intense')
-            {
-                temp = 10;
-            }
-            else temp = Roll.single(10);
-
-            this.temp.dice += `${temp}`;
-        }        
-
-        if (temp >= 9 || this.temp.name === 'Intense' || 
-            this.temp.name === 'Acute')
-        {
-            if (!this.temp.name)
-            {
-                temp = Roll.single(10);
-                this.temp.dice += ` ${temp.toString()}`;
-            }            
-            
-            if (temp <= 8 || this.temp.name === 'Intense')
-            {
-                this.temp.name = "Intense";
-                this.colour.hex = [180, 180, 180];
-                this.colour.mod = 2;
-            }
-            else
-            {
-                this.temp.name = "Acute";
-                this.colour.hex = [254, 254, 254];
-                this.colour.mod = 3;
-            }
-        }
-        else if (temp >= 6 || this.temp.name === 'Fleeting')
-        {
-            this.temp.name = "Fleeting";
-            this.colour.hex = [125, 125, 125];
-            this.colour.mod = 1;
-        }
-        else this.temp.name = "Negligible";
+  },
+  Phlegmatic:
+  {
+    name: 'Phlegmatic',
+    description: 'Lazy, Apathetic, Calm,\nControlling, Sentimental',
+    powers: 'Auspex, Dominate',
+    color:
+    {      
+      Fleeting: '#009600',
+      Intense: '#00c800',
+      Acute: '#00ff00'
     }
-
-    async rollRes()
-    {
-        if (this.temp.name == 'Negligible') return;
-        let dice;
-        if (!this.res.name) 
-        {            
-            dice = Roll.single(10);
-            this.res.dice = `${dice}`;
-        }
-        
-        if (dice >= 9 || this.res.name === 'Sanguine') 
-        {
-            this.res.name = "Sanguine";
-            this.res.description = 
-                "Horny, Happy, Addicted,\nActive, Flighty, Enthusiastic";
-
-            if (this.colour.mod === 1) 
-            {
-                this.colour.hex = [150, 0, 143];
-                this.res.mechanic = "Blood Sorcery, Presence";
-            }
-            else if (this.colour.mod === 2) this.colour.hex = [200, 0, 192];
-            else this.colour.hex = [255, 0, 242];
-
-            if (this.colour.mod > 1)
-            {
-                this.res.mechanic = "Blood Sorcery, Presence\nAdd +1 dice";
-            }
-        }
-        else if (dice >= 7 || this.res.name === 'Choleric') 
-        {
-            this.res.name = "Choleric";
-            this.res.description = 
-                "Angry, Violent, Bullying,\nPassionate, Envious";
-
-            if (this.colour.mod === 1)
-            {
-                this.colour.hex = [150, 0, 0];
-                this.res.mechanic = "Celerity, Potence";
-            }
-            else if (this.colour.mod === 2) this.colour.hex = [200, 0, 0];
-            else this.colour.hex = [255, 0, 0];
-
-            if (this.colour.mod > 1)
-            {
-                this.res.mechanic = "Celerity, Potence\nAdd +1 dice";
-            }
-        }
-        else if (dice >= 4 || this.res.name === 'Melancholy') 
-        {
-            this.res.name = "Melancholy";
-            this.res.description = 
-                "Sad, Scared, Intellectual,\nDepressed, Grounded";
-
-            if (this.colour.mod === 1) 
-            {
-                this.colour.hex = [0, 133, 150];
-                this.res.mechanic = "Fortitude, Obfuscate";
-            }
-            else if (this.colour.mod === 2) this.colour.hex = [0, 177, 200];
-            else this.colour.hex = [0, 225, 255];
-
-            if (this.colour.mod > 1)
-            {
-                this.res.mechanic = "Fortitude, Obfuscate\nAdd +1 dice";                
-            }
-        }
-        else 
-        {
-            this.res.name = "Phlegmatic";
-            this.res.description = 
-                "Lazy, Apathetic, Calm,\nControlling, Sentimental";
-
-            if (this.colour.mod === 1) 
-            {
-                this.colour.hex = [0, 150, 0];
-                this.res.mechanic = "Auspex, Dominate";
-            }
-            else if (this.colour.mod === 2) this.colour.hex = [0, 200, 0];
-            else this.colour.hex = [0, 255, 0];
-
-            if (this.colour.mod > 1)
-            {
-                this.res.mechanic = "Auspex, Dominate\nAdd +1 dice";
-            }
-        }
-    }
-
-    async constructEmbed()
-    {
-        if (this.notes?.length > 300)
-        {
-            const embed = new MessageEmbed()
-                .setTitle("String Length Error")
-                .setColor("#db0f20")
-                .setThumbnail("https://cdn.discordapp.com/attachments/817275006311989268/974198094696689744/error.png")
-                .setDescription("Notes cannot be longer than 300 chars." +
-                    "\n[RoD Server](https://discord.gg/Qrty3qKv95)" + 
-                    " | [Patreon](https://www.patreon.com/MiraiMiki)");
-            this.embed = embed;
-            return embed;
-        }
-
-        // Create the embed
-        let embed = new MessageEmbed();
-        embed.setAuthor(
-            {
-                name: (
-                    this.interaction.member?.displayName ??
-                    this.interaction.user.username
-                ), 
-                iconURL: this.interaction.member?.displayAvatarURL() ??
-                    this.interaction.user.displayAvatarURL()
-            }
-        );
-        embed.setTitle('Resonance Roll');
-        embed.setColor(this.colour.hex);
-        embed.setURL('https://cdn.discordapp.com/attachments/699082447278702655/972058320611459102/banner.png');
-        
-        if (this.minTemp) embed.addField("Minimum Temperament", `${this.minTemp}`);
-
-        embed.addField("Result", `\`\`\`${this.temp.name}` +
-            `${this.temp.name == 'Negligible' ? '' : (' '+this.res.name)}\`\`\``, 
-            true);
-        embed.addField("Temperament", 
-            `\`\`\`${this.temp.dice ? this.temp.dice : this.temp.name}\`\`\``, 
-            true);
-        if (this.res.dice || this.res.name)
-        {
-            embed.addField("Resonance", 
-                `\`\`\`${this.res.dice ? this.res.dice : this.res.name}\`\`\``, 
-                true);
-        }       
-        
-        if (this.res.mechanic) 
-            embed.addField("Disciplines", this.res.mechanic, true);
-        if (this.res.description) 
-            embed.addField("Emotions", this.res.description, true);
-
-        if (this.notes)
-        {
-            embed.addField("Notes", this.notes);
-            const links = "\n[Website](https://realmofdarkness.app/)" +
-                " | [Commands](https://realmofdarkness.app/v5/commands/)" +
-                " | [Patreon](https://www.patreon.com/MiraiMiki)";
-            embed.fields.at(-1).value += links;
-        } 
-        
-        this.embed = embed;
-        return embed;
-    }
-
-    async reply()
-    {
-        try 
-        {
-            this.interaction.editReply({embeds: [this.embed]});
-        }
-        catch (error)
-        {
-            console.error("Failed to reply to v5 Res roll.");
-            console.error(error);
-        }
-    }
-
-    async cleanup()
-    {
-        this.interaction = undefined;
-        this.temp = undefined;
-        this.res = undefined;
-    }
+  }
 }

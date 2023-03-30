@@ -1,52 +1,19 @@
 'use strict';
-const { MessageActionRow, MessageButton, MessageEmbed } = require('discord.js');
-const { InitAPI, NoInitTrackerError, DatabaseAccessError } = 
-    require("../../databaseAPI/InitAPI.js");
+const { EmbedBuilder } = require('discord.js');
 const { InitTracker } = require("./InitTracker.js");
-const { InitCharacter } = require("./InitCharacter.js");
-const { ComponentCID } = require("../../Constants/Constants20th");
-const { InitPhase } = require("../../Constants/Constants20th");
-const { Interaction } = require('discord.js');
-const { TextChannel } = require('discord.js');
+const { InitCharacter } = require("../../structures/InitiativeCharacter.js");
+
+const { RealmError, ErrorCodes } = require('../../Errors');
+const canSendMessage = require('../canSendMessage');
+const getButtonRow = require('./getButtonRow');
+const API = require('../../realmAPI');
+const { ComponentCID } = require("../../Constants");
+const { InitiativeTracker } = require('../../structures');
+
+
 
 module.exports.Initiative = class Initiative
 {
-    static async newTracker(interaction)
-    {
-        const channel = await canSendChannelMessage(interaction);
-        if (!channel) return;
-
-        let json;
-        try {json = await InitAPI.getTracker(interaction)}
-        catch(error) 
-        {
-            if (error instanceof DatabaseAccessError)
-            {
-                return await interaction.editReply(ErrorEmbed.DBACCESS);
-            }
-            else if (error instanceof NoInitTrackerError)
-            {
-                json = undefined;
-            }            
-        }
-
-        if (!json)
-        {
-            this.setPhase(interaction, InitPhase.NEW, channel);
-            return;
-        }
-
-        const embed = new MessageEmbed()
-            .setTitle("Start New Initiative?")
-            .setDescription("There is still an active tracker in this channel" +
-                " would you still like to create a new one?\n" +
-                "Note starting a new tracker will end the old one.")
-            .setColor("#c914cc")
-        const button = ButtonRow.confirmNewTracker;
-
-        await interaction.editReply({components: [button], embeds: [embed]});
-    }
-
     /**
      * Sets the current Phase for the tracker
      * Responds to the interaction with a tracker embed
@@ -143,13 +110,7 @@ module.exports.Initiative = class Initiative
         }   
         await interaction.editReply("Ready to go!");     
     }
-    
-    /*
-    Initiative Roll Command: [{name}, {dex_wits}, modifier]
-    Rolls the characters init and puts the data up in the post hidden
-    read for the button to be clicked
-    If two people rolled add next round button (Reveal Order)
-    */
+
    /**
     * Initiative Roll Command: [{name}, {dex_wits}, modifier]
     * Rolls the characters init and puts the data up in the post hidden
@@ -208,7 +169,7 @@ module.exports.Initiative = class Initiative
 
         const name = interaction.options.getString('name');
         let character = tracker.characters
-            .get(`${interaction.user.id}#${name.toLowerCase()}`);        
+            .get(`${interaction.user.id}|${name.toLowerCase()}`);        
 
         if (!reroll)
         {
@@ -226,7 +187,7 @@ module.exports.Initiative = class Initiative
         character.rollInit();
         character.setRolled(true);
 
-        tracker.characters.set(`${interaction.user.id}#${name}`, character);
+        tracker.characters.set(`${interaction.user.id}|${name}`, character);
         
         try {await tracker.fetchMembers(interaction.guild)}
         catch(error) 
@@ -867,152 +828,4 @@ class InitEmbed
 
         return embed;
     }
-}
-
-class ButtonRow
-{
-    /*
-    Roll Phase:
-        {End} - Less then 2 people have rolled
-        {Reveal Initiative, End} - 2 or more have rolled
-    
-    Reveal Phase:
-        {Next Round, Declare Actions, End}
-    
-    Decalare Phase:
-        {End} - When not everyone has declared
-        {Next Round, End} - When everyone has declared
-    */
-   
-    static rollPhaseOne = new MessageActionRow()
-        .addComponents(
-            new MessageButton()
-                .setCustomId(ComponentCID.INIT_END)
-                .setLabel('End Initiative')
-                .setStyle('DANGER')
-        );
-    
-    static rollPhaseTwo = new MessageActionRow()
-        .addComponents(
-            new MessageButton()
-                .setCustomId(ComponentCID.INIT_REVEAL)
-                .setLabel('Reveal Initiative')
-                .setStyle('PRIMARY')
-        )
-        .addComponents(
-            new MessageButton()
-                .setCustomId(ComponentCID.INIT_END)
-                .setLabel('End Initiative')
-                .setStyle('DANGER')
-        ); 
-
-    static revealPhase = new MessageActionRow()
-        .addComponents(
-            new MessageButton()
-                .setCustomId(ComponentCID.INIT_NEXT_ROUND)
-                .setLabel('Next Round')
-                .setStyle('PRIMARY')
-        )
-        .addComponents(
-            new MessageButton()
-                .setCustomId(ComponentCID.INIT_DECLARE)
-                .setLabel('Declare Actions')
-                .setStyle('SECONDARY')
-        )
-        .addComponents(
-            new MessageButton()
-                .setCustomId(ComponentCID.INIT_END)
-                .setLabel('End Initiative')
-                .setStyle('DANGER')
-        );
-
-    static declarePhaseOne = new MessageActionRow()
-        .addComponents(
-            new MessageButton()
-                .setCustomId(ComponentCID.INIT_END)
-                .setLabel('End Initiative')
-                .setStyle('DANGER')
-        );
-    
-    static declarePhaseTwo = new MessageActionRow()
-        .addComponents(
-            new MessageButton()
-                .setCustomId(ComponentCID.INIT_NEXT_ROUND)
-                .setLabel('Next Round')
-                .setStyle('PRIMARY')
-        )
-        .addComponents(
-            new MessageButton()
-                .setCustomId(ComponentCID.INIT_END)
-                .setLabel('End Initiative')
-                .setStyle('DANGER')
-        );
-    
-    static confirmNewTracker = new MessageActionRow()
-        .addComponents(
-            new MessageButton()
-                .setCustomId(ComponentCID.INIT_CONFIRM)
-                .setLabel('Confirm')
-                .setStyle('PRIMARY')
-        )
-    
-    static getButtonRow(phase)
-    {
-        if (phase <= InitPhase.ROLL) return this.rollPhaseOne;
-        else if (phase === InitPhase.REVEAL) return this.revealPhase;
-        else if (phase === InitPhase.DECLARE) return this.declarePhaseOne; 
-    }
-}
-
-/**
- * Checks if a message can be sent via a channel in which an interaction was used.
- * Returns a valid channel or sends an error response.
- * @param {Interaction} interaction 
- * @returns
- */
-async function canSendChannelMessage(interaction)
-{
-    const clientId = interaction.client.user.id;
-    const channelId = interaction.channelId;
-    const channel = await interaction.client.channels.fetch(channelId);
-
-    if (!interaction.guild) 
-        await interaction.editReply(ErrorEmbed.NOGUILD);
-    else if (!channel) 
-        await interaction.editReply(ErrorEmbed.NO_CHANNEL);
-    else if (!channel.isText() && !channel.isThread())
-        await interaction.editReply(ErrorEmbed.NOT_TEXT);
-    else if (!channel.permissionsFor(clientId).has("VIEW_CHANNEL"))
-        await interaction.editReply(ErrorEmbed.VIEW_CHANNEL_PERMISSION);
-    else if (!channel.permissionsFor(clientId).has("SEND_MESSAGES"))
-        await interaction.editReply(ErrorEmbed.SEND_MESSAGE_PERMISSION);
-    else if (!channel.permissionsFor(clientId).has("EMBED_LINKS"))
-        await interaction.editReply(ErrorEmbed.EMBED_LINKS_PERMISSION);
-    else return channel;
-
-    return undefined;
-}
-
-function sortInitAscending(a, b)
-{
-    if (a.init > b.init) return -1;
-    else if (a.init === b.init) // Handle Tie
-    {
-        if ((a.pool + a.mod) > (b.pool + b.mod)) return -1;
-        else if ((a.pool + a.mod) === (b.pool + b.mod)) return 0;
-        else return 1;
-    }
-    else return 1;
-}
-
-function sortInitDescending(a, b)
-{
-    if (a.init < b.init) return -1;
-    else if (a.init === b.init) // Handle Tie
-    {
-        if ((a.pool + a.mod) < (b.pool + b.mod)) return -1;
-        else if ((a.pool + a.mod) === (b.pool + b.mod)) return 0;
-        else return 1;
-    }
-    else return 1;
 }

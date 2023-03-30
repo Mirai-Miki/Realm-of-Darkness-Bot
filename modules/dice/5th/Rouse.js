@@ -1,180 +1,94 @@
-'use strict';
-const Roll = require('../Roll.js');
-const { MessageEmbed } = require('discord.js');
-const { correctName } = require('../../util/misc');
-const DatabaseAPI = require('../../../databaseAPI/DatabaseAPI.js');
-const { character5thEmbed } = require('../../Tracker/embed/character5thEmbed');
+'use strict'
+const { trimString } = require('../../misc');
+const getCharacter = require('../getCharacter');
+const Roll = require('../Roll');
+const { EmbedBuilder } = require('discord.js');
 
-module.exports = class Rouse
+/**
+ * 
+ * @param {Interaction} interaction 
+ * @returns {DiscordResponse} Response to send to the discord API
+ */
+module.exports = async function rouse(interaction)
 {
-    constructor(interaction)
+  interaction.args = await getArgs(interaction);
+  interaction.rollResults = roll(interaction.args.reroll);
+
+  return {embeds: [getEmbed(interaction)]};
+}
+
+async function getArgs(interaction)
+{
+  return {
+    character: await getCharacter(
+      trimString(interaction.options.getString('character')),
+      interaction
+    ),
+    reroll: interaction.options.getBoolean('reroll'),
+    notes: interaction.options.getString('notes')
+  }
+}
+
+function roll(reroll)
+{
+  const rollResults = {
+    dice: [Roll.single(10)],
+    toString: '```ansi\n[2;31mHunger Increased[0m[2;31m[0m\n```',
+    passed: false,
+    color: '#8c0f28'
+  };
+  if (reroll) rollResults.dice.push(Roll.single(10));
+
+  for (const dice of rollResults.dice)
+  {
+    if (dice >= 6)
     {
-        this.interaction = interaction;
-        this.notes = this.interaction.options.getString('notes');
-        this.results = {
-            dice: [], 
-            reroll: false,
-            passed: false,
-            description: '- Hunger Increased -',
-            colour: [143, 6, 33]
-        };
-        this.response = {embeds: [], components: []};
-        this.character = this.interaction.options.getString('character');
-
-        if (this.interaction.options.getBoolean('reroll')) 
-            this.results.reroll = true;
+      rollResults.passed = true;
+      rollResults.toString = '```Hunger Unchanged```';
+      rollResults.color = '#1c1616';
     }
+  }
+  return rollResults;
+}
 
-    async isArgsValid()
-    {
-        let description;
-        if (this.character?.length > 50)
-        {
-            description = "Character name cannot be longer than 50 chars.";
-        }
-        else if (this.notes?.length > 300)
-        {
-            description = "Notes cannot be longer than 300 chars.";
-        }
-        else return true;
+function getEmbed(interaction)
+{
+  const results = interaction.rollResults;
+  const embed = new EmbedBuilder();
+  embed.setAuthor({
+    name: (
+      interaction.member?.displayName ??
+      interaction.user.username
+    ), 
+    iconURL: interaction.member?.displayAvatarURL() ??
+      interaction.user.displayAvatarURL()
+  });
 
-        const embed = new MessageEmbed()
-            .setTitle("String Length Error")
-            .setColor("#db0f20")
-            .setThumbnail("https://cdn.discordapp.com/attachments/817275006311989268/974198094696689744/error.png")
-            .setDescription(`${description}` +
-                "\n[RoD Server](https://discord.gg/Qrty3qKv95)" + 
-                " | [Patreon](https://www.patreon.com/MiraiMiki)");
+  embed.setTitle('Rouse Check');
+  embed.setColor(results.color);
+  embed.setURL('https://cdn.discordapp.com/attachments/699082447278702655/972058320611459102/banner.png');
         
-        this.interaction.reply({embeds: [embed], ephemeral: true});
-        return false;
-    }
+  if (!results.passed)
+    embed.setThumbnail('https://cdn.discordapp.com/attachments/7140' +
+    '50986947117076/886855116035084288/RealmOfDarknessSkullnoBNG.png');
+  
+  if (interaction.args.character)
+  {
+    const char = interaction.args.character;
+    embed.addFields({name: "Character", value: char.name});
+    if (char.tracked?.thumbnail) embed.setThumbnail(char.tracked.thumbnail);
+  }
 
-    async roll()
-    {
-        this.results.dice.push(Roll.single(10));
-        if (this.results.reroll) this.results.dice.push(Roll.single(10))
-        for (const dice of this.results.dice)
-        {
-            if (dice >= 6) 
-            {
-                this.results.description = "Hunger Unchanged";
-                this.results.colour = [48, 33, 33];
-                this.results.passed = true;
-            }
-        }
-    }
-
-    async constructEmbed()
-    {
-        if (this.character)
-        {
-            const name = correctName(this.character);
-            let char = await DatabaseAPI.getCharacter(name, 
-                this.interaction.user.id, this.interaction);
-            if (char == 'noChar') char = undefined;
-            this.character = {
-                name: name, 
-                tracked: char,
-            };
-        }
-        
-        const diceMess = [];
-        for (const dice of this.results.dice)
-        {
-            diceMess.push(dice);
-        }
-
-        const embed = new MessageEmbed();
-        embed.setAuthor(
-            {
-                name: (
-                    this.interaction.member?.displayName ??
-                    this.interaction.user.username
-                ), 
-                iconURL: this.interaction.member?.displayAvatarURL() ??
-                    this.interaction.user.displayAvatarURL()
-            }
-        );
-
-        embed.setTitle(`${this.surge ? 'Blood Surge Check' : 'Rouse Check'}`);
-        embed.setColor(this.results.colour);
-        embed.setURL('https://cdn.discordapp.com/attachments/699082447278702655/972058320611459102/banner.png');
-        
-        if (!this.results.passed)
-            embed.setThumbnail('https://cdn.discordapp.com/attachments/7140' +
-            '50986947117076/886855116035084288/RealmOfDarknessSkullnoBNG.png');
-        
-        if (this.character)
-        {
-            embed.addField("Character", this.character.name);
-            if (this.character.tracked?.thumbnail) 
-                embed.setThumbnail(this.character.tracked.thumbnail)
-        }
-
-        embed.addField("Rouse Dice", `${diceMess.join(' ')}`);
-        if (this.notes) embed.addField("Notes", this.notes);
-        embed.addField("Result", `\`\`\`diff\n` +
-            `${this.results.description}\n\`\`\``);
+  embed.addFields({name: "Rouse Dice", value: `${results.dice.join(' ')}`});
+  if (interaction.args.notes) 
+    embed.addFields({name: "Notes", value: interaction.args.notes});
+  embed.addFields({name: "Result", value: results.toString});
 
         
-        const links = "\n[Website](https://realmofdarkness.app/)" +
-            " | [Commands](https://realmofdarkness.app/v5/commands/)" +
-            " | [Patreon](https://www.patreon.com/MiraiMiki)";
-        embed.fields.at(-1).value += links;
-        
-        this.response.embeds = [embed];
-        return embed;
-    }
-
-    async reply()
-    {
-        try
-        {
-            await this.interaction.editReply({embeds: this.response.embeds});
-        }   
-        catch(error)
-        {
-            console.error("Failed to send reply for v5 Rouse roll");
-            console.error(error);
-        }       
-
-        if (!this.results.passed) await this.updateCharacter(1);
-    }
-
-    async updateCharacter(hunger)
-    {
-        if (!this.character?.tracked || 
-            this.character.tracked.splat != 'Vampire' || 
-            this.character.tracked.version != '5th' ||
-            !hunger) return;
-        
-        this.character.tracked.hunger.updateCurrent(hunger);
-        
-        const resp = await DatabaseAPI.saveCharacter(this.character.tracked);
-        if (resp != 'saved')
-        {            
-            this.interaction.followUp({
-                content: "There was an error accessing the Database and" +
-                " the character was not updated."
-            });
-        }
-        else
-        {
-            this.interaction.followUp(
-                character5thEmbed(
-                    this.character.tracked, 
-                    this.interaction.client
-                )
-            );
-        }
-    }
-
-    async cleanup()
-    {
-        this.interaction = undefined;
-        this.character = undefined;
-        this.results = undefined;
-        this.response = undefined;
-    }
+  const links = "\n[Website](https://realmofdarkness.app/)" +
+    " | [Commands](https://realmofdarkness.app/v5/commands/)" +
+    " | [Patreon](https://www.patreon.com/MiraiMiki)";
+    
+  embed.data.fields.at(-1).value += links;
+  return embed;
 }

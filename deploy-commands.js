@@ -10,19 +10,16 @@ function pushCommands (configFile, ver, toggle=true)
 	const guildId = "699082446729117746"
 	
 	const commands = [];
-	const commandFolders = fs.readdirSync(commandPath);
 	
-	
-	for (const folder of commandFolders) {
-	    const commandFiles = fs.readdirSync(
-	        `${commandPath}${folder}`).filter(file => file.endsWith('.js'));
-	    for (const file of commandFiles) {
-	        const command = require(`${commandPath}${folder}/${file}`);
-	        commands.push(command.data.toJSON());
-	    }
+	const commandFiles = fs.readdirSync(
+	  `${commandPath}`).filter(file => file.endsWith('.js'));
+	for (const file of commandFiles) {
+	  const command = require(`${commandPath}/${file}`);
+    commands.push(command.data);
+		console.log(`${commandPath}/${file}:` ,command.data?.name)
 	}
 	
-	const rest = new REST({ version: '9' }).setToken(token);
+	const rest = new REST({ version: '10' }).setToken(token);
 	
 	(async () => {
 		try {
@@ -30,7 +27,6 @@ function pushCommands (configFile, ver, toggle=true)
 				Routes.applicationGuildCommands(clientId, guildId),
 				{ body: toggle ? commands : new Map},
 			);
-			
 			console.log(`Successfully registered ${ver} application commands.`);
 		} catch (error) {
 			console.error(error);
@@ -39,5 +35,5 @@ function pushCommands (configFile, ver, toggle=true)
 }
 
 pushCommands('./config5th.json', "v5", true);
-pushCommands('./config20th.json', "20th", false);
-pushCommands('./configCoD.json', "CoD", false);
+pushCommands('./config20th.json', "20th", true);
+pushCommands('./configCoD.json', "CoD", true);

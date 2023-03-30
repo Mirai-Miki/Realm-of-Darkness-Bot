@@ -1,48 +1,107 @@
 'use strict';
+const { Events } = require('discord.js');
+const RealmError = require('../Errors/RealmError');
+const { handleErrorDebug } = require('../Errors/index');
+const API = require('../realmAPI');
+
 module.exports = {
-	name: 'interactionCreate',
+	name: Events.InteractionCreate,
 	once: false,
-	async execute(interaction) {
-        if (interaction.isCommand())
+	async execute(interaction) 
+	{
+    if (interaction.isCommand())
 		{
 			const client = interaction.client;
-        	const command = client.commands.get(interaction.commandName);
+      const command = client.commands.get(interaction.commandName);
+	    if (!command) return;
 
-	    	if (!command) return;
-
-	    	try {
-	    		await command.execute(interaction);
-	    	} catch (error) {
-				console.error("\n\nError at interactionCreate.js isCommand()");
-	    		console.error(error);
-	    		await interaction.editReply(
-        	    { 
-        	        content: 'There was an error while executing this command!\n' +
-        	            'If see this error please report it at the ' +
-						'[Realm of Darkness Server](<https://discord.gg/Qrty3qKv95>).', 
-        	        ephemeral: true 
-        	    });
-	    	}
+	    try 
+			{
+				await API.updateUser(
+					interaction.member ? interaction.member : interaction.user, true);
+	    	const discordResponse = await command.execute(interaction);
+				if (discordResponse)
+				{
+					if (!interaction.replied && !interaction.deferred) 
+						await interaction.reply(discordResponse);
+					else await interaction.editReply(discordResponse);
+				}
+				else throw new Error("No discordResponse");
+				if (interaction.followUps)
+				{
+					for (const followUp of interaction.followUps)
+					{
+						await interaction.followUp(followUp);
+					}
+				}
+	    } 
+			catch (error)
+			{
+				try
+				{
+					if (!error.discordResponse) // Not a RoD Error, we need to debug
+					{
+						const rodError = new RealmError({cause: error.stack});
+						error.discordResponse = rodError.discordResponse;
+						error.debug = rodError.debug;
+					}
+					
+					if (!interaction.replied && !interaction.deferred) 
+						interaction.reply(error.discordResponse);
+					else interaction.editReply(error.discordResponse);					
+					handleErrorDebug(error, interaction);
+				}
+				catch (e)
+				{
+					console.error(`Error at interactionCreate() - Command`);
+					console.error(e);
+					console.error(`\n\nError that triggered this:`);
+					console.error(error)
+				}
+	    }
 		}
 		else if (interaction.isMessageComponent())
 		{
-			const customId = interaction.customId;
-			const component = interaction.client.components?.get(customId);
+			interaction.splitId = interaction.customId.split('|');
+			const id = interaction.splitId[0];
+			const component = interaction.client.components?.get(id);
 			if (!component) return;
 
-			try {
-	    		await component.execute(interaction);
-	    	} catch (error) {
-				console.error("\n\nError at interactionCreate.js isMessageComponent()");
-	    		console.error(error);
-	    		await interaction.editReply(
-        	    { 
-        	        content: 'There was an error while executing this component!\n' +
-        	            'If see this error please report it at the ' +
-						'[Realm of Darkness Server](<https://discord.gg/Qrty3qKv95>).', 
-        	        ephemeral: true 
-        	    });
-	    	}
+			try 
+			{
+	    	const discordResponse = await component.execute(interaction);
+				if (discordResponse)
+				{
+					if (!interaction.replied && !interaction.deferred) 
+						interaction.reply(discordResponse);
+					else interaction.editReply(discordResponse);
+				}
+				else throw new Error("No discordResponse");
+	    } 
+			catch (error)
+			{
+				try
+				{
+					if (!error.discordResponse) // Not a RoD Error, we need to debug
+					{
+						const rodError = new RealmError({cause: error.stack});
+						error.discordResponse = rodError.discordResponse;
+						error.debug = rodError.debug;
+					}
+					
+					if (!interaction.replied && !interaction.deferred) 
+						interaction.reply(error.discordResponse);
+					else interaction.editReply(error.discordResponse);					
+					handleErrorDebug(error, interaction);
+				}
+				catch (e)
+				{
+					console.error(`Error at interactionCreate() - Component`);
+					console.error(e);
+					console.error(`\n\nError that triggered this:`);
+					console.error(error)
+				}
+	    }
 		}        
 	},
 };
