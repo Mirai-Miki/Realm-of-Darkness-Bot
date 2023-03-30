@@ -3,10 +3,10 @@ const { postData } = require('./postData.js');
 const RealmAPIError = require('../Errors/RealmAPIError');
 
 
-module.exports = async function deleteGuild(guildId)
+module.exports = async function deleteStRole(roldId)
 {
-  const path = `chronicle/delete`;
-  const data = {guild_id: guildId}
+  const path = `chronicle/storyteller/roles/delete`;
+  const data = {role_id: roleId}
 
   const res = await postData(path, data);
   switch(res?.status)
