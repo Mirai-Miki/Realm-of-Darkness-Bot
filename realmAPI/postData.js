@@ -23,11 +23,17 @@ module.exports.postData = async (path, data) =>
   }
   catch (error)
   {
+    console.log(error)
     if (error.code === 'ECONNREFUSED')
       throw new RealmAPIError({
         cause: error.stack, 
         code: APIErrorCodes.ConnectionRefused
       });
+    else if (error.code === 1000)
+    { // Socket Hang up.
+      console.error("hung up")
+      return await Axios.post(`http://localhost/bot/${path}`, data, config);
+    }
     else throw new RealmAPIError({cause:error.stack + `\n\nData:\n${JSON.stringify(data)}}`});
   }
 }
