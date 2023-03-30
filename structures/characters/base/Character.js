@@ -1,6 +1,6 @@
 'use strict';
 const { GuildMember } = require("discord.js");
-const { Consumable } = require("../../../structures");
+const Consumable = require("../../Consumable");
 const API = require('../../../realmAPI');
 const sendToTrackerChannel = require('../../../modules/sendToTrackerChannel');
 

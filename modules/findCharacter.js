@@ -1,6 +1,6 @@
 'use strict'
 const { EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require("discord.js");
-const { isAdminOrST } = require("../modules");
+const isAdminOrST = require("./isAdminOrST");
 const { RealmError, ErrorCodes } = require('../Errors');
 const API = require('../realmAPI');
 const { ComponentCID } = require('../Constants');

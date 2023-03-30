@@ -1,5 +1,6 @@
 'use strict';
-const { Consumable, Quintessence } = require("../../structures");
+const Consumable = require("../Consumable");
+const Quintessence = require("../Quintessence");
 const Character20th = require("./base/Character20th");
 const { Splats, Emoji } = require('../../Constants');
 const { EmbedBuilder } = require('discord.js');

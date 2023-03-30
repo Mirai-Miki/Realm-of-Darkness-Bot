@@ -1,6 +1,7 @@
 'use strict'
 const { RealmError, ErrorCodes } = require('../Errors')
-const { isAdminOrST, getCharacterClass } = require('../modules');
+const isAdminOrST = require('./isAdminOrST');
+const getCharacterClass = require('./getCharacterClass');
 const API = require('../realmAPI');
 
 module.exports.new = async function(interaction, splat)

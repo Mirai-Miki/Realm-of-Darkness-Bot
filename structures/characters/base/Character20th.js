@@ -1,6 +1,7 @@
 'use strict';
 const Character = require("./Character.js");
-const { Consumable, DamageTracker20th } = require("../../../structures");
+const Consumable = require("../../Consumable")
+const DamageTracker20th = require("../../DamageTracker20th");
 
 module.exports = class Character20th extends Character
 {
