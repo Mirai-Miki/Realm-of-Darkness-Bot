@@ -1,6 +1,6 @@
 'use strict'
 const { ErrorCodes, handleErrorDebug, RealmError } = require('../../../Errors');
-const HunterV5RollResults = require('../../../structures/HunterV5RollResults');
+const { HunterV5RollResults } = require('../../../structures');
 const { minToMilli } = require('../../misc');
 
 module.exports = function handleRerollPress(interaction, getEmbed, getComponents, getContent)
