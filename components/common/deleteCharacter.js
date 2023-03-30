@@ -1,6 +1,6 @@
 'use strict'
 const { ComponentCID } = require("../../Constants");
-const deleteCharacterComponent = require('../../modules/deleteCharacter');
+const deleteCharacterComponent = require('../../modules/deleteCharacter').component;
 
 module.exports =
 {

@@ -6,7 +6,7 @@ const API = require('../realmAPI');
 const { ComponentCID } = require('../Constants');
 const getCharacterList = require('./getCharacterList');
 
-module.exports = async function findCommand(interaction)
+module.exports.command = async function(interaction)
 {
   interaction.arguments = await getArgs(interaction);
   interaction.nameLists = await getCharacterList(interaction);
@@ -17,7 +17,7 @@ module.exports = async function findCommand(interaction)
   }
 }
 
-module.exports.findCharacter = async function(interaction)
+module.exports.component = async function(interaction)
 {
   const characterId = interaction.values[0];
   if (!characterId) return;
