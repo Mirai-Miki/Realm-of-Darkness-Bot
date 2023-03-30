@@ -1,7 +1,7 @@
 'use strict';
 const Consumable = require("../Consumable");
 const Character5th = require("./base/Character5th");
-const Humanity = require("../Humanity5th.js");
+const Humanity = require("../humanity5th");
 const { Splats } = require('../../Constants');
 const { EmbedBuilder } = require('discord.js');
 
