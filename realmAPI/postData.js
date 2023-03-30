@@ -19,7 +19,7 @@ module.exports.postData = async (path, data) =>
     
   try
   {
-    return await Axios.post(`http://127.0.0.1:80/bot/${path}`, data, config);
+    return await Axios.post(`http://localhost/bot/${path}`, data, config);
   }
   catch (error)
   {
