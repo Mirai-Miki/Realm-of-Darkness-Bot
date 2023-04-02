@@ -8,10 +8,18 @@ module.exports = {
 	name: Events.ClientReady,
 	once: true,
 	async execute(client) {
-    setActivity(client);
-		setInterval(() => {setActivity(client)}, 300000);
-		await API.updateBot(client);
-		await updateAllGuilds(client);		
+		try
+		{
+			await setActivity(client);
+			setInterval(() => {setActivity(client)}, 300000);
+			await API.updateBot(client);
+			await updateAllGuilds(client);		
+		}
+		catch(error)
+		{
+			console.error("Error in ready.js");
+			console.error(error);
+		}
 		console.log(`Connected as: ${client.user.tag} || Shard: ${client.shard?.ids}`);
 	},
 };

@@ -20,7 +20,7 @@ module.exports = async function saveCharacter(cData)
       case 304: // Not Modified
         throw new RealmAPIError({cause: 'Status 304: Not Modified'});
       default:
-        throw new RealmAPIError({cause: `res: ${res?.status}\ndata: ${cData}`});
+        throw new RealmAPIError({cause: `res: ${res?.status}\ndata: ${JSON.stringify(data)}`});
     }
   }
 }

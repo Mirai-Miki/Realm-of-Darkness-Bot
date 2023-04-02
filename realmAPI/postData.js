@@ -19,10 +19,13 @@ module.exports.postData = async (path, data) =>
     
   try
   {
-    return await Axios.post(`http://127.0.0.1/bot/${path}`, data, config);
+    const res = await Axios.post(`http://127.0.0.1/bot/${path}`, data, config);
+    delete data.APIKey;
+    return res;
   }
   catch (error)
-  {
+  {    
+    delete data.APIKey;
     if (error.code === 'ECONNREFUSED')
       throw new RealmAPIError({
         cause: error.stack, 

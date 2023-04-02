@@ -17,6 +17,6 @@ module.exports = async function setStorytellers(guildId, roleId)
     case 200: // Updated
       return res.data.roleIds;
     default:
-      throw new RealmAPIError({cause: `res: ${res?.status}\ndata: ${res?.data}`});
+      throw new RealmAPIError({cause: `res: ${res?.status}\ndata: ${JSON.stringify(data)}`});
   }
 }

@@ -15,6 +15,6 @@ module.exports = async function getTrackerChannel(guildId)
     case 204:
       return null // no channel
     default:
-      throw new RealmAPIError({cause: `res: ${res?.status}\ndata: ${res?.data}`});
+      throw new RealmAPIError({cause: `res: ${res?.status}\ndata: ${JSON.stringify(data)}`});
   }
 }

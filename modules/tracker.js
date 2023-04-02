@@ -52,7 +52,6 @@ module.exports.update = async function(interaction, splat)
     throw new RealmError({code: ErrorCodes.NotAdminOrST});
   }
   else if (options.player) requestedUser = options.player;
-
   const char = await API.getCharacter({
     name: options.name,
     user: requestedUser,

@@ -34,7 +34,7 @@ async function getArgs(interaction)
   if (!args.channel) return args;
   else if (!args.channel.isTextBased() || args.channel.isThread()) 
     throw new RealmError({code: ErrorCodes.NotTextChannel});
-  else if (!canSendMessage({channel: args.channel}))
+  else if (! await canSendMessage({channel: args.channel}))
     throw new RealmError({code: ErrorCodes.InvalidChannelPermissions});
   return args;
 }

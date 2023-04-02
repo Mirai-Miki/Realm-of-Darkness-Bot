@@ -13,7 +13,7 @@ module.exports = async function rouse(interaction)
 {
   interaction.args = await getArgs(interaction);
   interaction.rollResults = roll(interaction.args.reroll);
-
+  await updateHunger(interaction);
   return {embeds: [getEmbed(interaction)]};
 }
 
@@ -91,4 +91,21 @@ function getEmbed(interaction)
     
   embed.data.fields.at(-1).value += links;
   return embed;
+}
+
+async function updateHunger(interaction)
+{
+  if (interaction.rollResults.passed) return;
+  
+  const character = interaction.args.character?.tracked;
+  if (character && character.version === '5th')
+  {
+    const change = {command: 'Rouse Check', hunger: 1};
+    character.updateFields(change);
+    await character.save(interaction.client);
+    interaction.followUps = [{
+      embeds: [character.getEmbed()], 
+      ephemeral: true
+    }]
+  } 
 }

@@ -51,7 +51,8 @@ module.exports = class Character
     this.user.username = user.username;
     this.user.discriminator = user.discriminator;
     this.user.avatarURL = member?.displayAvatarURL() ?? user.displayAvatarURL();
-    this.user.displayName = member?.displayName ?? user.username;
+    this.user.displayName = 
+      member?.displayName ? member.displayName : user.username;
   }
 
   setGuild(guild)
@@ -95,7 +96,8 @@ module.exports = class Character
       this.user.username = json.user.username;
       this.user.discriminator = json.user.discriminator;
       this.user.avatarURL = json.user.avatarURL;
-      this.user.displayName = json.user.displayName;
+      this.user.displayName = 
+        json.user.displayName ? json.user.displayName : json.user.username;
     }
 
     if(json.guild)

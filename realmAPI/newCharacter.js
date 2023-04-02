@@ -18,7 +18,7 @@ module.exports = async function saveCharacter(cData)
       case 409: // Conflict -- Too many characters
         throw new RealmAPIError({code: APIErrorCodes.CharacterLimitReached});
       default:
-        throw new RealmAPIError({cause: `res: ${res?.status}\ndata: ${cdata}`});
+        throw new RealmAPIError({cause: `res: ${res?.status}\ndata: ${JSON.stringify(data)}`});
     }
   }
 }

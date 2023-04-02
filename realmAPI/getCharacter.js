@@ -14,13 +14,14 @@ const RealmAPIError = require('../Errors/RealmAPIError');
  */
 module.exports = async function getCharacter({name=null, user=null, 
   guild=null, splatSlug=null, pk=null}={})
-{
+{ 
   const path = 'character/get';
   const data = {
     name: name, 
-    splatSlug: splatSlug,
+    splat_slug: splatSlug,
     pk: pk,
-    user_id: user?.id
+    user_id: user?.id,
+    guild_id: guild?.id
   }
 
   const res = await postData(path, data);
@@ -30,6 +31,7 @@ module.exports = async function getCharacter({name=null, user=null,
       const json = res.data.character
       const CharacterClass = getCharacterClass(json.splat);
       const char = new CharacterClass({name: json.name});
+
       char.deserilize(json);
       if (user) char.setUser(user);
       if (guild) char.setGuild(guild);
@@ -37,6 +39,6 @@ module.exports = async function getCharacter({name=null, user=null,
     case 204: // No character
       return null;
     default:
-      throw new RealmAPIError({cause: `res: ${res?.status}\ndata: ${res?.data}`});
+      throw new RealmAPIError({cause: `res: ${res?.status}\ndata: ${JSON.stringify(data)}`});
   }
 }

@@ -11,7 +11,7 @@ module.exports = async function HunterDice(interaction)
   interaction.arguments = await getArgs(interaction);
   interaction.rollResults = await roll(interaction.arguments);
   
-  handleRerollPress(interaction, getEmbed, getComponents, getContent);
+  await handleRerollPress(interaction, getEmbed, getComponents, getContent);
   return {
     content: getContent(interaction),
     embeds: [getEmbed(interaction)],

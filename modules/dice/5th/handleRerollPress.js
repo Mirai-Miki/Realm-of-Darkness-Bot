@@ -3,7 +3,7 @@ const { ErrorCodes, handleErrorDebug, RealmError } = require('../../../Errors');
 const HunterV5RollResults = require('../../../structures/hunterV5RollResults');
 const { minToMilli } = require('../../misc');
 
-module.exports = function handleRerollPress(interaction, getEmbed, getComponents, getContent)
+module.exports = async function handleRerollPress(interaction, getEmbed, getComponents, getContent)
 {
   const filter = i => (
     i.message.interaction.id === interaction.id &&
@@ -11,7 +11,10 @@ module.exports = function handleRerollPress(interaction, getEmbed, getComponents
     i.customId === 'chooseOverreach' || i.customId === 'chooseDespair')         
   );
 
-  const channel = interaction.channel;
+  let channel;
+  if (interaction.channel) channel = interaction.channel;
+  else channel = await interaction.client.channels.fetch(interaction.channelId);
+
   interaction.collector = channel.createMessageComponentCollector({
     filter,
     time: minToMilli(14)

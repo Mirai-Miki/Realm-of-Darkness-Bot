@@ -48,6 +48,7 @@ module.exports.handleErrorDebug = async function(error, interaction)
   if (process.platform === 'win32')
 	{ // Print to console on dev enviorment
 		console.error(error);
+		return;
 	}
 
 	try

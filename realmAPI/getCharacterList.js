@@ -13,7 +13,7 @@ module.exports = async function getCharacterList(user, guild)
   const path = 'character/name_list';
   const data = { 
     user_id: user.id,
-    guild_id: guild.id,
+    guild_id: guild?.id,
   }
 
   const res = await postData(path, data);
@@ -24,6 +24,6 @@ module.exports = async function getCharacterList(user, guild)
     case 204: // No character
       return null;
     default:
-      throw new RealmAPIError({cause: `res: ${res?.status}\ndata: ${res?.data}`});
+      throw new RealmAPIError({cause: `res: ${res?.status}\ndata: ${JSON.stringify(data)}`});
   }
 }

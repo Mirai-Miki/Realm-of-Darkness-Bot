@@ -17,6 +17,6 @@ module.exports = async function deleteCharacter(ids, disconnect=false)
     case 200: // Deleted 
       return res.data.names;
     default:
-      throw new RealmAPIError({cause: `res: ${res?.status}\ndata: ${res?.data}`});
+      throw new RealmAPIError({cause: `res: ${res?.status}\ndata: ${JSON.stringify(data)}`});
   }
 }

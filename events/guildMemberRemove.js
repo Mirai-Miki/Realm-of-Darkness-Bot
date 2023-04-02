@@ -6,6 +6,14 @@ module.exports = {
 	name: Events.GuildMemberRemove,
 	once: false,
 	async execute(member) {
-		await API.deleteMember(member.id, member.guild.id);
+		try
+		{
+			await API.deleteMember(member.id, member.guild.id);
+		}
+		catch(error)
+		{
+			console.error("Error in guildMemberRemove.js");
+			console.error(error);
+		}
 	},
 };

@@ -7,6 +7,14 @@ module.exports = {
 	once: false,
 	async execute(role) 
   {
-    await API.deleteStRole(role);
+		try
+		{
+			await API.deleteStRole(role.id);
+		}
+		catch(error)
+		{
+			console.error("Error in roleDelete.js")
+			console.error(error);
+		}
 	},
 };

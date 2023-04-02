@@ -193,7 +193,7 @@ const ErrorInfo =
     system: "Not a text channel",
     embedTitle: 'Invalid Channel',
     embedMessage: oneLineTrim`
-      The selected channel must be a test channel and cannot be a thread.
+      The selected channel must be a text channel and cannot be a thread.
     `,
     debug: false,
     cause: false

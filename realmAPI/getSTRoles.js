@@ -15,6 +15,6 @@ module.exports = async function getSTRoles(guildId)
     case 204: // No Roles set
       return [];
     default:
-      throw new RealmAPIError({cause: `res: ${res?.status}\ndata: ${res?.data}`});
+      throw new RealmAPIError({cause: `res: ${res?.status}\ndata: ${JSON.stringify(data)}`});
   }
 }

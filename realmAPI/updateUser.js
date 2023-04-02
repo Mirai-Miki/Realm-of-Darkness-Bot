@@ -42,6 +42,6 @@ module.exports = async function updateUser(userD, create=false)
     case 204:
       return // No change
     default:
-      throw new RealmAPIError({cause: `res: ${res?.status}\ndata: ${res?.data}`});
+      throw new RealmAPIError({cause: `res: ${res?.status}\ndata: ${JSON.stringify(data)}`});
   }
 }

@@ -14,6 +14,6 @@ module.exports = async function getSupporterLevel(userId)
       case 204: // No User
         return 0;
       default:
-        throw new RealmAPIError({cause: `res: ${res?.status}\ndata: ${res?.data}`});
+        throw new RealmAPIError({cause: `res: ${res?.status}\ndata: ${JSON.stringify(data)}`});
     }
 }

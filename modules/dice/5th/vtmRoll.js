@@ -15,7 +15,7 @@ module.exports = async function vtmRoll(interaction)
   interaction.arguments = await getArgs(interaction);
   interaction.rollResults = await roll(interaction);
   
-  handleRerollPress(interaction, getEmbed, getComponents, getContent);
+  await handleRerollPress(interaction, getEmbed, getComponents, getContent);
   return {
     content: getContent(interaction),
     embeds: [getEmbed(interaction)],

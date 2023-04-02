@@ -6,6 +6,7 @@ module.exports = async function sendToTrackerChannel(client, character)
 {
   const guildId = character.guild?.id;
   if (!guildId) return;
+  
   const channelId = await API.getTrackerChannel(guildId);
   if (!channelId) return;
     

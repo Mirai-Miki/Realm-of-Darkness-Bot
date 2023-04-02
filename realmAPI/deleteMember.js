@@ -16,6 +16,6 @@ module.exports = async function deleteMember(memberId, guildId)
     case 204:
       return // nothing to delete
     default:
-      throw new RealmAPIError({cause: `res: ${res?.status}\ndata: ${res?.data}`});
+      throw new RealmAPIError({cause: `res: ${res?.status}\ndata: ${JSON.stringify(data)}`});
   }
 }

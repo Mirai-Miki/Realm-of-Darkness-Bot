@@ -2,6 +2,7 @@
 const fs = require("fs");
 const { Client, GatewayIntentBits, Collection, Partials } = require("discord.js");
 const { token } = require('./config5th.json');
+const { handleErrorDebug } = require("./Errors");
 
 const client = new Client({
   intents: [
@@ -14,6 +15,7 @@ const client = new Client({
     Partials.User
   ]
 });
+
 
 /* Loading Commands in Client */
 client.commands = new Collection();

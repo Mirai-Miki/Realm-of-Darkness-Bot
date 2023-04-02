@@ -17,6 +17,6 @@ module.exports = async function setInitTracker(channelId, guildId, tracker)
     case 200: 
       return
     default:
-      throw new RealmAPIError({cause: `res: ${res?.status}\ndata: ${res?.data}`});
+      throw new RealmAPIError({cause: `res: ${res?.status}\ndata: ${JSON.stringify(data)}`});
   }
 }

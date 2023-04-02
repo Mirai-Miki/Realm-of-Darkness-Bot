@@ -16,6 +16,6 @@ module.exports = async function getInitTracker(channelId)
     case 204: // No Tracker
       return null;
     default:
-      throw new RealmAPIError({cause: `res: ${res?.status}\ndata: ${res?.data}`});
+      throw new RealmAPIError({cause: `res: ${res?.status}\ndata: ${JSON.stringify(data)}`});
   }
 }

@@ -3,7 +3,7 @@ const { postData } = require('./postData.js');
 const RealmAPIError = require('../Errors/RealmAPIError');
 
 
-module.exports = async function deleteStRole(roldId)
+module.exports = async function deleteStRole(roleId)
 {
   const path = `chronicle/storyteller/roles/delete`;
   const data = {role_id: roleId}
@@ -14,6 +14,6 @@ module.exports = async function deleteStRole(roldId)
     case 200: // Deleted 
       return;
     default:
-      throw new RealmAPIError({cause: `res: ${res?.status}\ndata: ${res?.data}`});
+      throw new RealmAPIError({cause: `res: ${res?.status}\ndata: ${JSON.stringify(data)}`});
   }
 }

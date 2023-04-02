@@ -14,6 +14,6 @@ module.exports = async function deleteGuild(guildId)
     case 200: // Deleted 
       return;
     default:
-      throw new RealmAPIError({cause: `res: ${res?.status}\ndata: ${res?.data}`});
+      throw new RealmAPIError({cause: `res: ${res?.status}\ndata: ${JSON.stringify(data)}`});
   }
 }

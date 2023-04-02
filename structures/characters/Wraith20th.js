@@ -59,7 +59,7 @@ module.exports = class Wraith20 extends Character20th
     const embed = new EmbedBuilder()
     .setColor(this.color)
     .setAuthor({
-      name: (this.user.displayName ?? this.user.username), 
+      name: this.user.displayName, 
       iconURL: this.user.avatarURL
     })
     .setTitle(this.name)

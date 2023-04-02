@@ -6,7 +6,15 @@ module.exports = {
 	name: Events.UserUpdate,
 	once: false,
 	async execute(oldUser, newUser) {
-    if (newUser.partial) await newUser.fetch();
-		await API.updateUser(newUser);
+		try
+		{
+			if (newUser.partial) await newUser.fetch();
+			await API.updateUser(newUser);
+		}
+		catch(error)
+		{
+			console.error("Error in userUpdate.js");
+			console.error(error);
+		}
 	},
 };

@@ -65,7 +65,7 @@ module.exports = class Hunter5th extends Character5th
     .setURL('https://cdn.discordapp.com/attachments/699082447278702655/972058320611459102/banner.png')
     .setTitle(this.name)
     .setAuthor({
-      name: (this.user.displayName ?? this.user.username), 
+      name: this.user.displayName, 
       iconURL: this.user.avatarURL
     })
     

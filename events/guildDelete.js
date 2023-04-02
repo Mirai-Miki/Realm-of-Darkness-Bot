@@ -7,7 +7,15 @@ module.exports = {
 	name: Events.GuildDelete,
 	once: false,
 	async execute(guild) {
-    setActivity(guild.client);
-		await API.deleteGuild(guild.id);
+		try
+		{
+			await setActivity(guild.client);
+			await API.deleteGuild(guild.id);
+		}
+		catch(error)
+		{
+			console.error("Error in guildDelete.js");
+			console.error(error);
+		}
 	},
 };

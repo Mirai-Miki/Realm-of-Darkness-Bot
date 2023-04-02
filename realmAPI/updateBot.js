@@ -24,6 +24,6 @@ module.exports = async function updateBot(client)
     case 200: // Updated
       return true;
     default:
-      throw new RealmAPIError({cause: `res: ${res?.status}\ndata: ${res?.data}`});
+      throw new RealmAPIError({cause: `res: ${res?.status}\ndata: ${JSON.stringify(data)}`});
   }
 }
