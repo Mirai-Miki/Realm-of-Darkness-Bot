@@ -12,7 +12,13 @@ module.exports = async function setStorytellers(interaction)
   if (interaction.arguments.role)
   {
     roles = await API.setStorytellers(
-      interaction.guild.id, interaction.arguments.role.id);    
+      interaction.guild.id, interaction.arguments.role.id);  
+    
+    // Need to get all members with this role and update them
+    for (const member of interaction.arguments.role.members.values())
+    {
+      await API.updateUser(member);
+    }
   }
   else
   {

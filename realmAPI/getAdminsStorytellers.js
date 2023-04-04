@@ -3,18 +3,16 @@ const { postData } = require('./postData.js');
 const RealmAPIError = require('../Errors/RealmAPIError');
 
 
-module.exports = async function deleteStRole(roleId)
+module.exports = async function getAdminsStorytellers(guildId)
 {
-  const path = `chronicle/storyteller/roles/delete`;
-  const data = {role_id: roleId}
+  const path = `chronicle/storytellers/get`;
+  const data = {guild_id: guildId}
 
   const res = await postData(path, data);
   switch(res?.status)
   {
     case 200: // Deleted 
-      return true;
-    case 204:
-      return false;
+      return res.data;
     default:
       throw new RealmAPIError({cause: `res: ${res?.status}\ndata: ${JSON.stringify(data)}`});
   }

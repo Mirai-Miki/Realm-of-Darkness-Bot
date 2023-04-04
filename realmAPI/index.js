@@ -6,6 +6,7 @@ exports.getInitTracker = require('./getInitTracker');
 exports.getSupporterLevel = require('./getSupporterLevel');
 exports.getCharacterList = require('./getCharacterList');
 exports.getSTRoles = require('./getSTRoles');
+exports.getAdminsStorytellers = require('./getAdminsStorytellers');
 
 exports.updateGuild = require('./updateGuild');
 exports.updateBot = require('./updateBot');

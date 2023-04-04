@@ -2,7 +2,7 @@
 const { Events } = require('discord.js');
 const RealmError = require('../Errors/RealmError');
 const { handleErrorDebug } = require('../Errors/index');
-const API = require('../realmAPI');
+const commandUpdate = require('../modules/commandDatabaseUpdate');
 
 module.exports = {
 	name: Events.InteractionCreate,
@@ -17,8 +17,7 @@ module.exports = {
 
 	    try 
 			{
-				await API.updateUser(
-					interaction.member ? interaction.member : interaction.user, true);
+				await commandUpdate(interaction);
 	    	const discordResponse = await command.execute(interaction);
 				if (discordResponse)
 				{

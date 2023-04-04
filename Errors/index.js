@@ -23,6 +23,7 @@ module.exports.ErrorCodes =
 	InitInvalidButtonPerm: 16,
 	InitNoTracker: 17,
 	NoWillpower: 18,
+	RerollNoChannel: 19,
 	RequiresFledgling: 100,
 	RequiresNeonate: 101,
 	RequiresAncilla: 102,

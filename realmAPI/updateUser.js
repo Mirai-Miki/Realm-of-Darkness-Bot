@@ -1,7 +1,8 @@
 'use strict';
 const { postData } = require('./postData.js');
 const RealmAPIError = require('../Errors/RealmAPIError');
-const { GuildMember } = require('discord.js');
+const { GuildMember, PermissionFlagsBits } = require('discord.js');
+const getSTRoles = require('./getSTRoles.js');
 
 module.exports = async function updateUser(userD, create=false)
 {
@@ -30,6 +31,8 @@ module.exports = async function updateUser(userD, create=false)
       nickname: member.displayName,
       guild_id: member.guild.id,
       avatar_url: member.displayAvatarURL(),
+      admin: await isAdmin(member),
+      storyteller: await isStoryteller(member, member.guild.id)
     }
     data.user.member = m;
   }
@@ -44,4 +47,17 @@ module.exports = async function updateUser(userD, create=false)
     default:
       throw new RealmAPIError({cause: `res: ${res?.status}\ndata: ${JSON.stringify(data)}`});
   }
+}
+
+async function isStoryteller(member, guildId)
+{
+  const roles = await getSTRoles(guildId);
+  if (!member.roles.cache.hasAny(...roles)) return false;
+  else return true;
+}
+
+async function isAdmin(member)
+{
+  if (!member.permissions.has(PermissionFlagsBits.Administrator)) return false;
+  else return true;
 }

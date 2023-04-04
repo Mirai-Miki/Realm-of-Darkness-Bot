@@ -266,4 +266,15 @@ const ErrorInfo =
     debug: false,
     cause: false
   },
+  [ErrorCodes.RerollNoChannel]:
+  {
+    system: "RerollNoChannel",
+    embedTitle: 'Cannot See the Channel',
+    embedMessage: 
+      'Sorry, I do not have permission to see this channel.' +
+      '\nIf this is a thread please make sure I can see the base channel ' +
+      'With the "View Channel" Permission. And then @me into this thread.',
+    debug: false,
+    cause: false
+  },
 }

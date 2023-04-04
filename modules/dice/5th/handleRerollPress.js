@@ -12,8 +12,16 @@ module.exports = async function handleRerollPress(interaction, getEmbed, getComp
   );
 
   let channel;
-  if (interaction.channel) channel = interaction.channel;
-  else channel = await interaction.client.channels.fetch(interaction.channelId);
+
+  try
+  {
+    if (interaction.channel) channel = interaction.channel;
+    else channel = await interaction.client.channels.fetch(interaction.channelId);
+  }
+  catch (error)
+  {
+    throw new RealmError({code: ErrorCodes.RerollNoChannel});
+  }
 
   interaction.collector = channel.createMessageComponentCollector({
     filter,

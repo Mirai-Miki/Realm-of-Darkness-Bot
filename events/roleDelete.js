@@ -1,5 +1,5 @@
 'use strict';
-const { Events } = require('discord.js');
+const { Events, PermissionFlagsBits } = require('discord.js');
 const API = require('../realmAPI')
 
 module.exports = {
@@ -9,7 +9,16 @@ module.exports = {
   {
 		try
 		{
-			await API.deleteStRole(role.id);
+			const deleted = await API.deleteStRole(role.id);
+			if (!deleted && !role.permissions.has(PermissionFlagsBits.Administrator))
+				return;
+
+			const ids = await API.getAdminsStorytellers(role.guild.id);			
+			for (const id of ids.members)
+			{
+				const member = await role.guild.members.fetch(id);
+				await API.updateUser(member);
+			}
 		}
 		catch(error)
 		{
