@@ -43,6 +43,7 @@ module.exports = async function handleRerollPress(interaction, getEmbed, getComp
           new RealmError({cause: error.stack, code: ErrorCodes.DiscordAPIError});
         handleErrorDebug(err, interaction);
       }      
+      return;
     }
 
     await i.deferUpdate();
