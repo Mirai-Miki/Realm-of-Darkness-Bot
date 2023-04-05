@@ -97,8 +97,9 @@ module.exports = class Human20th extends Character20th
     });
 
     if (notes) embed.addFields({name: 'Notes', value: notes});
-    const links = "\n[Website](https://realmofdarkness.app/)" +
-        " | [Patreon](https://www.patreon.com/MiraiMiki)";
+    const links = "\n[Website](https://realmofdarkness.app/) " +
+      "| [Commands](https://realmofdarkness.app/20th/commands/) " +
+      "| [Patreon](https://www.patreon.com/MiraiMiki)";
     embed.data.fields.at(-1).value += links;
 
     return embed;

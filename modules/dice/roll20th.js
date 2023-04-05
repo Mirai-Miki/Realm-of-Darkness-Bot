@@ -145,8 +145,9 @@ function getEmbed(interaction)
   
   embed.setColor(results.outcome.color);
         
-  const links = "\n[Website](https://realmofdarkness.app/)" +
-    " | [Patreon](https://www.patreon.com/MiraiMiki)";
+  const links = "\n[Website](https://realmofdarkness.app/) " +
+    "| [Commands](https://realmofdarkness.app/20th/commands/) " +
+    "| [Patreon](https://www.patreon.com/MiraiMiki)";
   embed.data.fields.at(-1).value += links;
 
   embed.setURL('https://cdn.discordapp.com/attachments/699082447278702655/972058320611459102/banner.png');
