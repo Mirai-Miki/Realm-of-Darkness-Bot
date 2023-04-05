@@ -15,9 +15,9 @@ module.exports.Supporter =
 
 module.exports.InitPhase =
 {
-  JOIN: 0,
-  ROLL: 1,  
-  JOIN2: 2,
+  JOIN: 0, 
+  JOIN2: 1,
+  ROLL: 2, 
   ROLL2: 3,
   REVEAL: 4,
   DECLARE: 5,

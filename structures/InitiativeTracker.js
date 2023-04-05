@@ -104,7 +104,6 @@ module.exports = class InitiativeTracker
     }
 
     const name = interaction.options.getString('name');
-    let extraActions = interaction.options.getInteger('extra_actions') ?? 0;
 
     let character = 
       this.characters.get(`${interaction.user.id}|${name.toLowerCase()}`);
@@ -453,7 +452,6 @@ function getTrackerEmbedInfo(tracker)
 
   switch (tracker.phase)
   {
-    case InitPhase.NEW:
     case InitPhase.ROLL:
     case InitPhase.ROLL2:
       return {        

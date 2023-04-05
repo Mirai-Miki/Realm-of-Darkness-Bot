@@ -254,8 +254,8 @@ const ErrorInfo =
     embedMessage: 
       'Sorry, no tracker was found. To start a tracker use the command ' +
       '`/init new`',
-    debug: true,
-    cause: true
+    debug: false,
+    cause: false
   },
   [ErrorCodes.NoWillpower]:
   {
