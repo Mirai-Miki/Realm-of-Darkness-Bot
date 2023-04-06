@@ -16,6 +16,7 @@ exports.setStorytellers = require('./setStorytellers');
 exports.setTrackerChannel = require('./setTrackerChannel');
 exports.updateUser = require('./updateUser');
 exports.setInitTracker = require('./setInitTracker');
+exports.updateCommandStat = require('./updateCommandStat');
 
 exports.deleteCharacters = require('./deleteCharacters');
 exports.deleteGuild = require('./deleteGuild');
