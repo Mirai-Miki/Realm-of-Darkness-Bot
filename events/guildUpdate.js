@@ -6,11 +6,11 @@ const API = require('../realmAPI');
 module.exports = {
 	name: Events.GuildUpdate,
 	once: false,
-	async execute(guild) {
+	async execute(oldGuild, newGuild) {
 		try
 		{
 			await setActivity(guild.client);
-			await API.updateGuild(guild);
+			await API.updateGuild(newGuild);
 		}
 		catch (error)
 		{
