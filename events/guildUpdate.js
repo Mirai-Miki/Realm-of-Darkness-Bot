@@ -9,7 +9,7 @@ module.exports = {
 	async execute(oldGuild, newGuild) {
 		try
 		{
-			await setActivity(guild.client);
+			await setActivity(newGuild.client);
 			await API.updateGuild(newGuild);
 		}
 		catch (error)
