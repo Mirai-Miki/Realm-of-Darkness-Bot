@@ -6,7 +6,7 @@ module.exports = async function updateCommandStat(interaction)
 {
   const path = 'stats/command/update';
   let commandName = '/' + interaction.commandName
-  commandName += ` ${(interaction.options.getSubcommand() ?? '')}`
+  commandName += ` ${(interaction.options.getSubcommand(false) ?? '')}`
   commandName.trim();
 
   const data = 
