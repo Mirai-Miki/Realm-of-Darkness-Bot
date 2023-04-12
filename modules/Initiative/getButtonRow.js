@@ -4,8 +4,9 @@ const { InitPhase, ComponentCID } = require('../../Constants');
 
 module.exports.getInitiativeButtonRow = function(phase)
 {
-  if (phase <= InitPhase.ROLL) return rollPhaseOne;
-  else if (phase <= InitPhase.ROLL2) return rollPhaseTwo;
+  if (phase === InitPhase.ROLL || phase === InitPhase.JOIN) return rollPhaseOne;
+  else if (phase === InitPhase.ROLL2 || phase === InitPhase.JOIN2) 
+    return rollPhaseTwo;
   else if (phase === InitPhase.REVEAL) return revealPhase;
   else if (phase === InitPhase.DECLARE) return declarePhaseOne; 
   else if (phase === InitPhase.DECLARED) return declarePhaseTwo; 
