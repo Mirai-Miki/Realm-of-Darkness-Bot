@@ -72,7 +72,7 @@ function getCommands()
         .setRequired(true)
       )
 
-      .addBoolOption(option =>
+      .addBooleanOption(option =>
         option.setName("auto_hunger")
         .setDescription("If rolls made should automatically use hunger.")
       )

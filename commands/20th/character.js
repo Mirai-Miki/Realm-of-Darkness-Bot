@@ -63,7 +63,7 @@ function getCommands()
       .setDescription('Sets a default character for this server to be ' +
         'used for dice rolls and character updates.')
       
-      .addRoleOption(option =>
+      .addStringOption(option =>
         option.setName("name")
         .setDescription("Name of the character to default to.")
         .setMaxLength(50)
