@@ -22,8 +22,24 @@ module.exports = {
 		}
 		catch(error)
 		{
-			console.error("Error in roleDelete.js")
-			console.error(error);
+			try
+			{
+				if (!error.discordResponse) // Not a RoD Error, we need to debug
+				{
+					const rodError = new RealmError({cause: error.stack});
+					error.discordResponse = rodError.discordResponse;
+					error.debug = rodError.debug;
+				}
+				handleErrorDebug(error, role.client);
+				console.error("Error in Role Delete - GuildId:", role.guild.id)
+			}
+			catch (e)
+			{
+				console.error(`Error at roleDelete()`);
+				console.error(e);
+				console.error(`\n\nError that triggered this:`);
+				console.error(error)
+			}
 		}
 	},
 };

@@ -19,7 +19,11 @@ module.exports = {
 			{
 				await commandUpdate(interaction);
 	    	const discordResponse = await command.execute(interaction);
-				if (discordResponse)
+				if (discordResponse === 'notRepliable')
+				{
+					return;
+				}
+				else if (discordResponse)
 				{
 					if (!interaction.replied && !interaction.deferred) 
 						await interaction.reply(discordResponse);
@@ -48,9 +52,7 @@ module.exports = {
 					if (!interaction.replied && !interaction.deferred) 
 						interaction.reply(error.discordResponse);
 					else interaction.editReply(error.discordResponse);	
-					
-					console.log("Error: code", error.code)
-					handleErrorDebug(error, interaction);
+					handleErrorDebug(error, interaction.client);
 				}
 				catch (e)
 				{
@@ -93,7 +95,7 @@ module.exports = {
 					if (!interaction.replied && !interaction.deferred) 
 						interaction.reply(error.discordResponse);
 					else interaction.editReply(error.discordResponse);					
-					handleErrorDebug(error, interaction);
+					handleErrorDebug(error, interaction.client);
 				}
 				catch (e)
 				{

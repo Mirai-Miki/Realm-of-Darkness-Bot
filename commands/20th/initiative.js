@@ -12,6 +12,7 @@ module.exports =
   async execute(interaction) 
   {
     await interaction.deferReply({ephemeral: true});    
+    if (!interaction.isRepliable()) return 'notRepliable';
     const channel = await getChannel(interaction);
     let tracker = await API.getInitTracker(channel.id);
 

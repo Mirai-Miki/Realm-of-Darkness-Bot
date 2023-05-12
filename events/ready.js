@@ -17,8 +17,23 @@ module.exports = {
 		}
 		catch(error)
 		{
-			console.error("Error in ready.js");
-			console.error(error);
+			try
+			{
+				if (!error.discordResponse) // Not a RoD Error, we need to debug
+				{
+					const rodError = new RealmError({cause: error.stack});
+					error.discordResponse = rodError.discordResponse;
+					error.debug = rodError.debug;
+				}
+				handleErrorDebug(error, client);
+			}
+			catch (e)
+			{
+				console.error(`Error at ready()`);
+				console.error(e);
+				console.error(`\n\nError that triggered this:`);
+				console.error(error)
+			}
 		}
 		console.log(`Connected as: ${client.user.tag} || Shard: ${client.shard?.ids}`);
 	},

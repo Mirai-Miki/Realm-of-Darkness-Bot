@@ -42,7 +42,7 @@ module.exports.APIErrorCodes =
 module.exports.RealmError = require('./RealmError');
 module.exports.RealmAPIError = require('./RealmAPIError');
 
-module.exports.handleErrorDebug = async function(error, interaction)
+module.exports.handleErrorDebug = async function(error, client)
 {	
 	if (!error.debug.raise) return;
 
@@ -55,7 +55,7 @@ module.exports.handleErrorDebug = async function(error, interaction)
 	try
 	{
 		const debugChannel = 
-			await interaction.client.channels.fetch('776761322859266050');
+			await client.channels.fetch('776761322859266050');
 
 		const debugEmbed = new EmbedBuilder()
 			.setTitle(error.name)

@@ -10,6 +10,7 @@ module.exports =
 	async execute(interaction) 
   {
     await interaction.deferReply({ephemeral: true});
+    if (!interaction.isRepliable()) return 'notRepliable';
     interaction.arguments = getArgs(interaction);
     return await tracker.update(interaction, Splats.changeling20th); 
 	}

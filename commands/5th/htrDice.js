@@ -9,6 +9,7 @@ module.exports =
   async execute(interaction)
   {
     await interaction.deferReply();
+    if (!interaction.isRepliable()) return 'notRepliable';
 		switch (interaction.options.getSubcommand())
     {
       case 'roll':

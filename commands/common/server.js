@@ -9,6 +9,8 @@ module.exports =
   async execute(interaction)
   {
     await interaction.deferReply({ephemeral: true});
+    if (!interaction.isRepliable()) return 'notRepliable';
+    
     switch (interaction.options.getSubcommand())
     {
       case 'tracker':
