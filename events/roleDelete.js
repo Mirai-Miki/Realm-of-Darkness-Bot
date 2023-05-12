@@ -1,6 +1,8 @@
 'use strict';
 const { Events, PermissionFlagsBits } = require('discord.js');
 const API = require('../realmAPI')
+const RealmError = require('../Errors/RealmError');
+const { handleErrorDebug } = require('../Errors/index');
 
 module.exports = {
 	name: Events.GuildRoleDelete,

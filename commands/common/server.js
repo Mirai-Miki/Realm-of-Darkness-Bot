@@ -10,7 +10,7 @@ module.exports =
   {
     await interaction.deferReply({ephemeral: true});
     if (!interaction.isRepliable()) return 'notRepliable';
-    
+
     switch (interaction.options.getSubcommand())
     {
       case 'tracker':
