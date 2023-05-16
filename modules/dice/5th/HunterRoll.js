@@ -4,6 +4,7 @@ const HunterV5RollResults = require('../../../structures/hunterV5RollResults');
 const handleRerollPress = require('./handleRerollPress');
 const { getComponents, getEmbed, getContent } = require('./getHunterRollResponse');
 const getCharacter = require('../getCharacter');
+const API = require('../../../realmAPI');
 
 
 module.exports = async function HunterDice(interaction)
