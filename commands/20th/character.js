@@ -2,6 +2,7 @@
 const { SlashCommandBuilder } = require("discord.js");
 const findCharacterCommand = require('../../modules/findCharacter').command
 const deleteCharacterCommand = require('../../modules/deleteCharacter').command;
+const setDefaultCharacter = require('../../modules/setDefaultCharacter');
 
 
 module.exports = 
@@ -19,7 +20,7 @@ module.exports =
       case 'delete':
         return await deleteCharacterCommand(interaction);
       case 'default':
-        return await deleteCharacterCommand(interaction);
+        return await setDefaultCharacter(interaction);
     }
   }
 }
@@ -68,6 +69,11 @@ function getCommands()
         .setDescription("Name of the character to default to.")
         .setMaxLength(50)
         .setRequired(true)
+      )      
+
+      .addBooleanOption(option =>        
+        option.setName("disable")
+        .setDescription("Turns defaults off.")
       )
     )
 }

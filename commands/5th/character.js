@@ -2,6 +2,7 @@
 const { SlashCommandBuilder } = require("discord.js");
 const findCharacterCommand = require('../../modules/findCharacter').command
 const deleteCharacterCommand = require('../../modules/deleteCharacter').command;
+const setDefaultCharacter = require('../../modules/setDefaultCharacter');
 
 module.exports = 
 {
@@ -17,6 +18,8 @@ module.exports =
         return await findCharacterCommand(interaction);
       case 'delete':
         return await deleteCharacterCommand(interaction);
+      case 'default':
+        return await setDefaultCharacter(interaction);
     }
   }
 }
@@ -59,22 +62,21 @@ function getCommands()
       .setName('default')
       .setDescription('Sets a default character for this server to be ' +
         'used for dice rolls and character updates.')
-      
-      .addRoleOption(option =>
-        option.setName("name")
-        .setDescription("Name of the character to default to.")
-      )
 
       .addStringOption(option =>
         option.setName("name")
         .setDescription("Name of the character to default to.")
         .setMaxLength(50)
-        .setRequired(true)
       )
 
       .addBooleanOption(option =>
         option.setName("auto_hunger")
         .setDescription("If rolls made should automatically use hunger.")
+      )
+
+      .addBooleanOption(option =>        
+        option.setName("disable")
+        .setDescription("Turns defaults off.")
       )
     )
 }

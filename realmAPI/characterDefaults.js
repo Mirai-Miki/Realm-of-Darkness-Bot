@@ -7,14 +7,17 @@ module.exports.get = async function(guildId, userId)
   const path = 'chronicle/member/defaults/get';
   const data = {
     guild_id: guildId,
-    channel_id: channelId
+    user_id: userId,
   }
 
   const res = await postData(path, data);
   switch(res?.status)
   {
     case 200: // Updated
-      return res.data.defaults;
+      const data = res.data.defaults;
+      data.autoHunger = data.auto_hunger;
+      delete data.auto_hunger
+      return data;
     case 204: // No defaults
       return null;
     default:
@@ -28,7 +31,7 @@ module.exports.set = async function(guildId, userId, name, autoHunger)
   const data = {
     user_id: userId,
     guild_id: guildId,
-    character_name: name,
+    name: name,
     auto_hunger: autoHunger
   }
 

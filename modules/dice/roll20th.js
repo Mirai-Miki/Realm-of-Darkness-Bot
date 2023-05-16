@@ -5,6 +5,7 @@ const { RealmError, ErrorCodes } = require('../../Errors');
 const RollResults20th = require('../../structures/RollResults20th');
 const { Emoji } = require('../../Constants');
 const getCharacter = require('./getCharacter');
+const API = require('../../realmAPI');
 
 module.exports = async function roll20th(interaction)
 {
@@ -33,8 +34,18 @@ async function getArgs(interaction)
   }
   
   if ((args.nightmare ?? 0) > args.pool) 
-    throw new RealmError({code: ErrorCodes.NightmareOutOfRange});
-  
+    throw new RealmError({code: ErrorCodes.NightmareOutOfRange}); 
+
+  if (!args.character && interaction.guild)
+  {
+    const defaults = await API.characterDefaults.get(
+      interaction.guild.id, interaction.user.id
+    )
+    
+    if (defaults)
+      args.character = await getCharacter(defaults.name, interaction);
+  }
+
   return args;
 } 
 

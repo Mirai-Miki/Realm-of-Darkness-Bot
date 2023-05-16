@@ -69,7 +69,7 @@ module.exports = class Vampire20th extends Character20th
     .setColor(this.color)
     .setAuthor({
       name: this.user.displayName, 
-      iconURL: this.user.avatarURL
+      iconURL: this.user.avatarURL ?? null
     })
     .setTitle(this.name)
     .setURL('https://cdn.discordapp.com/attachments/699082447278702655/972058320611459102/banner.png');

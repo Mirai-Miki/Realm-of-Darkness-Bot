@@ -16,7 +16,7 @@ module.exports =
       case 'roll':
         return await roll20th(interaction);
       case 'initiative':
-        return roll20thInit(interaction);
+        return await roll20thInit(interaction);
       case 'general':
         return generalRoll(interaction)
     }

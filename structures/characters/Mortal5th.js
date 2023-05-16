@@ -59,7 +59,7 @@ module.exports = class Mortal5th extends Character5th
     .setTitle(this.name)
     .setAuthor({
       name: this.user.displayName, 
-      iconURL: this.user.avatarURL
+      iconURL: this.user.avatarURL ?? null
     })
     
     embed.addFields({

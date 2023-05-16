@@ -1,10 +1,11 @@
 'use strict'
 const Roll = require('./Roll');
 const { EmbedBuilder } = require('discord.js');
+const API = require('../../realmAPI');
 
-module.exports = function roll20thInit(interaction)
+module.exports = async function roll20thInit(interaction)
 {
-  interaction.arguments = getArgs(interaction);
+  interaction.arguments = await getArgs(interaction);
   interaction.results = roll(interaction.arguments);
   return {embeds: [getEmbed(interaction)]};
 }
@@ -16,13 +17,24 @@ function roll(args)
   return results;
 }
 
-function getArgs(interaction)
+async function getArgs(interaction)
 {
-  return {
+  const args = {
     modifier: interaction.options.getInteger("dexterity_wits"),
     character: interaction.options.getString('character'),
     notes: interaction.options.getString('notes'),
   }  
+
+  if (!args.character && interaction.guild)
+  {
+    const defaults = await API.characterDefaults.get(
+      interaction.guild.id, interaction.user.id
+    )
+    
+    if (defaults)
+      args.character = defaults.name;
+  }
+  return args; 
 }
 
 function getEmbed(interaction)
@@ -40,7 +52,7 @@ function getEmbed(interaction)
     iconURL: interaction.member?.displayAvatarURL() ?? 
       interaction.user.displayAvatarURL()
   });
-
+  
   if (args.character)
     embed.addFields({name: 'Character', value: args.character});      
 

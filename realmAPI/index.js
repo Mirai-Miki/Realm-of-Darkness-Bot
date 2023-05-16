@@ -23,3 +23,4 @@ exports.deleteGuild = require('./deleteGuild');
 exports.deleteStRole = require('./deleteStRole');
 exports.deleteMember = require('./deleteMember');
 exports.deleteInitTracker = require('./deleteInitTracker');
+exports.characterDefaults = require('./characterDefaults');

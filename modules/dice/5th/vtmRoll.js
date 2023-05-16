@@ -4,6 +4,7 @@ const getCharacter = require('../getCharacter');
 const { getEmbed, getContent, getComponents } = require('./getVtmRollResponse');
 const VtMV5RollResults = require('../../../structures/vtmV5RollResults');
 const handleRerollPress = require('./handleRerollPress');
+const API = require('../../../realmAPI');
 
 
 /**
@@ -25,7 +26,7 @@ module.exports = async function vtmRoll(interaction)
 
 async function getArgs(interaction)
 {
-  return {
+  const args = {
     pool: interaction.options.getInteger('pool'),
     hunger: interaction.options.getInteger('hunger'),
     difficulty: interaction.options.getInteger('difficulty'),
@@ -39,6 +40,20 @@ async function getArgs(interaction)
     ),
     autoHunger: interaction.options.getBoolean('auto_hunger'),
   }
+
+  if (!args.character && interaction.guild)
+  {
+    const defaults = await API.characterDefaults.get(
+      interaction.guild.id, interaction.user.id
+    )
+    
+    if (defaults)
+      args.character = await getCharacter(defaults.name, interaction);
+    if (defaults && args.autoHunger === null)
+      args.autoHunger = defaults.autoHunger;
+  }
+
+  return args;
 }
 
 /**

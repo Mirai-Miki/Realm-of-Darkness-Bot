@@ -21,7 +21,7 @@ module.exports = async function HunterDice(interaction)
 
 async function getArgs(interaction)
 {
-  return {
+  const args = {
     pool: interaction.options.getInteger('pool'),
     desperation: interaction.options.getInteger('desperation') ?? null,
     difficulty: interaction.options.getInteger('difficulty') ?? 0,
@@ -31,7 +31,19 @@ async function getArgs(interaction)
       trimString(interaction.options.getString('character')),
       interaction
     ),
+  } 
+
+  if (!args.character && interaction.guild)
+  {
+    const defaults = await API.characterDefaults.get(
+      interaction.guild.id, interaction.user.id
+    )
+    
+    if (defaults)
+      args.character = await getCharacter(defaults.name, interaction);
   }
+
+  return args;
 }
 
 async function roll(args)
