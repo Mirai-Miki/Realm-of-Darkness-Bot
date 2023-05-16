@@ -25,14 +25,15 @@ module.exports.get = async function(guildId, userId)
   }
 }
 
-module.exports.set = async function(guildId, userId, name, autoHunger)
+module.exports.set = async function(guildId, userId, name, autoHunger, disable)
 {
   const path = 'chronicle/member/defaults/set';
   const data = {
     user_id: userId,
     guild_id: guildId,
     name: name,
-    auto_hunger: autoHunger
+    auto_hunger: autoHunger,
+    disable: disable,
   }
 
   const res = await postData(path, data);

@@ -41,13 +41,13 @@ async function getArgs(interaction)
     autoHunger: interaction.options.getBoolean('auto_hunger'),
   }
 
-  if (!args.character && interaction.guild)
+  if (interaction.guild && (!args.character || args.autoHunger === null))
   {
     const defaults = await API.characterDefaults.get(
       interaction.guild.id, interaction.user.id
     )
     
-    if (defaults)
+    if (defaults && !args.character)
       args.character = await getCharacter(defaults.name, interaction);
     if (defaults && args.autoHunger === null)
       args.autoHunger = defaults.autoHunger;

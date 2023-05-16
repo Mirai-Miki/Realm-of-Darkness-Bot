@@ -26,6 +26,7 @@ module.exports = async function setDefaultCharacter(interaction)
       interaction.user.id,
       interaction.arguments.name,
       interaction.arguments.auto_hunger,
+      interaction.arguments.disable,
     )
     
     return {
@@ -41,12 +42,6 @@ async function getArgs(interaction)
     name: interaction.options.getString('name'),
     auto_hunger: interaction.options.getBoolean('auto_hunger') ?? false,    
     disable: interaction.options.getBoolean('disable') ?? false,
-  }
-
-  if (args.disable)
-  {
-    args.name = null;
-    args.auto_hunger = false;
   }
 
   if (!interaction.guild) 
