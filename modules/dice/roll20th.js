@@ -116,7 +116,15 @@ function getEmbed(interaction)
   embed.setTitle(title);
 
   if (args.character)
-    embed.addFields({name: 'Character', value: args.character.name});
+  {
+    embed.addFields({
+      name: 'Character',
+      value: args.character.name
+    });
+
+    if (args.character.tracked?.thumbnail)
+      embed.setThumbnail(args.character.tracked.thumbnail);
+  }
 
   if (results.blackDice.length) embed.addFields({
     name: 'Dice', 
