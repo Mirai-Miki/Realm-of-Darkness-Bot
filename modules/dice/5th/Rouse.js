@@ -3,6 +3,7 @@ const { trimString } = require('../../misc');
 const getCharacter = require('../getCharacter');
 const Roll = require('../Roll');
 const { EmbedBuilder } = require('discord.js');
+const API = require('../../../realmAPI');
 
 /**
  * 
@@ -19,7 +20,7 @@ module.exports = async function rouse(interaction)
 
 async function getArgs(interaction)
 {
-  return {
+  const args = {
     character: await getCharacter(
       trimString(interaction.options.getString('character')),
       interaction
@@ -27,6 +28,20 @@ async function getArgs(interaction)
     reroll: interaction.options.getBoolean('reroll'),
     notes: interaction.options.getString('notes')
   }
+
+  if (interaction.guild && (!args.character || args.autoHunger === null))
+  {
+    const defaults = await API.characterDefaults.get(
+      interaction.guild.id, interaction.user.id
+    )
+    
+    if (defaults && !args.character)
+      args.character = await getCharacter(defaults.name, interaction);
+    if (defaults && args.autoHunger === null)
+      args.autoHunger = defaults.autoHunger;
+  }
+
+  return args;
 }
 
 function roll(reroll)
