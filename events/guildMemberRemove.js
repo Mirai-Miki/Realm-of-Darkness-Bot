@@ -22,7 +22,7 @@ module.exports = {
 					error.discordResponse = rodError.discordResponse;
 					error.debug = rodError.debug;
 				}
-				handleErrorDebug(error, member.client);
+				await handleErrorDebug(error, member.client);
 			}
 			catch (e)
 			{

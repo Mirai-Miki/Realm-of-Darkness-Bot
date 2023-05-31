@@ -50,8 +50,8 @@ module.exports = {
 					}
 					
 					if (!interaction.replied && !interaction.deferred) 
-						interaction.reply(error.discordResponse);
-					else interaction.editReply(error.discordResponse);	
+						await interaction.reply(error.discordResponse);
+					else await interaction.editReply(error.discordResponse);	
 					handleErrorDebug(error, interaction.client);
 				}
 				catch (e)
@@ -76,8 +76,8 @@ module.exports = {
 				if (discordResponse)
 				{
 					if (!interaction.replied && !interaction.deferred) 
-						interaction.reply(discordResponse);
-					else interaction.editReply(discordResponse);
+						await interaction.reply(discordResponse);
+					else await interaction.editReply(discordResponse);
 				}
 				else throw new Error("No discordResponse");
 	    } 
@@ -93,9 +93,9 @@ module.exports = {
 					}
 					
 					if (!interaction.replied && !interaction.deferred) 
-						interaction.reply(error.discordResponse);
-					else interaction.editReply(error.discordResponse);					
-					handleErrorDebug(error, interaction.client);
+						await interaction.reply(error.discordResponse);
+					else await interaction.editReply(error.discordResponse);					
+					await handleErrorDebug(error, interaction.client);
 				}
 				catch (e)
 				{

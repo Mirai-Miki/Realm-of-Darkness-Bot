@@ -32,7 +32,7 @@ module.exports = {
 					error.discordResponse = rodError.discordResponse;
 					error.debug = rodError.debug;
 				}
-				handleErrorDebug(error, role.client);
+				await handleErrorDebug(error, role.client);
 				console.error("Error in Role Delete - GuildId:", role.guild.id)
 			}
 			catch (e)

@@ -24,7 +24,7 @@ module.exports = {
 					error.discordResponse = rodError.discordResponse;
 					error.debug = rodError.debug;
 				}
-				handleErrorDebug(error, oldGuild.client);
+				await handleErrorDebug(error, oldGuild.client);
 			}
 			catch (e)
 			{

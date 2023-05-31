@@ -64,7 +64,7 @@ module.exports.handleErrorDebug = async function(error, client)
 		let description = error.stack;		
 		if (error.debug.cause) description += `\n\nCaused by:\n${error.cause}`;		
 		debugEmbed.setDescription(description)
-		debugChannel.send({embeds:[debugEmbed]})
+		await debugChannel.send({embeds:[debugEmbed]})
 	}	
 	catch (e)
 	{
