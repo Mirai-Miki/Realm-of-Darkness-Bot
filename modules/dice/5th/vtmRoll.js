@@ -49,7 +49,10 @@ async function getArgs(interaction)
     
     if (defaults && !args.character)
       args.character = await getCharacter(defaults.name, interaction);
-    if (defaults && args.autoHunger === null)
+
+    if (!args.character?.tracked?.hunger)
+      args.autoHunger = false;
+    else if (defaults && args.autoHunger === null)
       args.autoHunger = defaults.autoHunger;
   }
 
