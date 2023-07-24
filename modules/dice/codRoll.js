@@ -91,7 +91,7 @@ function getEmbed(interaction)
   embed.setAuthor(
   {
     name: (
-      interaction.member?.displayName ?? interaction.user.username
+      interaction.member?.displayName ?? interaction.user.displayName
     ), 
     iconURL: interaction.member?.displayAvatarURL() ??
       interaction.user.displayAvatarURL()
@@ -145,7 +145,7 @@ function getEmbed(interaction)
       " | [Patreon](https://www.patreon.com/MiraiMiki)";
   embed.data.fields.at(-1).value += links;
   
-  embed.setURL('https://cdn.discordapp.com/attachments/699082447278702655/972058320611459102/banner.png');
+  embed.setURL('https://realmofdarkness.app/');
   return embed;
 }
 

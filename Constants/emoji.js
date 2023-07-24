@@ -58,5 +58,12 @@ module.exports =
   despair: '<:despair:984730957691113472>',
   desperation_crit: '<:desperation_crit:984730961054957609>',
   desperation_fail: '<:desperation_fail:984730964041281546>',
-  desperation_pass: '<:desperation_pass:984730967719694367>'
+  desperation_pass: '<:desperation_pass:984730967719694367>',
+  brutal_result: '<:brutal_result:1132978640339079269>',
+  w5_fail: '<:w5_fail:1132978648765444177>',
+  rage_fail: '<:rage_fail:1132978658101968956>',
+  w5_crit: '<:w5_crit:1132983343500242954>',
+  rage_crit: '<:rage_crit:1132983348256575509>',
+  rage_success: '<:rage_success:1132983351616213023>',
+  w5_success: '<:w5_success:1132983357052030976>'
 }

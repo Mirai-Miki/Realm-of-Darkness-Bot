@@ -1,7 +1,7 @@
 'use strict'
 const { trimString } = require('../../misc');
 const HunterV5RollResults = require('../../../structures/hunterV5RollResults');
-const handleRerollPress = require('./handleRerollPress');
+const handleRerollPress = require('./handleButtonPress');
 const { getComponents, getEmbed, getContent } = require('./getHunterRollResponse');
 const getCharacter = require('../getCharacter');
 const API = require('../../../realmAPI');

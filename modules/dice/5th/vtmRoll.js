@@ -3,7 +3,7 @@ const { trimString } = require('../../misc');
 const getCharacter = require('../getCharacter');
 const { getEmbed, getContent, getComponents } = require('./getVtmRollResponse');
 const VtMV5RollResults = require('../../../structures/vtmV5RollResults');
-const handleRerollPress = require('./handleRerollPress');
+const handleRerollPress = require('./handleButtonPress');
 const API = require('../../../realmAPI');
 
 

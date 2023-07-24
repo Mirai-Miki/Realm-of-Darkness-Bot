@@ -10,37 +10,20 @@ const API = require('../../../realmAPI');
  * @param {Interaction} interaction 
  * @returns {DiscordResponse} Response to send to the discord API
  */
-module.exports = async function rouse(interaction)
+module.exports = async function rageRoll(interaction)
 {
   interaction.args = await getArgs(interaction);
   interaction.rollResults = roll(interaction.args.reroll);
-  await updateHunger(interaction);
   return {embeds: [getEmbed(interaction)]};
 }
 
 async function getArgs(interaction)
 {
   const args = {
-    character: await getCharacter(
-      trimString(interaction.options.getString('character')),
-      interaction
-    ),
+    character: interaction.options.getString('character'),
     reroll: interaction.options.getBoolean('reroll'),
     notes: interaction.options.getString('notes')
   }
-
-  if (interaction.guild && (!args.character || args.autoHunger === null))
-  {
-    const defaults = await API.characterDefaults.get(
-      interaction.guild.id, interaction.user.id
-    )
-    
-    if (defaults && !args.character)
-      args.character = await getCharacter(defaults.name, interaction);
-    if (defaults && args.autoHunger === null)
-      args.autoHunger = defaults.autoHunger;
-  }
-
   return args;
 }
 
@@ -48,9 +31,9 @@ function roll(reroll)
 {
   const rollResults = {
     dice: [Roll.single(10)],
-    toString: '```ansi\n[2;31mHunger Increased[0m[2;31m[0m\n```',
+    toString: '```ansi\n[2;36m[2;34m[2;36mRage Decreased[0m[2;34m[0m[2;36m[0m\n```',
     passed: false,
-    color: '#8c0f28'
+    color: '#1981bd'
   };
   if (reroll) rollResults.dice.push(Roll.single(10));
 
@@ -59,7 +42,7 @@ function roll(reroll)
     if (dice >= 6)
     {
       rollResults.passed = true;
-      rollResults.toString = '```Hunger Unchanged```';
+      rollResults.toString = '```Rage Unchanged```';
       rollResults.color = '#1c1616';
     }
   }
@@ -79,18 +62,20 @@ function getEmbed(interaction)
       interaction.user.displayAvatarURL()
   });
 
-  embed.setTitle('Rouse Check');
+  embed.setTitle('Rage Check');
   embed.setColor(results.color);
   embed.setURL('https://realmofdarkness.app/');
         
+  /*
   if (!results.passed)
     embed.setThumbnail('https://cdn.discordapp.com/attachments/7140' +
     '50986947117076/886855116035084288/RealmOfDarknessSkullnoBNG.png');
-  
+  */
+
   if (interaction.args.character)
   {
     const char = interaction.args.character;
-    embed.addFields({name: "Character", value: char.name});
+    embed.addFields({name: "Character", value: char});
     if (char.tracked?.thumbnail) embed.setThumbnail(char.tracked.thumbnail);
   }
 
@@ -106,21 +91,4 @@ function getEmbed(interaction)
     
   embed.data.fields.at(-1).value += links;
   return embed;
-}
-
-async function updateHunger(interaction)
-{
-  if (interaction.rollResults.passed) return;
-  
-  const character = interaction.args.character?.tracked;
-  if (character && character.version === '5th')
-  {
-    const change = {command: 'Rouse Check', hunger: 1};
-    character.updateFields(change);
-    await character.save(interaction.client);
-    interaction.followUps = [{
-      embeds: [character.getEmbed()], 
-      ephemeral: true
-    }]
-  } 
 }

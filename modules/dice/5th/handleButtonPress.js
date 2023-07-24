@@ -3,11 +3,12 @@ const { ErrorCodes, handleErrorDebug, RealmError } = require('../../../Errors');
 const HunterV5RollResults = require('../../../structures/hunterV5RollResults');
 const { minToMilli } = require('../../misc');
 
-module.exports = async function handleRerollPress(interaction, getEmbed, getComponents, getContent)
+module.exports = async function handleButtonPress(interaction, getEmbed, getComponents, getContent)
 {
   const filter = i => (
     i.message.interaction.id === interaction.id &&
-    (i.customId === 'autoReroll' || i.customId === 'selectReroll' ||
+    (i.customId === 'autoReroll' || i.customId === 'selectReroll' || 
+    i.customId === 'autoRerollRage' || i.customId === 'brutalGain' ||
     i.customId === 'chooseOverreach' || i.customId === 'chooseDespair')         
   );
 
@@ -47,15 +48,18 @@ module.exports = async function handleRerollPress(interaction, getEmbed, getComp
     }
 
     await i.deferUpdate();
-    if (i.customId == 'autoReroll')
+    if (i.customId === 'autoReroll' || i.customId === 'autoRerollRage')
     {
-      // reroll
-      interaction.rollResults.rerollDice();
+      let rage;
+      if (i.customId === 'autoRerollRage') rage = true;
+      interaction.rollResults.rerollDice(undefined, rage);
+      const components = getComponents(interaction);
+
       try
       {
         await i.editReply({
           embeds: [getEmbed(interaction)], 
-          components: [],
+          components: components,
           content: getContent(interaction)
         });
         const update = await updateWillpower(interaction);
@@ -68,13 +72,15 @@ module.exports = async function handleRerollPress(interaction, getEmbed, getComp
         handleErrorDebug(err, interaction);
         return;
       }                  
-      interaction.collector.stop();
+      if (!components?.length) interaction.collector.stop();
     }
+
     else if (i.customId == 'selectReroll' && i.isButton())
     {
+      interaction.selectMenuActive = true;
       try
       {
-        await i.editReply({components: getComponents(interaction, 'menu')});
+        await i.editReply({components: getComponents(interaction)});
       }
       catch(error)
       {
@@ -83,14 +89,16 @@ module.exports = async function handleRerollPress(interaction, getEmbed, getComp
         handleErrorDebug(err, interaction);
       }                      
     }
+
     else if (i.customId == 'selectReroll' && i.isStringSelectMenu())
     {
       interaction.rollResults.rerollDice(i.values);
+      const components = getComponents(interaction);
       try
       {
         await i.editReply({
           embeds: [getEmbed(interaction)], 
-          components: [],
+          components: components,
           content: getContent(interaction)
         });
         const update = await updateWillpower(interaction);
@@ -103,8 +111,31 @@ module.exports = async function handleRerollPress(interaction, getEmbed, getComp
         handleErrorDebug(err, interaction);
         return;
       }                      
-      interaction.collector.stop();
+      if (!components?.length) interaction.collector.stop();
     }
+
+    else if (i.customId == 'brutalGain' && i.isButton())
+    {
+      interaction.rollResults.setBrutalGain();
+      const components = getComponents(interaction);
+      try
+      {
+        await i.editReply({
+          embeds: [getEmbed(interaction)], 
+          components: components,
+          content: getContent(interaction)
+        });
+      }
+      catch(error)
+      {
+        const err = 
+          new RealmError({cause: error.stack, code: ErrorCodes.DiscordAPIError});
+        handleErrorDebug(err, interaction);
+        return;
+      }                      
+      if (!components?.length) interaction.collector.stop();
+    }
+
     else if (i.customId == 'chooseOverreach' || i.customId == 'chooseDespair')
     {
       let choice;

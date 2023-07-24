@@ -45,10 +45,10 @@ function getEmbed(interaction)
   const embed = new EmbedBuilder()
   embed.setTitle('Initiative');
   embed.setColor([186, 61, 22]);
-  embed.setURL('https://cdn.discordapp.com/attachments/699082447278702655/972058320611459102/banner.png');
+  embed.setURL('https://realmofdarkness.app/');
 
   embed.setAuthor({
-    name: interaction.member?.displayName ?? interaction.user.username,
+    name: interaction.member?.displayName ?? interaction.user.displayName,
     iconURL: interaction.member?.displayAvatarURL() ?? 
       interaction.user.displayAvatarURL()
   });

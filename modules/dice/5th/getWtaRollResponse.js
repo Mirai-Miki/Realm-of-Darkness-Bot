@@ -2,7 +2,7 @@
 const { EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder,
   ButtonBuilder, ButtonStyle } = require('discord.js');
 const { Emoji } = require('../../../Constants');
-const HunterV5RollResults = require('../../../structures/hunterV5RollResults');
+const WtaRoll = require('../../../structures/Wta5thRollResults');
 
 module.exports.getEmbed = function(interaction)
 {
@@ -12,7 +12,7 @@ module.exports.getEmbed = function(interaction)
 
   // Create Title
   let title = `Pool ${results.totalPool}`;
-  if (args.desperation) title += ` | Desperation ${args.desperation}`;
+  if (args.rage) title += ` | Rage ${args.rage}`;
   if (args.difficulty) title += ` | Difficulty ${args.difficulty}`;
   if (args.spec) title += ' | Spec';
   embed.setTitle(title);
@@ -20,47 +20,45 @@ module.exports.getEmbed = function(interaction)
   embed.setColor(results.outcome.color);
 
   embed.setAuthor({
-    name: (
-      interaction.member?.displayName ?? interaction.user.displayName
-    ), 
-    iconURL: interaction.member?.displayAvatarURL() ??
-      interaction.user.displayAvatarURL()
+      name: (
+        interaction.member?.displayName ??
+        interaction.user.displayName
+      ), 
+      iconURL: interaction.member?.displayAvatarURL() ??
+          interaction.user.displayAvatarURL()
   });
 
   if (results.reroll)
   {
-    embed.addFields({
-      name: `Rerolled ${results.reroll.length} Dice`, 
-      value: `${results.reroll.join(', ')}`
-    });
+      embed.addFields({
+        name: `Rerolled ${results.reroll.length} Dice`, 
+        value: `${results.reroll.join(', ')}`
+      });
   }
 
   if (args.character)
   {
     embed.addFields({
       name: 'Character',
-      value: args.character.name
+      value: args.character
     });
-
-    if (args.character.tracked?.thumbnail)
-      embed.setThumbnail(args.character.tracked.thumbnail);
   }
 
   // Add Dice fields
-  if (results.dice.length) 
+  if (results.blackDice.length) 
   {
     embed.addFields({
       name: 'Dice',
-      value: `${results.dice.join(' ')}`,
+      value: `${results.blackDice.join(' ')}`,
       inline: true
     })
   }
 
-  if (results.desperationDice.length)
+  if (results.rageDice.length)
   {
     embed.addFields({
-      name: 'Desperation',
-      value: `${results.desperationDice.join(' ')}`,
+      name: 'Rage',
+      value: `${results.rageDice.join(' ')}`,
       inline: true
     })
   }
@@ -82,10 +80,18 @@ module.exports.getEmbed = function(interaction)
   resultMessage += `\n${results.outcome.toString}`;
   embed.addFields({name: "Result", value: resultMessage});
 
+  console.log(results.rageCheck)
+  if (results.rageCheck)
+  {
+    embed.addFields({
+      name: `Rage Check [ ${results.rageCheck.dice.join(", ")} ]`,
+      value: results.rageCheck.toString
+    })
+  }
+
   // Adding links to bottom of embed
   const links = "\n[Website](https://realmofdarkness.app/)" +
     " | [Commands](https://realmofdarkness.app/v5/commands/)" +
-    " | [Dice %](https://realmofdarkness.app/v5/dice/)" +
     " | [Patreon](https://www.patreon.com/MiraiMiki)";
   embed.data.fields.at(-1).value += links;
 
@@ -96,21 +102,22 @@ module.exports.getContent = function(interaction)
 {
   let content = "";
   // Result Loop
-  for (const dice of interaction.rollResults.dice) 
+  for (const dice of interaction.rollResults.blackDice) 
   {
     // Adding each dice emoji to the start of the message
-    if (dice <= 5) content += Emoji.hunter_fail;
-    else if (dice <= 9) content += Emoji.hunter_pass;
-    else content += Emoji.hunter_crit;
+    if (dice <= 5) content += Emoji.w5_fail;
+    else if (dice <= 9) content += Emoji.w5_success;
+    else content += Emoji.w5_crit;
     content += ' ';
   }
 
-  for (const dice of interaction.rollResults.desperationDice)
+  for (const dice of interaction.rollResults.rageDice)
   {
-    if (dice == 1) content += Emoji.despair;
-    else if (dice <= 5) content += Emoji.desperation_fail;
-    else if (dice <= 9) content += Emoji.desperation_pass;
-    else content += Emoji.desperation_crit;
+    if (dice <= 2) content += Emoji.brutal_result;
+    else if (dice <= 5) content += Emoji.rage_fail;
+    else if (dice <= 9) content += Emoji.rage_success;
+    else content += Emoji.rage_crit;
+    content += ' ';
   }
   return ((content.length > 2000) ? null : content);
 }
@@ -120,23 +127,6 @@ module.exports.getComponents = function(interaction)
   const rr = interaction.rollResults;
   const buttonRow = new ActionRowBuilder();
   const components = [];
-
-  if (rr.resultType === HunterV5RollResults.ResultType.choose)
-  {
-    buttonRow.addComponents(
-        new ButtonBuilder()
-            .setCustomId('chooseOverreach')
-            .setLabel('Choose Overreach')
-            .setStyle(ButtonStyle.Danger),
-    );
-    buttonRow.addComponents(
-        new ButtonBuilder()
-            .setCustomId('chooseDespair')
-            .setLabel('Choose Despair')
-            .setStyle(ButtonStyle.Danger),
-    );
-    return [buttonRow];
-  }
 
   if (interaction.selectMenuActive && !rr.reroll)
   {
@@ -151,13 +141,31 @@ module.exports.getComponents = function(interaction)
         .setStyle(ButtonStyle.Primary),
     );
   }
-  if (!interaction.selectMenuActive && !rr.reroll && rr.dice.length)
+  if (!interaction.selectMenuActive && !rr.reroll && rr.canRageReroll)
+  {
+    buttonRow.addComponents(
+      new ButtonBuilder()
+        .setCustomId('autoRerollRage')
+        .setLabel('Reroll Failures - w/ Rage')
+        .setStyle(ButtonStyle.Primary),
+    );
+  }
+  if (!interaction.selectMenuActive && !rr.reroll && rr.canSelectReroll)
   { 
     buttonRow.addComponents(
       new ButtonBuilder()
         .setCustomId('selectReroll')
         .setLabel('Select Reroll')
         .setStyle(ButtonStyle.Secondary),
+    );
+  }
+  if (!rr.brutalGain && rr.resultType === WtaRoll.ResultType.brutal)
+  {
+    buttonRow.addComponents(
+      new ButtonBuilder()
+        .setCustomId('brutalGain')
+        .setLabel('Brutal Gain +4')
+        .setStyle(ButtonStyle.Danger),
     );
   }
   
@@ -167,9 +175,14 @@ module.exports.getComponents = function(interaction)
 
 function setSelectRerollMenu(interaction, components)
 {
-  let sortedRolls = interaction.rollResults.dice.map(x => x);
+  let sortedRolls = interaction.rollResults.blackDice.map(x => x);
   sortedRolls.sort((a, b) => a - b);
+
+  let sortedRageRolls = interaction.rollResults.rageDice.map(x => x);
+  sortedRageRolls.sort((a, b) => a - b);
+  
   const options = [];
+  let count = {};
   
   for (const dice of sortedRolls)
   {      
@@ -178,8 +191,7 @@ function setSelectRerollMenu(interaction, components)
     else if (dice < 10) description = 'Success';
     else description = 'Critical';
     let value;
-    const count = {};
-    
+
     // Set Value to correctly handle multiple dice of the same vale
     if (count[dice])
     {
@@ -196,19 +208,49 @@ function setSelectRerollMenu(interaction, components)
     {
       label: `${dice}`,
       description: description,
-      value: value,
+      value: `${value}`,
     });
     if (options.length >= 25) break;
   }
-  const row = new ActionRowBuilder()
-    .addComponents(
-      new StringSelectMenuBuilder()
-        .setCustomId('selectReroll')
-        .setPlaceholder('Select Dice to Reroll')
-        .setMinValues(1)
-        .setMaxValues(options.length < 6 ? options.length : 6)
-        .addOptions(options),
-    );
-  
-    components.push(row);
+
+  count = {};
+  for (const dice of sortedRageRolls)
+  {  
+    if (options.length >= 25) break;    
+    let description;
+    if (dice > 2 && dice < 6) description = 'Rage - Fail';
+    else if (dice > 5 && dice < 10) description = 'Rage - Success';
+    else if (dice === 10) description = 'Rage - Critical';
+    else if (dice === 2) continue;
+    let value;
+
+    // Set Value to correctly handle multiple dice of the same vale
+    if (count[dice])
+    {
+      count[dice] += 1;
+      value = `${dice} (${count[dice]})`;
+    }
+    else
+    {
+      value = `${dice}`;
+      count[dice] = 1;
+    }
+
+    options.push(
+    {
+      label: `${dice}`,
+      description: description,
+      value: `r${value}`,
+    });
+  }
+
+  const row = new ActionRowBuilder().addComponents(new StringSelectMenuBuilder()
+    .setCustomId('selectReroll')
+    .setPlaceholder('Select Dice to Reroll')
+    .setMinValues(1)
+    .setMaxValues(options.length < 6 ? options.length : 6)
+    .addOptions(options)
+  )
+
+  if (options.length) components.push(row);
 }

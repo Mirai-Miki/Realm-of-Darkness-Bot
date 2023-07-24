@@ -78,7 +78,7 @@ function getEmbed(interaction)
   });
   embed.setTitle('Resonance Roll');
   embed.setColor(results.resonance.color[results.temperament.name] ?? '#000000');
-  embed.setURL('https://cdn.discordapp.com/attachments/699082447278702655/972058320611459102/banner.png');
+  embed.setURL('https://realmofdarkness.app/');
   
   if (args.minTemp) embed.addFields({
     name: "Minimum Temperament", 

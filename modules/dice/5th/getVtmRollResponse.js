@@ -16,13 +16,13 @@ module.exports.getEmbed = function(interaction)
   if (args.bp) title += ' | Surged';
   if (args.spec) title += ' | Spec';
   embed.setTitle(title);
-  embed.setURL('https://cdn.discordapp.com/attachments/699082447278702655/972058320611459102/banner.png');
+  embed.setURL('https://realmofdarkness.app/');
   embed.setColor(results.outcome.color);
 
   embed.setAuthor({
       name: (
         interaction.member?.displayName ??
-        interaction.user.username
+        interaction.user.displayName
       ), 
       iconURL: interaction.member?.displayAvatarURL() ??
           interaction.user.displayAvatarURL()
@@ -110,35 +110,6 @@ module.exports.getEmbed = function(interaction)
   return embed;
 }
 
-function getV5Buttons(interaction)
-{
-  const buttonRow = new ActionRowBuilder()
-  if (interaction.rollResults.canReroll)
-  {
-    buttonRow.addComponents(
-      new ButtonBuilder()
-        .setCustomId('autoReroll')
-        .setLabel('Reroll Failures')
-        .setStyle(ButtonStyle.Primary),
-    );
-  }
-  if (interaction.rollResults.blackDice.length)
-  { 
-    buttonRow.addComponents(
-      new ButtonBuilder()
-        .setCustomId('selectReroll')
-        .setLabel('Select Reroll')
-        .setStyle(ButtonStyle.Secondary),
-    );
-  }
-  
-  if (buttonRow.components.length)
-  {
-    return [buttonRow];
-  }
-  return [];
-}
-
 module.exports.getContent = function(interaction)
 {
   let content = "";
@@ -163,7 +134,40 @@ module.exports.getContent = function(interaction)
   return ((content.length > 2000) ? null : content);
 }
 
-function getSelectRerollMenu(interaction)
+module.exports.getComponents = function(interaction)
+{
+  const rr = interaction.rollResults;
+  const buttonRow = new ActionRowBuilder();
+  const components = [];
+
+  if (interaction.selectMenuActive && !rr.reroll)
+  {
+    setSelectRerollMenu(interaction, components);
+  }
+  if (!interaction.selectMenuActive && !rr.reroll && rr.canReroll)
+  {
+    buttonRow.addComponents(
+      new ButtonBuilder()
+        .setCustomId('autoReroll')
+        .setLabel('Reroll Failures')
+        .setStyle(ButtonStyle.Primary),
+    );
+  }
+  if (!interaction.selectMenuActive && !rr.reroll && rr.blackDice.length)
+  { 
+    buttonRow.addComponents(
+      new ButtonBuilder()
+        .setCustomId('selectReroll')
+        .setLabel('Select Reroll')
+        .setStyle(ButtonStyle.Secondary),
+    );
+  }
+  
+  if (buttonRow.components.length) components.push(buttonRow);
+  return components;
+}
+
+function setSelectRerollMenu(interaction, components)
 {
   let sortedRolls = interaction.rollResults.blackDice.map(x => x);
   sortedRolls.sort((a, b) => a - b);
@@ -177,6 +181,8 @@ function getSelectRerollMenu(interaction)
     else if (dice < 10) description = 'Success';
     else description = 'Critical';
     let value;
+
+    // Set Value to correctly handle multiple dice of the same vale
     if (count[dice])
     {
       count[dice] += 1;
@@ -187,6 +193,7 @@ function getSelectRerollMenu(interaction)
       value = `${dice}`;
       count[dice] = 1;
     }
+    
     options.push(
     {
       label: `${dice}`,
@@ -205,11 +212,5 @@ function getSelectRerollMenu(interaction)
         .addOptions(options),
     );
   
-  return [row];
-}
-
-module.exports.getComponents = function(interaction, type="Buttons")
-{  
-  if (type === "Buttons") return getV5Buttons(interaction);
-  else return getSelectRerollMenu(interaction);
+  components.push(row);
 }
