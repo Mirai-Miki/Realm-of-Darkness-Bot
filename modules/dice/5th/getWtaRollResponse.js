@@ -80,7 +80,6 @@ module.exports.getEmbed = function(interaction)
   resultMessage += `\n${results.outcome.toString}`;
   embed.addFields({name: "Result", value: resultMessage});
 
-  console.log(results.rageCheck)
   if (results.rageCheck)
   {
     embed.addFields({
