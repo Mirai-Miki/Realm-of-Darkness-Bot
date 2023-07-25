@@ -5,6 +5,7 @@ const vtmRoll = require('../../modules/dice/5th/vtmRoll');
 const rouse = require('../../modules/dice/5th/Rouse');
 const resonance = require('../../modules/dice/5th/Resonance');
 const generalRoll = require('../../modules/dice/GeneralRoll');
+const compulsionRoll = require('../../modules/dice/5th/compulsionRoll');
 
 module.exports = {
 	data: getCommand(),	
@@ -20,7 +21,9 @@ module.exports = {
       case 'resonance':
         return resonance(interaction);
       case 'rouse':   
-        return await rouse(interaction);     
+        return await rouse(interaction);  
+      case 'compulsion':
+        return await compulsionRoll(interaction);   
       case 'general':
         return generalRoll(interaction);
     }
@@ -184,6 +187,47 @@ function getCommand()
         {name: 'Fleeting', value: 'Fleeting'},
         {name: 'Intense', value: 'Intense'}
       )
+      return option;
+    })
+
+    .addStringOption(option => {
+      option.setName("notes")
+      .setDescription("Any extra information you would like to include about this roll.")
+      .setMaxLength(300)
+      return option;
+    })
+  );
+
+  /////////////////// Compulsion Command ///////////////////
+  command.addSubcommand(subcommand => 
+    subcommand.setName('compulsion')
+    .setDescription('Random Compulsion roll. p208')
+
+    .addStringOption(option => {
+      option.setName("clan")
+      .setDescription("Select if you wish to show Clan Compulsion info.")
+      .addChoices(
+        {name: 'Banu Haqim', value: 'BANU_HAQIM'},
+        {name: 'Brujah', value: 'BRUJAH'},
+        {name: 'Gangrel', value: 'GANGREL'},
+        {name: 'Hecata', value: 'HECATA'},
+        {name: 'Lasombra', value: 'LASOMBRA'},
+        {name: 'Malkavian', value: 'MALKAVIAN'},
+        {name: 'Ministry', value: 'MINISTRY'},
+        {name: 'Nosferatu', value: 'NOSFERATU'},
+        {name: 'Ravnos', value: 'RAVNOS'},
+        {name: 'Salubri', value: 'SALUBRI'},
+        {name: 'Toreador', value: 'TOREADOR'},
+        {name: 'Tremere', value: 'TREMERE'},
+        {name: 'Tzimisce', value: 'TZIMISCE'},
+        {name: 'Ventrue', value: 'VENTRUE'},
+      )
+      return option;
+    })
+
+    .addBooleanOption(option => {
+      option.setName("no_clan")
+      .setDescription("Select if you can not get a Clan Compulsion.")
       return option;
     })
 
