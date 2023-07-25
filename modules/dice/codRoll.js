@@ -88,15 +88,15 @@ function getEmbed(interaction)
   // Create the embed
   let embed = new EmbedBuilder();
         
-  embed.setAuthor(
-  {
+  embed.setAuthor({
     name: (
-      interaction.member?.displayName ?? interaction.user.displayName
+      interaction.member?.displayName ??
+      interaction.user.displayName ??
+      interaction.user.username
     ), 
     iconURL: interaction.member?.displayAvatarURL() ??
       interaction.user.displayAvatarURL()
-  }
-  );
+  });
 
   let title = `Pool ${args.pool}`;
   if (args.bonus) title += ` | Bonus ${args.bonus}`
