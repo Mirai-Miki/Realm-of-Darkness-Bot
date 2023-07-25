@@ -56,6 +56,7 @@ function getEmbed(interaction)
   embed.setAuthor({
     name: (
       interaction.member?.displayName ??
+      interaction.user.displayName ??
       interaction.user.username
     ), 
     iconURL: interaction.member?.displayAvatarURL() ??

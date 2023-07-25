@@ -20,12 +20,13 @@ module.exports.getEmbed = function(interaction)
   embed.setColor(results.outcome.color);
 
   embed.setAuthor({
-      name: (
-        interaction.member?.displayName ??
-        interaction.user.displayName
-      ), 
-      iconURL: interaction.member?.displayAvatarURL() ??
-          interaction.user.displayAvatarURL()
+    name: (
+      interaction.member?.displayName ??
+      interaction.user.displayName ??
+      interaction.user.username
+    ), 
+    iconURL: interaction.member?.displayAvatarURL() ??
+      interaction.user.displayAvatarURL()
   });
 
   if (results.reroll)

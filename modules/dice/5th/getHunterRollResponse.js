@@ -21,7 +21,9 @@ module.exports.getEmbed = function(interaction)
 
   embed.setAuthor({
     name: (
-      interaction.member?.displayName ?? interaction.user.displayName
+      interaction.member?.displayName ??
+      interaction.user.displayName ??
+      interaction.user.username
     ), 
     iconURL: interaction.member?.displayAvatarURL() ??
       interaction.user.displayAvatarURL()

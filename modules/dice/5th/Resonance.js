@@ -71,11 +71,17 @@ function getEmbed(interaction)
   const results = interaction.rollResults;
   const args = interaction.args;
   const embed = new EmbedBuilder();
+  
   embed.setAuthor({
-    name: (interaction.member?.displayName ?? interaction.user.username), 
+    name: (
+      interaction.member?.displayName ??
+      interaction.user.displayName ??
+      interaction.user.username
+    ), 
     iconURL: interaction.member?.displayAvatarURL() ??
       interaction.user.displayAvatarURL()
   });
+
   embed.setTitle('Resonance Roll');
   embed.setColor(results.resonance.color[results.temperament.name] ?? '#000000');
   embed.setURL('https://realmofdarkness.app/');

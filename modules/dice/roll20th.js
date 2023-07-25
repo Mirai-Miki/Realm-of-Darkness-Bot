@@ -102,8 +102,12 @@ function getEmbed(interaction)
   const embed = new EmbedBuilder()
 
   embed.setAuthor({
-    name: interaction.member?.displayName ?? interaction.user.displayName,
-    iconURL: interaction.member?.displayAvatarURL() ?? 
+    name: (
+      interaction.member?.displayName ??
+      interaction.user.displayName ??
+      interaction.user.username
+    ), 
+    iconURL: interaction.member?.displayAvatarURL() ??
       interaction.user.displayAvatarURL()
   });
 

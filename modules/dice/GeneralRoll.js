@@ -74,7 +74,11 @@ function getEmbed(interaction)
   let embed = new EmbedBuilder();        
         
   embed.setAuthor({
-    name: (interaction.member?.displayName ?? interaction.user.displayName), 
+    name: (
+      interaction.member?.displayName ??
+      interaction.user.displayName ??
+      interaction.user.username
+    ), 
     iconURL: interaction.member?.displayAvatarURL() ??
       interaction.user.displayAvatarURL()
   });

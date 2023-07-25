@@ -70,9 +70,11 @@ function getEmbed(interaction)
 {
   const results = interaction.rollResults;
   const embed = new EmbedBuilder();
+  
   embed.setAuthor({
     name: (
       interaction.member?.displayName ??
+      interaction.user.displayName ??
       interaction.user.username
     ), 
     iconURL: interaction.member?.displayAvatarURL() ??
