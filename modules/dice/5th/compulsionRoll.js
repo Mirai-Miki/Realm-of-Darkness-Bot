@@ -2,7 +2,7 @@
 const Roll = require('../Roll');
 const { EmbedBuilder } = require('discord.js');
 
-module.exports = function compulsionRoll(interaction)
+module.exports = async function compulsionRoll(interaction)
 {
   interaction.args = getArgs(interaction);
   interaction.results = getResults(interaction);

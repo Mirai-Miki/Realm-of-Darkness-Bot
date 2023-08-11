@@ -6,9 +6,9 @@ const { EmbedBuilder } = require('discord.js');
 
 module.exports = class Werewolf20th extends Character20th 
 {
-  constructor({name, user, guild, rage=7, gnosis=7, willpower=6}={}) 
+  constructor({client, name, rage=7, gnosis=7, willpower=6}={}) 
   {
-    super({name:name, user:user, guild:guild, willpower:willpower});
+    super({client, name, willpower});
     this.splat = Splats.werewolf20th;
     this.rage = new Consumable(rage, rage, 0);
     this.gnosis = new Consumable(gnosis, gnosis, 0);
@@ -34,9 +34,9 @@ module.exports = class Werewolf20th extends Character20th
     if (args.gnosis != null) this.gnosis.updateCurrent(args.gnosis);
   }
 
-  deserilize(char)
+  async deserilize(char)
   {
-    super.deserilize(char);
+    await super.deserilize(char);
     this.rage.setTotal(char.rage.total);
     this.rage.setCurrent(char.rage.current);
     this.gnosis.setTotal(char.gnosis.total);
@@ -63,10 +63,7 @@ module.exports = class Werewolf20th extends Character20th
   {
     const embed = new EmbedBuilder()
     .setColor(this.color)
-    .setAuthor({
-      name: this.user.displayName, 
-      iconURL: this.user.avatarURL ?? null
-    })
+    .setAuthor(this.getAuthor())
     .setTitle(this.name)
     .setURL('https://cdn.discordapp.com/attachments/699082447278702655/972058320611459102/banner.png');
 

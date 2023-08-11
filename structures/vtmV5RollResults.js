@@ -248,7 +248,7 @@ module.exports = class vtmV5RollResults
       if (dice >= 6)
       {
         this.rouse.passed = true;
-        this.rouse.toString = '```Hunger Unchanced```';
+        this.rouse.toString = '```Hunger Unchanged```';
       }
     }
     return this;

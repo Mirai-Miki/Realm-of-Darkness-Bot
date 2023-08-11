@@ -18,6 +18,7 @@ module.exports = async function getCharacter(name, interaction)
   }
 
   const tracked = await API.getCharacter({
+    client: interaction.client,
     name: name,
     user: interaction.member ? interaction.member : interaction.user,
     guild: interaction.guild

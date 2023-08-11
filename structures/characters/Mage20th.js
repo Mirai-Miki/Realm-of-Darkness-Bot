@@ -7,9 +7,9 @@ const { EmbedBuilder } = require('discord.js');
 
 module.exports = class Mage extends Character20th 
 {
-  constructor({name, user, guild, willpower=5, arete=1, quintessence=5, paradox=0}={}) 
+  constructor({client, name, willpower=5, arete=1, quintessence=5, paradox=0}={}) 
   {
-    super({name:name, user:user, guild:guild, willpower:willpower});
+    super({client, name, willpower});
     this.splat = Splats.mage20th;
     this.arete = new Consumable(10, arete, 0);
     this.quint = new Quintessence({quintessence: quintessence, paradox: paradox});
@@ -36,9 +36,9 @@ module.exports = class Mage extends Character20th
     if (args.paradox != null) this.quint.updateParadox(args.paradox);
   }
 
-  deserilize(char)
+  async deserilize(char)
   {
-    super.deserilize(char);
+    await super.deserilize(char);
     this.arete.setCurrent(char.arete);
     this.quint.setQuint(char.quintessence);
     this.quint.setParadox(char.paradox);
@@ -59,10 +59,7 @@ module.exports = class Mage extends Character20th
   {
     const embed = new EmbedBuilder()
     .setColor(this.color)
-    .setAuthor({
-      name: this.user.displayName, 
-      iconURL: this.user.avatarURL ?? null
-    })
+    .setAuthor(this.getAuthor())
     .setTitle(this.name)
     .setURL('https://cdn.discordapp.com/attachments/699082447278702655/972058320611459102/banner.png');
 

@@ -8,10 +8,10 @@ const { EmbedBuilder } = require('discord.js');
 
 module.exports = class Changeling extends Character20th
 {
-  constructor({name, user, guild, glamour=4, banality=3, 
+  constructor({client, name, glamour=4, banality=3, 
     willpower=4, nightmare=0, imbalance=0}={}) 
   {
-    super({name:name, user:user, guild:guild, willpower:willpower});
+    super({client, name, willpower});
     this.splat = Splats.changeling20th;
     this.glamour = new Consumable(glamour, glamour, 1);
     this.banality = new Counter(banality, 0);
@@ -58,9 +58,9 @@ module.exports = class Changeling extends Character20th
       this.chimericalHealth.updateAgg(args.aggChimerical);
   }
 
-  deserilize(char)
+  async deserilize(char)
   {
-    super.deserilize(char);
+    await super.deserilize(char);
     this.glamour.setTotal(char.glamour.total);        
     this.glamour.setCurrent(char.glamour.current);
     this.banality.setPrimary(char.banality.total);
@@ -101,10 +101,7 @@ module.exports = class Changeling extends Character20th
   {
     const embed = new EmbedBuilder()
     .setColor(this.color)
-    .setAuthor({
-      name: this.user.displayName, 
-      iconURL: this.user.avatarURL ?? null
-    })
+    .setAuthor(this.getAuthor())
     .setTitle(this.name)
     .setURL('https://cdn.discordapp.com/attachments/699082447278702655/972058320611459102/banner.png');
 

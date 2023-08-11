@@ -6,61 +6,30 @@ const sendToTrackerChannel = require('../../../modules/sendToTrackerChannel');
 
 module.exports = class Character 
 {
-  constructor({name, user, guild}={}) 
+  constructor({client, name}={}) 
   {
+    this.client = client;
     this.name = name;
     this.id = null;
-    this.user = {
-        id: '', 
-        username: null, 
-        discriminator: null, 
-        avatarURL: null, 
-        displayName: null
-    };
-    this.guild = {
-        id: null, 
-        name: null, 
-        iconURL: null
-    };
+    this.user = null;
+    this.member = null;
+    this.guild = null;
     this.exp = new Consumable(0);
     this.thumbnail = null;
     this.color = '#000000';
     this.history = {};
     this.changes = {};
-    if (guild) this.setGuild(guild);
-    if (user) this.setUser(user);
   }
 
-  /**
-   * Takes in a user of Guild member and sets the character user fields
-   * @param {User|GuildMember} user 
-   */
-  setUser(userData)
+  async setDiscordInfo({user, guild, userId, guildId}={})
   {
-    let member;
-    let user;
-    if (userData instanceof GuildMember)
-    {
-      user = userData.user;
-      member = userData;
-    }
-    else user = userData;
-
-    // User can be either a User or GuildMember
-    this.user.id = user.id;
-    this.user.username = user.username;
-    this.user.discriminator = user.discriminator;
-    this.user.avatarURL = member?.displayAvatarURL() ?? user.displayAvatarURL();
-    this.user.displayName = 
-      member?.displayName ? member.displayName : user.username;
-  }
-
-  setGuild(guild)
-  {
-    if (!guild) return;
-    this.guild.id = guild.id;
-    this.guild.name = guild.name;
-    this.guild.iconURL = guild.iconURL() ?? '';
+    if (user) this.user = user;
+    if (guild) this.guild = guild;
+    
+    if (userId) this.user = await this.client.users.fetch(userId);
+    if (guildId) this.guild = await this.client.guilds.fetch(guildId);
+    
+    if (this.guild) this.member = await this.guild.members.fetch(this.user.id);
   }
 
   setFields(args)
@@ -80,7 +49,7 @@ module.exports = class Character
     this.changes = getChanges(args);
   }
 
-  deserilize(json)
+  async deserilize(json)
   {
     this.id = json.id;
     this.name = json.name;
@@ -88,42 +57,40 @@ module.exports = class Character
     this.thumbnail = json.thumbnail;
     this.exp.setTotal(json.exp.total);
     this.exp.setCurrent(json.exp.current); 
-    //this.history = json.history; 
-    
-    if (json.user)
-    {
-      this.user.id = json.user.id;
-      this.user.username = json.user.username;
-      this.user.discriminator = json.user.discriminator;
-      this.user.avatarURL = json.user.avatarURL;
-      this.user.displayName = 
-        json.user.displayName ? json.user.displayName : json.user.username;
-    }
 
-    if(json.guild)
-    {
-      this.guild.id = json.guild.id;
-      this.guild.name = json.guild.name;
-      this.guild.iconURL = json.guild.iconURL;
-    }
+    await this.setDiscordInfo({userId: json.user, guildId: json.chronicle});
     return this;
   }
 
   serialize()
   {
-      const s = {character: {}};
-      s.character['name'] = this.name;
-      s.character['id'] = this.id;
-      s.user_id = this.user.id ? this.user.id : null;        
-      s.guild_id = this.guild.id ? this.guild.id : null;        
-      s.character['theme'] = this.color;
-      s.character['thumbnail'] = this.thumbnail ?? undefined;
-      s.character['exp'] = {
-          total: this.exp.total,
-          current: this.exp.current,    
-      };
-      s.character['log'] = this.changes;
-      return s;
+    const s = {character: {}};
+    s.character['name'] = this.name;
+    s.character['id'] = this.id;
+    s.user_id = this.user?.id ? this.user.id : null;        
+    s.guild_id = this.guild?.id ? this.guild.id : null;        
+    s.character['theme'] = this.color;
+    s.character['thumbnail'] = this.thumbnail ?? undefined;
+    s.character['exp'] = {
+        total: this.exp.total,
+        current: this.exp.current,    
+    };
+    s.character['log'] = this.changes;
+    return s;
+  }
+
+  _serializeNew()
+  {
+    const serializer = {character: {}};
+    serializer.character['name'] = this.name;
+    serializer.character['id'] = this.id;
+    serializer.character['user'] = this.user.id;        
+    serializer.character['chronicle'] = this.guild?.id ? this.guild.id : null;      
+    serializer.character['theme'] = this.color;
+    serializer.character['thumbnail'] = this.thumbnail ?? '';
+    serializer.character['exp_total'] = this.exp.total;
+    serializer.character['exp_current'] = this.exp.current;    
+    return serializer;
   }
 
   async save(client)
@@ -131,11 +98,28 @@ module.exports = class Character
     if (Object.keys(this.changes).length > 1)
     {
       if (this.changes.command === 'New Character')
-        await API.newCharacter(this.serialize());
+        await API.newCharacter(this.serialize(true));
       else
         await API.saveCharacter(this.serialize());
       await sendToTrackerChannel(client, this)
     }
+  }
+
+  getAuthor()
+  {
+    let name;
+    let iconURL;
+
+    if (this.member)
+    {
+      name = this.member.displayName ?? null;
+      iconURL = this.member.avatarURL() ?? null;
+    }
+
+    if (!name) name = this.user.displayName ?? this.user.username;
+    if (!iconURL) iconURL = this.user.avatarURL() ?? null;
+    
+    return {name: name, iconURL: iconURL};
   }
 }
 

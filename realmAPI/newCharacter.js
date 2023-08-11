@@ -1,13 +1,12 @@
 'use strict'
 const { postData } = require('./postData.js');
 const { RealmAPIError, APIErrorCodes } = require('../Errors');
+const { Splats } = require('../Constants');
 
-module.exports = async function saveCharacter(cData)
+module.exports = async function newCharacter(data)
 {
   {
-    const path = `character/new`;
-    const data = cData;
-    
+    const path = (data.character.class) ? 'character/new' : `character/new_old`;
     const res = await postData(path, data);
     switch(res?.status)
     {

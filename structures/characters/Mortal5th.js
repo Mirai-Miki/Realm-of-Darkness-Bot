@@ -6,9 +6,9 @@ const { EmbedBuilder } = require('discord.js');
 
 module.exports = class Mortal5th extends Character5th
 {
-  constructor(interaction, health=4, willpower=2, humanity=7) 
+  constructor({client, name, health=4, willpower=2, humanity=7}={}) 
   {
-    super(interaction, health, willpower);      
+    super({client, name, health, willpower});      
     this.splat = Splats.mortal5th;             
     this.humanity = new Humanity(humanity);
   }
@@ -32,9 +32,9 @@ module.exports = class Mortal5th extends Character5th
     if (args.stains != null) this.humanity.takeStains(args.stains);
   }  
 
-  deserilize(char)
+  async deserilize(char)
   {
-    super.deserilize(char);
+    await super.deserilize(char);
     this.humanity = new Humanity(char.humanity.total);
     this.humanity.takeStains(char.humanity.stains);
     return this;
@@ -44,10 +44,8 @@ module.exports = class Mortal5th extends Character5th
   {        
     const s = super.serialize();    
     s.character['splatSlug'] = this.splat.slug;        
-    s.character['humanity'] = {
-        total: this.humanity.total,
-        stains: this.humanity.stains,
-    }    
+    s.character['humanity'] = this.humanity.total;
+    s.character['stains'] = this.humanity.stains;
     return s;
   }
 
@@ -57,10 +55,7 @@ module.exports = class Mortal5th extends Character5th
     embed.setColor(this.color)
     .setURL('https://cdn.discordapp.com/attachments/699082447278702655/972058320611459102/banner.png')
     .setTitle(this.name)
-    .setAuthor({
-      name: this.user.displayName, 
-      iconURL: this.user.avatarURL ?? null
-    })
+    .setAuthor(this.getAuthor())
     
     embed.addFields({
       name: "Willpower", 

@@ -6,9 +6,9 @@ const { EmbedBuilder } = require('discord.js');
 
 module.exports = class Hunter5th extends Character5th
 {
-  constructor(interaction, health=4, willpower=2) 
+  constructor({client, name, health=4, willpower=2}={}) 
   {
-    super(interaction, health, willpower);    
+    super({client, name, health, willpower});    
     this.splat = Splats.hunter5th;
     // Desperation is shared stat between coterie
     this.desperation = new Consumable(5, 1, 1);
@@ -39,9 +39,9 @@ module.exports = class Hunter5th extends Character5th
     if (args.despair != null) this.despair = args.despair;
   }  
 
-  deserilize(char)
+  async deserilize(char)
   {
-    super.deserilize(char);
+    await super.deserilize(char);
     this.desperation.setCurrent(char.desperation);
     this.danger.setCurrent(char.danger);
     this.despair = char.despair;
@@ -64,10 +64,7 @@ module.exports = class Hunter5th extends Character5th
     embed.setColor(this.color)
     .setURL('https://cdn.discordapp.com/attachments/699082447278702655/972058320611459102/banner.png')
     .setTitle(this.name)
-    .setAuthor({
-      name: this.user.displayName, 
-      iconURL: this.user.avatarURL ?? null
-    })
+    .setAuthor(this.getAuthor())
     
     embed.addFields({
       name: "Willpower", 

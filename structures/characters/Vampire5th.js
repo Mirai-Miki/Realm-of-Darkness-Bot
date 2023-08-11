@@ -7,15 +7,9 @@ const { EmbedBuilder } = require('discord.js');
 
 module.exports = class Vampire5th extends Character5th
 {
-  constructor({name, health=4, willpower=2, humanity=7, user, guild}={}) 
+  constructor({client, name, health=4, willpower=2, humanity=7}={}) 
   {
-    super({
-      name: name,
-      health: health, 
-      willpower: willpower,
-      user: user,
-      guild: guild
-    });
+    super({client, name, health, willpower});
       
     this.splat = Splats.vampire5th;
     this.hunger = new Consumable(5, 1, 0);              
@@ -43,25 +37,36 @@ module.exports = class Vampire5th extends Character5th
     if (args.stains != null) this.humanity.takeStains(args.stains);
   }
 
-  deserilize(json)
+  async deserilize(json)
   {
-    super.deserilize(json);
+    await super.deserilize(json);
     this.hunger.setCurrent(json.hunger);
-    this.humanity = new Humanity(json.humanity.total);
-    this.humanity.takeStains(json.humanity.stains);
+    this.humanity = new Humanity(json.humanity);
+    this.humanity.takeStains(json.stains);
+    this.class = json.class;
     return this;
   }
 
-  serialize()
-  {        
+  serialize(newSave)
+  { 
+    if (this.class || newSave) return this._serializeNew();   
     const s = super.serialize();    
     s.character['splatSlug'] = this.splat.slug;        
     s.character['hunger'] = this.hunger.current;
-    s.character['humanity'] = {
-      total: this.humanity.total,
-      stains: this.humanity.stains,
-    }    
+    s.character['humanity'] =  this.humanity.total;
+    s.character['stains'] = this.humanity.stains;
+    s.character['class'] = this.class;
     return s;
+  }
+
+  _serializeNew()
+  {
+    const serializer = super._serializeNew();              
+    serializer.character['hunger'] = this.hunger.current;
+    serializer.character['humanity'] =  this.humanity.total;
+    serializer.character['stains'] = this.humanity.stains;
+    serializer.character['class'] = 'Vampire5th';
+    return serializer
   }
 
   getEmbed(notes)
@@ -81,10 +86,7 @@ module.exports = class Vampire5th extends Character5th
     embed.setColor(this.color)
     .setURL('https://cdn.discordapp.com/attachments/699082447278702655/972058320611459102/banner.png')
     .setTitle(this.name)
-    .setAuthor({
-      name: this.user.displayName, 
-      iconURL: this.user.avatarURL ?? null
-    })
+    .setAuthor(this.getAuthor())
     
     embed.addFields({
       name: "Willpower", 

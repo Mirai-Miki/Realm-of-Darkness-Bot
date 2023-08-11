@@ -1,6 +1,6 @@
 'use strict'
 const { postData } = require('./postData.js');
-const { RealmAPIError } = require('../Errors');
+const { RealmAPIError, APIErrorCodes } = require('../Errors');
 
 /**
  * Takes in a character and saves the information to the Database
@@ -10,15 +10,14 @@ const { RealmAPIError } = require('../Errors');
 module.exports = async function saveCharacter(cData)
 {
   {
-    const path = 'character/save';
-    const data = cData;
-    const res = await postData(path, data);
+    const path = cData.character.class ? 'character/save' : 'character/save_old';
+    const res = await postData(path, cData);
     switch(res?.status)
     {
       case 200: // Saved successfully
         return true;
       case 304: // Not Modified
-        throw new RealmAPIError({cause: 'Status 304: Not Modified'});
+        throw new RealmAPIError({code: APIErrorCodes.CharacterExists});
       default:
         throw new RealmAPIError({cause: `res: ${res?.status}\ndata: ${JSON.stringify(data)}`});
     }

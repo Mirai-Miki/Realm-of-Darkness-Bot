@@ -4,9 +4,9 @@ const Character = require("./Character.js");
 
 module.exports = class Character5th extends Character
 {
-constructor({name, health=4, willpower=2, user, guild}={}) 
+constructor({client, name, health=4, willpower=2}={}) 
   {
-    super({name: name, user: user, guild: guild});
+    super({client, name});
     this.version = '5th';
     this.willpower = new DamageTracker5th(willpower);
     this.health = new DamageTracker5th(health);
@@ -34,9 +34,9 @@ constructor({name, health=4, willpower=2, user, guild}={})
     if (args.healthAgg != null) this.health.takeAgg(args.healthAgg);
   }
 
-  deserilize(json)
+  async deserilize(json)
   {
-    super.deserilize(json);
+    await super.deserilize(json);
       
     this.willpower.setTotal(json.willpower.total);
     this.willpower.takeSuperfical(json.willpower.superficial);
@@ -62,5 +62,17 @@ constructor({name, health=4, willpower=2, user, guild}={})
       aggravated: this.health.aggravated,
     };
     return s
+  }
+
+  _serializeNew()
+  {
+    const serializer = super._serializeNew();    
+    serializer.character['willpower_total'] = this.willpower.total;
+    serializer.character['willpower_superficial'] = this.willpower.superficial;
+    serializer.character['willpower_aggravated'] = this.willpower.aggravated;
+    serializer.character['health_total'] = this.health.total;
+    serializer.character['health_superficial'] = this.health.superficial;
+    serializer.character['health_aggravated'] = this.health.aggravated;
+    return serializer
   }
 }

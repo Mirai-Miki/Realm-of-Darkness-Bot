@@ -7,9 +7,9 @@ const { EmbedBuilder } = require('discord.js');
 
 module.exports = class Vampire20th extends Character20th
 {
-  constructor({name, user, guild, humanity=7, blood=10, willpower=6}={}) 
+  constructor({client, name, humanity=7, blood=10, willpower=6}={}) 
   {
-    super({name:name, user:user, guild:guild, willpower:willpower});
+    super({client, name, willpower});
     this.splat = Splats.vampire20th;
     this.morality = {
       name: 'Humanity', 
@@ -38,9 +38,9 @@ module.exports = class Vampire20th extends Character20th
     if (args.morality != null) this.morality.pool.updateCurrent(args.morality);
   }
 
-  deserilize(json)
+  async deserilize(json)
   {
-    super.deserilize(json);
+    await super.deserilize(json);
     this.morality.pool.setCurrent(json.morality.current);
     this.morality.name = json.morality.name;
     this.blood.setTotal(json.blood.total);
@@ -67,10 +67,7 @@ module.exports = class Vampire20th extends Character20th
   {
     const embed = new EmbedBuilder()
     .setColor(this.color)
-    .setAuthor({
-      name: this.user.displayName, 
-      iconURL: this.user.avatarURL ?? null
-    })
+    .setAuthor(this.getAuthor())
     .setTitle(this.name)
     .setURL('https://cdn.discordapp.com/attachments/699082447278702655/972058320611459102/banner.png');
 

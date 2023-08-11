@@ -5,9 +5,9 @@ const DamageTracker20th = require("../../DamageTracker20th");
 
 module.exports = class Character20th extends Character
 {
-  constructor({name, willpower=2, user, guild}={})
+  constructor({client, name, willpower=2}={})
   {
-    super({name: name, user: user, guild: guild});
+    super({client, name});
     this.version = '20th';
     this.willpower = new Consumable(willpower);
     this.health = new DamageTracker20th();
@@ -33,9 +33,9 @@ module.exports = class Character20th extends Character
     if (args.agg != null) this.health.updateAgg(args.agg);
   }
 
-  deserilize(json)
+  async deserilize(json)
   {
-    super.deserilize(json);
+    await super.deserilize(json);
     this.willpower.setTotal(json.willpower.total);
     this.willpower.setCurrent(json.willpower.current);
     if (json.health.total) this.health.setTotal(json.health.total);

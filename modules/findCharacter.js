@@ -22,7 +22,8 @@ module.exports.component = async function(interaction)
   const characterId = interaction.values[0];
   if (!characterId) return;
 
-  const character = await API.getCharacter({pk: characterId});
+  const character = await API.getCharacter(
+    {client: interaction.client, pk: characterId});
   if (!character) throw new RealmError({code: ErrorCodes.NoCharacter});
 
   return {embeds: [character.getEmbed()], components: [], content: null};

@@ -6,9 +6,9 @@ const { EmbedBuilder } = require('discord.js');
 
 module.exports = class Wraith20 extends Character20th 
 {
-  constructor({name, user, guild, corpus=10, pathos=5, willpower=6}={}) 
+  constructor({client, name, corpus=10, pathos=5, willpower=6}={}) 
   {
-    super({name:name, user:user, guild:guild, willpower:willpower});
+    super({client, name, willpower});
     this.splat = Splats.wraith20th;
     this.corpus = new Consumable(corpus, corpus, 0);
     this.pathos = new Consumable(10, pathos, 0);
@@ -33,9 +33,9 @@ module.exports = class Wraith20 extends Character20th
     if (args.pathos != null) this.pathos.updateCurrent(args.pathos);
   }
 
-  deserilize(char)
+  async deserilize(char)
   {
-    super.deserilize(char);
+    await super.deserilize(char);
     this.corpus.setTotal(char.corpus.total);
     this.corpus.setCurrent(char.corpus.current);
     this.pathos.setCurrent(char.pathos);
@@ -58,10 +58,7 @@ module.exports = class Wraith20 extends Character20th
   {
     const embed = new EmbedBuilder()
     .setColor(this.color)
-    .setAuthor({
-      name: this.user.displayName, 
-      iconURL: this.user.avatarURL ?? null
-    })
+    .setAuthor(this.getAuthor())
     .setTitle(this.name)
     .setURL('https://cdn.discordapp.com/attachments/699082447278702655/972058320611459102/banner.png');
 
