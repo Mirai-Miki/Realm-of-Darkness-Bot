@@ -80,7 +80,7 @@ function getEmbed(interaction)
     if (char.tracked?.thumbnail) embed.setThumbnail(char.tracked.thumbnail);
   }
 
-  embed.addFields({name: "Rouse Dice", value: `${results.dice.join(' ')}`});
+  embed.addFields({name: "Rage Dice", value: `${results.dice.join(' ')}`});
   if (interaction.args.notes) 
     embed.addFields({name: "Notes", value: interaction.args.notes});
   embed.addFields({name: "Result", value: results.toString});

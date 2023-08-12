@@ -210,7 +210,7 @@ module.exports = class Wta5thRollResults
       if (dice >= 6)
       {
         this.rageCheck.passed = true;
-        this.rageCheck.toString = '```Rage Unchanced```';
+        this.rageCheck.toString = '```Rage Unchanged```';
       }
     }
     return this;
