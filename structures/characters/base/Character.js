@@ -54,7 +54,7 @@ module.exports = class Character
     this.id = json.id;
     this.name = json.name;
     this.color = json.theme; 
-    this.thumbnail = json.thumbnail;
+    this.thumbnail = json.faceclaim;
     this.exp.setTotal(json.exp.total);
     this.exp.setCurrent(json.exp.current); 
 
