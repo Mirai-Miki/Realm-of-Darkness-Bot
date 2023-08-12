@@ -87,7 +87,7 @@ module.exports = class Character
     serializer.character['user'] = this.user.id;        
     serializer.character['chronicle'] = this.guild?.id ? this.guild.id : null;      
     serializer.character['theme'] = this.color;
-    serializer.character['thumbnail'] = this.thumbnail ?? '';
+    serializer.character['faceclaim'] = this.thumbnail ?? '';
     serializer.character['exp_total'] = this.exp.total;
     serializer.character['exp_current'] = this.exp.current;    
     return serializer;
