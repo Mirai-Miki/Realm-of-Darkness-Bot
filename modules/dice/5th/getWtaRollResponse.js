@@ -11,8 +11,10 @@ module.exports.getEmbed = function(interaction)
   const embed = new EmbedBuilder();
 
   // Create Title
-  let title = `Pool ${results.totalPool}`;
-  if (args.rage) title += ` | Rage ${args.rage}`;
+  let title = '';
+  if (interaction.options.getSubcommand() === 'rite') title += "Rite | "
+  title += `Pool ${results.totalPool}`;
+  if (args.rage) title += ` | Rage ${args.rage + (args.participants ?? 0) + (args.trainedParticipants ?? 0)}`;
   if (args.difficulty) title += ` | Difficulty ${args.difficulty}`;
   if (args.spec) title += ' | Spec';
   embed.setTitle(title);
@@ -63,6 +65,13 @@ module.exports.getEmbed = function(interaction)
       inline: true
     })
   }
+  
+  embed.addFields({
+    name: 'Participants',
+    value: `Trained: ${args.trainedParticipants ?? 0}` + 
+      ` | Untrained: ${args.participants ?? 0}`,
+    inline: false
+  })
 
   // Add Spec and Notes Fields
   if (args.spec) embed.addFields({name: 'Specialty', value: args.spec});

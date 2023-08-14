@@ -4,6 +4,7 @@ const { oneLineTrim } = require('common-tags');
 const generalRoll = require('../../modules/dice/GeneralRoll');
 const wtaRoll = require('../../modules/dice/5th/wtaRoll');
 const rageRoll = require('../../modules/dice/5th/rageRoll');
+const riteRoll = require('../../modules/dice/5th/riteRoll');
 
 module.exports = {
 	data: getCommand(),	
@@ -18,6 +19,8 @@ module.exports = {
         return await wtaRoll(interaction);  
       case 'rage':
         return await rageRoll(interaction);
+      case 'rite':
+        return await riteRoll(interaction);
       case 'general':
         return generalRoll(interaction);
     }
@@ -31,7 +34,7 @@ function getCommand()
   .setDescription('Dice rolls for the wta 5th Game.');
 
 
-  ///////////////////////// VtM Roll Command //////////////////////
+  ///////////////////////// WtA Roll Command //////////////////////
   command.addSubcommand((subcommand) => subcommand
     .setName('roll')
     .setDescription(oneLineTrim`
@@ -103,7 +106,7 @@ function getCommand()
     })
   );
 
-  ///////////////////// Rouse Command //////////////////////
+  ///////////////////// Rage Command //////////////////////
   command.addSubcommand(subcommand => 
     subcommand.setName('rage')
     .setDescription('Perform a Rage Check')
@@ -127,6 +130,96 @@ function getCommand()
       .setMaxLength(300)
       return option;
     })      
+  );
+
+    ///////////////////////// Rite Roll Command //////////////////////
+    command.addSubcommand((subcommand) => subcommand
+    .setName('rite')
+    .setDescription(oneLineTrim`
+      Makes a dice roll following the rite roll of Warewolf: 
+      the Apocalypse 5th rules. page 180 Corebook
+    `)
+
+    .addIntegerOption(option => {
+      option.setName("pool")
+      .setDescription(oneLineTrim`
+        The base pool you will be rolling whith, can be modified by other 
+        arguments.
+      `)
+      .setMaxValue(50)
+      .setMinValue(1)
+      .setRequired(true)
+      return option;
+    })
+
+    .addIntegerOption(option => {
+      option.setName("rage")
+      .setDescription("The number of rage dice included in " +
+        "the pool. Must be between 0 to 5. Defaults to 0. p133")
+      .setMaxValue(5)
+      .setMinValue(0)
+      return option;
+    })
+
+    .addIntegerOption(option => {
+      option.setName("trained_participants")
+      .setDescription("The number of trained participants joining the Rite " +
+        " Must be between 1 and 20.")
+      .setMaxValue(20)
+      .setMinValue(1)
+      return option;
+    })
+
+    .addIntegerOption(option => {
+      option.setName("participants")
+      .setDescription("The number of Non-trained participants joining the Rite" +
+        " Must be between 1 and 20.")
+      .setMaxValue(20)
+      .setMinValue(1)
+      return option;
+    })
+
+    .addIntegerOption(option => {
+      option.setName("difficulty")
+      .setDescription("The Difficulty is the number of dice " +
+        " 6+ needed. Must be between 1 and 50." +
+        " Defaults to 1.")
+      .setMaxValue(50)
+      .setMinValue(1)
+      return option;
+    })
+
+    .addStringOption(option => {
+      option.setName("speciality")
+      .setDescription("The speciality applied to the roll. " +
+        " This adds one dice to your pool.")
+      .setMaxLength(100)
+      return option;
+    })
+
+    .addStringOption(option => {
+      option.setName("rage_check")
+      .setDescription("Select if you would also like do a rage check. p132")
+      .setChoices(
+        {name: 'No Reroll', value: 'No Reroll'},
+        {name: 'Reroll', value: 'Reroll'}
+      )
+      return option;
+    })
+
+    .addStringOption(option => {
+      option.setName("character")
+      .setDescription("Name of the character making the roll.")
+      .setMaxLength(50)
+      return option;
+    })
+
+    .addStringOption(option => {
+      option.setName("notes")
+      .setDescription("Any extra information you would like to include about this roll.")
+      .setMaxLength(300)
+      return option;
+    })
   );
 
   /////////////////// General Roll Command ///////////////////////

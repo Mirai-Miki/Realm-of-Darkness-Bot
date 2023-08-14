@@ -145,11 +145,16 @@ module.exports = class Wta5thRollResults
     let crit = 0;
     let brutal = [];
     let total = 0;
+    let normalRerollCount = 0;
 
     for (const dice of this.blackDice)
     {
-      if (!this.canReroll && dice < 6) this.canReroll = true;
-      
+      if (dice < 6) 
+      {
+        if (!this.canReroll) this.canReroll = true;
+        normalRerollCount++;
+      }
+
       if (dice === 10)
       {
         crit++;
@@ -162,7 +167,10 @@ module.exports = class Wta5thRollResults
     for (const dice of this.rageDice)
     {
       if (!this.canSelectReroll && dice > 2) this.canSelectReroll = true;
-      if (!this.canRageReroll && (dice > 2 && dice < 6)) 
+      if (normalRerollCount < 3 && 
+        !this.canRageReroll && 
+        (dice > 2 && dice < 6)
+      ) 
         this.canRageReroll = true;
       if (dice === 10)
       {
