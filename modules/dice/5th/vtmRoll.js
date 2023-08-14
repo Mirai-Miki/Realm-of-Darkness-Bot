@@ -147,7 +147,7 @@ async function getSheetRollArgs(interaction)
     args.poolNotes = poolNotes.join(' + ');
 
   args.pool = attribute + skillPhysical + skillSocial + skillMental + mod;
-  if (args.pool === 0) args.pool = 1;
+  if (args.pool === 0 && !args.spec && !args.bloodSurge) args.pool = 1;
 
   if (args.hunger === false) args.hunger = undefined;
   else args.hunger = character.hunger.current;
