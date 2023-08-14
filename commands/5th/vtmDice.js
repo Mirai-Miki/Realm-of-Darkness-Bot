@@ -1,7 +1,7 @@
 'use strict';
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { oneLineTrim } = require('common-tags');
-const vtmRoll = require('../../modules/dice/5th/vtmRoll');
+const { v5Roll } = require('../../modules/dice/5th/vtmRoll');
 const rouse = require('../../modules/dice/5th/Rouse');
 const resonance = require('../../modules/dice/5th/Resonance');
 const generalRoll = require('../../modules/dice/GeneralRoll');
@@ -17,7 +17,7 @@ module.exports = {
 		switch (interaction.options.getSubcommand())
     {
       case 'roll':
-        return await vtmRoll(interaction);
+        return await v5Roll(interaction);
       case 'resonance':
         return resonance(interaction);
       case 'rouse':   

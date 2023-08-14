@@ -277,4 +277,31 @@ const ErrorInfo =
     debug: false,
     cause: false
   },
+  [ErrorCodes.NoSheet]:
+  {
+    system: "NoSheetFound",
+    embedTitle: 'No Sheet Found',
+    embedMessage: 
+      'You need to have a Character sheet to use this command.\nYou can make a character sheet at the [Realm of Darkness](https://realmofdarkness.app/) website.',
+    debug: false,
+    cause: false
+  },
+  [ErrorCodes.NoSheetSelected]:
+  {
+    system: "NoSheetSelected",
+    embedTitle: 'No Sheet Selected',
+    embedMessage: 
+      'We found too many Sheets for this server.\nYou will either need to select a sheet using the `name` argument in the command. Or you can make a default character for this server using the command `/character default`',
+    debug: false,
+    cause: false
+  },
+  [ErrorCodes.NotSheet]:
+  {
+    system: "NotSheet",
+    embedTitle: 'Not a Sheet',
+    embedMessage: 
+      'The selected/default character is not a Sheet.\nYou can make a character sheet at the [Realm of Darkness](https://realmofdarkness.app/) website.',
+    debug: false,
+    cause: false
+  },
 }

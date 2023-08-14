@@ -19,6 +19,7 @@ module.exports = class Character
     this.color = '#000000';
     this.history = {};
     this.changes = {};
+    this.isSheet = false;
   }
 
   async setDiscordInfo({user, guild, userId, guildId}={})
@@ -57,6 +58,7 @@ module.exports = class Character
     this.thumbnail = json.faceclaim;
     this.exp.setTotal(json.exp.total);
     this.exp.setCurrent(json.exp.current); 
+    this.isSheet = json.is_sheet ?? false;
 
     await this.setDiscordInfo({userId: json.user, guildId: json.chronicle});
     return this;

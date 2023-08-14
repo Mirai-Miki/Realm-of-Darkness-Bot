@@ -10,6 +10,8 @@ constructor({client, name, health=4, willpower=2}={})
     this.version = '5th';
     this.willpower = new DamageTracker5th(willpower);
     this.health = new DamageTracker5th(health);
+    this.skills = null;
+    this.attributes = null;
   }
 
   setFields(args)
@@ -44,6 +46,8 @@ constructor({client, name, health=4, willpower=2}={})
     this.health.setTotal(json.health.total);
     this.health.takeSuperfical(json.health.superficial);
     this.health.takeAgg(json.health.aggravated);
+    this.skills = json.skills;
+    this.attributes = json.attributes;
     return this;
   }
 

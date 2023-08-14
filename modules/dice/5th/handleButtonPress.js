@@ -195,7 +195,12 @@ module.exports = async function handleButtonPress(interaction, getEmbed, getComp
 
 async function updateWillpower(interaction)
 {
-  const character = interaction.arguments.character?.tracked;
+  let character;
+  if (interaction.arguments.character?.tracked) 
+    character = interaction.arguments.character.tracked;
+  else if (interaction.arguments.sheet) 
+    character = interaction.arguments.character;
+  
   if (!character || character.version !== '5th') return;
 
   const change = {command: 'Dice Roll', willpowerSup: 1};

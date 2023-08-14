@@ -29,12 +29,20 @@ module.exports.getEmbed = function(interaction)
       interaction.user.displayAvatarURL()
   });
 
+  if (args.poolNotes)
+  {
+    embed.addFields({
+      name: 'Pool', 
+      value: args.poolNotes
+    });
+  }
+
   if (results.reroll)
   {
-      embed.addFields({
-        name: `Rerolled ${results.reroll.length} Dice`, 
-        value: `${results.reroll.join(', ')}`
-      });
+    embed.addFields({
+      name: `Rerolled ${results.reroll.length} Dice`, 
+      value: `${results.reroll.join(', ')}`
+    });
   }
 
   if (args.character)

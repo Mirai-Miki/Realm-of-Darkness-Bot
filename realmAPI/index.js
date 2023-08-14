@@ -7,6 +7,7 @@ exports.getSupporterLevel = require('./getSupporterLevel');
 exports.getCharacterList = require('./getCharacterList');
 exports.getSTRoles = require('./getSTRoles');
 exports.getAdminsStorytellers = require('./getAdminsStorytellers');
+exports.getSheet = require('./getSheet');
 
 exports.updateGuild = require('./updateGuild');
 exports.updateBot = require('./updateBot');
