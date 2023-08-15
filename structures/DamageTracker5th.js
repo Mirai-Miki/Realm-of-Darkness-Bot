@@ -119,6 +119,11 @@ module.exports = class DamageTracker5th
     else return '';
   }
 
+  getUndamaged()
+  {
+    return this.total - this.superficial - this.aggravated;
+  }
+
   getTracker()
   {
     let tracker = "";

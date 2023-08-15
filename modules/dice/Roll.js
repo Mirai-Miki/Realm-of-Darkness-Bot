@@ -1,8 +1,10 @@
 'use strict';
+const crypto = require('crypto');
 
 module.exports.single = function(diceSides)
 {
-  return Math.floor(Math.random() * diceSides) + 1;
+  return crypto.randomInt(1, diceSides + 1);
+  //return Math.floor(Math.random() * diceSides) + 1;
 },
 
 module.exports.manySingle = function(quantity, diceSides)

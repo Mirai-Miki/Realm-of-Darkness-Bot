@@ -54,6 +54,8 @@ module.exports.getEmbed = function(interaction)
 
     if (args.character.tracked?.thumbnail)
       embed.setThumbnail(args.character.tracked.thumbnail);
+    else if (args.character.sheet)
+      embed.setThumbnail(args.character.thumbnail);
   }
 
   // Add Dice fields
@@ -132,6 +134,9 @@ module.exports.getContent = function(interaction)
     content += ' ';
   }
 
+  if (!interaction.rollResults.hungerDice) 
+    return ((content.length > 2000) ? null : content);
+  
   for (const dice of interaction.rollResults.hungerDice)
   {
     if (dice == 1) content += Emoji.bestial_fail;

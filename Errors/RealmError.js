@@ -304,4 +304,22 @@ const ErrorInfo =
     debug: false,
     cause: false
   },
+  [ErrorCodes.NoCharacterSelected]:
+  {
+    system: "NoCharacterSelected",
+    embedTitle: 'No Character Selected',
+    embedMessage: 
+      'We found too many Characters for this server.\nYou will either need to select a character using the `name` argument in the command. Or you can make a default character for this server using the command `/character default`',
+    debug: false,
+    cause: false
+  },
+  [ErrorCodes.IncorrectCharType]:
+  {
+    system: "IncorrectCharType",
+    embedTitle: 'Incorrect Character Type',
+    embedMessage: 
+      'The selected Character is not the correct type for this command.\nPlease check the type of character you are using.',
+    debug: false,
+    cause: false
+  },
 }

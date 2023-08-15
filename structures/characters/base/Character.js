@@ -1,5 +1,4 @@
 'use strict';
-const { GuildMember } = require("discord.js");
 const Consumable = require("../../Consumable");
 const API = require('../../../realmAPI');
 const sendToTrackerChannel = require('../../../modules/sendToTrackerChannel');
@@ -103,7 +102,7 @@ module.exports = class Character
         await API.newCharacter(this.serialize(true));
       else
         await API.saveCharacter(this.serialize());
-      await sendToTrackerChannel(client, this)
+      sendToTrackerChannel(client, this);
     }
   }
 

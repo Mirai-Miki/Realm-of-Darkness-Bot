@@ -76,6 +76,11 @@ module.exports = class Humanity5th
     else return '';
   }
 
+  getOneThird()
+  {
+    return Math.floor(this.total / 3);
+  }
+
   getTracker() 
   {    
     let total = this.total

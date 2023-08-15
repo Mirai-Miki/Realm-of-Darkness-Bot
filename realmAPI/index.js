@@ -8,6 +8,7 @@ exports.getCharacterList = require('./getCharacterList');
 exports.getSTRoles = require('./getSTRoles');
 exports.getAdminsStorytellers = require('./getAdminsStorytellers');
 exports.getSheet = require('./getSheet');
+exports.getCharacterDefault = require('./getCharacterDefault');
 
 exports.updateGuild = require('./updateGuild');
 exports.updateBot = require('./updateBot');
