@@ -114,7 +114,7 @@ function getEmbed(interaction)
   });
 
   if (args.character.thumbnail)
-    embed.setThumbnail(args.character.tracked.thumbnail);
+    embed.setThumbnail(args.character.thumbnail);
 
 
   // Add Dice fields
