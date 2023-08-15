@@ -54,7 +54,7 @@ module.exports.getEmbed = function(interaction)
 
     if (args.character.tracked?.thumbnail)
       embed.setThumbnail(args.character.tracked.thumbnail);
-    else if (args.character.sheet)
+    else if (args.character.isSheet)
       embed.setThumbnail(args.character.thumbnail);
   }
 
