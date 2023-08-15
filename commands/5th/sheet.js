@@ -102,9 +102,7 @@ function getCommand()
 
     .addIntegerOption(option => {
       option.setName("modifier")
-      .setDescription("The Difficulty is the number of dice " +
-        " 6+ needed. Must be between 1 and 50." +
-        " Defaults to 1. p119")
+      .setDescription("Adds or Removes dice in addition to your pool.")
       .setMaxValue(50)
       .setMinValue(1)
       return option;
