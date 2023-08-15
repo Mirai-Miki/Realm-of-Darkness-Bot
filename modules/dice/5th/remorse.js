@@ -119,11 +119,8 @@ function getEmbed(interaction)
     value: args.character.name
   });
 
-  if (args.character.tracked?.thumbnail)
+  if (args.character.thumbnail)
     embed.setThumbnail(args.character.tracked.thumbnail);
-  else if (args.character.sheet)
-    embed.setThumbnail(args.character.thumbnail);
-
 
   // Add Dice fields
   if (results.blackDice.length) 
