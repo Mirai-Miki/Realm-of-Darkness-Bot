@@ -66,12 +66,15 @@ module.exports.getEmbed = function(interaction)
     })
   }
   
-  embed.addFields({
-    name: 'Participants',
-    value: `Trained: ${args.trainedParticipants ?? 0}` + 
-      ` | Untrained: ${args.participants ?? 0}`,
-    inline: false
-  })
+  if (interaction.options.getSubcommand() === 'rite')
+  {
+    embed.addFields({
+      name: 'Participants',
+      value: `Trained: ${args.trainedParticipants ?? 0}` + 
+        ` | Untrained: ${args.participants ?? 0}`,
+      inline: false
+    })
+  }
 
   // Add Spec and Notes Fields
   if (args.spec) embed.addFields({name: 'Specialty', value: args.spec});
