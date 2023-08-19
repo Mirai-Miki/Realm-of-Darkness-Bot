@@ -19,7 +19,7 @@ module.exports = async function saveCharacter(cData)
       case 304: // Not Modified
         throw new RealmAPIError({code: APIErrorCodes.CharacterExists});
       default:
-        throw new RealmAPIError({cause: `res: ${res?.status}\ndata: ${JSON.stringify(data)}`});
+        throw new RealmAPIError({cause: `code: ${res?.status}\npost: ${JSON.stringify(cData)}\nJSON: ${JSON.stringify(res?.data)}`});
     }
   }
 }
