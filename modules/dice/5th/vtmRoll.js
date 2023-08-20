@@ -97,7 +97,7 @@ async function getSheetRollArgs(interaction)
   if (!name)
   {
     const defaults = await API.characterDefaults.get(
-      interaction.guild.id, interaction.user.id
+      interaction.guild?.id, interaction.user.id
     );
     name = defaults ? defaults.name : null;
   }
