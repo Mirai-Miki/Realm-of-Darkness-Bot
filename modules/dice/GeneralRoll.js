@@ -44,7 +44,7 @@ function parseSets(interaction)
     match = match.replace(/\d+/, '');
     const sides = parseInt(match.match(/\d+/)[0]);
 
-    if (dice > 50 || sides > 500)
+    if (dice > 50 || sides > 500 || dice === 0 || sides === 0)
     {
       throw new RealmError({code: ErrorCodes.InvalidGeneralRollDice});
     }

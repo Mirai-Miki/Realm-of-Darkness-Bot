@@ -32,6 +32,7 @@ module.exports.set = async function(interaction, splat)
   if (!char) throw new RealmError({code: ErrorCodes.NoCharacter});
   char.setFields(options);
   await char.save(interaction.client);
+  interaction.character = char;
   return {ephemeral: true, embeds: [char.getEmbed(options.notes)]};
 }
 
@@ -62,5 +63,6 @@ module.exports.update = async function(interaction, splat)
   char.updateFields(options);
 
   await char.save(interaction.client);
+  interaction.character = char;
   return {ephemeral: true, embeds: [char.getEmbed(options.notes)]};
 }

@@ -49,7 +49,7 @@ function getNamesListEmbed()
     .setTitle("Character Delete")
     .setDescription(
       "Please select the characters you wish to Delete." +
-      "\nChoose carefully as this is a permanent action!!"
+      "\nChoose carefully as this is a permanent action!!\n\nYou can now see and delete all your characters from one place using the [Realm of Darkness Website](https://realmofdarkness.app).\nTo use this feature all you need to do is Login and you will see a page showing all your characters with real time updates."
     )
     .setColor("#b31b2f")
 }

@@ -28,7 +28,10 @@ async function getArgs(interaction)
 
   if (!args.name)
   {
-    const defaults = await API.characterDefaults.get(
+    if (!interaction.guild) 
+      throw new RealmError({code: ErrorCodes.NoCharacterSelected})
+    
+      const defaults = await API.characterDefaults.get(
       interaction.guild.id, interaction.user.id
     );
     args.name = defaults ? defaults.name : null;

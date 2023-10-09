@@ -47,7 +47,9 @@ function getNamesListEmbed()
 {
   return new EmbedBuilder()
     .setTitle("Character Find")
-    .setDescription("Please select the character you wish to find.")
+    .setDescription(
+      "Please select the character you wish to find.\n\nYou can now see all your characters with real time updates in one place using the [Realm of Darkness Website](https://realmofdarkness.app).\nTo use this feature all you need to do is Login and you will see a page showing all your characters."
+    )
     .setColor("#7836ba")
 }
 

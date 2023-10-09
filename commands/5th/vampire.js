@@ -1,5 +1,5 @@
 'use strict'
-const { SlashCommandBuilder } = require('@discordjs/builders');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const { Splats } = require('../../Constants');
 const tracker = require('../../modules/tracker');
 const getHexColor = require('../../modules/getColorHex');
@@ -18,13 +18,48 @@ module.exports =
 		switch (interaction.options.getSubcommand())
     {
       case 'new':
-        return await tracker.new(interaction, Splats.vampire5th);
+        const res = await tracker.new(interaction, Splats.vampire5th);
+        await sheetFollowUp(interaction);
+        return res;
       case 'update':
-        return await tracker.update(interaction, Splats.vampire5th);
+        const update = await tracker.update(interaction, Splats.vampire5th);
+        await oldVampireFollowUp(interaction);
+        return update;
       case 'set':   
         return await tracker.set(interaction, Splats.vampire5th);     
     }
 	}
+}
+
+async function sheetFollowUp(interaction)
+{
+  if (!interaction.followUps) interaction.followUps = [];
+  const message = {ephemeral: true, embeds: []};
+
+  const embed = new EmbedBuilder();
+  embed.setColor('#ede61a')
+    .setTitle('Sheets now in Early Access')
+    .setDescription(
+      'Character sheets are now in Early Access on the [Website](https://realmofdarkness.app).\nCharacter sheets are fully compatible with the bot tracker commands as well as providing an easy to use web interface to update values. It also gives you access to the `/sheet roll` command which is an easier way to build pools without having to look at your sheet to make rolls.\n\nTo create a new sheet all you need to do is Login to the [Website](https://realmofdarkness.app) and click the "New Sheet button" to get started.\n\nPlease note that early access sheets are still missing many features and will be slowly added too over time to become more feature complete.'
+    )
+  message.embeds.push(embed);
+  interaction.followUps.push(message);
+}
+
+async function oldVampireFollowUp(interaction)
+{
+  if (interaction.character.class) return;
+  if (!interaction.followUps) interaction.followUps = [];
+  const message = {ephemeral: true, embeds: []};
+
+  const embed = new EmbedBuilder();
+  embed.setColor('#ede61a')
+    .setTitle('Old Tracker')
+    .setDescription(
+      'This Vampire tracker is currently not compatible with the new tracker/sheet system, while it will continue to work for now, support will eventually be dropped some time in the future.\n\nTo avoid losing any data, please make a new tracker using the `/vampire new` command. Alternatively you can try the new Character Sheets which are currently in Early Access on the [Website](https://realmofdarkness.app).'
+    )
+  message.embeds.push(embed);
+  interaction.followUps.push(message);
 }
 
 async function getArgs(interaction)

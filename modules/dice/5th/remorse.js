@@ -7,7 +7,7 @@ const { getContent } = require('./getVtmRollResponse');
 const { Splats } = require('../../../Constants');
 const { RealmError, ErrorCodes } = require('../../../Errors');
 
-module.exports = async function frenzy(interaction)
+module.exports = async function remorse(interaction)
 {
   interaction.args = await getArgs(interaction);
   interaction.rollResults = roll(interaction);
@@ -26,7 +26,10 @@ async function getArgs(interaction)
   }
 
   if (!args.name)
-  {
+  {    
+    if (!interaction.guild) 
+      throw new RealmError({code: ErrorCodes.NoCharacterSelected})
+
     const defaults = await API.characterDefaults.get(
       interaction.guild.id, interaction.user.id
     );
