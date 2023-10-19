@@ -16,8 +16,8 @@ module.exports = async function saveCharacter(cData)
     {
       case 200: // Saved successfully
         return true;
-      case 304: // Not Modified
-        throw new RealmAPIError({code: APIErrorCodes.CharacterExists});
+      case 304: // Not Modified - Too many sheets
+        throw new RealmAPIError({code: APIErrorCodes.TooManySheets});
       default:
         throw new RealmAPIError({cause: `code: ${res?.status}\npost: ${JSON.stringify(cData)}\nJSON: ${JSON.stringify(res?.data)}`});
     }

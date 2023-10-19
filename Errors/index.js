@@ -29,6 +29,7 @@ module.exports.ErrorCodes =
 	NoSheet: 22,
 	NoCharacterSelected: 23,
 	IncorrectCharType: 24,
+	TooManySheets: 25,
 	RequiresFledgling: 100,
 	RequiresNeonate: 101,
 	RequiresAncilla: 102,

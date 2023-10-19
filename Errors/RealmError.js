@@ -322,4 +322,13 @@ const ErrorInfo =
     debug: false,
     cause: false
   },
+  [ErrorCodes.TooManySheets]:
+  {
+    system: "TooManySheets",
+    embedTitle: 'You have too many Active Sheets',
+    embedMessage: 
+      'You are currently over your sheet limit for your supporter Tier.\nTo increase your limit please look at our supporter tiers on [Patreon](https://www.patreon.com/MiraiMiki)',
+    debug: false,
+    cause: false
+  },
 }
