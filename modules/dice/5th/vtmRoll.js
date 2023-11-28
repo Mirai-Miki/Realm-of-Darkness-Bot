@@ -11,11 +11,10 @@ const API = require('../../../realmAPI');
  * 
  * @param {Interaction} interaction 
  */
-module.exports.v5Roll = async function(interaction)
-{
+module.exports.v5Roll = async function (interaction) {
   interaction.arguments = await getV5RollArgs(interaction);
   interaction.rollResults = await roll(interaction);
-  
+
   await handleRerollPress(interaction, getEmbed, getComponents, getContent);
   return {
     content: getContent(interaction),
@@ -24,8 +23,7 @@ module.exports.v5Roll = async function(interaction)
   };
 }
 
-async function getV5RollArgs(interaction)
-{
+async function getV5RollArgs(interaction) {
   const args = {
     pool: interaction.options.getInteger('pool'),
     hunger: interaction.options.getInteger('hunger'),
@@ -41,12 +39,11 @@ async function getV5RollArgs(interaction)
     autoHunger: interaction.options.getBoolean('auto_hunger'),
   }
 
-  if (interaction.guild && (!args.character || args.autoHunger === null))
-  {
+  if (interaction.guild && (!args.character || args.autoHunger === null)) {
     const defaults = await API.characterDefaults.get(
       interaction.guild.id, interaction.user.id
     )
-    
+
     if (defaults && !args.character)
       args.character = await getCharacter(defaults.name, interaction);
 
@@ -63,11 +60,10 @@ async function getV5RollArgs(interaction)
  * 
  * @param {Interaction} interaction 
  */
-module.exports.v5SheetRoll = async function(interaction)
-{
+module.exports.v5SheetRoll = async function (interaction) {
   interaction.arguments = await getSheetRollArgs(interaction);
   interaction.rollResults = await roll(interaction);
-  
+
   await handleRerollPress(interaction, getEmbed, getComponents, getContent);
   return {
     content: getContent(interaction),
@@ -76,9 +72,8 @@ module.exports.v5SheetRoll = async function(interaction)
   };
 }
 
-async function getSheetRollArgs(interaction)
-{
-  const args = {    
+async function getSheetRollArgs(interaction) {
+  const args = {
     sheet: true,
     attribute: interaction.options.getString('attribute'),
     skillPhysical: interaction.options.getString('skill_physical'),
@@ -94,14 +89,13 @@ async function getSheetRollArgs(interaction)
   }
 
   let name = trimString(interaction.options.getString('name'));
-  if (!name)
-  {
+  if (!name) {
     const defaults = await API.characterDefaults.get(
       interaction.guild?.id, interaction.user.id
     );
     name = defaults ? defaults.name : null;
   }
-  
+
   const character = await API.getSheet({
     client: interaction.client,
     name: name,
@@ -113,26 +107,22 @@ async function getSheetRollArgs(interaction)
   let skillPhysical = 0;
   let skillSocial = 0;
   let skillMental = 0;
-  let mod = args.modifier ?? 0;  
+  let mod = args.modifier ?? 0;
   let poolNotes = [];
 
-  if (args.attribute) 
-  {
+  if (args.attribute) {
     attribute = character.attributes[args.attribute];
     poolNotes.push(args.attribute);
   }
-  if (args.skillPhysical) 
-  {
+  if (args.skillPhysical) {
     skillPhysical = character.skills[args.skillPhysical].value;
     poolNotes.push(args.skillPhysical);
   }
-  if (args.skillSocial) 
-  {
+  if (args.skillSocial) {
     skillSocial = character.skills[args.skillSocial].value;
     poolNotes.push(args.skillSocial);
   }
-  if (args.skillMental) 
-  {  
+  if (args.skillMental) {
     skillMental = character.skills[args.skillMental].value;
     poolNotes.push(args.skillMental);
   }
@@ -161,12 +151,10 @@ async function getSheetRollArgs(interaction)
  * Takes a set of arguments and performs a roll
  * @param {Object} args Arguments recieved from the interaction
  */
-async function roll(interaction)
-{
+async function roll(interaction) {
   const args = interaction.arguments;
-  if (args.character?.tracked && args.autoHunger && 
-    args.character.tracked.slug === 'vampire5th')
-  {
+  if (args.character?.tracked && args.autoHunger &&
+    args.character.tracked.slug === 'vampire5th') {
     args.hunger = args.character.tracked.hunger;
   }
 
@@ -178,39 +166,37 @@ async function roll(interaction)
     hunger: args.hunger ?? 0
   });
   let hunger = args.hunger;
-  if (args.character?.tracked && args.autoHunger) 
+  if (args.character?.tracked && args.autoHunger)
     hunger = args.character.tracked.hunger.current;
   results.rollDice(hunger);
   results.setOutcome();
-  
+
   if (args.bp != null) results.setBloodSurge(args.bp);
   if (args.rouse != null) results.setRouse(args.rouse);
   await updateHunger(interaction, results);
   return results;
 }
 
-async function updateHunger(interaction, results)
-{
+async function updateHunger(interaction, results) {
   let hunger = 0;
   if (results.bloodSurge && !results.bloodSurge.passed)
     hunger++;
   if (results.rouse && !results.rouse.passed)
-    hunger++; 
-  
+    hunger++;
+
   let character;
-  if (interaction.arguments.character?.tracked) 
+  if (interaction.arguments.character?.tracked)
     character = interaction.arguments.character.tracked;
-  else if (interaction.arguments.sheet) 
+  else if (interaction.arguments.sheet)
     character = interaction.arguments.character;
 
-  if (character && hunger && character.version === '5th')
-  {
-    const change = {command: 'Dice Roll', hunger: hunger};
+  if (character && hunger && character.version === '5th') {
+    const change = { command: 'Dice Roll', hunger: hunger };
     character.updateFields(change);
     await character.save(interaction.client);
     interaction.followUps = [{
-      embeds: [character.getEmbed()], 
+      embeds: [character.getEmbed()],
       ephemeral: true
     }]
-  } 
+  }
 }

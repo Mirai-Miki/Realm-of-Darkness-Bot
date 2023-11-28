@@ -1,8 +1,7 @@
 'use strict'
 const Roll = require('../modules/dice/Roll');
 
-module.exports = class vtmV5RollResults
-{
+module.exports = class vtmV5RollResults {
   static ResultType = {
     unrolled: 0,
     totalFail: 1,
@@ -14,41 +13,40 @@ module.exports = class vtmV5RollResults
   }
 
   static OutcomeInfo =
-  {    
-    [vtmV5RollResults.ResultType.totalFail]: 
     {
-      toString: '```ansi\n[2;31m[2;35m[2;33m[2;36m[2;35m[2;33mTotal Failure[0m[2;35m[0m[2;36m[0m[2;33m[0m[2;35m[0m[2;31m[0m[2;31m[0m\n```',
-      color: '#ffcc00'
-    },
-    [vtmV5RollResults.ResultType.bestialFail]: 
-    {
-      toString: '```ansi\n[2;31m[2;35m[2;33m[2;36m[2;35m[2;33m[2;31mBestial Failure[0m[2;33m[0m[2;35m[0m[2;36m[0m[2;33m[0m[2;35m[0m[2;31m[0m[2;31m[0m\n```',
-      color: '#cd0e0e'
-    },
-    [vtmV5RollResults.ResultType.fail]: 
-    {
-      toString: '```Failed```',
-      color: '#000000'
-    },
-    [vtmV5RollResults.ResultType.success]: 
-    {
-      toString: '```ansi\n[2;32mSuccess[0m[2;31m[0m\n```',
-      color: '#66ff33',
-    },
-    [vtmV5RollResults.ResultType.messyCrit]: 
-    {
-      toString: '```ansi\n[2;32m[2;35mMessy Critical[0m[2;32m[0m[2;31m[0m\n```',
-      color: '#ff0066'
-    },
-    [vtmV5RollResults.ResultType.crit]:
-    {
-      toString: '```ansi\n[2;32m[2;35m[2;34m[2;36mCritical[0m[2;34m[0m[2;35m[0m[2;32m[0m[2;31m[0m\n```',
-      color: '#66ffcc'
-    },  
-  }
+      [vtmV5RollResults.ResultType.totalFail]:
+      {
+        toString: '```ansi\n[2;31m[2;35m[2;33m[2;36m[2;35m[2;33mTotal Failure[0m[2;35m[0m[2;36m[0m[2;33m[0m[2;35m[0m[2;31m[0m[2;31m[0m\n```',
+        color: '#ffcc00'
+      },
+      [vtmV5RollResults.ResultType.bestialFail]:
+      {
+        toString: '```ansi\n[2;31m[2;35m[2;33m[2;36m[2;35m[2;33m[2;31mBestial Failure[0m[2;33m[0m[2;35m[0m[2;36m[0m[2;33m[0m[2;35m[0m[2;31m[0m[2;31m[0m\n```',
+        color: '#cd0e0e'
+      },
+      [vtmV5RollResults.ResultType.fail]:
+      {
+        toString: '```Failed```',
+        color: '#000000'
+      },
+      [vtmV5RollResults.ResultType.success]:
+      {
+        toString: '```ansi\n[2;32mSuccess[0m[2;31m[0m\n```',
+        color: '#66ff33',
+      },
+      [vtmV5RollResults.ResultType.messyCrit]:
+      {
+        toString: '```ansi\n[2;32m[2;35mMessy Critical[0m[2;32m[0m[2;31m[0m\n```',
+        color: '#ff0066'
+      },
+      [vtmV5RollResults.ResultType.crit]:
+      {
+        toString: '```ansi\n[2;32m[2;35m[2;34m[2;36mCritical[0m[2;34m[0m[2;35m[0m[2;32m[0m[2;31m[0m\n```',
+        color: '#66ffcc'
+      },
+    }
 
-  constructor({difficulty, pool, bp, spec}={})
-  {
+  constructor({ difficulty, pool, bp, spec } = {}) {
     this.blackDice = [];
     this.hungerDice = [];
     this.reroll = null;
@@ -63,29 +61,24 @@ module.exports = class vtmV5RollResults
     this.canReroll = false;
   }
 
-  _setOutcome(type)
-  {
+  _setOutcome(type) {
     this.outcome = vtmV5RollResults.OutcomeInfo[type];
     this.resultType = type;
     return this;
   }
 
-  rollDice(hunger=0)
-  {
+  rollDice(hunger = 0) {
     let pool = this.totalPool;
-    if (pool <= hunger)
-    {
+    if (pool <= hunger) {
       hunger = pool;
-      pool = 0;    
+      pool = 0;
     }
     else pool = pool - hunger;
-    this.blackDice = Roll.d10(pool);    
+    this.blackDice = Roll.d10(pool);
     this.hungerDice = Roll.d10(hunger);
 
-    for (const dice of this.blackDice)
-    {
-      if (dice < 6)
-      {
+    for (const dice of this.blackDice) {
+      if (dice < 6) {
         this.canReroll = true;
         break;
       }
@@ -93,18 +86,14 @@ module.exports = class vtmV5RollResults
     return this;
   }
 
-  rerollDice(values)
-  {
+  rerollDice(values) {
     const selected = values?.map(x => parseInt(x.match(/^\d+/)[0]));
     this.reroll = [];
     const bDice = [];
-    for (const dice of this.blackDice)
-    {
-      if ((selected?.includes(dice)) || 
-          (!values && this.reroll.length < 3 && dice < 6))
-      {
-        if (values)
-        { // We pull the value out of selected so we cannot reread it
+    for (const dice of this.blackDice) {
+      if ((selected?.includes(dice)) ||
+        (!values && this.reroll.length < 3 && dice < 6)) {
+        if (values) { // We pull the value out of selected so we cannot reread it
           const index = selected.indexOf(dice);
           if (index > -1) selected.splice(index, 1);
         }
@@ -117,31 +106,26 @@ module.exports = class vtmV5RollResults
     this.blackDice = bDice;
     this.setOutcome();
   }
-  
+
   /**
    * Modifies the this object to include the outcome, total and margin
   */
-  setOutcome()
-  {
+  setOutcome() {
     let crit = 0;
     let bestialFail = false;
     let messyCrit = false;
     let total = 0;
 
-    for (const dice of this.blackDice)
-    {
-      if (dice === 10)
-      {
+    for (const dice of this.blackDice) {
+      if (dice === 10) {
         crit++;
         total++;
       }
       else if (dice >= 6) total++;
     }
 
-    for (const dice of this.hungerDice)
-    {
-      if (dice === 10)
-      {
+    for (const dice of this.hungerDice) {
+      if (dice === 10) {
         crit++;
         total++;
         messyCrit = true;
@@ -155,17 +139,17 @@ module.exports = class vtmV5RollResults
     total += crit;
 
     // set outcome
-    if (total < this.difficulty && bestialFail) 
+    if (total < this.difficulty && bestialFail)
       this._setOutcome(vtmV5RollResults.ResultType.bestialFail);
-    else if (total === 0) 
+    else if (total === 0)
       this._setOutcome(vtmV5RollResults.ResultType.totalFail);
-    else if (total < this.difficulty) 
+    else if (total < this.difficulty)
       this._setOutcome(vtmV5RollResults.ResultType.fail);
-    else if (crit && messyCrit) 
+    else if (crit && messyCrit)
       this._setOutcome(vtmV5RollResults.ResultType.messyCrit);
-    else if (crit) 
+    else if (crit)
       this._setOutcome(vtmV5RollResults.ResultType.crit);
-    else 
+    else
       this._setOutcome(vtmV5RollResults.ResultType.success);
 
     this.total = total;
@@ -179,14 +163,11 @@ module.exports = class vtmV5RollResults
    * @param {String} spec If a specialty was used
    * @returns {Number} The total pool
    */
-  setTotalPool(pool, bp, spec)
-  {
+  setTotalPool(pool, bp, spec) {
     let surge = 0;
 
-    if (bp != null)
-    {
-      switch (bp)
-      {
+    if (bp != null) {
+      switch (bp) {
         case 10:
         case 9:
           surge = 6;
@@ -211,7 +192,10 @@ module.exports = class vtmV5RollResults
           surge = 1;
       }
     }
-    return (pool + surge + (spec ? 1 : 0));
+
+    let totalPool = (pool + surge + (spec ? 1 : 0));
+    if (totalPool <= 0) totalPool = 1;
+    return (totalPool);
   }
 
   /**
@@ -219,22 +203,20 @@ module.exports = class vtmV5RollResults
    * @param {*} bp 
    * @returns 
    */
-  setBloodSurge(bp)
-  {
+  setBloodSurge(bp) {
     const roll = Roll.single(10);
     this.bloodSurge = {
       dice: roll,
       passed: roll >= 6 ? true : false,
-      toString: 
-        roll >= 6 ? 
-        '```Hunger Unchanged```' : 
-        '```ansi\n[2;31mHunger Increased[0m[2;31m[0m\n```'
+      toString:
+        roll >= 6 ?
+          '```Hunger Unchanged```' :
+          '```ansi\n[2;31mHunger Increased[0m[2;31m[0m\n```'
     }
     return this;
   }
 
-  setRouse(reroll)
-  {
+  setRouse(reroll) {
     const rolls = [Roll.single(10)];
     if (reroll === 'Reroll') rolls.push(Roll.single(10))
     this.rouse = {
@@ -243,10 +225,8 @@ module.exports = class vtmV5RollResults
       toString: '```ansi\n[2;31mHunger Increased[0m[2;31m[0m\n```'
     }
 
-    for (const dice of rolls)
-    {
-      if (dice >= 6)
-      {
+    for (const dice of rolls) {
+      if (dice >= 6) {
         this.rouse.passed = true;
         this.rouse.toString = '```Hunger Unchanged```';
       }
