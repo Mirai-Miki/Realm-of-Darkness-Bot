@@ -60,8 +60,10 @@ module.exports.handleErrorDebug = async function (error, client) {
 			.setTitle(error.name)
 			.setColor('#db0f20')
 
+		let description = '';
 		if (error.debug?.cause) description += `\n\nCaused by:\n${error.cause}`;
-		debugEmbed.setDescription(error.stack)
+		debugEmbed.setDescription(error.stack + description);
+
 		client.shard.broadcastEval(async (c, { message }) => {
 			const channel = c.channels.cache.get('776761322859266050');
 			if (channel) {
