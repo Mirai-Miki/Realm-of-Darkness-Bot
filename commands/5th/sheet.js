@@ -2,17 +2,37 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { oneLineTrim } = require('common-tags');
 const { v5SheetRoll } = require('../../modules/dice/5th/vtmRoll');
+const commandUpdate = require('../../modules/commandDatabaseUpdate');
+const API = require('../../realmAPI');
+const Splats = require('../../Constants/Splats');
 
 module.exports = {
   data: getCommand(),
   async execute(interaction) {
     await interaction.deferReply();
+    await commandUpdate(interaction);
+
     if (!interaction.isRepliable()) return 'notRepliable';
 
     switch (interaction.options.getSubcommand()) {
       case 'roll':
         return await v5SheetRoll(interaction);
     }
+  },
+
+  async autocomplete(interaction) {
+    const focusedOption = interaction.options.getFocused(true);
+    const focusedValue = focusedOption.value.toLowerCase();
+
+    let choices = [];
+    if (focusedOption.name === 'discipline')
+      choices = await API.getDisciplineNames(interaction.user.id, interaction.guild?.id);
+    else if (focusedOption.name === 'name') {
+      choices = await API.getNamesList(interaction.user.id, interaction.guild?.id, Splats.vampire5th.slug, true);
+    }
+
+    const filtered = choices.filter(choice => choice.toLowerCase().startsWith(focusedValue));
+    return filtered.map(choice => ({ name: choice, value: choice }));
   }
 };
 
@@ -97,6 +117,13 @@ function getCommand() {
       return option;
     })
 
+    .addStringOption(option => {
+      option.setName('discipline')
+        .setDescription("Select the Discipline for your pool")
+        .setAutocomplete(true)
+      return option;
+    })
+
     .addIntegerOption(option => {
       option.setName("modifier")
         .setDescription("Adds or Removes dice in addition to your pool.")
@@ -116,12 +143,9 @@ function getCommand() {
       return option;
     })
 
-    .addIntegerOption(option => {
+    .addBooleanOption(option => {
       option.setName("blood_surge")
-        .setDescription("Enter your current " +
-          " Blood Potency. Must be between 0 and 10. Also Rouses the blood. p218")
-        .setMaxValue(10)
-        .setMinValue(0)
+        .setDescription("Select if you wish to Surge the blood. This also Rouses the blood. p218")
       return option;
     })
 
@@ -155,6 +179,7 @@ function getCommand() {
         .setDescription("Name of the character making the roll. " +
           'Must be a sheet character.')
         .setMaxLength(50)
+        .setAutocomplete(true)
       return option;
     })
 

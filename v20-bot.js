@@ -2,6 +2,7 @@
 const fs = require("fs");
 const { Client, GatewayIntentBits, Collection, Partials } = require("discord.js");
 const { token } = require('./config20th.json');
+const { handleErrorDebug } = require("./Errors");
 
 const client = new Client({
   intents: [
@@ -17,7 +18,7 @@ const client = new Client({
 
 /* Loading Commands in Client */
 client.commands = new Collection();
-const commandFiles = 
+const commandFiles =
   fs.readdirSync('./commands/20th').filter(file => file.endsWith('.js'));
 for (const file of commandFiles) {
   const command = require(`./commands/20th/${file}`);
@@ -26,7 +27,7 @@ for (const file of commandFiles) {
 
 /* Loading Component Events in Client */
 client.components = new Collection();
-const componentFiles = 
+const componentFiles =
   fs.readdirSync('./components/20th').filter(file => file.endsWith('.js'));
 for (const file of componentFiles) {
   const component = require(`./components/20th/${file}`);
@@ -36,12 +37,28 @@ for (const file of componentFiles) {
 /* Event Listeners */
 const eventFiles = fs.readdirSync('./events').filter(file => file.endsWith('.js'));
 for (const file of eventFiles) {
-	const event = require(`./events/${file}`);
-	if (event.once) {
-		client.once(event.name, (...args) => event.execute(...args));
-	} else {
-		client.on(event.name, (...args) => event.execute(...args));
-	}
+  const event = require(`./events/${file}`);
+  if (event.once) {
+    client.once(event.name, async (...args) => {
+      try {
+        await event.execute(...args);
+      }
+      catch (error) {
+        const err = error;
+        await handleErrorDebug(err, client);
+      }
+    });
+  } else {
+    client.on(event.name, async (...args) => {
+      try {
+        await event.execute(...args);
+      }
+      catch (error) {
+        const err = error;
+        await handleErrorDebug(err, client);
+      }
+    });
+  }
 }
 
 // Logs into the server using the secret token

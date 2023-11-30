@@ -2,34 +2,34 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const hunterDice = require('../../modules/dice/5th/HunterRoll');
 const generalRoll = require('../../modules/dice/GeneralRoll');
+const commandUpdate = require('../../modules/commandDatabaseUpdate');
 
-module.exports = 
+module.exports =
 {
   data: getCommand(),
-  async execute(interaction)
-  {
+  async execute(interaction) {
     await interaction.deferReply();
+    await commandUpdate(interaction);
+
     if (!interaction.isRepliable()) return 'notRepliable';
-		switch (interaction.options.getSubcommand())
-    {
+    switch (interaction.options.getSubcommand()) {
       case 'roll':
-        return await hunterDice(interaction);   
+        return await hunterDice(interaction);
       case 'general':
         return generalRoll(interaction);
     }
-  } 
+  }
 }
 
-function getCommand()
-{
+function getCommand() {
   const command = new SlashCommandBuilder();
 
   command.setName('h')
     .setDescription('Dice rolls for the hunter v5 game.')
-  
+
   ///////////////////// Hunter Command ///////////////////
   command.addSubcommand(subcommand => subcommand.setName('roll')
-  	.setDescription('Standard roll')
+    .setDescription('Standard roll')
 
     .addIntegerOption(option => option.setName("pool")
       .setDescription("The Number of dice to roll. Must be between 1 and 50")
@@ -64,50 +64,50 @@ function getCommand()
       .setMaxLength(300))
   )
 
-  /////////////////// General Roll Command ///////////////////////
-  .addSubcommand(subcommand => subcommand.setName('general')
-    .setDescription('Roll a number of X-sided dice.')
+    /////////////////// General Roll Command ///////////////////////
+    .addSubcommand(subcommand => subcommand.setName('general')
+      .setDescription('Roll a number of X-sided dice.')
 
-    .addStringOption(option => option.setName("dice_set_01")
-      .setDescription('A dice set is defined as "(x)d(y)"' +
-        ' where (x) is the number of dice and (y) is the number of sides.')
-      .setRequired(true)
-      .setMaxLength(9))
-
-    .addIntegerOption(option => option.setName("modifier")
-      .setDescription('Adds or removes the number from the total.')
-      .setMaxValue(1000)
-      .setMinValue(-1000))
-
-    .addStringOption(option => option.setName("dice_set_02")
-      .setDescription('A dice set is defined as "(x)d(y)"' +
-        ' where (x) is the number of dice and (y) is the number of sides.')
+      .addStringOption(option => option.setName("dice_set_01")
+        .setDescription('A dice set is defined as "(x)d(y)"' +
+          ' where (x) is the number of dice and (y) is the number of sides.')
+        .setRequired(true)
         .setMaxLength(9))
 
-    .addStringOption(option => option.setName("dice_set_03")
-      .setDescription('A dice set is defined as "(x)d(y)"' +
-        ' where (x) is the number of dice and (y) is the number of sides.')
+      .addIntegerOption(option => option.setName("modifier")
+        .setDescription('Adds or removes the number from the total.')
+        .setMaxValue(1000)
+        .setMinValue(-1000))
+
+      .addStringOption(option => option.setName("dice_set_02")
+        .setDescription('A dice set is defined as "(x)d(y)"' +
+          ' where (x) is the number of dice and (y) is the number of sides.')
         .setMaxLength(9))
 
-    .addStringOption(option => option.setName("dice_set_04")
-      .setDescription('A dice set is defined as "(x)d(y)"' +
-        ' where (x) is the number of dice and (y) is the number of sides.')
+      .addStringOption(option => option.setName("dice_set_03")
+        .setDescription('A dice set is defined as "(x)d(y)"' +
+          ' where (x) is the number of dice and (y) is the number of sides.')
         .setMaxLength(9))
 
-    .addStringOption(option => option.setName("dice_set_05")
-      .setDescription('A dice set is defined as "(x)d(y)"' +
-        ' where (x) is the number of dice and (y) is the number of sides.')
+      .addStringOption(option => option.setName("dice_set_04")
+        .setDescription('A dice set is defined as "(x)d(y)"' +
+          ' where (x) is the number of dice and (y) is the number of sides.')
         .setMaxLength(9))
 
-    .addIntegerOption(option => option.setName("difficulty")
-      .setDescription('The total needed to pass the Roll.')
-      .setMaxValue(1000)
-      .setMinValue(1))
+      .addStringOption(option => option.setName("dice_set_05")
+        .setDescription('A dice set is defined as "(x)d(y)"' +
+          ' where (x) is the number of dice and (y) is the number of sides.')
+        .setMaxLength(9))
 
-    .addStringOption(option => option.setName("notes")
-      .setDescription('Any additional information you would like to include.')
-      .setMaxLength(300))
-  )
+      .addIntegerOption(option => option.setName("difficulty")
+        .setDescription('The total needed to pass the Roll.')
+        .setMaxValue(1000)
+        .setMinValue(1))
+
+      .addStringOption(option => option.setName("notes")
+        .setDescription('Any additional information you would like to include.')
+        .setMaxLength(300))
+    )
   return command
 }
 

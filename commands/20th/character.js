@@ -3,18 +3,19 @@ const { SlashCommandBuilder } = require("discord.js");
 const findCharacterCommand = require('../../modules/findCharacter').command
 const deleteCharacterCommand = require('../../modules/deleteCharacter').command;
 const setDefaultCharacter = require('../../modules/setDefaultCharacter');
+const commandUpdate = require('../../modules/commandDatabaseUpdate');
 
 
-module.exports = 
+module.exports =
 {
   data: getCommands(),
-  async execute(interaction)
-  {
-    await interaction.deferReply({ephemeral: true});
+  async execute(interaction) {
+    await interaction.deferReply({ ephemeral: true });
+    await commandUpdate(interaction);
+
     if (!interaction.isRepliable()) return 'notRepliable';
 
-    switch (interaction.options.getSubcommand())
-    {
+    switch (interaction.options.getSubcommand()) {
       case 'find':
         return await findCharacterCommand(interaction);
       case 'delete':
@@ -25,12 +26,11 @@ module.exports =
   }
 }
 
-function getCommands()
-{
+function getCommands() {
   return new SlashCommandBuilder()
     .setName('character')
     .setDescription('Character Commands')
-    
+
     //////////////////////////// Character find Command ///////////////////////
     .addSubcommand(subcommand => subcommand
       .setName('find')
@@ -44,36 +44,36 @@ function getCommands()
       */
       .addUserOption(option =>
         option.setName("player")
-        .setDescription("The player the character belongs to. Used by" +
-          " STs to find another players Char [ST Only]")
+          .setDescription("The player the character belongs to. Used by" +
+            " STs to find another players Char [ST Only]")
       )
     )
     ///////////////////// Character Delete Command ////////////////////////////
     .addSubcommand(subcommand => subcommand
       .setName('delete')
-      .setDescription('Choose which Character you wish to Delete.') 
-      
+      .setDescription('Choose which Character you wish to Delete.')
+
       .addUserOption(option =>
         option.setName("player")
-        .setDescription("The player the character belongs to. [ST Only]")
-      )     
-    )    
+          .setDescription("The player the character belongs to. [ST Only]")
+      )
+    )
     ///////////////////////// Character Defaults /////////////////////
     .addSubcommand(subcommand => subcommand
       .setName('default')
       .setDescription('Sets a default character for this server to be ' +
         'used for dice rolls and character updates.')
-      
+
       .addStringOption(option =>
         option.setName("name")
-        .setDescription("Name of the character to default to.")
-        .setMaxLength(50)
-        .setRequired(true)
-      )      
+          .setDescription("Name of the character to default to.")
+          .setMaxLength(50)
+          .setRequired(true)
+      )
 
-      .addBooleanOption(option =>        
+      .addBooleanOption(option =>
         option.setName("disable")
-        .setDescription("Turns defaults off.")
+          .setDescription("Turns defaults off.")
       )
     )
 }

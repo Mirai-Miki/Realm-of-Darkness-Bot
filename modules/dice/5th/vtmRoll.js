@@ -79,10 +79,11 @@ async function getSheetRollArgs(interaction) {
     skillPhysical: interaction.options.getString('skill_physical'),
     skillSocial: interaction.options.getString('skill_social'),
     skillMental: interaction.options.getString('skill_mental'),
+    discipline: interaction.options.getString('discipline'),
     modifier: interaction.options.getInteger('modifier'),
     hunger: interaction.options.getBoolean('hunger'),
     difficulty: interaction.options.getInteger('difficulty'),
-    bp: interaction.options.getInteger('blood_surge'),
+    bp: interaction.options.getBoolean('blood_surge'),
     spec: interaction.options.getString('speciality'),
     rouse: interaction.options.getString('rouse'),
     notes: interaction.options.getString('notes'),
@@ -107,6 +108,7 @@ async function getSheetRollArgs(interaction) {
   let skillPhysical = 0;
   let skillSocial = 0;
   let skillMental = 0;
+  let discipline = 0;
   let mod = args.modifier ?? 0;
   let poolNotes = [];
 
@@ -126,23 +128,28 @@ async function getSheetRollArgs(interaction) {
     skillMental = character.skills[args.skillMental].value;
     poolNotes.push(args.skillMental);
   }
+  if (args.discipline) {
+    discipline = character.disciplines[args.discipline]?.value;
+    if (!discipline) discipline = 0;
+    poolNotes.push(args.discipline);
+  }
   if (args.spec)
     poolNotes.push('Spec');
-  if (args.bloodSurge)
+  if (args.bp) {
+    args.bp = character.bloodPotency;
     poolNotes.push('Blood Surge');
+  }
   if (mod)
     poolNotes.push('Mod')
 
   if (poolNotes.length)
     args.poolNotes = poolNotes.join(' + ');
 
-  args.pool = attribute + skillPhysical + skillSocial + skillMental + mod;
+  args.pool = attribute + skillPhysical + skillSocial + skillMental + discipline + mod;
   if (args.pool === 0 && !args.spec && !args.bloodSurge) args.pool = 1;
 
   if (args.hunger === false) args.hunger = undefined;
   else args.hunger = character.hunger.current;
-
-
 
   return args;
 }

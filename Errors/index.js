@@ -1,12 +1,12 @@
 'use strict'
 const { EmbedBuilder } = require("discord.js");
 
-module.exports.ErrorCodes = 
+module.exports.ErrorCodes =
 {
-  RealmError: 0,
-  DiscordAPIError: 1,
-  InvalidGeneralRollSets: 2,
-  InvalidGeneralRollDice: 3,
+	RealmError: 0,
+	DiscordAPIError: 1,
+	InvalidGeneralRollSets: 2,
+	InvalidGeneralRollDice: 3,
 	GuildRequired: 4,
 	NotAdminOrST: 5,
 	NoCharacter: 6,
@@ -39,8 +39,8 @@ module.exports.ErrorCodes =
 
 module.exports.APIErrorCodes =
 {
-  RealmAPIError: 1000,
-  ConnectionRefused: 1001,
+	RealmAPIError: 1000,
+	ConnectionRefused: 1001,
 	CharacterExists: 1002,
 	CharacterLimitReached: 1003
 }
@@ -48,34 +48,32 @@ module.exports.APIErrorCodes =
 module.exports.RealmError = require('./RealmError');
 module.exports.RealmAPIError = require('./RealmAPIError');
 
-module.exports.handleErrorDebug = async function(error, client)
-{	
-	if (!error.debug.raise) return;
-
-  if (process.platform === 'win32')
-	{ // Print to console on dev enviorment
+module.exports.handleErrorDebug = async function (error, client) {
+	if (error.debug?.raise === false) return;
+	if (process.platform === 'win32') { // Print to console on dev enviorment
 		console.error(error);
 		return;
 	}
 
-	try
-	{
-		const debugChannel = 
-			await client.channels.fetch('776761322859266050');
-
+	try {
 		const debugEmbed = new EmbedBuilder()
 			.setTitle(error.name)
 			.setColor('#db0f20')
-		
-		let description = error.stack;		
-		if (error.debug.cause) description += `\n\nCaused by:\n${error.cause}`;		
-		debugEmbed.setDescription(description)
-		await debugChannel.send({embeds:[debugEmbed]})
-	}	
-	catch (e)
-	{
+
+		if (error.debug?.cause) description += `\n\nCaused by:\n${error.cause}`;
+		debugEmbed.setDescription(error.stack)
+		client.shard.broadcastEval(async (c, { message }) => {
+			const channel = c.channels.cache.get('776761322859266050');
+			if (channel) {
+				await channel.send(message);
+				return true;
+			}
+			return false;
+		}, { context: { message: { embeds: [debugEmbed] } } });
+	}
+	catch (e) {
 		console.error(error);
-    console.error('\nPrinting to console because of Error:')
-    console.log(e);
+		console.error('\nPrinting to console because of Error:')
+		console.log(e);
 	}
 }

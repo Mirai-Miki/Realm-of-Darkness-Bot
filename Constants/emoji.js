@@ -1,6 +1,6 @@
 'use strict'
 
-module.exports = 
+module.exports =
 {
   ankh_red_fangs: '<:ankh_red_fangs:814395210678927370>',
   ankh_red: '<:ankh_red:814396441828392982>',
@@ -65,5 +65,27 @@ module.exports =
   w5_crit: '<:w5_crit:1132983343500242954>',
   rage_crit: '<:rage_crit:1132983348256575509>',
   rage_success: '<:rage_success:1132983351616213023>',
-  w5_success: '<:w5_success:1132983357052030976>'
+  w5_success: '<:w5_success:1132983357052030976>',
+  w5_success: '<:w5_success:1132983357052030976>',
+  H5_Desperation_Critical: '<:H5_Desperation_Critical:1179635427112665128>',
+  H5_Desperation_Failure: '<:H5_Desperation_Failure:1179635428962344961>',
+  H5_Desperation_OverreachOrDesp: '<:H5_Desperation_OverreachOrDesp:1179635431906742363>',
+  H5_Desperation_Success: '<:H5_Desperation_Success:1179635434968592474>',
+  H5_Regular_Critical: '<:H5_Regular_Critical:1179635436969263114>',
+  H5_Regular_Failure: '<:H5_Regular_Failure:1179635440035303484>',
+  H5_Regular_Success: '<:H5_Regular_Success:1179635441767559229>',
+  V5_Hunger_BestialFailure: '<:V5_Hunger_BestialFailure:1179636066140049468>',
+  V5_Hunger_Failure: '<:V5_Hunger_Failure:1179636067868082256>',
+  V5_Hunger_MessyCritical: '<:V5_Hunger_MessyCritical:1179636071265476639>',
+  V5_Hunger_Success: '<:V5_Hunger_Success:1179636074910322698>',
+  V5_Regular_Critical: '<:V5_Regular_Critical:1179636078441926656>',
+  V5_Regular_Failure: '<:V5_Regular_Failure:1179636079863799900>',
+  V5_Regular_Success: '<:V5_Regular_Success:1179636083722571987>',
+  W5_Rage_Brutal: '<:W5_Rage_Brutal:1179636658426085397>',
+  W5_Rage_Critical: '<:W5_Rage_Critical:1179636661743796326>',
+  W5_Rage_Failure: '<:W5_Rage_Failure:1179636664075829330>',
+  W5_Rage_Success: '<:W5_Rage_Success:1179636668513390632>',
+  W5_Regular_Critical: '<:W5_Regular_Critical:1179636674976825344>',
+  W5_Regular_Failure: '<:W5_Regular_Failure:1179636677078163536>',
+  W5_Regular_Success: '<:W5_Regular_Success:1179636680702038067>'
 }
