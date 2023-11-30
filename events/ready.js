@@ -14,7 +14,7 @@ module.exports = {
 	async execute(client) {
 		await API.updateBot(client);
 		await updateAllGuilds(client);
-		console.log(`Connected as: ${client.user.tag} || Shard: ${client.shard?.ids}`);
+		console.log(`Connected as: ${client.user.tag} || Shard: ${client.shard?.ids} || Guilds: ${client.guilds.cache.size}`);
 		sleep(30000)
 		await setActivity(client);
 		setInterval(() => { setActivity(client) }, 300000);
