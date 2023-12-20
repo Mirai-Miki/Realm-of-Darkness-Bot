@@ -2,37 +2,37 @@
 const API = require('../realmAPI');
 const canSendMessages = require('./canSendMessage');
 
-module.exports = async function sendToTrackerChannel(client, character)
-{
+module.exports = async function sendToTrackerChannel(client, character) {
+  console.log(`name: ${character.name}\nCharacter Guild: ${character.guild?.id}`)
   const guildId = character.guild?.id;
   if (!guildId) return;
-  
+
   const channelId = await API.getTrackerChannel(guildId);
+  console.log(`channelId: ${channelId}`)
   if (!channelId) return;
-    
-  const channel = await canSendMessages({channelId: channelId, client: client});
-  if (!channel) return;
+
+  const channel = await canSendMessages({ channelId: channelId, client: client });
+  if (!channel) return console.log("Cannot send message to channel");
   const notes = character.changes.notes;
 
+  console.log("Sent tracker update")
   await channel.send({
     content: getContent(character),
     embeds: [character.getEmbed(notes)]
   });
 }
 
-function getContent(character)
-{
+function getContent(character) {
   let content = '';
   const changes = structuredClone(character.changes);
-  
+
   content += changes.command;
   delete changes.command;
   if (changes.notes) delete changes.notes;
-  
+
   const entries = Object.entries(changes);
   const args = [];
-  for (const entry of entries)
-  {
+  for (const entry of entries) {
     args.push(entry.join(': '));
   }
 
