@@ -30,7 +30,7 @@ module.exports.postData = async (path, data) => {
         code: APIErrorCodes.ConnectionRefused,
       });
     else console.error("\n\n New Realm Error\n" + error.stack);
-    console.error("\nResponse:\n" + res);
+    console.error("\nResponse:\n" + error);
     throw new RealmAPIError({
       cause: error.stack + `\n\nData:\n${JSON.stringify(data)}`,
     });
