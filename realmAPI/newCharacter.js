@@ -11,6 +11,8 @@ module.exports = async function newCharacter(data) {
         return;
       case 304: // Not Modified -- existing character
         throw new RealmAPIError({ code: APIErrorCodes.CharacterExists });
+      case 406: // Image provided is not valid
+        throw new RealmAPIError({ code: APIErrorCodes.NotAnImage });
       case 409: // Conflict -- Too many characters
         throw new RealmAPIError({ code: APIErrorCodes.CharacterLimitReached });
       default:

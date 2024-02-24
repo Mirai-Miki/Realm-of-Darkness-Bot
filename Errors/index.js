@@ -41,6 +41,7 @@ module.exports.APIErrorCodes = {
   ConnectionRefused: 1001,
   CharacterExists: 1002,
   CharacterLimitReached: 1003,
+  NotAnImage: 1004,
 };
 
 module.exports.RealmError = require("./RealmError");

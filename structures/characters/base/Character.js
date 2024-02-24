@@ -33,7 +33,7 @@ module.exports = class Character {
     if (args.nameChange != null) this.name = args.nameChange;
     if (args.exp != null) this.exp.setTotal(args.exp);
     if (args.color != null) this.color = args.color;
-    if (args.thumbnail?.toLowerCase() === "none") this.thumbnail = null;
+    if (args.thumbnail) this.thumbnail = args.thumbnail.url;
     else if (args.thumbnail != null) this.thumbnail = args.thumbnail;
     this.changes = getChanges(args);
   }
@@ -53,6 +53,9 @@ module.exports = class Character {
     this.exp.setCurrent(json.exp.current);
     this.isSheet = json.is_sheet ?? false;
 
+    if (json.faceclaim != null)
+      this.thumbnail = "https://realmofdarkness.app" + json.faceclaim;
+
     await this.setDiscordInfo({ userId: json.user, guildId: json.chronicle });
     return this;
   }
@@ -64,7 +67,7 @@ module.exports = class Character {
     s.user_id = this.user?.id ? this.user.id : null;
     s.guild_id = this.guild?.id ? this.guild.id : null;
     s.character["theme"] = this.color;
-    s.character["thumbnail"] = this.thumbnail ?? undefined;
+    s.character["avatar"] = this.thumbnail ?? undefined;
     s.character["exp"] = {
       total: this.exp.total,
       current: this.exp.current,
@@ -80,7 +83,7 @@ module.exports = class Character {
     serializer.character["user"] = this.user.id;
     serializer.character["chronicle"] = this.guild?.id ? this.guild.id : null;
     serializer.character["theme"] = this.color;
-    serializer.character["faceclaim"] = this.thumbnail ?? "";
+    serializer.character["avatar"] = this.thumbnail ?? "";
     serializer.character["exp_total"] = this.exp.total;
     serializer.character["exp_current"] = this.exp.current;
     return serializer;
