@@ -63,7 +63,7 @@ module.exports = {
 async function getChannel(interaction) {
   if (!interaction.guild)
     throw new RealmError({ code: ErrorCodes.GuildRequired });
-  const channel = await canSendMessage({ channelID: interaction.channelId });
+  const channel = await canSendMessage({ channel: interaction.channel });
   if (!channel)
     throw new RealmError({ code: ErrorCodes.InvalidChannelPermissions });
   return channel;
