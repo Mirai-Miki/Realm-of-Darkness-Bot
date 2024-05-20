@@ -81,6 +81,6 @@ module.exports.handleErrorDebug = async function (error, client) {
   } catch (e) {
     console.error(error);
     console.error("\nPrinting to console because of Error:");
-    console.log(e);
+    console.error(e);
   }
 };
