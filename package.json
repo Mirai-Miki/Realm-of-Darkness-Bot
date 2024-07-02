@@ -1,4 +1,9 @@
 {
+  "scripts": {
+    "5th": "node index-5th.js",
+    "20th": "node index-20th.js",
+    "cod": "node index-cod.js"
+  },
   "dependencies": {
     "@discordjs/builders": "^1.4.0",
     "@discordjs/rest": "^2.0.1",
