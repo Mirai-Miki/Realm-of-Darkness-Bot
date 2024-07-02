@@ -55,3 +55,12 @@ Contributions are welcome! If you would like to contribute to this project, plea
 ## License
 
 This project is licensed under the AGPL License. See the [LICENSE](LICENSE) file for more information.
+
+## Things to Implement
+
+- Add Impairment penalty to sheet roll
+- autocomplete character names
+- ST updates should DM the update to the players
+- Exp managment server wide
+- Commands to compliment full sheets. Healing, damage ect.
+- v20 blood point reduction management
