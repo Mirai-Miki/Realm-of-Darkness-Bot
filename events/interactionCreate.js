@@ -9,6 +9,7 @@ module.exports = {
   async execute(interaction) {
     try {
       if (interaction.isCommand()) {
+        // Interaction is a command
         const client = interaction.client;
         const command = client.commands.get(interaction.commandName);
         if (!command) return;
@@ -27,6 +28,7 @@ module.exports = {
           }
         }
       } else if (interaction.isMessageComponent()) {
+        // Interaction is a message component
         interaction.splitId = interaction.customId.split("|");
         const id = interaction.splitId[0];
         const component = interaction.client.components?.get(id);
@@ -39,6 +41,7 @@ module.exports = {
           else await interaction.editReply(discordResponse);
         } else throw new Error("No discordResponse");
       } else if (interaction.isAutocomplete()) {
+        // Interaction is an autocomplete
         const command = interaction.client.commands.get(
           interaction.commandName
         );

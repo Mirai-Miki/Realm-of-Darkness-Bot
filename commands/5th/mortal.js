@@ -5,6 +5,7 @@ const tracker = require("../../modules/tracker");
 const getHexColor = require("../../modules/getColorHex");
 const verifySupporterStatus = require("../../modules/verifySupporterStatus");
 const commandUpdate = require("../../modules/commandDatabaseUpdate");
+const autocomplete5th = require("../../modules/autocomplete");
 
 module.exports = {
   data: getCommands(),
@@ -22,6 +23,10 @@ module.exports = {
       case "set":
         return await tracker.set(interaction, Splats.mortal5th);
     }
+  },
+
+  async autocomplete(interaction) {
+    return await autocomplete5th(interaction, Splats.mortal5th.slug);
   },
 };
 
@@ -208,6 +213,7 @@ function getCommands() {
           .setDescription("The name of your Character")
           .setRequired(true)
           .setMaxLength(50)
+          .setAutocomplete(true)
       )
 
       .addIntegerOption((option) =>
@@ -357,6 +363,7 @@ function getCommands() {
           .setDescription("The name of your Character")
           .setRequired(true)
           .setMaxLength(50)
+          .setAutocomplete(true)
       )
 
       .addIntegerOption((option) =>

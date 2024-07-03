@@ -3,6 +3,7 @@ const { SlashCommandBuilder } = require("discord.js");
 const { Splats } = require("../../Constants");
 const tracker = require("../../modules/tracker");
 const commandUpdate = require("../../modules/commandDatabaseUpdate");
+const autocomplete20th = require("../../modules/autocomplete");
 
 module.exports = {
   data: getCommands(),
@@ -14,6 +15,10 @@ module.exports = {
     if (!interaction.isRepliable()) return "notRepliable";
     interaction.arguments = getArgs(interaction);
     return await tracker.update(interaction, Splats.changeling20th);
+  },
+
+  async autocomplete(interaction) {
+    return await autocomplete20th(interaction, Splats.changeling20th.slug);
   },
 };
 
@@ -50,6 +55,7 @@ function getCommands() {
         .setDescription("The name of your Character")
         .setMaxLength(50)
         .setRequired(true)
+        .setAutocomplete(true)
     )
 
     .addIntegerOption((option) =>

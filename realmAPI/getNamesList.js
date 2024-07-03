@@ -1,28 +1,33 @@
-'use strict';
-const { postData } = require('./postData.js');
-const RealmAPIError = require('../Errors/RealmAPIError.js');
+"use strict";
+const { postData } = require("./postData.js");
+const RealmAPIError = require("../Errors/RealmAPIError.js");
 
 /**
  * Gets a list of user characters
- * @param {User|GuildMember} user 
- * @param {Guild} guild 
- * @returns {Promis<Array<String>|null>} List of character || Null if none exist 
+ * @param {User|GuildMember} user
+ * @param {Guild} guild
+ * @returns {Promis<Array<String>|null>} List of character || Null if none exist
  */
-module.exports = async function getNamesList(userId, guildId, splat, sheetOnly = false) {
-
-  const path = 'character/get/names';
+module.exports = async function getNamesList(
+  userId,
+  guildId,
+  splat,
+  sheetOnly = false
+) {
+  const path = "character/get/names";
   const data = {
     user_id: userId,
     guild_id: guildId,
     splat: splat,
     sheet_only: sheetOnly,
-  }
-
+  };
   const res = await postData(path, data);
   switch (res?.status) {
     case 200: // Fetched a names list
       return res.data.names;
     default:
-      throw new RealmAPIError({ cause: `res: ${res?.status}\ndata: ${JSON.stringify(data)}` });
+      throw new RealmAPIError({
+        cause: `res: ${res?.status}\ndata: ${JSON.stringify(data)}`,
+      });
   }
-}
+};

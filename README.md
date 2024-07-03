@@ -56,6 +56,10 @@ Contributions are welcome! If you would like to contribute to this project, plea
 
 This project is licensed under the AGPL License. See the [LICENSE](LICENSE) file for more information.
 
+## Known Issues
+
+- Setting a ST role should force update members with that role.
+
 ## Things to Implement
 
 - Add Impairment penalty to sheet roll
