@@ -68,3 +68,5 @@ This project is licensed under the AGPL License. See the [LICENSE](LICENSE) file
 - Exp managment server wide
 - Commands to compliment full sheets. Healing, damage ect.
 - v20 blood point reduction management
+- /resonance roll should auto update sheets
+- compulsion roll should auto clan with sheet selected

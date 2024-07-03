@@ -4,7 +4,7 @@
  * Autocompletes names based on the provided interaction and options.
  *
  * @param {Interaction} interaction - The interaction object.
- * @param {string} splat - The splat value.
+ * @param {string | string[] | null} splat - The splat value.
  * @param {boolean} [sheet_only=false] - Indicates whether to only get names from the sheet.
  * @returns {Promise<Array<{ name: string, value: string }>>} - The filtered and mapped choices.
  */
@@ -24,7 +24,10 @@ module.exports = async function autocomplete5th(
       interaction.user.id,
       interaction.guild?.id
     );
-  else if (focusedOption.name === "name") {
+  else if (
+    focusedOption.name === "name" ||
+    focusedOption.name === "character"
+  ) {
     choices = await API.getNamesList(
       interaction.user.id,
       interaction.guild?.id,
