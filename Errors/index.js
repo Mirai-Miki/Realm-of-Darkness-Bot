@@ -1,5 +1,6 @@
 "use strict";
 const { EmbedBuilder } = require("discord.js");
+const { dev } = require("../config.json");
 
 module.exports.ErrorCodes = {
   RealmError: 0,
@@ -49,7 +50,7 @@ module.exports.RealmAPIError = require("./RealmAPIError");
 
 module.exports.handleErrorDebug = async function (error, client) {
   if (error.debug?.raise === false) return;
-  if (process.platform === "win32") {
+  if (dev === true) {
     // Print to console on dev enviorment
     console.error(error);
     return;

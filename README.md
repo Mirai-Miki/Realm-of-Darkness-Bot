@@ -24,15 +24,25 @@ The major libraries being used in this codebase include:
 
 1. Clone the repository: `git clone https://github.com/Mirai-Miki/Realm-of-Darkness-Bot.git`
 2. Install the required dependencies: `npm install`
-3. Each bot requires a config file with the following structure:
+3. The bots require a config file in the root directory with the following structure:
+   "config.json"
 
 ```json
 {
-  "clientId": "APP_ID",
-  "token": "APP_TOKEN",
-  "APIKey": "API_KEY",
-  "commandPath": "./commands/xx",
-  "statChannel": "CHANNEL_ID"
+  "dev": true,
+
+  // Client Ids
+  "clientId5th": "CLIENT_ID",
+  "clientId20th": "CLIENT_ID",
+  "clientIdCod": "CLIENT_ID",
+
+  // Tokens
+  "token5th": "TOKEN",
+  "token20th": "TOKEN",
+  "tokenCod": "TOKEN",
+
+  // API Key for the server
+  "APIKey": "API_KEY"
 }
 ```
 
