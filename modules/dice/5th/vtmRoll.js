@@ -35,7 +35,7 @@ async function getV5RollArgs(interaction) {
       trimString(interaction.options.getString("character")),
       interaction
     ),
-    autoHunger: interaction.options.getBoolean("auto_hunger"),
+    autoHunger: interaction.options.getBoolean("auto_hunger") ?? true,
   };
 
   if (interaction.guild && (!args.character || args.autoHunger === null)) {
@@ -173,7 +173,7 @@ async function roll(interaction) {
   if (
     args.character?.tracked &&
     args.autoHunger &&
-    args.character.tracked.slug === "vampire5th"
+    args.character.tracked.splat.slug === "vampire5th"
   ) {
     args.hunger = args.character.tracked.hunger;
   }
@@ -186,7 +186,11 @@ async function roll(interaction) {
     hunger: args.hunger ?? 0,
   });
   let hunger = args.hunger;
-  if (args.character?.tracked && args.autoHunger)
+  if (
+    args.character?.tracked &&
+    args.autoHunger &&
+    args.character.tracked.splat.slug === "vampire5th"
+  )
     hunger = args.character.tracked.hunger.current;
   results.rollDice(hunger);
   results.setOutcome();
@@ -208,7 +212,7 @@ async function updateHunger(interaction, results) {
   else if (interaction.arguments.sheet)
     character = interaction.arguments.character;
 
-  if (character && hunger && character.version === "5th") {
+  if (character && hunger && character.splat.slug === "vampire5th") {
     const change = { command: "Dice Roll", hunger: hunger };
     character.updateFields(change);
     await character.save(interaction.client);

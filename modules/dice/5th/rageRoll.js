@@ -5,6 +5,9 @@ const Roll = require("../Roll");
 const { EmbedBuilder } = require("discord.js");
 const API = require("../../../realmAPI");
 
+const passedString = "```ansi\n[2;33mPassed {dice}[0m\n```";
+const failedString = "```ansi\n[2;33m[2;31mFailed {dice}[0m[2;33m[0m\n```";
+
 /**
  *
  * @param {Interaction} interaction
@@ -12,40 +15,76 @@ const API = require("../../../realmAPI");
  */
 module.exports = async function rageRoll(interaction) {
   interaction.args = await getArgs(interaction);
-  interaction.rollResults = roll(interaction.args.reroll);
+  interaction.results = {
+    decreased: 0,
+    rolls: [],
+    toString: "```ansi\n[2;36m[2;34m[2;36mRage Decreased{amount}[0m[2;34m[0m[2;36m[0m\n```",
+    color: "#1981bd",
+  };
+
+  for (let i = 0; i < interaction.args.checks; i++) {
+    const roll = rollCheck(interaction.args.reroll);
+    interaction.results.rolls.push(roll);
+    if (!roll.passed) {
+      interaction.results.decreased++;
+    }
+  }
+
+  if (interaction.results.decreased === 0) {
+    interaction.results.toString = "```Rage Unchanged```";
+    interaction.results.color = "#1c1616";
+  } else {
+    interaction.results.toString = interaction.results.toString.replace(
+      "{amount}",
+      ` by ${interaction.results.decreased}`
+    );
+  }
+
+  await updateRage(interaction);
+
   return { embeds: [getEmbed(interaction)] };
 };
 
 async function getArgs(interaction) {
   const args = {
-    character: interaction.options.getString("character"),
+    character: await getCharacter(
+      trimString(interaction.options.getString("character")),
+      interaction
+    ),
+    checks: interaction.options.getInteger("checks") ?? 1,
     reroll: interaction.options.getBoolean("reroll"),
     notes: interaction.options.getString("notes"),
   };
+
+  if (interaction.guild && !args.character) {
+    const defaults = await API.characterDefaults.get(
+      interaction.guild.id,
+      interaction.user.id
+    );
+
+    if (defaults && !args.character)
+      args.character = await getCharacter(defaults.name, interaction);
+  }
   return args;
 }
 
-function roll(reroll) {
+function rollCheck(reroll) {
   const rollResults = {
     dice: [Roll.single(10)],
-    toString: "```ansi\n[2;36m[2;34m[2;36mRage Decreased[0m[2;34m[0m[2;36m[0m\n```",
     passed: false,
-    color: "#1981bd",
   };
   if (reroll) rollResults.dice.push(Roll.single(10));
 
   for (const dice of rollResults.dice) {
     if (dice >= 6) {
       rollResults.passed = true;
-      rollResults.toString = "```Rage Unchanged```";
-      rollResults.color = "#1c1616";
     }
   }
   return rollResults;
 }
 
 function getEmbed(interaction) {
-  const results = interaction.rollResults;
+  const results = interaction.results;
   const embed = new EmbedBuilder();
   embed.setAuthor({
     name:
@@ -61,19 +100,32 @@ function getEmbed(interaction) {
   embed.setColor(results.color);
   embed.setURL("https://realmofdarkness.app/");
 
-  /*
-  if (!results.passed)
-    embed.setThumbnail('https://cdn.discordapp.com/attachments/7140' +
-    '50986947117076/886855116035084288/RealmOfDarknessSkullnoBNG.png');
-  */
-
   if (interaction.args.character) {
     const char = interaction.args.character;
-    embed.addFields({ name: "Character", value: char });
+    embed.addFields({ name: "Character", value: char.name });
     if (char.tracked?.thumbnail) embed.setThumbnail(char.tracked.thumbnail);
   }
 
-  embed.addFields({ name: "Rage Dice", value: `${results.dice.join(" ")}` });
+  for (let i = 0; i < results.rolls.length; i++) {
+    const result = results.rolls[i];
+    let toString;
+    if (result.passed) {
+      toString = passedString.replace("{dice}", result.dice.join(" "));
+    } else {
+      toString = failedString.replace("{dice}", result.dice.join(" "));
+    }
+
+    embed.addFields({
+      name: `Rage Roll ${i + 1}`,
+      value: toString,
+    });
+  }
+
+  if (results.decreased > 0)
+    embed.setThumbnail(
+      "https://cdn.discordapp.com/attachments/886983353922891816/1259072373802532864/keep-calm-glossy-quote-c77c66.webp"
+    );
+
   if (interaction.args.notes)
     embed.addFields({ name: "Notes", value: interaction.args.notes });
   embed.addFields({ name: "Result", value: results.toString });
@@ -85,4 +137,24 @@ function getEmbed(interaction) {
 
   embed.data.fields.at(-1).value += links;
   return embed;
+}
+
+async function updateRage(interaction) {
+  if (interaction.results.decreased === 0) return;
+
+  const character = interaction.args.character?.tracked;
+  if (character && character.splat.slug === "werewolf5th") {
+    const change = {
+      command: "Rage Check",
+      rage: -interaction.results.decreased,
+    };
+    character.updateFields(change);
+    await character.save(interaction.client);
+    interaction.followUps = [
+      {
+        embeds: [character.getEmbed()],
+        ephemeral: true,
+      },
+    ];
+  }
 }

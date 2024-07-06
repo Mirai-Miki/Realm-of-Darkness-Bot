@@ -109,7 +109,7 @@ async function updateHunger(interaction) {
   if (interaction.rollResults.passed) return;
 
   const character = interaction.args.character?.tracked;
-  if (character && character.version === "5th") {
+  if (character && character.splat.slug === "vampire5th") {
     const change = { command: "Rouse Check", hunger: 1 };
     character.updateFields(change);
     await character.save(interaction.client);

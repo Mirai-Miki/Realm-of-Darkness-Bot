@@ -94,9 +94,7 @@ module.exports = class Vampire5th extends Character5th {
     const embed = new EmbedBuilder();
     embed
       .setColor(this.color)
-      .setURL(
-        "https://cdn.discordapp.com/attachments/699082447278702655/972058320611459102/banner.png"
-      )
+      .setURL("https://realmofdarkness.app/")
       .setTitle(this.name)
       .setAuthor(this.getAuthor());
 

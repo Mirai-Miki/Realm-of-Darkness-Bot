@@ -48,8 +48,13 @@ module.exports.getEmbed = function (interaction) {
   if (args.character) {
     embed.addFields({
       name: "Character",
-      value: args.character,
+      value: args.character.name,
     });
+
+    if (args.character.tracked?.thumbnail)
+      embed.setThumbnail(args.character.tracked.thumbnail);
+    else if (args.character.isSheet && args.character.thumbnail)
+      embed.setThumbnail(args.character.thumbnail);
   }
 
   // Add Dice fields
@@ -63,7 +68,7 @@ module.exports.getEmbed = function (interaction) {
 
   if (results.rageDice.length) {
     embed.addFields({
-      name: "Rage",
+      name: "Rage check",
       value: `${results.rageDice.join(" ")}`,
       inline: true,
     });
@@ -100,6 +105,15 @@ module.exports.getEmbed = function (interaction) {
     embed.addFields({
       name: `Rage Check [ ${results.rageCheck.dice.join(", ")} ]`,
       value: results.rageCheck.toString,
+    });
+  }
+
+  if (results.doubleRageCheck) {
+    embed.addFields({
+      name: `Double Rage Check [ ${results.doubleRageCheck.roll1.join(
+        ", "
+      )} ] [ ${results.doubleRageCheck.roll2.join(", ")} ]`,
+      value: results.doubleRageCheck.toString,
     });
   }
 
