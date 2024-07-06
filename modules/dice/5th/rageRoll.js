@@ -5,8 +5,8 @@ const Roll = require("../Roll");
 const { EmbedBuilder } = require("discord.js");
 const API = require("../../../realmAPI");
 
-const passedString = "```ansi\n[2;33mPassed {dice}[0m\n```";
-const failedString = "```ansi\n[2;33m[2;31mFailed {dice}[0m[2;33m[0m\n```";
+const passedString = "```ansi\n[2;33mPassed [{dice}][0m\n```";
+const failedString = "```ansi\n[2;33m[2;31mFailed [{dice}][0m[2;33m[0m\n```";
 
 /**
  *
