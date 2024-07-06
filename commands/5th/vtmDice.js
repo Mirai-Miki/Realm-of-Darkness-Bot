@@ -211,7 +211,8 @@ function getCommand() {
             { name: "Phlegmatic", value: "Phlegmatic" },
             { name: "Melancholy", value: "Melancholy" },
             { name: "Choleric", value: "Choleric" },
-            { name: "Sanguine", value: "Sanguine" }
+            { name: "Sanguine", value: "Sanguine" },
+            { name: "Empty", value: "Empty" }
           );
         return option;
       })

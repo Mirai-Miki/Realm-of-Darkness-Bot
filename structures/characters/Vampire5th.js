@@ -1,11 +1,26 @@
-'use strict';
+/**
+ * Represents a Vampire character in the 5th edition of the game.
+ * @class
+ * @extends Character5th
+ */
+"use strict";
 const Consumable = require("../Consumable");
 const Character5th = require("./base/Character5th");
 const Humanity = require("../humanity5th");
-const { Splats } = require('../../Constants');
-const { EmbedBuilder } = require('discord.js');
+const { Splats } = require("../../Constants");
+const { EmbedBuilder } = require("discord.js");
 
 module.exports = class Vampire5th extends Character5th {
+  /**
+   * Creates a new instance of the Vampire5th class.
+   * @constructor
+   * @param {Object} options - The options for the Vampire5th character.
+   * @param {Object} options.client - The Discord client.
+   * @param {string} options.name - The name of the character.
+   * @param {number} [options.health=4] - The health of the character.
+   * @param {number} [options.willpower=2] - The willpower of the character.
+   * @param {number} [options.humanity=7] - The humanity of the character.
+   */
   constructor({ client, name, health = 4, willpower = 2, humanity = 7 } = {}) {
     super({ client, name, health, willpower });
 
@@ -46,50 +61,56 @@ module.exports = class Vampire5th extends Character5th {
   serialize(newSave) {
     if (this.class || newSave) return this._serializeNew();
     const s = super.serialize();
-    s.character['splatSlug'] = this.splat.slug;
-    s.character['hunger'] = this.hunger.current;
-    s.character['humanity'] = this.humanity.total;
-    s.character['stains'] = this.humanity.stains;
-    s.character['class'] = this.class;
+    s.character["splatSlug"] = this.splat.slug;
+    s.character["hunger"] = this.hunger.current;
+    s.character["humanity"] = this.humanity.total;
+    s.character["stains"] = this.humanity.stains;
+    s.character["class"] = this.class;
     return s;
   }
 
   _serializeNew() {
     const serializer = super._serializeNew();
-    serializer.character['hunger'] = this.hunger.current;
-    serializer.character['humanity'] = this.humanity.total;
-    serializer.character['stains'] = this.humanity.stains;
-    serializer.character['class'] = 'Vampire5th';
-    return serializer
+    serializer.character["hunger"] = this.hunger.current;
+    serializer.character["humanity"] = this.humanity.total;
+    serializer.character["stains"] = this.humanity.stains;
+    serializer.character["class"] = "vampire5th";
+    return serializer;
   }
 
   getEmbed(notes) {
-    let hungerOverflow = '';
+    let hungerOverflow = "";
     // Adding Hunger messages if character has hunger
     if (this.hunger.overflow > 0) {
-      hungerOverflow = `${this.hunger.overflow} hunger has ` +
-        "overflowed. You should now do a hunger frenzy check. p220"
-    }
-    else if (this.hunger.current == 5) {
-      hungerOverflow = `Hunger is currently 5` +
-        ". You can no longer intentionally rouse the blood. p211"
+      hungerOverflow =
+        `${this.hunger.overflow} hunger has ` +
+        "overflowed. You should now do a hunger frenzy check. p220";
+    } else if (this.hunger.current == 5) {
+      hungerOverflow =
+        `Hunger is currently 5` +
+        ". You can no longer intentionally rouse the blood. p211";
     }
 
     const embed = new EmbedBuilder();
-    embed.setColor(this.color)
-      .setURL('https://cdn.discordapp.com/attachments/699082447278702655/972058320611459102/banner.png')
+    embed
+      .setColor(this.color)
+      .setURL(
+        "https://cdn.discordapp.com/attachments/699082447278702655/972058320611459102/banner.png"
+      )
       .setTitle(this.name)
-      .setAuthor(this.getAuthor())
+      .setAuthor(this.getAuthor());
 
     embed.addFields({
       name: "Willpower",
-      value: this.willpower.getTracker() + this.willpower.getHealthStatus('willpower'),
-      inline: false
-    })
+      value:
+        this.willpower.getTracker() +
+        this.willpower.getHealthStatus("willpower"),
+      inline: false,
+    });
     embed.addFields({
       name: "Health",
-      value: this.health.getTracker() + this.health.getHealthStatus('health'),
-      inline: false
+      value: this.health.getTracker() + this.health.getHealthStatus("health"),
+      inline: false,
     });
 
     if (this.thumbnail) embed.setThumbnail(this.thumbnail);
@@ -97,27 +118,29 @@ module.exports = class Vampire5th extends Character5th {
     embed.addFields({
       name: "Humanity",
       value: this.humanity.getTracker() + this.humanity.getDegenerationInfo(),
-      inline: false
-    })
+      inline: false,
+    });
 
     embed.addFields({
       name: "Hunger",
       value: this.hunger.getTracker() + hungerOverflow,
-      inline: false
+      inline: false,
     });
 
-    if (this.exp.total) embed.addFields({
-      name: "Experience",
-      value: this.exp.getTracker({ showEmoji: false }),
-      inline: false
-    });
+    if (this.exp.total)
+      embed.addFields({
+        name: "Experience",
+        value: this.exp.getTracker({ showEmoji: false }),
+        inline: false,
+      });
 
     if (notes) embed.addFields({ name: "Notes", value: notes });
 
-    const links = "\n[Website](https://realmofdarkness.app/)" +
+    const links =
+      "\n[Website](https://realmofdarkness.app/)" +
       " | [Commands](https://realmofdarkness.app/v5/commands/)" +
       " | [Patreon](https://www.patreon.com/MiraiMiki)";
     embed.data.fields.at(-1).value += links;
     return embed;
   }
-}
+};

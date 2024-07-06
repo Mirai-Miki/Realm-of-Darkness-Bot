@@ -33,8 +33,10 @@ function rollTemperament(args) {
   if (args.temperament) return null;
 
   const dice = [];
-  if (args.minTemp === "Fleeting") dice.push(Roll.single(5) + 5);
-  else if (args.minTemp === "Intense") dice.push(10);
+  if (args.minTemp === "Fleeting") {
+    const tempRoll = Roll.single(10);
+    dice.push(tempRoll < 6 ? 6 : tempRoll);
+  } else if (args.minTemp === "Intense") dice.push(10);
   else dice.push(Roll.single(10));
 
   if (dice[0] >= 9) dice.push(Roll.single(10));
@@ -193,6 +195,16 @@ const ResonanceInfo = {
       Fleeting: "#009600",
       Intense: "#00c800",
       Acute: "#00ff00",
+    },
+  },
+  Empty: {
+    name: "Empty",
+    description: "Sociopaths, Psychopaths,\nEmotionally Detached",
+    powers: "Oblivion",
+    color: {
+      Fleeting: "#6e6e6e",
+      Intense: "#b5b5b5",
+      Acute: "#ffffff",
     },
   },
 };

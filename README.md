@@ -69,6 +69,7 @@ This project is licensed under the AGPL License. See the [LICENSE](LICENSE) file
 ## Known Issues
 
 - Setting a ST role should force update members with that role.
+- bot should create members for all active users on guild create
 
 ## Things to Implement
 

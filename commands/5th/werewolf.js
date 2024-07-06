@@ -11,7 +11,8 @@ module.exports = {
   data: getCommands(),
 
   /**
-   * Executes the vampire command based on the provided interaction.
+   * Executes the werewolf command.
+   *
    * @param {Interaction} interaction - The interaction object representing the command interaction.
    * @returns {Promise<string|void>} - A promise that resolves to a string or void.
    */
@@ -23,78 +24,21 @@ module.exports = {
     interaction.arguments = await getArgs(interaction);
     switch (interaction.options.getSubcommand()) {
       case "new":
-        const res = await tracker.new(interaction, Splats.vampire5th);
-        await sheetFollowUp(interaction);
+        const res = await tracker.new(interaction, Splats.werewolf5th);
         return res;
       case "update":
-        const update = await tracker.update(interaction, Splats.vampire5th);
-        await oldVampireFollowUp(interaction);
+        const update = await tracker.update(interaction, Splats.werewolf5th);
         return update;
       case "set":
-        return await tracker.set(interaction, Splats.vampire5th);
+        return await tracker.set(interaction, Splats.werewolf5th);
     }
   },
 
   async autocomplete(interaction) {
-    return await autocomplete5th(interaction, Splats.vampire5th.slug);
+    return await autocomplete5th(interaction, Splats.werewolf5th.slug);
   },
 };
 
-/**
- * Sends a follow-up message with information about character sheets.
- * @param {Interaction} interaction - The interaction object representing the command interaction.
- * @returns {Promise<void>} - A promise that resolves when the follow-up message is sent.
- */
-async function sheetFollowUp(interaction) {
-  if (!interaction.followUps) interaction.followUps = [];
-  const message = { ephemeral: true, embeds: [] };
-
-  const embed = new EmbedBuilder();
-  embed
-    .setColor("#ede61a")
-    .setTitle("Sheets now in Early Access")
-    .setDescription(
-      'Character sheets are now in Early Access on the [Website](https://realmofdarkness.app).\nCharacter sheets are fully compatible with the bot tracker commands as well as providing an easy to use web interface to update values. It also gives you access to the `/sheet roll` command which is an easier way to build pools without having to look at your sheet to make rolls.\n\nTo create a new sheet all you need to do is Login to the [Website](https://realmofdarkness.app) and click the "New Sheet button" to get started.\n\nPlease note that early access sheets are still missing many features and will be slowly added too over time to become more feature complete.'
-    );
-  message.embeds.push(embed);
-  interaction.followUps.push(message);
-}
-
-/**
- * Handles the follow-up logic for the old Vampire tracker.
- * If the character class is already set, the function returns early.
- * If the interaction does not have any follow-ups, an empty array is assigned to it.
- * Constructs a message object with ephemeral set to true and an empty array for embeds.
- * Creates an embed using the EmbedBuilder class.
- * Sets the color, title, and description of the embed.
- * Adds the embed to the message's embeds array.
- * Pushes the message object to the interaction's follow-ups array.
- *
- * @param {Interaction} interaction - The interaction object representing the user's interaction with the bot.
- * @returns {Promise<void>} - A promise that resolves when the follow-up logic is completed.
- */
-async function oldVampireFollowUp(interaction) {
-  if (interaction.character.class) return;
-  if (!interaction.followUps) interaction.followUps = [];
-  const message = { ephemeral: true, embeds: [] };
-
-  const embed = new EmbedBuilder();
-  embed
-    .setColor("#ede61a")
-    .setTitle("Old Tracker")
-    .setDescription(
-      "This Vampire tracker is currently not compatible with the new tracker/sheet system, while it will continue to work for now, support will eventually be dropped some time in the future.\n\nTo avoid losing any data, please make a new tracker using the `/vampire new` command. Alternatively you can try the new Character Sheets which are currently in Early Access on the [Website](https://realmofdarkness.app)."
-    );
-  message.embeds.push(embed);
-  interaction.followUps.push(message);
-}
-
-/**
- * Retrieves the arguments from an interaction and returns them as an object.
- *
- * @param {Interaction} interaction - The interaction object containing the options.
- * @returns {Object} - An object containing the retrieved arguments.
- */
 async function getArgs(interaction) {
   const args = {
     player: interaction.options.getUser("player"),
@@ -110,9 +54,10 @@ async function getArgs(interaction) {
     willpowerAgg: interaction.options.getInteger("willpower_agg"),
     healthSup: interaction.options.getInteger("health_superficial"),
     healthAgg: interaction.options.getInteger("health_agg"),
-    hunger: interaction.options.getInteger("hunger"),
-    humanity: interaction.options.getInteger("humanity"),
-    stains: interaction.options.getInteger("stains"),
+    rage: interaction.options.getInteger("rage"),
+    harano: interaction.options.getInteger("harano"),
+    hauglosk: interaction.options.getInteger("hauglosk"),
+    form: interaction.options.getString("form"),
   };
 
   if (args.color || args.thumbnail)
@@ -120,20 +65,16 @@ async function getArgs(interaction) {
   return args;
 }
 
-/**
- * Retrieves the slash commands for the vampire tracker.
- * @returns {SlashCommandBuilder} The slash command builder object containing the vampire tracker commands.
- */
 function getCommands() {
   const command = new SlashCommandBuilder()
-    .setName("vampire")
-    .setDescription("vampire tracker commands");
+    .setName("werewolf")
+    .setDescription("Werewolf tracker commands");
 
-  ////////////////// New Vampire ////////////////////////////
+  ////////////////// New Werewolf ////////////////////////////
   command.addSubcommand((subcommand) =>
     subcommand
       .setName("new")
-      .setDescription("Create a new v5 Vampire.")
+      .setDescription("Create a new w5 Werewolf.")
 
       .addStringOption((option) =>
         option
@@ -146,10 +87,7 @@ function getCommands() {
       .addIntegerOption((option) =>
         option
           .setName("willpower")
-          .setDescription(
-            "Your total Willpower. " +
-              "Must be between 1 and 20. VtM v5 Corebook p157"
-          )
+          .setDescription("Your total Willpower. Must be between 1 and 20.")
           .setMaxValue(20)
           .setMinValue(1)
           .setRequired(true)
@@ -158,10 +96,7 @@ function getCommands() {
       .addIntegerOption((option) =>
         option
           .setName("health")
-          .setDescription(
-            "Your total Health. " +
-              "Must be between 1 and 20. VtM v5 Corebook p126"
-          )
+          .setDescription("Your total Health. Must be between 1 and 20.")
           .setMaxValue(20)
           .setMinValue(1)
           .setRequired(true)
@@ -169,33 +104,47 @@ function getCommands() {
 
       .addIntegerOption((option) =>
         option
-          .setName("humanity")
-          .setDescription(
-            "Your current Humanity. " +
-              "Must be between 0 and 10. VtM v5 Corebook p236"
-          )
-          .setMaxValue(10)
+          .setName("exp")
+          .setDescription("Your total Experiance.")
+          .setMaxValue(1000)
           .setMinValue(0)
-          .setRequired(true)
       )
 
       .addIntegerOption((option) =>
         option
-          .setName("hunger")
-          .setDescription(
-            "Your current Hunger. " +
-              "Must be between 0 and 5. VtM v5 Corebook p205"
-          )
+          .setName("rage")
+          .setDescription("Your current Rage.")
           .setMaxValue(5)
           .setMinValue(0)
       )
 
       .addIntegerOption((option) =>
         option
-          .setName("exp")
-          .setDescription("Your total Experiance. VtM v5 Corebook p130")
-          .setMaxValue(1000)
+          .setName("harano")
+          .setDescription("Your current Harano.")
+          .setMaxValue(5)
           .setMinValue(0)
+      )
+
+      .addIntegerOption((option) =>
+        option
+          .setName("hauglosk")
+          .setDescription("Your current Hauglosk.")
+          .setMaxValue(5)
+          .setMinValue(0)
+      )
+
+      .addStringOption((option) =>
+        option
+          .setName("form")
+          .setDescription("Your current Form.")
+          .addChoices(
+            { name: "Homid", value: "Homid" },
+            { name: "Glabro", value: "Glabro" },
+            { name: "Crinos", value: "Crinos" },
+            { name: "Hispo", value: "Hispo" },
+            { name: "Lupus", value: "Lupus" }
+          )
       )
 
       .addIntegerOption((option) =>
@@ -203,7 +152,7 @@ function getCommands() {
           .setName("willpower_superficial")
           .setDescription(
             "Your current Superficial Willpower Damage. " +
-              "Must be between 0 and 15. VtM v5 Corebook p126"
+              "Must be between 0 and 15."
           )
           .setMaxValue(15)
           .setMinValue(0)
@@ -212,10 +161,7 @@ function getCommands() {
       .addIntegerOption((option) =>
         option
           .setName("willpower_agg")
-          .setDescription(
-            "Your current Aggravated Willpower Damage. " +
-              "VtM v5 Corebook p126"
-          )
+          .setDescription("Your current Aggravated Willpower Damage.")
           .setMaxValue(15)
           .setMinValue(0)
       )
@@ -225,7 +171,7 @@ function getCommands() {
           .setName("health_superficial")
           .setDescription(
             "Your current Superficial Health Damage. " +
-              "Must be between 0 and 20. VtM v5 Corebook p126"
+              "Must be between 0 and 20."
           )
           .setMaxValue(20)
           .setMinValue(0)
@@ -236,20 +182,9 @@ function getCommands() {
           .setName("health_agg")
           .setDescription(
             "Your current Aggravated Health Damage. " +
-              "Must be between 0 and 20. VtM v5 Corebook p126"
+              "Must be between 0 and 20."
           )
           .setMaxValue(20)
-          .setMinValue(0)
-      )
-
-      .addIntegerOption((option) =>
-        option
-          .setName("stains")
-          .setDescription(
-            "Your current Stains. " +
-              "Must be between 0 and 10. VtM v5 Corebook p239"
-          )
-          .setMaxValue(10)
           .setMinValue(0)
       )
 
@@ -277,7 +212,7 @@ function getCommands() {
         option
           .setName("image")
           .setDescription(
-            "Changes your Character's Thumbnail" + " Image. [Supporter Only]"
+            "Changes your Character's Thumbnail Image. [Supporter Only]"
           )
       )
   );
@@ -286,7 +221,7 @@ function getCommands() {
   command.addSubcommand((subcommand) =>
     subcommand
       .setName("set")
-      .setDescription("Set values for your v5 Vampire.")
+      .setDescription("Set values for your w5 Werewolf.")
 
       .addStringOption((option) =>
         option
@@ -300,10 +235,7 @@ function getCommands() {
       .addIntegerOption((option) =>
         option
           .setName("willpower")
-          .setDescription(
-            "Your total Willpower. " +
-              "Must be between 1 and 20. VtM v5 Corebook p157"
-          )
+          .setDescription("Your total Willpower. Must be between 1 and 20.")
           .setMaxValue(20)
           .setMinValue(1)
       )
@@ -311,42 +243,53 @@ function getCommands() {
       .addIntegerOption((option) =>
         option
           .setName("health")
-          .setDescription(
-            "Your total Health. " +
-              "Must be between 1 and 20. VtM v5 Corebook p126"
-          )
+          .setDescription("Your total Health. Must be between 1 and 20.")
           .setMaxValue(20)
           .setMinValue(1)
       )
 
       .addIntegerOption((option) =>
         option
-          .setName("humanity")
-          .setDescription(
-            "Your current Humanity. " +
-              "Must be between 0 and 10. VtM v5 Corebook p236"
-          )
-          .setMaxValue(10)
-          .setMinValue(0)
-      )
-
-      .addIntegerOption((option) =>
-        option
-          .setName("hunger")
-          .setDescription(
-            "Your current Hunger. " +
-              "Must be between 0 and 5. VtM v5 Corebook p205"
-          )
+          .setName("rage")
+          .setDescription("Your current Rage.")
           .setMaxValue(5)
           .setMinValue(0)
       )
 
       .addIntegerOption((option) =>
         option
+          .setName("harano")
+          .setDescription("Your current Harano.")
+          .setMaxValue(5)
+          .setMinValue(0)
+      )
+
+      .addIntegerOption((option) =>
+        option
+          .setName("hauglosk")
+          .setDescription("Your current Hauglosk.")
+          .setMaxValue(5)
+          .setMinValue(0)
+      )
+
+      .addStringOption((option) =>
+        option
+          .setName("form")
+          .setDescription("Your current Form.")
+          .addChoices(
+            { name: "Homid", value: "Homid" },
+            { name: "Glabro", value: "Glabro" },
+            { name: "Crinos", value: "Crinos" },
+            { name: "Hispo", value: "Hispo" },
+            { name: "Lupus", value: "Lupus" }
+          )
+      )
+
+      .addIntegerOption((option) =>
+        option
           .setName("exp")
           .setDescription(
-            "Your total Experiance. " +
-              "+ values will also increase your current. VtM v5 Corebook p130"
+            "Your total Experiance. + values will also increase your current."
           )
           .setMaxValue(1000)
           .setMinValue(0)
@@ -356,8 +299,7 @@ function getCommands() {
         option
           .setName("willpower_superficial")
           .setDescription(
-            "Your current Superficial Willpower Damage. " +
-              "Must be between 0 and 15. VtM v5 Corebook p126"
+            "Your current Superficial Willpower Damage. Must be between 0 and 15."
           )
           .setMaxValue(15)
           .setMinValue(0)
@@ -366,10 +308,7 @@ function getCommands() {
       .addIntegerOption((option) =>
         option
           .setName("willpower_agg")
-          .setDescription(
-            "Your current Aggravated Willpower Damage. " +
-              "VtM v5 Corebook p126"
-          )
+          .setDescription("Your current Aggravated Willpower Damage.")
           .setMaxValue(15)
           .setMinValue(0)
       )
@@ -379,7 +318,7 @@ function getCommands() {
           .setName("health_superficial")
           .setDescription(
             "Your current Superficial Health Damage. " +
-              "Must be between 0 and 20. VtM v5 Corebook p126"
+              "Must be between 0 and 20."
           )
           .setMaxValue(20)
           .setMinValue(0)
@@ -390,20 +329,9 @@ function getCommands() {
           .setName("health_agg")
           .setDescription(
             "Your current Aggravated Health Damage. " +
-              "Must be between 0 and 20. VtM v5 Corebook p126"
+              "Must be between 0 and 20."
           )
           .setMaxValue(20)
-          .setMinValue(0)
-      )
-
-      .addIntegerOption((option) =>
-        option
-          .setName("stains")
-          .setDescription(
-            "Your current Stains. " +
-              "Must be between 0 and 10. VtM v5 Corebook p239"
-          )
-          .setMaxValue(10)
           .setMinValue(0)
       )
 
@@ -438,7 +366,7 @@ function getCommands() {
         option
           .setName("image")
           .setDescription(
-            "Changes your Character's Thumbnail" + " Image. [Supporter Only]"
+            "Changes your Character's Thumbnail Image. [Supporter Only]"
           )
       )
   );
@@ -447,7 +375,7 @@ function getCommands() {
   command.addSubcommand((subcommand) =>
     subcommand
       .setName("update")
-      .setDescription("Update values for your v5 Vampire.")
+      .setDescription("Update values for your w5 Werewolf.")
 
       .addStringOption((option) =>
         option
@@ -460,11 +388,8 @@ function getCommands() {
 
       .addIntegerOption((option) =>
         option
-          .setName("hunger")
-          .setDescription(
-            "Updates your Hunger by the amount. " +
-              "Must be between -10 and 10. VtM v5 Corebook p205"
-          )
+          .setName("rage")
+          .setDescription("Your current Rage.")
           .setMaxValue(10)
           .setMinValue(-10)
       )
@@ -473,8 +398,7 @@ function getCommands() {
         option
           .setName("willpower_superficial")
           .setDescription(
-            "Updates you current SW damage" +
-              " by the amount. Must be between -20 and 20. VtM v5 Corebook p126"
+            "Updates you current SW damage by the amount. Must be between -20 and 20."
           )
           .setMaxValue(20)
           .setMinValue(-20)
@@ -485,7 +409,7 @@ function getCommands() {
           .setName("health_superficial")
           .setDescription(
             "Updates you current SH Damage" +
-              " by the amount. Must be between -30 and 30. VtM v5 Corebook p126"
+              " by the amount. Must be between -30 and 30."
           )
           .setMaxValue(30)
           .setMinValue(-30)
@@ -496,7 +420,7 @@ function getCommands() {
           .setName("willpower_agg")
           .setDescription(
             "Updates you current AW Damage" +
-              " by the amount. Must be between -20 and 20. VtM v5 Corebook p126"
+              " by the amount. Must be between -20 and 20."
           )
           .setMaxValue(20)
           .setMinValue(-20)
@@ -507,7 +431,7 @@ function getCommands() {
           .setName("health_agg")
           .setDescription(
             "Updates you current AH Damage" +
-              " by the amount. Must be between -30 and 30. VtM v5 Corebook p126"
+              " by the amount. Must be between -30 and 30."
           )
           .setMaxValue(30)
           .setMinValue(-30)
@@ -515,13 +439,31 @@ function getCommands() {
 
       .addIntegerOption((option) =>
         option
-          .setName("stains")
-          .setDescription(
-            "Updates your Stains by the amount. " +
-              "Must be between -15 and 15. VtM v5 Corebook p239"
+          .setName("harano")
+          .setDescription("Your current Harano.")
+          .setMaxValue(10)
+          .setMinValue(-10)
+      )
+
+      .addIntegerOption((option) =>
+        option
+          .setName("hauglosk")
+          .setDescription("Your current Hauglosk.")
+          .setMaxValue(10)
+          .setMinValue(-10)
+      )
+
+      .addStringOption((option) =>
+        option
+          .setName("form")
+          .setDescription("Your current Form.")
+          .addChoices(
+            { name: "Homid", value: "Homid" },
+            { name: "Glabro", value: "Glabro" },
+            { name: "Crinos", value: "Crinos" },
+            { name: "Hispo", value: "Hispo" },
+            { name: "Lupus", value: "Lupus" }
           )
-          .setMaxValue(15)
-          .setMinValue(-15)
       )
 
       .addIntegerOption((option) =>
@@ -529,7 +471,7 @@ function getCommands() {
           .setName("exp")
           .setDescription(
             "Updates you Current Exp by the amount." +
-              "+ values will also increase your total. VtM v5 Corebook p130"
+              "+ values will also increase your total."
           )
           .setMaxValue(2000)
           .setMinValue(-2000)
@@ -540,7 +482,7 @@ function getCommands() {
           .setName("willpower")
           .setDescription(
             "Updates your Total Willpower by the amount. " +
-              "Must be between -20 and 20. VtM v5 Corebook p157"
+              "Must be between -20 and 20."
           )
           .setMaxValue(20)
           .setMinValue(-20)
@@ -551,21 +493,10 @@ function getCommands() {
           .setName("health")
           .setDescription(
             "Updates your Total Health by the amount. " +
-              "Must be between -30 and 30. VtM v5 Corebook p126"
+              "Must be between -30 and 30."
           )
           .setMaxValue(30)
           .setMinValue(-30)
-      )
-
-      .addIntegerOption((option) =>
-        option
-          .setName("humanity")
-          .setDescription(
-            "Updates your Humanity by the amount. " +
-              "Must be between -15 and 15. VtM v5 Corebook p236"
-          )
-          .setMaxValue(15)
-          .setMinValue(-15)
       )
 
       .addUserOption((option) =>
