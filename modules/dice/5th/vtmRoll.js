@@ -170,13 +170,6 @@ async function getSheetRollArgs(interaction) {
  */
 async function roll(interaction) {
   const args = interaction.arguments;
-  if (
-    args.character?.tracked &&
-    args.autoHunger &&
-    args.character.tracked.splat.slug === "vampire5th"
-  ) {
-    args.hunger = args.character.tracked.hunger;
-  }
 
   const results = new VtMV5RollResults({
     difficulty: args.difficulty ?? 1,
@@ -185,13 +178,18 @@ async function roll(interaction) {
     spec: args.spec,
     hunger: args.hunger ?? 0,
   });
+
   let hunger = args.hunger;
+
   if (
+    args.hunger === null &&
     args.character?.tracked &&
     args.autoHunger &&
     args.character.tracked.splat.slug === "vampire5th"
-  )
+  ) {
     hunger = args.character.tracked.hunger.current;
+    args.hunger = hunger;
+  }
   results.rollDice(hunger);
   results.setOutcome();
 
