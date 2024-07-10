@@ -114,7 +114,8 @@ module.exports.getEmbed = function (interaction) {
     " | [Commands](https://v5.realmofdarkness.app/)" +
     " | [Dice %](https://realmofdarkness.app/v5/dice/)" +
     " | [Patreon](https://www.patreon.com/MiraiMiki)";
-  embed.data.fields.at(-1).value += links;
+
+  embed.addFields({ name: "⠀", value: links });
 
   return embed;
 };
