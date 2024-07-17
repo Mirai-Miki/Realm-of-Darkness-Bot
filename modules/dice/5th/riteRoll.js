@@ -4,6 +4,7 @@ const { trimString } = require("../../misc");
 const getCharacter = require("../getCharacter");
 const Wta5thRollResults = require("../../../structures/Wta5thRollResults");
 const handleButtonPress = require("./handleButtonPress");
+const API = require("../../../realmAPI");
 
 /**
  *
