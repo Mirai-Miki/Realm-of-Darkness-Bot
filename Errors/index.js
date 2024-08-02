@@ -30,6 +30,8 @@ module.exports.ErrorCodes = {
   NoCharacterSelected: 23,
   IncorrectCharType: 24,
   TooManySheets: 25,
+  NoBlood:26,
+  NoDamage:27,
   RequiresFledgling: 100,
   RequiresNeonate: 101,
   RequiresAncilla: 102,

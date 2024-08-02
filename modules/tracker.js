@@ -58,10 +58,15 @@ module.exports.update = async function(interaction, splat)
     splatSlug: splat.slug,
     guild: interaction.guild ?? null
   });
-  
   if (!char) throw new RealmError({code: ErrorCodes.NoCharacter});
+  if (options.action) {
+    if(char.blood.current <= 0) throw new RealmError({code: ErrorCodes.NoBlood});;
+    const invalidKey = Object.keys(options).find(key => key in char.health && char.health[key] === 0);
+    if (invalidKey ||  char.health.aggravated <= 0 && options.action === "agg_damage") {
+      throw new RealmError({code: ErrorCodes.NoDamage});
+    }
+  }
   char.updateFields(options);
-
   await char.save(interaction.client);
   interaction.character = char;
   return {ephemeral: true, embeds: [char.getEmbed(options.notes)]};
