@@ -10,6 +10,7 @@ const API = require('../../realmAPI');
 module.exports = async function roll20th(interaction)
 {
   interaction.arguments = await getArgs(interaction);
+  applyDicePenalty(interaction);
   interaction.results = new RollResults20th(interaction.arguments);
   await updateWillpower(interaction);
   return {content: getContent(interaction), embeds: [getEmbed(interaction)]};
@@ -41,13 +42,26 @@ async function getArgs(interaction)
     const defaults = await API.characterDefaults.get(
       interaction.guild.id, interaction.user.id
     )
-    
     if (defaults)
       args.character = await getCharacter(defaults.name, interaction);
   }
-
+  
   return args;
 } 
+
+function applyDicePenalty(interaction) {
+  if(interaction.arguments.character?.tracked.health)
+  {
+    const dicePenalty = extractDicePenalty(interaction.arguments);
+    interaction.arguments.pool -= dicePenalty;
+  }
+}
+
+function extractDicePenalty(interaction) {
+  const healthStatus = interaction.character?.tracked.health.damageInfo;
+  const match = healthStatus.match(/\d+/);
+  return match ? parseInt(match[0], 10) : 0;
+}
 
 function getContent(interaction)
 {  
@@ -99,6 +113,7 @@ function getEmbed(interaction)
 {
   const args = interaction.arguments;
   const results = interaction.results;
+  const damageInfo = args.character?.tracked.health.damageInfo;
   const embed = new EmbedBuilder()
 
   embed.setAuthor({
@@ -125,6 +140,13 @@ function getEmbed(interaction)
       name: 'Character',
       value: args.character.name
     });
+
+    if (damageInfo !== '') {
+      embed.addFields({
+        name: 'Dice penalty',
+        value: damageInfo
+      });
+    }
 
     if (args.character.tracked?.thumbnail)
       embed.setThumbnail(args.character.tracked.thumbnail);
