@@ -1,20 +1,17 @@
-'use strict';
+"use strict";
 const Character = require("./Character.js");
-const Consumable = require("../../Consumable")
+const Consumable = require("../../Consumable");
 const DamageTracker20th = require("../../DamageTracker20th");
 
-module.exports = class Character20th extends Character
-{
-  constructor({client, name, willpower=2}={})
-  {
-    super({client, name});
-    this.version = '20th';
+module.exports = class Character20th extends Character {
+  constructor({ client, name, willpower = 2 } = {}) {
+    super({ client, name });
+    this.version = "20th";
     this.willpower = new Consumable(willpower);
     this.health = new DamageTracker20th();
   }
 
-  setFields(args)
-  {
+  setFields(args) {
     super.setFields(args);
     if (args.willpower != null) this.willpower.setTotal(args.willpower);
     if (args.health != null) this.health.setTotal(args.health);
@@ -22,19 +19,17 @@ module.exports = class Character20th extends Character
     if (args.lethal != null) this.health.setLethal(args.lethal);
     if (args.agg != null) this.health.setAgg(args.agg);
   }
-  
-  updateFields(args)
-  {
+
+  updateFields(args) {
     super.updateFields(args);
-    if (args.willpower != null) this.willpower.updateCurrent(args.willpower);  
+    if (args.willpower != null) this.willpower.updateCurrent(args.willpower);
     if (args.health != null) this.health.updateCurrent(args.health);
     if (args.bashing != null) this.health.updateBashing(args.bashing);
     if (args.lethal != null) this.health.updateLethal(args.lethal);
     if (args.agg != null) this.health.updateAgg(args.agg);
   }
 
-  async deserilize(json)
-  {
+  async deserilize(json) {
     await super.deserilize(json);
     this.willpower.setTotal(json.willpower.total);
     this.willpower.setCurrent(json.willpower.current);
@@ -45,20 +40,30 @@ module.exports = class Character20th extends Character
     return this;
   }
 
-  serialize()
-  {
+  serialize() {
     const s = super.serialize();
-    s.character['version'] = this.version;
-    s.character['willpower'] = {
-        total: this.willpower.total,
-        current: this.willpower.current,
+    s.character["version"] = this.version;
+    s.character["willpower"] = {
+      total: this.willpower.total,
+      current: this.willpower.current,
     };
-    s.character['health'] = {
-        total: this.health.total,
-        bashing: this.health.bashing,
-        lethal: this.health.lethal,
-        aggravated: this.health.aggravated,
+    s.character["health"] = {
+      total: this.health.total,
+      bashing: this.health.bashing,
+      lethal: this.health.lethal,
+      aggravated: this.health.aggravated,
     };
-    return s
+    return s;
   }
-}
+
+  _serializeNew() {
+    const serializer = super._serializeNew();
+    serializer.character["willpower_total"] = this.willpower.total;
+    serializer.character["willpower_current"] = this.willpower.current;
+    serializer.character["health_total"] = this.health.total;
+    serializer.character["health_bashing"] = this.health.bashing;
+    serializer.character["health_lethal"] = this.health.lethal;
+    serializer.character["health_aggravated"] = this.health.aggravated;
+    return serializer;
+  }
+};

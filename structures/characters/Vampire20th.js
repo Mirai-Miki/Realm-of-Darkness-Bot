@@ -35,25 +35,37 @@ module.exports = class Vampire20th extends Character20th {
 
   async deserilize(json) {
     await super.deserilize(json);
-    this.morality.pool.setCurrent(json.morality.current);
-    this.morality.name = json.morality.name;
-    this.blood.setTotal(json.blood.total);
-    this.blood.setCurrent(json.blood.current);
+    this.class = json.class;
+    this.morality.pool.setCurrent(json.morality_value);
+    this.morality.name = json.morality_name;
+    this.blood.setTotal(json.blood_total);
+    this.blood.setCurrent(json.blood_current);
     return this;
   }
 
-  serialize() {
+  serialize(newSave) {
+    if (this.class || newSave) return this._serializeNew();
     const s = super.serialize();
     s.character["splatSlug"] = this.splat.slug;
     s.character["morality"] = {
       name: slugifiy(this.morality.name),
-      current: this.morality.pool.current,
+      value: this.morality.pool.current,
     };
     s.character["blood"] = {
       total: this.blood.total,
       current: this.blood.current,
     };
     return s;
+  }
+
+  _serializeNew() {
+    const serializer = super._serializeNew();
+    serializer.character["morality_name"] = this.morality.name;
+    serializer.character["morality_value"] = this.morality.pool.current;
+    serializer.character["blood_total"] = this.blood.total;
+    serializer.character["blood_current"] = this.blood.current;
+    serializer.character["class"] = "vampire20th";
+    return serializer;
   }
 
   getEmbed(notes) {
