@@ -37,5 +37,5 @@ function pushCommands(ver, toggle = true) {
 }
 
 pushCommands("5th", true);
-pushCommands("20th", false);
+pushCommands("20th", true);
 pushCommands("Cod", false);

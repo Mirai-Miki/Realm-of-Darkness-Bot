@@ -27,6 +27,10 @@ module.exports = {
         return await rouse(interaction);
       case "compulsion":
         return await compulsionRoll(interaction);
+      case "healsuperficial":
+        return await healSuperficial(interaction);
+      case "healagg":
+        return await healAgg(interaction);
       case "general":
         return generalRoll(interaction);
     }
@@ -286,6 +290,69 @@ function getCommand() {
         option
           .setName("no_clan")
           .setDescription("Select if you can not get a Clan Compulsion.");
+        return option;
+      })
+
+      .addStringOption((option) => {
+        option
+          .setName("notes")
+          .setDescription(
+            "Any extra information you would like to include about this roll."
+          )
+          .setMaxLength(300);
+        return option;
+      })
+  );
+
+  /////////////////// Heal Superficial ///////////////////
+  command.addSubcommand((subcommand) =>
+    subcommand
+      .setName("healsuperficial")
+      .setDescription("Heals Superficial Damage by doing a rouse check.")
+
+      .addStringOption((option) => {
+        option
+          .setName("type")
+          .setDescription("Type of damage being healed.")
+          .setRequired(true)
+          .addChoices(
+            { name: "Health", value: "health" },
+            { name: "Willpower", value: "willpower" }
+          );
+      })
+
+      .addStringOption((option) => {
+        option
+          .setName("name")
+          .setDescription("Name of the character making the roll.")
+          .setMaxLength(50)
+          .setAutocomplete(true);
+        return option;
+      })
+
+      .addStringOption((option) => {
+        option
+          .setName("notes")
+          .setDescription(
+            "Any extra information you would like to include about this roll."
+          )
+          .setMaxLength(300);
+        return option;
+      })
+  );
+
+  /////////////////// Heal Agg ///////////////////
+  command.addSubcommand((subcommand) =>
+    subcommand
+      .setName("healagg")
+      .setDescription("Heals Aggrevated Health Damage by doing a rouse check.")
+
+      .addStringOption((option) => {
+        option
+          .setName("name")
+          .setDescription("Name of the character making the roll.")
+          .setMaxLength(50)
+          .setAutocomplete(true);
         return option;
       })
 

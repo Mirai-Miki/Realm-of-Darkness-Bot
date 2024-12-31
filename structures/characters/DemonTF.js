@@ -31,24 +31,21 @@ module.exports = class DemonTF extends Character20th {
 
   async deserilize(char) {
     await super.deserilize(char);
-    this.faith.setTotal(char.faith.total);
-    this.faith.setCurrent(char.faith.current);
-    this.torment.setPrimary(char.torment.total);
-    this.torment.setSecondary(char.torment.current);
+    this.faith.setTotal(char.faith_total);
+    this.faith.setCurrent(char.faith_current);
+    this.torment.setPrimary(char.torment_total);
+    this.torment.setSecondary(char.torment_current);
     return this;
   }
 
-  serialize() {
+  serialize(newSave) {
     const s = super.serialize();
-    s.character["splatSlug"] = this.splat.slug;
-    s.character["faith"] = {
-      total: this.faith.total,
-      current: this.faith.current,
-    };
-    s.character["torment"] = {
-      total: this.torment.primary,
-      current: this.torment.secondary,
-    };
+    if (this.class || newSave) s.character["class"] = this.splat.slug;
+    else s.character["splatSlug"] = this.splat.slug;
+    s.character["faith_total"] = this.faith.total;
+    s.character["faith_current"] = this.faith.current;
+    s.character["torment_total"] = this.torment.primary;
+    s.character["torment_current"] = this.torment.secondary;
     return s;
   }
 
@@ -74,7 +71,7 @@ module.exports = class DemonTF extends Character20th {
     });
 
     embed.addFields({
-      name: `Torment - Permenent: ${this.torment.primary}`,
+      name: `Torment - Permanent: ${this.torment.primary}`,
       value: this.torment.getPrimaryTracker({ emoji: Emoji.purple_dot_1 }),
       inline: false,
     });

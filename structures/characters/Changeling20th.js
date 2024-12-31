@@ -62,38 +62,33 @@ module.exports = class Changeling extends Character20th {
 
   async deserilize(char) {
     await super.deserilize(char);
-    this.glamour.setTotal(char.glamour.total);
-    this.glamour.setCurrent(char.glamour.current);
-    this.banality.setPrimary(char.banality.total);
-    this.banality.setSecondary(char.banality.current);
+    this.glamour.setTotal(char.glamour_total);
+    this.glamour.setCurrent(char.glamour_current);
+    this.banality.setPrimary(char.banality_total);
+    this.banality.setSecondary(char.banality_current);
     this.nightmare.setPrimary(char.imbalance);
     this.nightmare.setSecondary(char.nightmare);
-    this.chimericalHealth.setTotal(char.chimerical.total);
-    this.chimericalHealth.setBashing(char.chimerical.bashing);
-    this.chimericalHealth.setLethal(char.chimerical.lethal);
-    this.chimericalHealth.setAgg(char.chimerical.aggravated);
+    this.chimericalHealth.setTotal(char.chimerical_total);
+    this.chimericalHealth.setBashing(char.chimerical_bashing);
+    this.chimericalHealth.setLethal(char.chimerical_lethal);
+    this.chimericalHealth.setAgg(char.chimerical_aggravated);
     return this;
   }
 
-  serialize() {
+  serialize(newSave) {
     const s = super.serialize();
-    s.character["splatSlug"] = this.splat.slug;
-    s.character["glamour"] = {
-      total: this.glamour.total,
-      current: this.glamour.current,
-    };
-    s.character["banality"] = {
-      total: this.banality.primary,
-      current: this.banality.secondary,
-    };
+    if (this.class || newSave) s.character["class"] = this.splat.slug;
+    else s.character["splatSlug"] = this.splat.slug;
+    s.character["glamour_total"] = this.glamour.total;
+    s.character["glamour_current"] = this.glamour.current;
+    s.character["banality_total"] = this.banality.primary;
+    s.character["banality_current"] = this.banality.secondary;
     s.character["nightmare"] = this.nightmare.secondary;
     s.character["imbalance"] = this.nightmare.primary;
-    s.character["chimerical"] = {
-      total: this.chimericalHealth.total,
-      bashing: this.chimericalHealth.bashing,
-      lethal: this.chimericalHealth.lethal,
-      aggravated: this.chimericalHealth.aggravated,
-    };
+    s.character["chimerical_total"] = this.chimericalHealth.total;
+    s.character["chimerical_bashing"] = this.chimericalHealth.bashing;
+    s.character["chimerical_lethal"] = this.chimericalHealth.lethal;
+    s.character["chimerical_aggravated"] = this.chimericalHealth.aggravated;
     return s;
   }
 
@@ -131,7 +126,7 @@ module.exports = class Changeling extends Character20th {
     });
 
     embed.addFields({
-      name: `Banality Permanant ${this.banality.primary}`,
+      name: `Banality Permanent ${this.banality.primary}`,
       value: this.banality.getPrimaryTracker({ emoji: Emoji.purple_dot_2 }),
       inline: false,
     });

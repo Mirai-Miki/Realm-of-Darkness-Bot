@@ -5,14 +5,21 @@ const { Splats } = require("../../Constants");
 const { EmbedBuilder } = require("discord.js");
 
 module.exports = class Mortal5th extends Character5th {
-  constructor({ client, name, health = 4, willpower = 2, humanity = 7 } = {}) {
+  constructor({
+    client,
+    name,
+    health = 4,
+    willpower = 2,
+    humanity = 7,
+    splat = "human5th",
+  } = {}) {
     super({ client, name, health, willpower });
-    this.splat = Splats.mortal5th;
+    this.splat = Splats[splat];
     this.humanity = new Humanity(humanity);
   }
 
-  static getSplat() {
-    return Splats.mortal5th;
+  static getSplat(splat) {
+    return Splats[splat];
   }
 
   setFields(args) {
@@ -34,9 +41,10 @@ module.exports = class Mortal5th extends Character5th {
     return this;
   }
 
-  serialize() {
+  serialize(newSave) {
     const s = super.serialize();
-    s.character["splatSlug"] = this.splat.slug;
+    if (this.class || newSave) s.character["class"] = this.splat.slug;
+    else s.character["splatSlug"] = this.splat.slug;
     s.character["humanity"] = this.humanity.total;
     s.character["stains"] = this.humanity.stains;
     return s;
