@@ -43,28 +43,13 @@ module.exports = class Vampire20th extends Character20th {
     return this;
   }
 
-  serialize(newSave) {
-    if (this.class || newSave) return this._serializeNew();
-    const s = super.serialize();
-    s.character["splatSlug"] = this.splat.slug;
-    s.character["morality"] = {
-      name: slugifiy(this.morality.name),
-      value: this.morality.pool.current,
-    };
-    s.character["blood"] = {
-      total: this.blood.total,
-      current: this.blood.current,
-    };
-    return s;
-  }
-
-  _serializeNew() {
-    const serializer = super._serializeNew();
+  serialize() {
+    const serializer = super.serialize();
     serializer.character["morality_name"] = this.morality.name;
     serializer.character["morality_value"] = this.morality.pool.current;
     serializer.character["blood_total"] = this.blood.total;
     serializer.character["blood_current"] = this.blood.current;
-    serializer.character["class"] = "vampire20th";
+    serializer.character["splat"] = this.splat.slug;
     return serializer;
   }
 

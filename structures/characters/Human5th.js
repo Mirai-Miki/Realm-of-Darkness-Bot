@@ -1,54 +1,44 @@
 "use strict";
-const Consumable = require("../Consumable");
 const Character5th = require("./base/Character5th");
-const { Splats, Emoji } = require("../../Constants");
+const Humanity = require("../humanity5th.js");
+const { Splats } = require("../../Constants");
 const { EmbedBuilder } = require("discord.js");
 
-module.exports = class Hunter5th extends Character5th {
-  constructor({ client, name, health = 4, willpower = 2 } = {}) {
+module.exports = class Human5th extends Character5th {
+  constructor({ client, name, health = 4, willpower = 2, humanity = 7 } = {}) {
     super({ client, name, health, willpower });
-    this.splat = Splats.hunter5th;
-    // Desperation is shared stat between coterie
-    this.desperation = new Consumable(5, 1, 1);
-    // Danger is a shared stat between coterie
-    this.danger = new Consumable(5, 1, 1);
-    // Despair is a boolean state triggered by rolling with desperation
-    this.despair = false;
+    this.splat = Splats.human5th.slug;
+    this.humanity = new Humanity(humanity);
   }
 
   static getSplat() {
-    return Splats.hunter5th;
+    return Splats.human5th.slug;
   }
 
   setFields(args) {
     super.setFields(args);
-    if (args.desperation != null) this.desperation.setCurrent(args.desperation);
-    if (args.danger != null) this.danger.setCurrent(args.danger);
-    if (args.despair != null) this.despair = args.despair;
+    if (args.humanity != null) this.humanity.setCurrent(args.humanity);
+    if (args.stains != null) this.humanity.setStains(args.stains);
   }
 
   updateFields(args) {
     super.updateFields(args);
-    if (args.desperation != null)
-      this.desperation.updateCurrent(args.desperation);
-    if (args.danger != null) this.danger.updateCurrent(args.danger);
-    if (args.despair != null) this.despair = args.despair;
+    if (args.humanity != null) this.humanity.updateCurrent(args.humanity);
+    if (args.stains != null) this.humanity.takeStains(args.stains);
   }
 
   async deserilize(char) {
     await super.deserilize(char);
-    this.desperation.setCurrent(char.desperation);
-    this.danger.setCurrent(char.danger);
-    this.despair = char.despair;
+    this.humanity = new Humanity(char.humanity.total);
+    this.humanity.takeStains(char.humanity.stains);
     return this;
   }
 
   serialize() {
     const s = super.serialize();
     s.character["splat"] = this.splat.slug;
-    s.character["desperation"] = this.desperation.current;
-    s.character["danger"] = this.danger.current;
-    s.character["despair"] = this.despair;
+    s.character["humanity"] = this.humanity.total;
+    s.character["stains"] = this.humanity.stains;
     return s;
   }
 
@@ -76,23 +66,10 @@ module.exports = class Hunter5th extends Character5th {
     if (this.thumbnail) embed.setThumbnail(this.thumbnail);
 
     embed.addFields({
-      name: "Desperation",
-      value: this.desperation.getTracker({ emoji: Emoji.purple_dot_3 }),
+      name: "Humanity",
+      value: this.humanity.getTracker() + this.humanity.getDegenerationInfo(),
       inline: false,
     });
-
-    embed.addFields({
-      name: "Danger",
-      value: this.danger.getTracker({ emoji: Emoji.red_dot }),
-      inline: false,
-    });
-
-    if (this.despair)
-      embed.addFields({
-        name: "Despair",
-        value: Emoji.hunter_pass,
-        inline: false,
-      });
 
     if (this.exp.total)
       embed.addFields({

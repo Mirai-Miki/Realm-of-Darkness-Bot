@@ -319,6 +319,7 @@ function getCommand() {
             { name: "Health", value: "health" },
             { name: "Willpower", value: "willpower" }
           );
+        return option;
       })
 
       .addStringOption((option) => {

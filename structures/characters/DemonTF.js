@@ -38,10 +38,9 @@ module.exports = class DemonTF extends Character20th {
     return this;
   }
 
-  serialize(newSave) {
+  serialize() {
     const s = super.serialize();
-    if (this.class || newSave) s.character["class"] = this.splat.slug;
-    else s.character["splatSlug"] = this.splat.slug;
+    s.character["splat"] = this.splat.slug;
     s.character["faith_total"] = this.faith.total;
     s.character["faith_current"] = this.faith.current;
     s.character["torment_total"] = this.torment.primary;

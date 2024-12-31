@@ -31,24 +31,20 @@ module.exports = class Werewolf20th extends Character20th {
 
   async deserilize(char) {
     await super.deserilize(char);
-    this.rage.setTotal(char.rage.total);
-    this.rage.setCurrent(char.rage.current);
-    this.gnosis.setTotal(char.gnosis.total);
-    this.gnosis.setCurrent(char.gnosis.current);
+    this.rage.setTotal(char.rage_total);
+    this.rage.setCurrent(char.rage_current);
+    this.gnosis.setTotal(char.gnosis_total);
+    this.gnosis.setCurrent(char.gnosis_current);
     return this;
   }
 
   serialize() {
     const s = super.serialize();
-    s.character["splatSlug"] = this.splat.slug;
-    s.character["rage"] = {
-      total: this.rage.total,
-      current: this.rage.current,
-    };
-    s.character["gnosis"] = {
-      total: this.gnosis.total,
-      current: this.gnosis.current,
-    };
+    s.character["splat"] = this.splat.slug;
+    s.character["rage_total"] = this.rage.total;
+    s.character["rage_current"] = this.rage.current;
+    s.character["gnosis_total"] = this.gnosis.total;
+    s.character["gnosis_current"] = this.gnosis.current;
     return s;
   }
 

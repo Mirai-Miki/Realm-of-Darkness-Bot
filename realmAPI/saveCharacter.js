@@ -9,9 +9,7 @@ const { RealmAPIError, APIErrorCodes } = require("../Errors");
  */
 module.exports = async function saveCharacter(cData) {
   {
-    const path = cData.character.class
-      ? "character/save"
-      : "character/save_old";
+    const path = "character/save";
     const res = await postData(path, cData);
     switch (res?.status) {
       case 200: // Saved successfully

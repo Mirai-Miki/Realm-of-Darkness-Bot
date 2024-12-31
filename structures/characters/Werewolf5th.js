@@ -50,8 +50,8 @@ module.exports = class Werewolf5th extends Character5th {
    * @returns {Object} The serialized character object.
    */
   serialize() {
-    const serializer = super._serializeNew();
-    serializer.character["class"] = "werewolf5th";
+    const serializer = super.serialize();
+    serializer.character["splat"] = this.splat.slug;
     serializer.character["rage"] = this.rage.current;
     serializer.character["harano"] = this.harano.current;
     serializer.character["hauglosk"] = this.hauglosk.current;

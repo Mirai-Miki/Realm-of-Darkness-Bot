@@ -41,23 +41,7 @@ module.exports = class Character20th extends Character {
   }
 
   serialize() {
-    const s = super.serialize();
-    s.character["version"] = this.version;
-    s.character["willpower"] = {
-      total: this.willpower.total,
-      current: this.willpower.current,
-    };
-    s.character["health"] = {
-      total: this.health.total,
-      bashing: this.health.bashing,
-      lethal: this.health.lethal,
-      aggravated: this.health.aggravated,
-    };
-    return s;
-  }
-
-  _serializeNew() {
-    const serializer = super._serializeNew();
+    const serializer = super.serialize();
     serializer.character["willpower_total"] = this.willpower.total;
     serializer.character["willpower_current"] = this.willpower.current;
     serializer.character["health_total"] = this.health.total;

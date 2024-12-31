@@ -1,43 +1,50 @@
-'use strict';
-const { postData } = require('./postData.js');
-const getCharacterClass = require('../modules/getCharacterClass');
-const RealmAPIError = require('../Errors/RealmAPIError');
+"use strict";
+const { postData } = require("./postData.js");
+const getCharacterClass = require("../modules/getCharacterClass");
+const RealmAPIError = require("../Errors/RealmAPIError");
 
 /**
  * Finds a character in the Database if one exists
  * @param {Client} client The discord client making the request
  * @param {String} name Name of the character being fetched
  * @param {User|GuildMember} user A Discord User OR GuildMember
- * @param {Guild} guild Discord Guild if there is one 
+ * @param {Guild} guild Discord Guild if there is one
  * @param {String} splatSlug Slug of the splat if known
  * @param {String} pk Priamary Key of the character if known
  * @returns {Promise<Character>} Returns a Character class if one is found or null if not
  */
-module.exports = async function getCharacter({client, name=null, user=null, 
-  guild=null, splatSlug=null, pk=null}={})
-{ 
-  const path = 'character/get';
+module.exports = async function getCharacter({
+  client,
+  name = null,
+  user = null,
+  guild = null,
+  splat = null,
+  pk = null,
+} = {}) {
+  const path = "character/get";
   const data = {
-    name: name, 
-    splat_slug: splatSlug,
+    name: name,
+    splat: splat,
     pk: pk,
     user_id: user?.id,
-    guild_id: guild?.id
-  }
+    guild_id: guild?.id,
+  };
 
   const res = await postData(path, data);
-  switch(res?.status)
-  {
+  switch (res?.status) {
     case 200: // Found a character
-      const json = res.data.character
-      
+      const json = res.data;
       const CharacterClass = getCharacterClass(json.splat);
-      const char = new CharacterClass({client: client, name: json.name});
+      const char = new CharacterClass({ client: client, name: json.name });
       await char.deserilize(json);
       return char;
-    case 204: // No character
+    case 404: // No character
       return null;
+    case 300: // No sheet selected
+      throw new RealmError({ code: ErrorCodes.NoCharacterSelected });
     default:
-      throw new RealmAPIError({cause: `res: ${res?.status}\ndata: ${JSON.stringify(data)}`});
+      throw new RealmAPIError({
+        cause: `res: ${res?.status}\ndata: ${JSON.stringify(data)}`,
+      });
   }
-}
+};

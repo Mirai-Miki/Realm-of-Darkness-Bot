@@ -73,6 +73,17 @@ function getCommands() {
           .setMaxLength(50)
       )
 
+      .addStringOption((option) =>
+        option
+          .setName("type")
+          .setDescription("The type of Mortal you are playing.")
+          .setRequired(true)
+          .addChoices(
+            { name: "Human", value: "human" },
+            { name: "Ghoul", value: "ghoul" }
+          )
+      )
+
       .addIntegerOption((option) =>
         option
           .setName("willpower")

@@ -36,7 +36,7 @@ module.exports = class Ghoul20th extends Character20th {
 
   async deserilize(char) {
     await super.deserilize(char);
-    this.morality.pool.setCurrent(char.morality);
+    this.morality.pool.setCurrent(char.humanity);
     this.blood.setCurrent(char.blood);
     this.vitae.setCurrent(char.vitae);
     return this;
@@ -44,8 +44,8 @@ module.exports = class Ghoul20th extends Character20th {
 
   serialize() {
     const s = super.serialize();
-    s.character["splatSlug"] = this.splat.slug;
-    s.character["morality"] = this.morality.pool.current;
+    s.character["splat"] = this.splat.slug;
+    s.character["humanity"] = this.morality.pool.current;
     s.character["blood"] = this.blood.current;
     s.character["vitae"] = this.vitae.current;
     return s;

@@ -58,23 +58,12 @@ module.exports = class Vampire5th extends Character5th {
     return this;
   }
 
-  serialize(newSave) {
-    if (this.class || newSave) return this._serializeNew();
-    const s = super.serialize();
-    s.character["splatSlug"] = this.splat.slug;
-    s.character["hunger"] = this.hunger.current;
-    s.character["humanity"] = this.humanity.total;
-    s.character["stains"] = this.humanity.stains;
-    s.character["class"] = this.class;
-    return s;
-  }
-
-  _serializeNew() {
-    const serializer = super._serializeNew();
+  serialize() {
+    const serializer = super.serialize();
+    serializer.character["splat"] = this.splat.slug;
     serializer.character["hunger"] = this.hunger.current;
     serializer.character["humanity"] = this.humanity.total;
     serializer.character["stains"] = this.humanity.stains;
-    serializer.character["class"] = "vampire5th";
     return serializer;
   }
 

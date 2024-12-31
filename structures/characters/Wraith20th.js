@@ -30,19 +30,17 @@ module.exports = class Wraith20 extends Character20th {
 
   async deserilize(char) {
     await super.deserilize(char);
-    this.corpus.setTotal(char.corpus.total);
-    this.corpus.setCurrent(char.corpus.current);
+    this.corpus.setTotal(char.corpus_total);
+    this.corpus.setCurrent(char.corpus_current);
     this.pathos.setCurrent(char.pathos);
     return this;
   }
 
   serialize() {
     const s = super.serialize();
-    s.character["splatSlug"] = this.splat.slug;
-    s.character["corpus"] = {
-      total: this.corpus.total,
-      current: this.corpus.current,
-    };
+    s.character["splat"] = this.splat.slug;
+    s.character["corpus_total"] = this.corpus.total;
+    s.character["corpus_current"] = this.corpus.current;
     s.character["pathos"] = this.pathos.current;
     return s;
   }

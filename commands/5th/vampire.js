@@ -28,7 +28,6 @@ module.exports = {
         return res;
       case "update":
         const update = await tracker.update(interaction, Splats.vampire5th);
-        await oldVampireFollowUp(interaction);
         return update;
       case "set":
         return await tracker.set(interaction, Splats.vampire5th);
@@ -55,35 +54,6 @@ async function sheetFollowUp(interaction) {
     .setTitle("Sheets now in Early Access")
     .setDescription(
       'Character sheets are now in Early Access on the [Website](https://realmofdarkness.app).\nCharacter sheets are fully compatible with the bot tracker commands as well as providing an easy to use web interface to update values. It also gives you access to the `/sheet roll` command which is an easier way to build pools without having to look at your sheet to make rolls.\n\nTo create a new sheet all you need to do is Login to the [Website](https://realmofdarkness.app) and click the "New Sheet button" to get started.\n\nPlease note that early access sheets are still missing many features and will be slowly added too over time to become more feature complete.'
-    );
-  message.embeds.push(embed);
-  interaction.followUps.push(message);
-}
-
-/**
- * Handles the follow-up logic for the old Vampire tracker.
- * If the character class is already set, the function returns early.
- * If the interaction does not have any follow-ups, an empty array is assigned to it.
- * Constructs a message object with ephemeral set to true and an empty array for embeds.
- * Creates an embed using the EmbedBuilder class.
- * Sets the color, title, and description of the embed.
- * Adds the embed to the message's embeds array.
- * Pushes the message object to the interaction's follow-ups array.
- *
- * @param {Interaction} interaction - The interaction object representing the user's interaction with the bot.
- * @returns {Promise<void>} - A promise that resolves when the follow-up logic is completed.
- */
-async function oldVampireFollowUp(interaction) {
-  if (interaction.character.class) return;
-  if (!interaction.followUps) interaction.followUps = [];
-  const message = { ephemeral: true, embeds: [] };
-
-  const embed = new EmbedBuilder();
-  embed
-    .setColor("#ede61a")
-    .setTitle("Old Tracker")
-    .setDescription(
-      "This Vampire tracker is currently not compatible with the new tracker/sheet system, while it will continue to work for now, support will eventually be dropped some time in the future.\n\nTo avoid losing any data, please make a new tracker using the `/vampire new` command. Alternatively you can try the new Character Sheets which are currently in Early Access on the [Website](https://realmofdarkness.app)."
     );
   message.embeds.push(embed);
   interaction.followUps.push(message);

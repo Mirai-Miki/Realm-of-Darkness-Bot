@@ -75,10 +75,9 @@ module.exports = class Changeling extends Character20th {
     return this;
   }
 
-  serialize(newSave) {
+  serialize() {
     const s = super.serialize();
-    if (this.class || newSave) s.character["class"] = this.splat.slug;
-    else s.character["splatSlug"] = this.splat.slug;
+    s.character["splat"] = this.splat.slug;
     s.character["glamour_total"] = this.glamour.total;
     s.character["glamour_current"] = this.glamour.current;
     s.character["banality_total"] = this.banality.primary;

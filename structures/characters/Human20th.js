@@ -33,15 +33,15 @@ module.exports = class Human20th extends Character20th {
 
   async deserilize(char) {
     await super.deserilize(char);
-    this.morality.pool.setCurrent(char.morality);
+    this.morality.pool.setCurrent(char.humanity);
     this.blood.setCurrent(char.blood);
     return this;
   }
 
   serialize() {
     const s = super.serialize();
-    s.character["splatSlug"] = this.splat.slug;
-    s.character["morality"] = this.morality.pool.current;
+    s.character["splat"] = this.splat.slug;
+    s.character["humanity"] = this.morality.pool.current;
     s.character["blood"] = this.blood.current;
     return s;
   }
@@ -89,7 +89,7 @@ module.exports = class Human20th extends Character20th {
     if (notes) embed.addFields({ name: "Notes", value: notes });
     const links =
       "\n[Website](https://realmofdarkness.app/) " +
-      "| [Commands](https://realmofdarkness.app/20th/commands/) " +
+      "| [Commands](https://realmofdarkness.app/20th/commands/)" +
       "| [Patreon](https://www.patreon.com/MiraiMiki)";
     embed.data.fields.at(-1).value += links;
 

@@ -61,22 +61,6 @@ module.exports = class Character {
   }
 
   serialize() {
-    const s = { character: {} };
-    s.character["name"] = this.name;
-    s.character["id"] = this.id;
-    s.user_id = this.user?.id ? this.user.id : null;
-    s.guild_id = this.guild?.id ? this.guild.id : null;
-    s.character["theme"] = this.color;
-    s.character["avatar"] = this.thumbnail ?? undefined;
-    s.character["exp"] = {
-      total: this.exp.total,
-      current: this.exp.current,
-    };
-    s.character["log"] = this.changes;
-    return s;
-  }
-
-  _serializeNew() {
     const serializer = { character: {} };
     serializer.character["name"] = this.name;
     serializer.character["id"] = this.id;
@@ -92,7 +76,7 @@ module.exports = class Character {
   async save(client) {
     if (Object.keys(this.changes).length > 1) {
       if (this.changes.command === "New Character")
-        await API.newCharacter(this.serialize(true));
+        await API.newCharacter(this.serialize());
       else await API.saveCharacter(this.serialize());
       sendToTrackerChannel(client, this);
     }

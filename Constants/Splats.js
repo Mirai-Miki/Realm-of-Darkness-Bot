@@ -48,11 +48,6 @@ module.exports = {
     version: "5th",
     slug: "vampire5th",
   },
-  mortal5th: {
-    name: "Mortal",
-    version: "5th",
-    slug: "mortal5th",
-  },
   hunter5th: {
     name: "Hunter",
     version: "5th",
@@ -62,5 +57,15 @@ module.exports = {
     name: "Werewolf",
     version: "5th",
     slug: "werewolf5th",
+  },
+  human5th: {
+    name: "Human",
+    version: "5th",
+    slug: "human5th",
+  },
+  ghoul5th: {
+    name: "Ghoul",
+    version: "5th",
+    slug: "ghoul5th",
   },
 };

@@ -51,7 +51,7 @@ module.exports = class Mage extends Character20th {
 
   serialize() {
     const s = super.serialize();
-    s.character["splatSlug"] = this.splat.slug;
+    s.character["splat"] = this.splat.slug;
     s.character["arete"] = this.arete.current;
     s.character["quintessence"] = this.quint.quintessence;
     s.character["paradox"] = this.quint.paradox;
