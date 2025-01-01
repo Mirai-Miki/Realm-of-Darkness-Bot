@@ -17,9 +17,11 @@ module.exports = async function newCharacter(data) {
         throw new RealmAPIError({ code: APIErrorCodes.CharacterLimitReached });
       default:
         throw new RealmAPIError({
-          cause: `code: ${res?.status}\npost: ${JSON.stringify(
-            data
-          )}\nJSON: ${JSON.stringify(res?.data)}`,
+          cause: `res_status: ${res?.status}\nres: ${JSON.stringify(
+            res?.data,
+            null,
+            2
+          )}\npost: ${JSON.stringify(data, null, 2)}`,
         });
     }
   }

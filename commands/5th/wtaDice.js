@@ -32,7 +32,7 @@ module.exports = {
   async autocomplete(interaction) {
     return await autocomplete5th(interaction, [
       Splats.werewolf5th.slug,
-      Splats.mortal5th.slug,
+      Splats.human5th.slug,
     ]);
   },
 };

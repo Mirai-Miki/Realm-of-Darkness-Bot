@@ -34,7 +34,7 @@ async function getArgs(interaction) {
     args.name = defaults ? defaults.name : null;
   }
 
-  args.character = await API.getCharacterDefault({
+  args.character = await API.getCharacter({
     client: interaction.client,
     name: args.name,
     user: interaction.user,

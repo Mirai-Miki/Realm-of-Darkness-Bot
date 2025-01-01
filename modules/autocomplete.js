@@ -37,7 +37,10 @@ module.exports = async function autocomplete5th(
   }
 
   const filtered = choices.filter((choice) =>
-    choice.toLowerCase().startsWith(focusedValue)
+    choice.name.toLowerCase().startsWith(focusedValue)
   );
-  return filtered.map((choice) => ({ name: choice, value: choice }));
+  return filtered.map((choice) => ({
+    name: choice.name,
+    value: choice.id.toString(),
+  }));
 };

@@ -77,8 +77,9 @@ This project is licensed under the AGPL License. See the [LICENSE](LICENSE) file
 
 ## Things to Implement
 
+- Include 'splat' in list values to make future pulls easier
+- Split Roll commands into their own Commands
 - Add Impairment penalty to sheet roll
-- autocomplete character names
 - ST updates should DM the update to the players
 - Exp managment server wide
 - Commands to compliment full sheets. Healing, damage ect.

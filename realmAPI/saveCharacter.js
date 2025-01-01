@@ -20,9 +20,11 @@ module.exports = async function saveCharacter(cData) {
         throw new RealmAPIError({ code: APIErrorCodes.TooManySheets });
       default:
         throw new RealmAPIError({
-          cause: `code: ${res?.status}\npost: ${JSON.stringify(
-            cData
-          )}\nJSON: ${JSON.stringify(res?.data)}`,
+          cause: `res_status: ${res?.status}\nres: ${JSON.stringify(
+            res?.data,
+            null,
+            2
+          )}\npost: ${JSON.stringify(cData, null, 2)}`,
         });
     }
   }

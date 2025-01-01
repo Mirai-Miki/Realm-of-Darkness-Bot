@@ -51,8 +51,13 @@ module.exports.RealmAPIError = require("./RealmAPIError");
 module.exports.handleErrorDebug = async function (error, client) {
   if (error.debug?.raise === false) return;
   if (dev === true) {
-    // Print to console on dev enviorment
-    console.error(error);
+    // Print to console on dev environment
+    console.error(error.stack);
+    if (error.cause) {
+      console.log("");
+      console.error("Cause:");
+      console.error(error.cause);
+    }
     return;
   }
 
@@ -64,9 +69,10 @@ module.exports.handleErrorDebug = async function (error, client) {
       .setTitle(error.name)
       .setColor("#db0f20");
 
-    let description = "";
-    if (error.debug?.cause) description += `\n\nCaused by:\n${error.cause}`;
-    debugEmbed.setDescription(error.stack + description);
+    let description = `\`\`\`${error.stack}\`\`\``;
+    if (error.debug?.cause)
+      description += `\n\nCaused by:\n\`\`\`${error.cause}\`\`\``;
+    debugEmbed.setDescription(description);
 
     client.shard.broadcastEval(
       async (c, { message }) => {

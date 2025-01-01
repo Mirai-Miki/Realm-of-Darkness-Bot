@@ -43,7 +43,11 @@ module.exports = async function getSheet({
       throw new RealmError({ code: ErrorCodes.NotSheet });
     default:
       throw new RealmAPIError({
-        cause: `res: ${res?.status}\ndata: ${JSON.stringify(data)}`,
+        cause: `res_status: ${res?.status}\nres: ${JSON.stringify(
+          res?.data,
+          null,
+          2
+        )}\npost: ${JSON.stringify(data, null, 2)}`,
       });
   }
 };

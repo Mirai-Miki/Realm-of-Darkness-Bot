@@ -22,7 +22,10 @@ module.exports = {
   },
 
   async autocomplete(interaction) {
-    return await autocomplete5th(interaction, Splats.hunter5th.slug);
+    return await autocomplete5th(interaction, [
+      Splats.hunter5th.slug,
+      Splats.human5th.slug,
+    ]);
   },
 };
 

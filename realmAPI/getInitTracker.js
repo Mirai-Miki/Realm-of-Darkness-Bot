@@ -1,21 +1,25 @@
-'use strict';
-const { postData } = require('./postData.js');
-const RealmAPIError = require('../Errors/RealmAPIError');
-const InitiativeTracker = require('../structures/InitiativeTracker');
+"use strict";
+const { postData } = require("./postData.js");
+const RealmAPIError = require("../Errors/RealmAPIError");
+const InitiativeTracker = require("../structures/InitiativeTracker");
 
-module.exports = async function getInitTracker(channelId)
-{
-  const path = 'initiative/get';
-  const data =  {channel_id: channelId};
+module.exports = async function getInitTracker(channelId) {
+  const path = "initiative/get";
+  const data = { channel_id: channelId };
 
   const res = await postData(path, data);
-  switch(res?.status)
-  {
+  switch (res?.status) {
     case 200: // Found a Tracker
-      return new InitiativeTracker({json: res.data.tracker});
+      return new InitiativeTracker({ json: res.data.tracker });
     case 204: // No Tracker
       return null;
     default:
-      throw new RealmAPIError({cause: `res: ${res?.status}\ndata: ${JSON.stringify(data)}`});
+      throw new RealmAPIError({
+        cause: `res_status: ${res?.status}\nres: ${JSON.stringify(
+          res?.data,
+          null,
+          2
+        )}\npost: ${JSON.stringify(data, null, 2)}`,
+      });
   }
-}
+};
