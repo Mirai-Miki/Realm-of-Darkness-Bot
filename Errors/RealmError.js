@@ -331,4 +331,22 @@ const ErrorInfo =
     debug: false,
     cause: false
   },
+  [ErrorCodes.NoBlood]:
+  {
+    system: "No blood",
+    embedTitle: 'No Blood',
+    embedMessage: 
+      'You do not have any Blood remaining for this action.',
+    debug: false,
+    cause: false
+  },
+  [ErrorCodes.NoDamage]:
+  {
+    system: "No Damage",
+    embedTitle: 'No Damage',
+    embedMessage: 
+      'You do not have any injuries that require healing with Blood.',
+    debug: false,
+    cause: false
+  },
 }
