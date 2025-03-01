@@ -85,4 +85,14 @@ const ErrorInfo = {
     debug: false,
     cause: false,
   },
+  [APIErrorCodes.NameExists]: {
+    system: "Realm API - Name change but name already exists",
+    embedTitle: "Name already exists",
+    embedMessage: oneLineTrim`
+      Sorry, you already have a character with this name.
+      Please choose another name and try again.
+    `,
+    debug: false,
+    cause: false,
+  },
 };

@@ -2,6 +2,7 @@
 const { RealmError, ErrorCodes } = require("../Errors");
 const isAdminOrST = require("./isAdminOrST");
 const getCharacterClass = require("./getCharacterClass");
+const parseAutocompleteCharacter = require("./parseAutocompleteCharacter");
 const API = require("../realmAPI");
 
 module.exports.new = async function (interaction, splat) {
@@ -25,12 +26,16 @@ module.exports.new = async function (interaction, splat) {
 module.exports.set = async function (interaction, splat) {
   const options = interaction.arguments;
   options.command = "Set Character";
+
+  const parsedChar = parseAutocompleteCharacter(options.name, splat.slug);
+
   const char = await API.getCharacter({
     client: interaction.client,
-    name: options.name,
+    name: parsedChar.name,
     user: interaction.user,
     guild: interaction.guild ?? null,
-    splat: splat.slug,
+    splat: parsedChar.splat,
+    pk: parsedChar.pk,
   });
 
   if (!char) throw new RealmError({ code: ErrorCodes.NoCharacter });
@@ -45,6 +50,8 @@ module.exports.update = async function (interaction, splat) {
   options.command = "Update Character";
   let requestedUser = interaction.user;
 
+  const parsedChar = parseAutocompleteCharacter(options.name, splat.slug);
+
   // An ST is trying to change another players character
   if (options.player && !interaction.guild)
     throw new RealmError({ code: ErrorCodes.GuildRequired });
@@ -54,12 +61,14 @@ module.exports.update = async function (interaction, splat) {
   ) {
     throw new RealmError({ code: ErrorCodes.NotAdminOrST });
   } else if (options.player) requestedUser = options.player;
+
   const char = await API.getCharacter({
     client: interaction.client,
-    name: options.name,
+    name: parsedChar.name,
     user: requestedUser,
-    splat: splat.slug,
+    splat: parsedChar.splat,
     guild: interaction.guild ?? null,
+    pk: parsedChar.pk,
   });
 
   if (!char) throw new RealmError({ code: ErrorCodes.NoCharacter });

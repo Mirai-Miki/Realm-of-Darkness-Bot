@@ -10,7 +10,7 @@
  */
 const API = require("../realmAPI");
 
-module.exports = async function autocomplete5th(
+module.exports = async function autocomplete(
   interaction,
   splat,
   sheet_only = false
@@ -19,12 +19,21 @@ module.exports = async function autocomplete5th(
   const focusedValue = focusedOption.value.toLowerCase();
 
   let choices = [];
-  if (focusedOption.name === "discipline")
+  if (focusedOption.name === "discipline") {
     choices = await API.getDisciplineNames(
       interaction.user.id,
       interaction.guild?.id
     );
-  else if (
+
+    // Filter discipline names and return plain format
+    const filtered = choices.filter((choice) =>
+      choice.name.toLowerCase().startsWith(focusedValue)
+    );
+    return filtered.map((choice) => ({
+      name: choice.name,
+      value: choice.name, // Return actual discipline name as value
+    }));
+  } else if (
     focusedOption.name === "name" ||
     focusedOption.name === "character"
   ) {
@@ -34,13 +43,16 @@ module.exports = async function autocomplete5th(
       splat,
       sheet_only
     );
+
+    // Filter character names and return special format
+    const filtered = choices.filter((choice) =>
+      choice.name.toLowerCase().startsWith(focusedValue)
+    );
+    return filtered.map((choice) => ({
+      name: choice.name,
+      value: `~${choice.id}|${choice.splat}`,
+    }));
   }
 
-  const filtered = choices.filter((choice) =>
-    choice.name.toLowerCase().startsWith(focusedValue)
-  );
-  return filtered.map((choice) => ({
-    name: choice.name,
-    value: `~${choice.id}|${choice.splat}`,
-  }));
+  return [];
 };

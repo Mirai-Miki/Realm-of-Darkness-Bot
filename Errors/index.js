@@ -43,6 +43,7 @@ module.exports.APIErrorCodes = {
   CharacterExists: 1002,
   CharacterLimitReached: 1003,
   NotAnImage: 1004,
+  NameExists: 1005,
 };
 
 module.exports.RealmError = require("./RealmError");
