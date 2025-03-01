@@ -1,7 +1,7 @@
 "use strict";
 const { postData } = require("./postData.js");
 const getCharacterClass = require("../modules/getCharacterClass");
-const RealmAPIError = require("../Errors/RealmAPIError");
+const { RealmError, RealmAPIError, ErrorCodes } = require("../Errors");
 
 /**
  * Finds a character in the Database if one exists
@@ -29,7 +29,6 @@ module.exports = async function getCharacter({
     user_id: user?.id,
     guild_id: guild?.id,
   };
-
   const res = await postData(path, data);
   switch (res?.status) {
     case 200: // Found a character
@@ -39,7 +38,7 @@ module.exports = async function getCharacter({
       await char.deserilize(json);
       return char;
     case 404: // No character
-      return null;
+      throw new RealmError({ code: ErrorCodes.NoCharacter });
     case 300: // No sheet selected
       throw new RealmError({ code: ErrorCodes.NoCharacterSelected });
     default:

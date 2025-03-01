@@ -77,6 +77,7 @@ This project is licensed under the AGPL License. See the [LICENSE](LICENSE) file
 
 ## Things to Implement
 
+- Need autocomplete on /character defaults
 - Include 'splat' in list values to make future pulls easier
 - Split Roll commands into their own Commands
 - Add Impairment penalty to sheet roll

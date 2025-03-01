@@ -1,21 +1,27 @@
 "use strict";
 const { postData } = require("./postData.js");
+const getCharacterClass = require("../modules/getCharacterClass");
 const { RealmAPIError, RealmError, ErrorCodes } = require("../Errors/");
 
-module.exports.get = async function (guildId, userId) {
+module.exports.get = async function (client, guildId, userId, splats = null) {
   const path = "chronicle/member/defaults/get";
   const data = {
     guild_id: guildId,
     user_id: userId,
+    splats: splats,
   };
 
   const res = await postData(path, data);
   switch (res?.status) {
-    case 200: // Updated
-      const data = res.data;
-      data.autoHunger = data.auto_hunger;
-      delete data.auto_hunger;
-      return data;
+    case 200: // Found defaults
+      const json = res.data;
+      const CharacterClass = getCharacterClass(json.character.splat);
+      const char = new CharacterClass({
+        client: client,
+        name: json.character.name,
+      });
+      await char.deserilize(json.character);
+      return { ...json, character: char };
     case 204: // No defaults
       return null;
     default:

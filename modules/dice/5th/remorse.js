@@ -1,11 +1,10 @@
 "use strict";
 const Roll = require("../Roll");
 const { EmbedBuilder } = require("discord.js");
-const { trimString } = require("../../misc");
-const API = require("../../../realmAPI");
 const { getContent } = require("./getVtmRollResponse");
 const { Splats } = require("../../../Constants");
 const { RealmError, ErrorCodes } = require("../../../Errors");
+const getCharacterData = require("../../getCharacterData");
 
 module.exports = async function remorse(interaction) {
   interaction.args = await getArgs(interaction);
@@ -18,34 +17,21 @@ module.exports = async function remorse(interaction) {
 };
 
 async function getArgs(interaction) {
+  const characterData = await getCharacterData(
+    interaction,
+    interaction.client,
+    true,
+    [Splats.vampire5th.slug, Splats.ghoul5th.slug, Splats.human5th.slug]
+  );
   const args = {
-    name: trimString(interaction.options.getString("name")),
+    name: characterData.name,
     notes: interaction.options.getString("notes"),
+    character: characterData.character,
   };
 
-  if (!args.name) {
-    if (!interaction.guild)
-      throw new RealmError({ code: ErrorCodes.NoCharacterSelected });
-
-    const defaults = await API.characterDefaults.get(
-      interaction.guild.id,
-      interaction.user.id
-    );
-    args.name = defaults ? defaults.name : null;
+  if (!args.character) {
+    throw new RealmError({ code: ErrorCodes.NoCharacterSelected });
   }
-
-  args.character = await API.getCharacter({
-    client: interaction.client,
-    name: args.name,
-    user: interaction.user,
-    guild: interaction.guild ?? null,
-  });
-
-  if (
-    args.character.splat !== Splats.vampire5th &&
-    args.character.splat !== Splats.mortal5th
-  )
-    throw new RealmError({ code: ErrorCodes.IncorrectCharType });
 
   return args;
 }

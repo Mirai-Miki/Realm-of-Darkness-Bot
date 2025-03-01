@@ -41,6 +41,6 @@ module.exports = async function autocomplete5th(
   );
   return filtered.map((choice) => ({
     name: choice.name,
-    value: choice.id.toString(),
+    value: `~${choice.id}|${choice.splat}`,
   }));
 };
