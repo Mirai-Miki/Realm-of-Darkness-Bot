@@ -39,5 +39,8 @@ module.exports = async function autocomplete5th(
   const filtered = choices.filter((choice) =>
     choice.toLowerCase().startsWith(focusedValue)
   );
-  return filtered.map((choice) => ({ name: choice, value: choice }));
+  // Limit the number of options to 25
+  const limitedChoices = filtered.slice(0, 25);
+
+  return limitedChoices.map((choice) => ({ name: choice, value: choice }));
 };

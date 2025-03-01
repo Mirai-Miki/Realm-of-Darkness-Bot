@@ -41,6 +41,9 @@ The major libraries being used in this codebase include:
   "token20th": "TOKEN",
   "tokenCod": "TOKEN",
 
+  // Dev Server Id
+  "devServerId": "SERVER_ID",
+
   // API Key for the server
   "APIKey": "API_KEY"
 }
