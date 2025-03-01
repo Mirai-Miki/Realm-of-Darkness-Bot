@@ -47,7 +47,7 @@ async function getArgs(interaction) {
 }
 
 function applyDicePenalty(interaction) {
-  if (interaction.arguments.character?.tracked.health) {
+  if (interaction.arguments.character?.tracked?.health) {
     const dicePenalty = extractDicePenalty(interaction.arguments);
     interaction.arguments.pool -= dicePenalty;
 
