@@ -10,6 +10,7 @@ module.exports = class DamageTracker20th
     this.lethal = 0;
     this.aggravated = 0;
     this.overflow = 0;
+    this.damageInfo = '';
   }
 
   resetOverflow()
@@ -130,6 +131,7 @@ module.exports = class DamageTracker20th
     else if (total > (totalHealth - 7)) total -= (totalHealth - 7);
 
     tracker += damageInfo[total];
+    this.damageInfo += damageInfo[total];
     return tracker
   }
 }
