@@ -49,7 +49,7 @@ console.log("Events Path:", eventsPath);
 
 if (!fs.existsSync(eventsPath)) {
   console.error(`Events directory not found: ${eventsPath}`);
-  process.exit(1); // Detener la ejecución si no se encuentra la carpeta
+  process.exit(1);
 }
 
 const eventFiles = fs
