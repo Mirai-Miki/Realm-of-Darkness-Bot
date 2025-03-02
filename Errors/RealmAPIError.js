@@ -95,4 +95,13 @@ const ErrorInfo = {
     debug: false,
     cause: false,
   },
+  [APIErrorCodes.NameContainsSpecialCharacter]: {
+    system: "Realm API - Name contains special characters",
+    embedTitle: "Name contains invalid characters",
+    embedMessage: oneLineTrim`
+      Sorry, you cannot use the character ~ in your character name.
+    `,
+    debug: false,
+    cause: false,
+  },
 };

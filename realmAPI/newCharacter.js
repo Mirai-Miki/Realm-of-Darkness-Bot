@@ -15,6 +15,10 @@ module.exports = async function newCharacter(data) {
         throw new RealmAPIError({ code: APIErrorCodes.NotAnImage });
       case 409: // Conflict -- Too many characters
         throw new RealmAPIError({ code: APIErrorCodes.CharacterLimitReached });
+      case 422: // Unprocessable Entity -- Name contains special characters
+        throw new RealmAPIError({
+          code: APIErrorCodes.NameContainsSpecialCharacter,
+        });
       default:
         throw new RealmAPIError({
           cause: `res_status: ${res?.status}\nres: ${JSON.stringify(

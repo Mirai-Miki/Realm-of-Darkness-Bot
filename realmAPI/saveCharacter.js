@@ -19,6 +19,10 @@ module.exports = async function saveCharacter(cData) {
         throw new RealmAPIError({ code: APIErrorCodes.NotAnImage });
       case 304: // Not Modified - Duplicate character name
         throw new RealmAPIError({ code: APIErrorCodes.NameExists });
+      case 422: // Unprocessable Entity -- Name contains special characters
+        throw new RealmAPIError({
+          code: APIErrorCodes.NameContainsSpecialCharacter,
+        });
       default:
         throw new RealmAPIError({
           cause: `res_status: ${res?.status}\nres: ${JSON.stringify(
