@@ -30,8 +30,7 @@ async function pushCommands(ver) {
   }
 
   const lowerVer = ver.toLowerCase();
-  const commandPath = path.join(process.cwd(), "commands", lowerVer);
-
+  const commandPath = path.join(process.cwd(), "src", "commands", lowerVer);
   if (!fs.existsSync(commandPath)) {
     console.error(`Command directory not found: ${commandPath}`);
     return;

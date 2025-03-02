@@ -25,33 +25,33 @@ const client = new Client({
 
 /* Loading Commands in Client */
 client.commands = new Collection();
-const commandsPath = path.join(process.cwd(), "commands/5th");
+const commandsPath = path.join(process.cwd(), "src", "commands", "5th");
 const commandFiles = fs
   .readdirSync(commandsPath)
   .filter((file) => file.endsWith(".js") || file.endsWith(".ts"));
 for (const file of commandFiles) {
-  const command = require("@commands/5th/" + file);
+  const command = require(path.join(commandsPath, file));
   client.commands.set(command.data.name, command);
 }
 
 /* Loading Component Events in Client */
 client.components = new Collection();
-const componentsPath = path.join(process.cwd(), "components/5th");
+const componentsPath = path.join(process.cwd(), "src", "components", "5th");
 const componentFiles = fs
   .readdirSync(componentsPath)
   .filter((file) => file.endsWith(".js") || file.endsWith(".ts"));
 for (const file of componentFiles) {
-  const component = require("@components/5th/" + file);
+  const component = require(path.join(componentsPath, file));
   client.components.set(component.name, component);
 }
 
 /* Event Listeners */
-const eventsPath = path.join(process.cwd(), "events");
+const eventsPath = path.join(process.cwd(), "src", "events");
 const eventFiles = fs
   .readdirSync(eventsPath)
   .filter((file) => file.endsWith(".js") || file.endsWith(".ts"));
 for (const file of eventFiles) {
-  const event = require("@events/" + file);
+  const event = require(path.join(eventsPath, file));
   if (event.once) {
     client.once(event.name, async (...args) => {
       try {
