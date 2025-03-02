@@ -1,10 +1,16 @@
 {
   "scripts": {
-    "5th": "node index-5th.js",
-    "20th": "node index-20th.js",
-    "cod": "node index-cod.js",
-    "dev-build": "node deploy-commands.js",
-    "build": "node deploy-global-commands.js"
+    "5th": "node src/shards/index-5th.js",
+    "20th": "node src/shards/index-20th.js",
+    "cod": "node src/shards/index-cod.js",
+    "deploy": "node scripts/deploy-global-commands.js",
+    "build": "tsc && node scripts/copy-js-files.js",
+    "dev:build": "node scripts/deploy-global-commands.js",
+    "dev:5th": "nodemon src/shards/index-5th.js",
+    "dev:20th": "nodemon src/shards/index-20th.js",
+    "dev:cod": "nodemon src/shards/index-cod.js",
+    "dev": "npm run dev:build && scripts\\dev_start.bat",
+    "start": "node dist/index-20th.js"
   },
   "dependencies": {
     "@discordjs/builders": "^1.4.0",
@@ -12,6 +18,14 @@
     "axios": "^1.3.2",
     "common-tags": "^1.8.2",
     "discord-api-types": "^0.37.31",
-    "discord.js": "^14.13.0"
+    "discord.js": "^14.13.0",
+    "dotenv": "^16.4.7",
+    "module-alias": "^2.2.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.8",
+    "nodemon": "^3.1.9",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.2"
   }
 }

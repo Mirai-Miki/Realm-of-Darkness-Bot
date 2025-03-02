@@ -1,13 +1,18 @@
 "use strict";
+require("../../alias"); // Load aliases first
 const fs = require("fs");
-const { token20th } = require("./config.json");
-const { handleErrorDebug } = require("./Errors");
+const path = require("path");
+const dotenv = require("dotenv");
+const { handleErrorDebug } = require("@errors");
 const {
   Client,
   GatewayIntentBits,
   Collection,
   Partials,
 } = require("discord.js");
+
+// Load environment variables
+dotenv.config();
 
 const client = new Client({
   intents: [
@@ -20,30 +25,33 @@ const client = new Client({
 
 /* Loading Commands in Client */
 client.commands = new Collection();
+const commandsPath = path.join(process.cwd(), "commands/20th");
 const commandFiles = fs
-  .readdirSync("./commands/20th")
-  .filter((file) => file.endsWith(".js"));
+  .readdirSync(commandsPath)
+  .filter((file) => file.endsWith(".js") || file.endsWith(".ts"));
 for (const file of commandFiles) {
-  const command = require(`./commands/20th/${file}`);
+  const command = require("@commands/20th/" + file);
   client.commands.set(command.data.name, command);
 }
 
 /* Loading Component Events in Client */
 client.components = new Collection();
+const componentsPath = path.join(process.cwd(), "components/20th");
 const componentFiles = fs
-  .readdirSync("./components/20th")
-  .filter((file) => file.endsWith(".js"));
+  .readdirSync(componentsPath)
+  .filter((file) => file.endsWith(".js") || file.endsWith(".ts"));
 for (const file of componentFiles) {
-  const component = require(`./components/20th/${file}`);
+  const component = require("@components/20th/" + file);
   client.components.set(component.name, component);
 }
 
 /* Event Listeners */
+const eventsPath = path.join(process.cwd(), "events");
 const eventFiles = fs
-  .readdirSync("./events")
-  .filter((file) => file.endsWith(".js"));
+  .readdirSync(eventsPath)
+  .filter((file) => file.endsWith(".js") || file.endsWith(".ts"));
 for (const file of eventFiles) {
-  const event = require(`./events/${file}`);
+  const event = require("@events/" + file);
   if (event.once) {
     client.once(event.name, async (...args) => {
       try {
@@ -65,5 +73,5 @@ for (const file of eventFiles) {
   }
 }
 
-// Logs into the server using the secret token
-client.login(token20th);
+// Logs into the server using the environment variable
+client.login(process.env.TOKEN_20TH);

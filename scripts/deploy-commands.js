@@ -4,7 +4,7 @@ const { Routes } = require("discord-api-types/v9");
 const fs = require("fs");
 
 function pushCommands(ver, toggle = true) {
-  const config = require("./config.json");
+  const config = require("../config.json");
   const clientId = config["clientId" + ver];
   const token = config["token" + ver];
   const commandPath = `./commands/${ver.toLowerCase()}`;
@@ -36,6 +36,6 @@ function pushCommands(ver, toggle = true) {
   })();
 }
 
-pushCommands("5th", true);
-pushCommands("20th", true);
+pushCommands("5th", false);
+pushCommands("20th", false);
 pushCommands("Cod", false);

@@ -1,0 +1,20 @@
+"use strict";
+const path = require("path");
+const { ShardingManager } = require("discord.js");
+const dotenv = require("dotenv");
+
+// Load environment variables
+dotenv.config();
+
+// Determine environment and file extension
+const isDev = process.env.NODE_ENV !== "production";
+const rootDir = isDev ? "src" : "dist";
+const botFile = path.join(__dirname, "..", "bots", "v20-bot.js");
+
+const manager = new ShardingManager(botFile, {
+  token: process.env.TOKEN_20TH,
+  totalShards: "auto",
+});
+
+manager.on("shardCreate", (shard) => console.log(`Launched shard ${shard.id}`));
+manager.spawn();
