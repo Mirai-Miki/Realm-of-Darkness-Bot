@@ -1,16 +1,13 @@
 {
   "scripts": {
-    "5th": "node src/shards/index-5th.js",
-    "20th": "node src/shards/index-20th.js",
-    "cod": "node src/shards/index-cod.js",
-    "deploy": "node scripts/deploy-global-commands.js",
-    "build": "tsc && node scripts/copy-js-files.js",
-    "dev:build": "node scripts/deploy-global-commands.js",
+    "start": "node scripts/production/start.js",
+    "build": "tsc && node scripts/build/copy-js-files.js",
+    "deploy": "node scripts/deploy/deploy-global-commands.js",
+    "dev": "npm run deploy && scripts\\dev\\dev_start.bat",
     "dev:5th": "nodemon src/shards/index-5th.js",
     "dev:20th": "nodemon src/shards/index-20th.js",
     "dev:cod": "nodemon src/shards/index-cod.js",
-    "dev": "npm run dev:build && scripts\\dev_start.bat",
-    "start": "node dist/index-20th.js"
+    "test": "jest"
   },
   "dependencies": {
     "@discordjs/builders": "^1.4.0",
@@ -24,6 +21,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.13.8",
+    "glob": "^11.0.1",
     "nodemon": "^3.1.9",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.2"

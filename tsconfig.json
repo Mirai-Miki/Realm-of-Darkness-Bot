@@ -22,20 +22,20 @@
     "paths": {
       // Configure path aliases
       "@src/*": ["./src/*"],
-      "@commands/*": ["./src/commands/*", "./commands/*"],
-      "@modules/*": ["./src/modules/*", "./modules/*"],
-      "@errors/*": ["./Errors/*"],
-      "@api/*": ["./realmAPI/*"],
-      "@constants/*": ["./Constants/*"]
+      "@commands/*": ["./src/commands/*", "src/commands/*"],
+      "@modules/*": ["./src/modules/*", "src/modules/*"],
+      "@errors/*": ["src/errors/*"],
+      "@api/*": ["src/realmAPI/*"],
+      "@constants/*": ["src/constants/*"]
     }
   },
   "include": [
     "src/**/*",
     "*.js",
-    "commands/**/*",
-    "modules/**/*",
-    "Errors/**/*",
-    "realmAPI/**/*",
+    "src/commands/**/*",
+    "src/modules/**/*",
+    "src/errors/**/*",
+    "src/realmAPI/**/*",
     "scripts/deploy-commands.js"
   ],
   "exclude": ["node_modules", "dist"]

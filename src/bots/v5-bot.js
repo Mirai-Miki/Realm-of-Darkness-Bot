@@ -1,5 +1,5 @@
 "use strict";
-require("../../alias"); // Load aliases first
+require(`${process.cwd()}/alias`);
 const fs = require("fs");
 const path = require("path");
 const dotenv = require("dotenv");

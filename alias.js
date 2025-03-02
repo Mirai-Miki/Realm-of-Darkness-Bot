@@ -16,14 +16,14 @@ moduleAlias.addAliases({
   "@root": rootDir,
   "@src": srcDir,
   "@bots": path.join(srcDir, "bots"),
-  "@commands": path.join(rootDir, "commands"),
-  "@components": path.join(rootDir, "components"),
-  "@structures": path.join(rootDir, "structures"),
-  "@events": path.join(rootDir, "events"),
-  "@modules": path.join(rootDir, "modules"),
-  "@errors": path.join(rootDir, "Errors"),
-  "@api": path.join(rootDir, "realmAPI"),
-  "@constants": path.join(rootDir, "Constants"),
+  "@commands": path.join(srcDir, "commands"),
+  "@components": path.join(srcDir, "components"),
+  "@structures": path.join(srcDir, "structures"),
+  "@events": path.join(srcDir, "events"),
+  "@modules": path.join(srcDir, "modules"),
+  "@errors": path.join(srcDir, "errors"),
+  "@api": path.join(srcDir, "realmAPI"),
+  "@constants": path.join(srcDir, "constants"),
 });
 
 // Debug output if needed
