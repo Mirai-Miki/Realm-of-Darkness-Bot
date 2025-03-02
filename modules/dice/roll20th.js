@@ -108,7 +108,7 @@ async function updateWillpower(interaction) {
 function getEmbed(interaction) {
   const args = interaction.arguments;
   const results = interaction.results;
-  const damageInfo = args.character?.tracked.health.damageInfo;
+  const damageInfo = args.character?.tracked?.health.damageInfo ?? null;
   const embed = new EmbedBuilder();
 
   embed.setAuthor({
