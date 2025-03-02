@@ -135,7 +135,7 @@ function getEmbed(interaction) {
       value: args.character.name,
     });
 
-    if (damageInfo !== "") {
+    if (damageInfo) {
       embed.addFields({
         name: "Dice penalty",
         value: damageInfo.split("\n")[0], // Only include the first line
