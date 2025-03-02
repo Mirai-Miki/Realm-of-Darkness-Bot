@@ -29,7 +29,9 @@ module.exports = async function autocomplete(
     const filtered = choices.filter((choice) =>
       choice.name.toLowerCase().startsWith(focusedValue)
     );
-    return filtered.map((choice) => ({
+    // Limit the number of options to 25
+    const limitedChoices = filtered.slice(0, 25);
+    return limitedChoices.map((choice) => ({
       name: choice.name,
       value: choice.name, // Return actual discipline name as value
     }));
@@ -48,7 +50,10 @@ module.exports = async function autocomplete(
     const filtered = choices.filter((choice) =>
       choice.name.toLowerCase().startsWith(focusedValue)
     );
-    return filtered.map((choice) => ({
+
+    // Limit the number of options to 25
+    const limitedChoices = filtered.slice(0, 25);
+    return limitedChoices.map((choice) => ({
       name: choice.name,
       value: `~${choice.id}|${choice.splat}`,
     }));

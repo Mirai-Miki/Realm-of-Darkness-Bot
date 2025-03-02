@@ -37,6 +37,7 @@ module.exports = class Character20th extends Character {
     this.health.setBashing(json.health.bashing);
     this.health.setLethal(json.health.lethal);
     this.health.setAgg(json.health.aggravated);
+    this.health.getTracker();
     return this;
   }
 
