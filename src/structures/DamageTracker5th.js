@@ -2,92 +2,190 @@
 require(`${process.cwd()}/alias`);
 const { Emoji } = require("@constants");
 
+/**
+ * Damage tracker for 5th Edition games
+ * Handles health and willpower tracking with superficial and aggravated damage
+ */
 module.exports = class DamageTracker5th {
+  /**
+   * Creates a new damage tracker
+   * @param {number} total - Total boxes available
+   * @param {number} superficial - Initial superficial damage
+   * @param {number} aggravated - Initial aggravated damage
+   */
   constructor(total, superficial = 0, aggravated = 0) {
     this.total = total;
-    this.superficial = superficial;
-    this.aggravated = aggravated;
+    this.superficial = 0;
+    this.aggravated = 0;
+
+    // Initialize with proper damage allocation
+    this.setAgg(aggravated);
+    this.setSuperficial(superficial);
   }
 
+  /**
+   * Takes or heals superficial damage
+   * Converts to aggravated if no boxes remain
+   * @param {number} amount - Amount of superficial damage to take (positive) or heal (negative)
+   */
   takeSuperfical(amount) {
-    if (amount > this.total - this.aggravated - this.superficial) {
-      // taking more superficial damage then is available
-      // take agg damage as well.
-      this.aggravated +=
-        amount - (this.total - this.aggravated - this.superficial);
+    // HANDLE HEALING (negative values)
+    if (amount < 0) {
+      // Convert to positive for easier math
+      const healAmount = -amount;
+      // Limit healing to current damage
+      const actualHeal = Math.min(healAmount, this.superficial);
+      this.superficial -= actualHeal;
+      return;
+    }
 
-      if (this.aggravated > this.total) this.aggravated = this.total;
-      this.superficial = this.total - this.aggravated;
-    } else {
-      // will not go over does not matter if it goes under.
+    // HANDLE DAMAGE (positive values)
+    const availableBoxes = this.total - this.aggravated - this.superficial;
+
+    if (amount <= availableBoxes) {
+      // Simple case: enough empty boxes for all superficial damage
       this.superficial += amount;
-      if (this.superficial < 0) this.superficial = 0;
-    }
-  }
-
-  setSuperfical(amount) {
-    if (amount > this.total - this.aggravated) {
-      this.superficial = this.total - this.aggravated;
-    } else if (amount < 0) {
-      // Should never be less then 0
-      return;
     } else {
-      this.superficial = amount;
+      // Complex case: not enough empty boxes
+      // First fill all empty boxes
+      this.superficial += availableBoxes;
+
+      // Calculate excess damage that needs conversion
+      const excess = amount - availableBoxes;
+
+      // Convert superficial boxes to aggravated for the excess
+      // Each point of excess damage converts one superficial to aggravated
+      const conversionAmount = Math.min(excess, this.superficial);
+      this.superficial -= conversionAmount;
+      this.aggravated += conversionAmount;
     }
   }
 
+  /**
+   * Sets superficial damage to a specific value
+   * @param {number} amount - New superficial damage value
+   */
+  setSuperficial(amount) {
+    // Ensure non-negative
+    if (amount < 0) amount = 0;
+
+    // First set to the requested amount
+    this.superficial = amount;
+
+    // Then adjust if total damage exceeds available boxes
+    const excess = this.superficial + this.aggravated - this.total;
+    if (excess > 0) {
+      // Reduce superficial damage first
+      this.superficial = Math.max(0, this.superficial - excess);
+    }
+  }
+
+  /**
+   * Takes or heals aggravated damage
+   * Replaces superficial damage if no empty boxes remain
+   * @param {number} amount - Amount of aggravated damage to take (positive) or heal (negative)
+   */
   takeAgg(amount) {
-    if (amount > this.total - this.aggravated - this.superficial) {
-      // taking more agg damage then undamaged available
-      // convert superficial damage to agg for exess
-      this.superficial -=
-        amount - (this.total - this.aggravated - this.superficial);
-      if (this.superficial < 0) this.superficial = 0;
-      this.aggravated = this.total - this.superficial;
-    } else {
-      // will not go over does not matter if it goes under.
-      this.aggravated += amount;
-      if (this.aggravated < 0) this.aggravated = 0;
-    }
-  }
-
-  setAgg(amount) {
-    if (amount > this.total) {
-      this.aggravated = this.total;
-    } else if (amount < 0) {
-      // Should never be less then 0
+    // HANDLE HEALING (negative values)
+    if (amount < 0) {
+      // Convert to positive for easier math
+      const healAmount = -amount;
+      // Limit healing to current damage
+      const actualHeal = Math.min(healAmount, this.aggravated);
+      this.aggravated -= actualHeal;
       return;
+    }
+
+    // HANDLE DAMAGE (positive values)
+    const availableBoxes = this.total - this.aggravated - this.superficial;
+
+    if (amount <= availableBoxes) {
+      // Simple case: enough empty boxes for all aggravated damage
+      this.aggravated += amount;
     } else {
-      this.aggravated = amount;
+      // Complex case: not enough empty boxes
+      // First fill all empty boxes
+      this.aggravated += availableBoxes;
+
+      // Calculate excess damage that needs to replace superficial
+      const excess = amount - availableBoxes;
+
+      // Replace superficial with aggravated for the excess
+      const replacementAmount = Math.min(excess, this.superficial);
+      this.superficial -= replacementAmount;
+      this.aggravated += replacementAmount;
+
+      // Any additional damage is discarded because all boxes are now filled with aggravated
     }
   }
 
-  setTotal(amount) {
-    if (amount < 1) return; // Should never be less than 1
-    this.total = amount;
-    this._adjustSecondaryValues();
+  /**
+   * Sets aggravated damage to a specific value
+   * @param {number} amount - New aggravated damage value
+   */
+  setAgg(amount) {
+    // Ensure non-negative and within total bounds
+    if (amount < 0) amount = 0;
+    if (amount > this.total) amount = this.total;
+
+    this.aggravated = amount;
+
+    // Adjust superficial if combined damage exceeds total
+    if (this.aggravated + this.superficial > this.total) {
+      this.superficial = this.total - this.aggravated;
+    }
   }
 
+  /**
+   * Sets the total number of boxes
+   * @param {number} amount - New total value
+   */
+  setTotal(amount) {
+    // Minimum of 1 box
+    if (amount < 1) amount = 1;
+
+    this.total = amount;
+
+    // Ensure damage values don't exceed new total
+    this.adjustDamageValues();
+  }
+
+  /**
+   * Updates the total number of boxes by adding/subtracting amount
+   * @param {number} amount - Amount to change total by
+   */
   updateCurrent(amount) {
     this.total += amount;
     if (this.total < 1) this.total = 1;
     else if (this.total > 20) this.total = 20;
-    this._adjustSecondaryValues();
+
+    // Ensure damage values don't exceed new total
+    this.adjustDamageValues();
   }
 
-  _adjustSecondaryValues() {
-    // If total is less than the sum of aggravated and superficial
+  /**
+   * Adjusts damage values when total changes
+   * Prioritizes preserving aggravated damage over superficial
+   */
+  adjustDamageValues() {
     if (this.total < this.aggravated + this.superficial) {
-      // Calculate the excess amount
-      let excess = this.aggravated + this.superficial - this.total;
+      // If total decreased, reduce damage to fit
+      // First reduce superficial damage
+      const excess = this.aggravated + this.superficial - this.total;
+      this.superficial = Math.max(0, this.superficial - excess);
 
-      this.superficial -= excess * 2;
-      if (this.superficial < 0) this.superficial = 0;
-      this.aggravated += excess;
-      if (this.aggravated > this.total) this.aggravated = this.total;
+      // If still exceeds total, reduce aggravated too
+      if (this.aggravated > this.total) {
+        this.aggravated = this.total;
+      }
     }
   }
 
+  /**
+   * Gets status based on damage condition
+   * @param {string} type - "health" or "willpower"
+   * @returns {string} Status text
+   */
   getHealthStatus(type) {
     if (this.total - this.aggravated <= 0 && type === "health")
       return conditionInfo.dead;
@@ -98,15 +196,25 @@ module.exports = class DamageTracker5th {
     else return "";
   }
 
+  /**
+   * Gets number of undamaged boxes
+   * @returns {number} Undamaged box count
+   */
   getUndamaged() {
     return this.total - this.superficial - this.aggravated;
   }
 
+  /**
+   * Generates a visual box representation of the tracker
+   * @returns {string} Visual representation using emoji boxes
+   */
   getTracker() {
     let tracker = "";
     let aggDamage = this.aggravated;
     let supDamage = this.superficial;
+
     for (let i = 0; i < this.total; i++) {
+      // Add spacing every 5 boxes
       if (i == 5 || i == 10 || i == 15) tracker += "⠀";
 
       if (aggDamage > 0) {
@@ -117,10 +225,15 @@ module.exports = class DamageTracker5th {
         supDamage--;
       } else tracker += Emoji.greenBox;
     }
+
     tracker += "⠀";
     return tracker;
   }
 
+  /**
+   * Serializes tracker state for storage
+   * @returns {Object} Serialized tracker
+   */
   serialize() {
     return {
       total: this.total,

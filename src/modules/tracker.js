@@ -28,7 +28,7 @@ module.exports.set = async function (interaction, splat) {
   const options = interaction.arguments;
   options.command = "Set Character";
 
-  const parsedChar = parseAutocompleteCharacter(options.name, splat.slug);
+  const parsedChar = parseAutocompleteCharacter(options.name, splat?.slug);
 
   const char = await API.getCharacter({
     client: interaction.client,
@@ -51,7 +51,7 @@ module.exports.update = async function (interaction, splat) {
   options.command = "Update Character";
   let requestedUser = interaction.user;
 
-  const parsedChar = parseAutocompleteCharacter(options.name, splat.slug);
+  const parsedChar = parseAutocompleteCharacter(options.name, splat?.slug);
 
   // An ST is trying to change another players character
   if (options.player && !interaction.guild)

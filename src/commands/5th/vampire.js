@@ -52,9 +52,9 @@ async function sheetFollowUp(interaction) {
   const embed = new EmbedBuilder();
   embed
     .setColor("#ede61a")
-    .setTitle("Sheets now in Early Access")
+    .setTitle("Character Sheets Available")
     .setDescription(
-      'Character sheets are now in Early Access on the [Website](https://realmofdarkness.app).\nCharacter sheets are fully compatible with the bot tracker commands as well as providing an easy to use web interface to update values. It also gives you access to the `/sheet roll` command which is an easier way to build pools without having to look at your sheet to make rolls.\n\nTo create a new sheet all you need to do is Login to the [Website](https://realmofdarkness.app) and click the "New Sheet button" to get started.\n\nPlease note that early access sheets are still missing many features and will be slowly added too over time to become more feature complete.'
+      'Character sheets are now available and feature complete on the [Website](https://realmofdarkness.app).\n\nWe recommend creating a sheet rather than using the tracker directly as sheets offer more functionality while still being fully compatible with the bot tracker commands. Sheets provide an easy-to-use web interface to update values and access to the `/sheet roll` command for building dice pools without having to look at your character sheet.\n\nTo create a new sheet, simply login to the [Website](https://realmofdarkness.app) and click the "New Sheet" button to get started.'
     );
   message.embeds.push(embed);
   interaction.followUps.push(message);

@@ -8,12 +8,12 @@ const { EmbedBuilder } = require("discord.js");
 module.exports = class Ghoul5th extends Character5th {
   constructor({ client, name, health = 4, willpower = 2, humanity = 7 } = {}) {
     super({ client, name, health, willpower });
-    this.splat = Splats.ghoul5th.slug;
+    this.splat = Splats.ghoul5th;
     this.humanity = new Humanity(humanity);
   }
 
   static getSplat() {
-    return Splats.ghoul5th.slug;
+    return Splats.ghoul5th;
   }
 
   setFields(args) {
@@ -30,8 +30,8 @@ module.exports = class Ghoul5th extends Character5th {
 
   async deserilize(char) {
     await super.deserilize(char);
-    this.humanity = new Humanity(char.humanity.total);
-    this.humanity.takeStains(char.humanity.stains);
+    this.humanity = new Humanity(char.humanity);
+    this.humanity.takeStains(char.stains);
     return this;
   }
 

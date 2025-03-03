@@ -18,9 +18,9 @@ module.exports = class Character5th extends Character {
     if (args.willpower != null) this.willpower.setTotal(args.willpower);
     if (args.health != null) this.health.setTotal(args.health);
     if (args.willpowerSup != null)
-      this.willpower.setSuperfical(args.willpowerSup);
+      this.willpower.setSuperficial(args.willpowerSup);
     if (args.willpowerAgg != null) this.willpower.setAgg(args.willpowerAgg);
-    if (args.healthSup != null) this.health.setSuperfical(args.healthSup);
+    if (args.healthSup != null) this.health.setSuperficial(args.healthSup);
     if (args.healthAgg != null) this.health.setAgg(args.healthAgg);
   }
 

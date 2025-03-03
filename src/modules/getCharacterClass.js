@@ -53,8 +53,6 @@ function loadCharacterClasses() {
         console.error(`Failed to load character class from ${file}:`, error);
       }
     }
-
-    console.log(`Successfully loaded ${characters.size} character classes`);
   } catch (error) {
     console.error(`Error loading character classes:`, error);
   }

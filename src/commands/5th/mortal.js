@@ -18,11 +18,15 @@ module.exports = {
     interaction.arguments = await getArgs(interaction);
     switch (interaction.options.getSubcommand()) {
       case "new":
-        return await tracker.new(interaction, Splats.mortal5th);
+        const splat =
+          interaction.arguments.characterType === "human"
+            ? Splats.human5th
+            : Splats.ghoul5th;
+        return await tracker.new(interaction, splat);
       case "update":
-        return await tracker.update(interaction, Splats.mortal5th);
+        return await tracker.update(interaction, null);
       case "set":
-        return await tracker.set(interaction, Splats.mortal5th);
+        return await tracker.set(interaction, null);
     }
   },
 
@@ -38,6 +42,7 @@ async function getArgs(interaction) {
   const args = {
     player: interaction.options.getUser("player"),
     name: interaction.options.getString("name"),
+    characterType: interaction.options.getString("type"),
     exp: interaction.options.getInteger("exp"),
     notes: interaction.options.getString("notes"),
     nameChange: interaction.options.getString("change_name"),
