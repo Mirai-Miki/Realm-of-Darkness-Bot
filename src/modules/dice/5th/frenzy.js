@@ -3,6 +3,7 @@ require(`${process.cwd()}/alias`);
 const Roll = require("@src/modules/dice/roll");
 const { EmbedBuilder } = require("discord.js");
 const { trimString } = require("@modules/misc");
+const getCharacter = require("@modules/dice/getCharacter");
 const API = require("@api");
 const { getContent } = require("@modules/dice/5th/getVtmRollResponse");
 const { Splats } = require("@constants");
@@ -21,32 +22,33 @@ async function getArgs(interaction) {
   const args = {
     difficulty: interaction.options.getInteger("difficulty"),
     modifier: interaction.options.getInteger("modifier"),
-    name: trimString(interaction.options.getString("name")),
+    character: await getCharacter(
+      interaction.options.getString("name"),
+      interaction
+    ),
     notes: interaction.options.getString("notes"),
   };
 
-  if (!args.name) {
+  if (!args.character) {
     if (!interaction.guild)
       throw new RealmError({ code: ErrorCodes.NoCharacterSelected });
 
     const defaults = await API.characterDefaults.get(
+      interaction.client,
       interaction.guild.id,
-      interaction.user.id
+      interaction.user.id,
+      Splats.vampire5th.slug
     );
-    args.name = defaults ? defaults.name : null;
+
+    if (defaults)
+      args.character = {
+        name: defaults.character.name,
+        tracked: defaults.character,
+      };
+    else throw new RealmError({ code: ErrorCodes.NoCharacterSelected });
   }
 
-  args.character = await API.getCharacterDefault({
-    client: interaction.client,
-    name: args.name,
-    user: interaction.user,
-    guild: interaction.guild ?? null,
-  });
-
-  if (
-    args.character.splat !== Splats.vampire5th &&
-    args.character.splat !== Splats.mortal5th
-  )
+  if (args.character?.tracked?.splat.slug !== Splats.vampire5th.slug)
     throw new RealmError({ code: ErrorCodes.IncorrectCharType });
 
   return args;
@@ -54,8 +56,9 @@ async function getArgs(interaction) {
 
 function roll(interation) {
   const args = interation.args;
-  const humanity = args.character.humanity.getOneThird();
-  const willpower = args.character.willpower.getUndamaged();
+  const character = args.character.tracked;
+  const humanity = character.humanity.getOneThird();
+  const willpower = character.willpower.getUndamaged();
   let pool = humanity + willpower + args.modifier;
   if (pool <= 0) pool = 1;
 
@@ -91,6 +94,7 @@ function roll(interation) {
 
 function getEmbed(interaction) {
   const results = interaction.rollResults;
+  const character = interaction.args.character.tracked;
   const args = interaction.args;
   const embed = new EmbedBuilder();
 
@@ -110,10 +114,10 @@ function getEmbed(interaction) {
 
   embed.addFields({
     name: "Character",
-    value: args.character.name,
+    value: character.name,
   });
 
-  if (args.character.thumbnail) embed.setThumbnail(args.character.thumbnail);
+  if (character.thumbnail) embed.setThumbnail(character.thumbnail);
 
   // Add Dice fields
   if (results.blackDice.length) {

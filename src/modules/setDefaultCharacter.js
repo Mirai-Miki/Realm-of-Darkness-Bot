@@ -11,6 +11,7 @@ module.exports = async function setDefaultCharacter(interaction) {
 
   if (!interaction.arguments.name && !interaction.arguments.disable) {
     const defaults = await API.characterDefaults.get(
+      interaction.client,
       interaction.guild.id,
       interaction.user.id
     );

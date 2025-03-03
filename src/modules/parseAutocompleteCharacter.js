@@ -1,24 +1,37 @@
+"use strict";
 /**
  * Parses a character name from autocomplete that might contain special formatting
- * @param {string} name - The character name that might be in special format ~id|splat
- * @param {string} defaultSplat - The default splat to use if not specified in the name
+ *
+ * @param {string} nameInput - The character name or formatted string from autocomplete
+ * @param {string} defaultSplat - The default splat to use if not specified
  * @returns {Object} An object containing the parsed name, splat and pk
  */
-module.exports = function parseAutocompleteCharacter(name, defaultSplat) {
-  let result = {
-    name: name,
-    splat: defaultSplat || null,
-    pk: undefined,
-  };
+module.exports = function parseAutocompleteCharacter(nameInput, defaultSplat) {
+  // Guard against null/undefined input
+  if (!nameInput) {
+    return {
+      name: null,
+      splat: defaultSplat || null,
+      pk: undefined,
+    };
+  }
 
-  if (name && name.startsWith("~")) {
-    const parts = name.substring(1).split("|");
+  // Handle special format: ~id|splat (used by autocomplete)
+  if (nameInput.startsWith("~")) {
+    const parts = nameInput.substring(1).split("|");
     if (parts.length === 2) {
-      result.pk = parts[0];
-      result.splat = parts[1];
-      result.name = null; // Name isn't used when we have pk and splat
+      return {
+        name: null, // Name isn't used when we have pk and splat
+        splat: parts[1],
+        pk: parts[0],
+      };
     }
   }
 
-  return result;
+  // Default case: just a regular name
+  return {
+    name: nameInput,
+    splat: defaultSplat || null,
+    pk: undefined,
+  };
 };

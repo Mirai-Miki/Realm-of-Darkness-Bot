@@ -5,7 +5,8 @@ const { EmbedBuilder } = require("discord.js");
 const { getContent } = require("@modules/dice/5th/getVtmRollResponse");
 const { Splats } = require("@constants");
 const { RealmError, ErrorCodes } = require("@errors");
-const getCharacterData = require("@modules/getCharacterData");
+const getCharacter = require("@modules/dice/getCharacter");
+const API = require("@api");
 
 module.exports = async function remorse(interaction) {
   interaction.args = await getArgs(interaction);
@@ -18,19 +19,32 @@ module.exports = async function remorse(interaction) {
 };
 
 async function getArgs(interaction) {
-  const characterData = await getCharacterData(
-    interaction,
-    interaction.client,
-    true,
-    [Splats.vampire5th.slug, Splats.ghoul5th.slug, Splats.human5th.slug]
-  );
   const args = {
-    name: characterData.name,
     notes: interaction.options.getString("notes"),
-    character: characterData.character,
+    character: await getCharacter(
+      interaction.options.getString("name"),
+      interaction
+    ),
   };
 
-  if (!args.character) {
+  // Get character defaults if no character specified
+  if (!args.character?.tracked && interaction.guild) {
+    const defaults = await API.characterDefaults.get(
+      interaction.client,
+      interaction.guild.id,
+      interaction.user.id,
+      [Splats.vampire5th.slug, Splats.human5th.slug, Splats.ghoul5th.slug]
+    );
+
+    if (defaults) {
+      args.character = {
+        name: defaults.character.name,
+        tracked: defaults.character,
+      };
+    }
+  }
+
+  if (!args.character?.tracked) {
     throw new RealmError({ code: ErrorCodes.NoCharacterSelected });
   }
 
@@ -39,8 +53,8 @@ async function getArgs(interaction) {
 
 function roll(interation) {
   const args = interation.args;
-  const humanity = args.character.humanity.total;
-  const stains = args.character.humanity.stains;
+  const humanity = args.character.tracked.humanity.total;
+  const stains = args.character.tracked.humanity.stains;
   let pool = 10 - humanity - stains;
   if (pool <= 0) pool = 1;
 
@@ -66,7 +80,7 @@ function roll(interation) {
 
 async function updateCharacter(interaction) {
   const results = interaction.rollResults;
-  const character = interaction.args.character;
+  const character = interaction.args.character.tracked;
   const change = { command: "Remorse Roll" };
 
   if (results.passed) change.stains = -character.humanity.stains;
@@ -106,7 +120,8 @@ function getEmbed(interaction) {
     value: args.character.name,
   });
 
-  if (args.character.thumbnail) embed.setThumbnail(args.character.thumbnail);
+  if (args.character.tracked.thumbnail)
+    embed.setThumbnail(args.character.tracked.thumbnail);
 
   // Add Dice fields
   if (results.blackDice.length) {

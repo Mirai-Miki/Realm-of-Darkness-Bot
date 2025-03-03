@@ -10,6 +10,7 @@ const {
 const VtMV5RollResults = require("@structures/vtmV5RollResults");
 const handleRerollPress = require("@modules/dice/5th/handleButtonPress");
 const API = require("@api");
+const { Splats } = require("@src/constants");
 
 /**
  *
@@ -37,7 +38,7 @@ async function getV5RollArgs(interaction) {
     rouse: interaction.options.getString("rouse"),
     notes: interaction.options.getString("notes"),
     character: await getCharacter(
-      trimString(interaction.options.getString("character")),
+      interaction.options.getString("character"),
       interaction
     ),
     autoHunger: interaction.options.getBoolean("auto_hunger") ?? true,
@@ -45,12 +46,17 @@ async function getV5RollArgs(interaction) {
 
   if (interaction.guild && (!args.character || args.autoHunger === null)) {
     const defaults = await API.characterDefaults.get(
+      interaction.client,
       interaction.guild.id,
-      interaction.user.id
+      interaction.user.id,
+      [Splats.vampire5th.slug, Splats.human5th.slug, Splats.ghoul5th.slug]
     );
 
     if (defaults && !args.character)
-      args.character = await getCharacter(defaults.name, interaction);
+      args.character = {
+        name: defaults.character.name,
+        tracked: defaults.character,
+      };
 
     if (!args.character?.tracked?.hunger) args.autoHunger = false;
     else if (defaults && args.autoHunger === null)
@@ -97,6 +103,7 @@ async function getSheetRollArgs(interaction) {
   let name = trimString(interaction.options.getString("name"));
   if (!name) {
     const defaults = await API.characterDefaults.get(
+      interaction.client,
       interaction.guild?.id,
       interaction.user.id
     );

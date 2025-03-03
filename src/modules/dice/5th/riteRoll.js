@@ -6,6 +6,7 @@ const getCharacter = require("@modules/dice/getCharacter");
 const Wta5thRollResults = require("@structures/Wta5thRollResults");
 const handleButtonPress = require("@modules/dice/5th/handleButtonPress");
 const API = require("@api");
+const { Splats } = require("@constants");
 
 /**
  *
@@ -34,19 +35,26 @@ async function getArgs(interaction) {
     rageCheck: interaction.options.getString("rage_check"),
     notes: interaction.options.getString("notes"),
     character: await getCharacter(
-      trimString(interaction.options.getString("character")),
+      interaction.options.getString("character"),
       interaction
     ),
   };
 
-  if (interaction.guild && !args.character) {
+  // Get character defaults if no character specified
+  if (!args.character?.tracked && interaction.guild) {
     const defaults = await API.characterDefaults.get(
+      interaction.client,
       interaction.guild.id,
-      interaction.user.id
+      interaction.user.id,
+      [Splats.werewolf5th.slug]
     );
 
-    if (defaults && !args.character)
-      args.character = await getCharacter(defaults.name, interaction);
+    if (defaults) {
+      args.character = {
+        name: defaults.character.name,
+        tracked: defaults.character,
+      };
+    }
   }
 
   return args;

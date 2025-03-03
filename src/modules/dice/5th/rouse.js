@@ -1,10 +1,10 @@
 "use strict";
 require(`${process.cwd()}/alias`);
-const { trimString } = require("@modules/misc");
 const getCharacter = require("@modules/dice/getCharacter");
 const Roll = require("@src/modules/dice/roll");
 const { EmbedBuilder } = require("discord.js");
 const API = require("@api");
+const { Splats } = require("@constants");
 
 /**
  *
@@ -21,23 +21,26 @@ module.exports = async function rouse(interaction) {
 async function getArgs(interaction) {
   const args = {
     character: await getCharacter(
-      trimString(interaction.options.getString("character")),
+      interaction.options.getString("character"),
       interaction
     ),
     reroll: interaction.options.getBoolean("reroll"),
     notes: interaction.options.getString("notes"),
   };
 
-  if (interaction.guild && (!args.character || args.autoHunger === null)) {
+  if (interaction.guild && !args.character) {
     const defaults = await API.characterDefaults.get(
+      interaction.client,
       interaction.guild.id,
-      interaction.user.id
+      interaction.user.id,
+      [Splats.vampire5th.slug]
     );
 
     if (defaults && !args.character)
-      args.character = await getCharacter(defaults.name, interaction);
-    if (defaults && args.autoHunger === null)
-      args.autoHunger = defaults.autoHunger;
+      args.character = {
+        name: defaults.character.name,
+        tracked: defaults.character,
+      };
   }
 
   return args;

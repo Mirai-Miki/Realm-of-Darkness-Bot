@@ -25,6 +25,7 @@ async function getArgs(interaction) {
 
   if (!args.character && interaction.guild) {
     const defaults = await API.characterDefaults.get(
+      interaction.client,
       interaction.guild.id,
       interaction.user.id
     );

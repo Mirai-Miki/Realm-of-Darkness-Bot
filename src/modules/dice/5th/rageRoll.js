@@ -5,6 +5,7 @@ const getCharacter = require("@modules/dice/getCharacter");
 const Roll = require("@src/modules/dice/roll");
 const { EmbedBuilder } = require("discord.js");
 const API = require("@api");
+const { Splats } = require("@constants");
 
 const passedString = "```ansi\n[2;33mPassed [{dice}][0m\n```";
 const failedString = "```ansi\n[2;33m[2;31mFailed [{dice}][0m[2;33m[0m\n```";
@@ -49,7 +50,7 @@ module.exports = async function rageRoll(interaction) {
 async function getArgs(interaction) {
   const args = {
     character: await getCharacter(
-      trimString(interaction.options.getString("character")),
+      interaction.options.getString("character"),
       interaction
     ),
     checks: interaction.options.getInteger("checks") ?? 1,
@@ -57,14 +58,21 @@ async function getArgs(interaction) {
     notes: interaction.options.getString("notes"),
   };
 
-  if (interaction.guild && !args.character) {
+  // Get character defaults if no character specified
+  if (!args.character?.tracked && interaction.guild) {
     const defaults = await API.characterDefaults.get(
+      interaction.client,
       interaction.guild.id,
-      interaction.user.id
+      interaction.user.id,
+      [Splats.werewolf5th.slug]
     );
 
-    if (defaults && !args.character)
-      args.character = await getCharacter(defaults.name, interaction);
+    if (defaults) {
+      args.character = {
+        name: defaults.character.name,
+        tracked: defaults.character,
+      };
+    }
   }
   return args;
 }

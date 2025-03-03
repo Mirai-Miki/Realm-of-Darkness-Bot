@@ -1,28 +1,43 @@
 "use strict";
 require(`${process.cwd()}/alias`);
 const API = require("@api");
+const parseAutocompleteCharacter = require("@modules/parseAutocompleteCharacter");
 
 /**
- * Takes a name and interaction and searches the database for a tracked character
- * @param {String} name
- * @param {Interaction} interaction
- * @returns {Object} an object containing the name and character if found.
+ * Takes a name or autocomplete value and retrieves the corresponding character
+ *
+ * @param {String} nameInput - Character name or autocomplete value (~id|splat format)
+ * @param {Interaction} interaction - The Discord interaction object
+ * @param {String} defaultSplat - Default splat to use if not specified
+ * @returns {Object} An object containing the name and character if found
+ * @throws {RealmError} If character lookup fails
  */
-module.exports = async function getCharacter(name, interaction) {
-  if (!name) return null;
+module.exports = async function getCharacter(nameInput, interaction) {
+  if (!nameInput) return null;
 
-  const character = {
-    name: name,
+  // Parse the input to extract id, name and splat if possible
+  const parsed = parseAutocompleteCharacter(nameInput);
+
+  // Initialize result object with fallback name
+  const result = {
+    name: parsed.name || nameInput, // Temporary name (may be updated later)
     tracked: null,
   };
 
-  const tracked = await API.getCharacter({
+  // Use the API to fetch the character
+  result.tracked = await API.getCharacter({
     client: interaction.client,
-    name: name,
+    name: parsed.name,
+    splat: parsed.splat,
+    pk: parsed.pk,
     user: interaction.member ? interaction.member : interaction.user,
     guild: interaction.guild,
   });
 
-  if (tracked) character.tracked = tracked;
-  return character;
+  // If we got a character from autocomplete, use its actual name
+  if (result.tracked && parsed.pk) {
+    result.name = result.tracked.name;
+  }
+
+  return result;
 };

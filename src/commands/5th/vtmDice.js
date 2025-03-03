@@ -6,6 +6,7 @@ const { v5Roll } = require("@modules/dice/5th/vtmRoll");
 const rouse = require("@src/modules/dice/5th/rouse");
 const resonance = require("@src/modules/dice/5th/resonance");
 const generalRoll = require("@src/modules/dice/generalRoll");
+const { healSuperficial } = require("@modules/dice/5th/vtmHealRoll");
 const compulsionRoll = require("@modules/dice/5th/compulsionRoll");
 const commandUpdate = require("@modules/commandDatabaseUpdate");
 const autocomplete5th = require("@modules/autocomplete");
@@ -30,8 +31,6 @@ module.exports = {
         return await compulsionRoll(interaction);
       case "healsuperficial":
         return await healSuperficial(interaction);
-      case "healagg":
-        return await healAgg(interaction);
       case "general":
         return generalRoll(interaction);
     }
@@ -310,7 +309,7 @@ function getCommand() {
   command.addSubcommand((subcommand) =>
     subcommand
       .setName("healsuperficial")
-      .setDescription("Heals Superficial Damage by doing a rouse check.")
+      .setDescription("Heals Superficial Damage")
 
       .addStringOption((option) => {
         option
@@ -319,36 +318,10 @@ function getCommand() {
           .setRequired(true)
           .addChoices(
             { name: "Health", value: "health" },
-            { name: "Willpower", value: "willpower" }
+            { name: "Willpower [Sheet Required]", value: "willpower" }
           );
         return option;
       })
-
-      .addStringOption((option) => {
-        option
-          .setName("name")
-          .setDescription("Name of the character making the roll.")
-          .setMaxLength(50)
-          .setAutocomplete(true);
-        return option;
-      })
-
-      .addStringOption((option) => {
-        option
-          .setName("notes")
-          .setDescription(
-            "Any extra information you would like to include about this roll."
-          )
-          .setMaxLength(300);
-        return option;
-      })
-  );
-
-  /////////////////// Heal Agg ///////////////////
-  command.addSubcommand((subcommand) =>
-    subcommand
-      .setName("healagg")
-      .setDescription("Heals Aggrevated Health Damage by doing a rouse check.")
 
       .addStringOption((option) => {
         option
