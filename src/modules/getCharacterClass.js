@@ -37,8 +37,6 @@ function loadCharacterClasses() {
       .readdirSync(charactersPath)
       .filter((file) => file.endsWith(".js") || file.endsWith(".ts"));
 
-    console.log(`Loading ${charFiles.length} character classes...`);
-
     for (const file of charFiles) {
       try {
         const char = require(`@structures/characters/${file}`);

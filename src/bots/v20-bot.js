@@ -41,7 +41,6 @@ const commandFiles = fs
   .readdirSync(commandsPath)
   .filter((file) => file.endsWith(".js") || file.endsWith(".ts"));
 
-console.log(`Loading ${commandFiles.length} commands for V20 bot...`);
 for (const file of commandFiles) {
   try {
     const command = require(`@commands/20th/${file}`);
@@ -65,7 +64,6 @@ if (fs.existsSync(componentsPath)) {
     .readdirSync(componentsPath)
     .filter((file) => file.endsWith(".js") || file.endsWith(".ts"));
 
-  console.log(`Loading ${componentFiles.length} components for V20 bot...`);
   for (const file of componentFiles) {
     try {
       const component = require(`@components/20th/${file}`);
@@ -88,7 +86,6 @@ const eventFiles = fs
   .readdirSync(eventsPath)
   .filter((file) => file.endsWith(".js") || file.endsWith(".ts"));
 
-console.log(`Loading ${eventFiles.length} events for V20 bot...`);
 for (const file of eventFiles) {
   try {
     const event = require(`@events/${file}`);
@@ -120,7 +117,9 @@ for (const file of eventFiles) {
 
 // Signal successful initialization
 client.on("ready", () => {
-  console.log(`V20 Bot logged in as ${client.user.tag}`);
+  console.log(
+    `Connected as: ${client.user.tag} || Shard: ${client.shard?.ids} || Guilds: ${client.guilds.cache.size}`
+  );
 });
 
 // Log in to Discord using token from environment variables
