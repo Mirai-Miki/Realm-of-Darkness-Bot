@@ -115,11 +115,40 @@ async function performCombatRoll(interaction, args) {
 }
 
 function getCombatEmbed(interaction, title) {
-  const embed = getEmbed(interaction);
-  embed.data.title = title;
-  embed.data.fields = embed.data.fields.filter(f => 
-    !["Website", "Commands", "Patreon"].includes(f.name)
-  );
+  const args = interaction.arguments;
+  const results = interaction.results;
+  const outcomeText = results.total > 0 ? "Success!" : 
+                     results.blackDice.filter(d => d === 1).length > results.total ? 
+                     "Botch!" : "Failure";
+
+  const embed = new EmbedBuilder()
+    .setTitle(title)
+    .setColor(0x8B0000)
+    .addFields(
+      {
+        name: "Dice",
+        value: results.blackDice.map(d => {
+          if (d === 10) return Emoji.green10;
+          return d >= 6 ? Emoji[`green${d}`] : Emoji[`red${d}`];
+        }).join(" "),
+        inline: true
+      },
+      {
+        name: "Successes",
+        value: `${results.total} (Difficulty ${args.difficulty})`,
+        inline: true
+      },
+      {
+        name: "Outcome",
+        value: outcomeText,
+        inline: false
+      }
+    );
+
+  if (args.notes) {
+    embed.addFields({ name: "Notes", value: args.notes, inline: false });
+  }
+
   return embed;
 }
 
