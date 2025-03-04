@@ -7,11 +7,13 @@ const RollResults20th = require("@structures/RollResults20th");
 const { Emoji } = require("@constants");
 const getCharacter = require("@modules/dice/getCharacter");
 const API = require("@api");
+const CombatHandler20th = require("@modules/combat/20th/CombatHandler20th");
 
 
 module.exports = async function roll20th(interaction) {
   if (interaction.options.getSubcommand() === "attack") {
-    return handleCombatRoll(interaction);
+    const combatHandler = new CombatHandler20th(interaction);
+    return combatHandler.handleCombat();
   }
 
   interaction.arguments = await getArgs(interaction);
@@ -20,187 +22,6 @@ module.exports = async function roll20th(interaction) {
   await updateWillpower(interaction);
   return { content: getContent(interaction), embeds: [getEmbed(interaction)] };
 };
-
-async function handleCombatRoll(interaction) {
-  const args = await getCombatArgs(interaction);
-  const embeds = [];
-  
-
-  // Get character names
-  args.attacker = await getCharacter(args.attacker_name, interaction);
-  args.defender = await getCharacter(args.defender_name, interaction);
-
-  // 1. Attack Roll
-  const attackRoll = await performCombatRoll(interaction, {
-    ...args,
-    pool: args.attack_pool,
-    description: `⚔️ ${args.attacker.name} Attack (${args.attack_pool}d10)`
-  });
-  embeds.push(attackRoll.embed);
-
-  // 2. Defense Roll
-  const defenseRoll = await performCombatRoll(interaction, {
-    ...args,
-    pool: args.defense_pool,
-    description: `🛡️ ${args.defender.name} Defense (${args.defense_pool}d10)`
-  });
-  embeds.push(defenseRoll.embed);
-
-  // 3. Calculate Net Successes
-  const netSuccesses = attackRoll.results.total - defenseRoll.results.total;
-  
-  if (netSuccesses > 0) {
-    // 4. Calculate and Roll Damage
-    const damagePool = args.damage_pool + netSuccesses;
-    const damageRoll = await performCombatRoll(interaction, {
-      ...args,
-      pool: damagePool,
-      description: `💥 ${args.damage_type.toUpperCase()} Damage (${damagePool}d10)`
-    });
-    embeds.push(damageRoll.embed);
-
-    // 5. Calculate and Roll Absorption
-    const effectiveAbsorption = args.damage_type === "aggravated" 
-      ? Math.floor(args.absorption_pool / 2) 
-      : args.absorption_pool;
-    
-    const absorptionRoll = await performCombatRoll(interaction, {
-      ...args,
-      pool: effectiveAbsorption,
-      description: `🛡️ ${args.damage_type.toUpperCase()} Absorption (${effectiveAbsorption}d10)`
-    });
-    embeds.push(absorptionRoll.embed);
-
-    // 6. Calculate Final Damage
-    const finalDamage = Math.max(0, damageRoll.results.total - absorptionRoll.results.total);
-    
-    // 8. Summary Embed
-    if (args.defender?.tracked?.health) {
-      applyDamage(args.defender, finalDamage, args.damage_type);
-      embeds.push(createHealthEmbed(args.defender));
-    }
-
-    // 8. Embed de Resumen
-    const summaryEmbed = new EmbedBuilder()
-      .setTitle("🔥 Combat Result")
-      .setColor(getDamageColor(args.damage_type))
-      .addFields(
-        { name: "Attacker", value: args.attacker.name, inline: true },
-        { name: "Defender", value: args.defender.name, inline: true },
-        { name: "Net Successes", value: netSuccesses.toString(), inline: true },
-        { name: "Damage Type", value: args.damage_type.toUpperCase(), inline: true },
-        { name: "Damage Dealt", value: damageRoll.results.total.toString(), inline: true },
-        { name: "Absorption", value: absorptionRoll.results.total.toString(), inline: true },
-        { name: "Final Damage", value: `${finalDamage} ${args.damage_type.toUpperCase()}`, inline: false }
-      );
-    embeds.push(summaryEmbed);
-  } else {
-    embeds.push(new EmbedBuilder()
-      .setColor(0x00FF00)
-      .setDescription("🎯 Attack was completely defended!"));
-  }
-
-  return { embeds };
-}
-
-async function performCombatRoll(interaction, args) {
-  interaction.arguments = args;
-  applyDicePenalty(interaction);
-  interaction.results = new RollResults20th(interaction.arguments);
-  
-  return {
-    embed: getCombatEmbed(interaction, args.description),
-    results: interaction.results
-  };
-}
-
-function getCombatEmbed(interaction, title) {
-  const args = interaction.arguments;
-  const results = interaction.results;
-  const outcomeText = results.total > 0 ? "Success!" : 
-                     results.blackDice.filter(d => d === 1).length > results.total ? 
-                     "Botch!" : "Failure";
-
-  const embed = new EmbedBuilder()
-    .setTitle(title)
-    .setColor(0x8B0000)
-    .addFields(
-      {
-        name: "Dice",
-        value: results.blackDice.map(d => {
-          if (d === 10) return Emoji.green10;
-          return d >= 6 ? Emoji[`green${d}`] : Emoji[`red${d}`];
-        }).join(" "),
-        inline: true
-      },
-      {
-        name: "Successes",
-        value: `${results.total} (Difficulty ${args.difficulty})`,
-        inline: true
-      },
-      {
-        name: "Outcome",
-        value: outcomeText,
-        inline: false
-      }
-    );
-
-  if (args.notes) {
-    embed.addFields({ name: "Notes", value: args.notes, inline: false });
-  }
-
-  return embed;
-}
-
-async function getCombatArgs(interaction) {
-  return {
-    attacker_name: interaction.options.getString("name"),
-    defender_name: interaction.options.getString("name"),
-    attack_pool: interaction.options.getInteger("attack_pool"),
-    defense_pool: interaction.options.getInteger("defense_pool"),
-    damage_pool: interaction.options.getInteger("damage_pool"),
-    damage_type: interaction.options.getString("damage_type"),
-    absorption_pool: interaction.options.getInteger("absorption_pool"),
-    difficulty: 6,
-  };
-}
-
-function applyDamage(character, amount, type) {
-  if (!character?.tracked?.health) return;
-  
-  const health = character.tracked.health;
-  switch(type) {
-    case "bashing":
-      health.bashing = Math.min(health.bashing + amount, health.max);
-      break;
-    case "lethal":
-      health.lethal = Math.min(health.lethal + amount, health.max - health.bashing);
-      break;
-    case "aggravated":
-      health.aggravated = Math.min(health.aggravated + amount, health.max - health.bashing - health.lethal);
-      break;
-  }
-}
-
-function createHealthEmbed(character) {
-  return new EmbedBuilder()
-    .setTitle(`${character.name}'s Health`)
-    .setColor(0x8B0000)
-    .addFields(
-      { name: "Bashing", value: character.tracked.health.bashing.toString(), inline: true },
-      { name: "Lethal", value: character.tracked.health.lethal.toString(), inline: true },
-      { name: "Aggravated", value: character.tracked.health.aggravated.toString(), inline: true }
-    );
-}
-
-function getDamageColor(type) {
-  const colors = {
-    bashing: 0xFFFF00,  // yellow
-    lethal: 0xFF0000,    // red
-    aggravated: 0x8B0000 // red dark
-  };
-  return colors[type] || 0x808080;
-}
 
 async function getArgs(interaction) {
   const args = {
