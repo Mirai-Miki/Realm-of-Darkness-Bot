@@ -13,15 +13,7 @@ module.exports = {
     await interaction.deferReply({ ephemeral: true });
     await commandUpdate(interaction);
     if (!interaction.isRepliable()) return "notRepliable";
-    interaction.arguments = await getArgs(interaction);
-    switch (interaction.options.getSubcommand()) {
-      case "attack":
-        return await applyBlood(interaction);
-      //case "gain":
-        //return await update(interaction, Splats.vampire20th);
-      //case "check":
-        //return await update(interaction, Splats.vampire20th);
-    }
+    return await roll20th(interaction);
   },
 
   async autocomplete(interaction) {
@@ -29,78 +21,50 @@ module.exports = {
   },
 };
 
-async function applyBlood(interaction) {
- console.log(interaction);
- return await update(interaction, Splats.vampire20th);
-
-}
-
-async function getArgs(interaction) {
-    const args = {
-      name: interaction.options.getString("name"),
-      
-      defense_pool: interaction.options.getInteger("defense_pool"),
-      attack_pool_enemy: interaction.options.getInteger("attack_pool_enemy"),
-      damage_pool_weapon: interaction.options.getInteger("damage_pool_weapon"),
-      
-      notes: interaction.options.getString("notes") || "No notes provided"
-    };
-    
-    return args;
-  }
-
 function getCommands() {
-  const slashCommand = new SlashCommandBuilder()
+  return new SlashCommandBuilder()
     .setName("combat")
-    .setDescription("kill the motherfucked");
-
-  /////////////////////// attack combat ////////////////////////////
-
-  slashCommand.addSubcommand((subcommand) =>
-    subcommand
+    .setDescription("V20 Combat System")
+    .addSubcommand(sub => sub
       .setName("attack")
-      .setDescription("V20 combat system")
-
-      .addStringOption((option) =>
-        option
-          .setName("name")
-          .setDescription("The name of your Character")
-          .setRequired(true)
-          .setMaxLength(50)
-          .setAutocomplete(true)
-      )
-
-      .addIntegerOption(option =>
-        option
-           .setName("defense_pool")
-           .setDescription("Your Defense pool (Dodge/Combat)")
-          .setMinValue(1)
-          .setMaxValue(50)
-          .setRequired(true)
-      )
-
-
-      .addIntegerOption(option =>
-        option
-          .setName("attack_pool_enemy")
-          .setDescription("Attack pool enemy (Skill + Strength)")
-          .setMinValue(1)
-          .setMaxValue(50)
-          .setRequired(true)
-      )
-
-      .addStringOption((option) =>
-        option
-          .setName("damage_pool_weapon")
-          .setDescription("Type Damage pool (Strength + Weapon)")
-          .setRequired(true)
-          .addChoices(
-            { name: "Heal bashing", value: "bashing_damage" },
-            { name: "Heal lethal", value: "lethal_damage" },
-            { name: "Heal aggravated", value: "agg_damage" },
-            { name: "disciplines", value: "use_discipline" }
-          )
-      )
-  );
-  return slashCommand;
+      .setDescription("Execute combat action")
+      .addStringOption(opt => opt
+        .setName("name")
+        .setDescription("Attacker's name")
+        .setRequired(true)
+        .setAutocomplete(true))
+      .addIntegerOption(opt => opt
+        .setName("attack_pool")
+        .setDescription("Attack pool (Dexterity + Ability)")
+        .setMinValue(1)
+        .setMaxValue(20)
+        .setRequired(true))
+      .addIntegerOption(opt => opt
+        .setName("defense_pool")
+        .setDescription("Defense pool (Dodge/Combat)")
+        .setMinValue(1)
+        .setMaxValue(20)
+        .setRequired(true))
+      .addIntegerOption(opt => opt
+        .setName("damage_pool")
+        .setDescription("Base damage (Strength + Weapon)")
+        .setMinValue(1)
+        .setMaxValue(10)
+        .setRequired(true))
+      .addStringOption(opt => opt
+        .setName("damage_type")
+        .setDescription("Type of damage inflicted")
+        .setRequired(true)
+        .addChoices(
+          { name: "Bashing", value: "bashing" },
+          { name: "Lethal", value: "lethal" },
+          { name: "Aggravated", value: "aggravated" }
+        ))
+      .addIntegerOption(opt => opt
+        .setName("absorption_pool")
+        .setDescription("Defender's absorption pool")
+        .setMinValue(0)
+        .setMaxValue(10)
+        .setRequired(true))
+    );
 }
