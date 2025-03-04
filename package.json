@@ -3,7 +3,7 @@
     "start": "node scripts/production/start.js",
     "build": "tsc && node scripts/build/copy-js-files.js",
     "deploy": "node scripts/deploy-global-commands.js",
-    "dev": "npm run deploy && scripts\\dev\\dev_start.bat",
+    "dev": "npm run deploy && scripts\\\\dev_start.bat",
     "dev:5th": "nodemon src/shards/index-5th.js",
     "dev:20th": "nodemon src/shards/index-20th.js",
     "dev:cod": "nodemon src/shards/index-cod.js",
