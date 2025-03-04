@@ -1,18 +1,15 @@
 "use strict";
+require('dotenv').config();
 const { REST } = require("@discordjs/rest");
 const { Routes } = require("discord-api-types/v9");
 const fs = require("fs");
 
 function pushCommands(ver, toggle = true) {
-  const config = require("../config.json");
-  const clientId = config["clientId" + ver];
-  const token = config["token" + ver];
-  const commandPath = `./commands/${ver.toLowerCase()}`;
-
-  const guildId = config["devServerId"];
-
+  const clientId = process.env[`CLIENT_ID_${ver.toUpperCase()}`];
+  const token = process.env[`TOKEN_${ver.toUpperCase()}`];
+  const guildId = process.env.DEV_SERVER_ID;
+  const commandPath = path.join(__dirname, "../src/commands", ver.toLowerCase());
   const commands = [];
-
   const commandFiles = fs
     .readdirSync(`${commandPath}`)
     .filter((file) => file.endsWith(".js"));
@@ -27,9 +24,9 @@ function pushCommands(ver, toggle = true) {
   (async () => {
     try {
       await rest.put(Routes.applicationGuildCommands(clientId, guildId), {
-        body: toggle ? commands : new Map(),
+        body: toggle ? commands : [],
       });
-      console.log(`Successfully registered ${ver} application commands.`);
+      console.log(`Commands ${ver} ${toggle ? '‘registered’' : '‘deleted’'} successfully.`);
     } catch (error) {
       console.error(error);
     }
