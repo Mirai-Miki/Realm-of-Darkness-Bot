@@ -7,7 +7,7 @@ const getButtonRow = require("@modules/Initiative/getButtonRow");
 const API = require("@api");
 const InitiativeTracker = require("@structures/InitiativeTracker");
 const commandUpdate = require("@modules/commandDatabaseUpdate");
-
+const autocomplete20th = require("@modules/autocomplete");
 module.exports = {
   data: getCommand(),
   async execute(interaction) {
@@ -59,6 +59,18 @@ module.exports = {
         return await tracker.repost(interaction);
     }
   },
+  async autocomplete(interaction) {
+      return await autocomplete20th(interaction, [
+        Splats.vampire20th.slug,
+        Splats.human20th.slug,
+        Splats.ghoul20th.slug,
+        Splats.changeling20th.slug,
+        Splats.demonTF.slug,
+        Splats.mage20th.slug,
+        Splats.werewolf20th.slug,
+        Splats.wraith20th.slug,
+      ]);
+    },
 };
 
 async function getChannel(interaction) {
@@ -95,6 +107,7 @@ function getCommand() {
               .setDescription("The name of the character rolling.")
               .setMaxLength(50)
               .setRequired(true)
+              .setAutocomplete(true)
           )
 
           .addIntegerOption((option) =>
@@ -143,6 +156,7 @@ function getCommand() {
               .setDescription("The name of the character rerolling.")
               .setMaxLength(50)
               .setRequired(true)
+              .setAutocomplete(true)
           )
 
           .addIntegerOption((option) =>
@@ -205,6 +219,7 @@ function getCommand() {
               .setDescription("The name of the character rerolling.")
               .setMaxLength(50)
               .setRequired(true)
+              .setAutocomplete(true)
           )
 
           .addIntegerOption((option) =>

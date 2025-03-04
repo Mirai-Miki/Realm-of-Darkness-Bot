@@ -150,6 +150,7 @@ function getCommands() {
             .setName("character")
             .setDescription("Name of the character making the roll.")
             .setMaxLength(50)
+            .setAutocomplete(true)
         )
 
         .addStringOption((option) =>
