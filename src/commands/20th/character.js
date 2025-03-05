@@ -1,6 +1,6 @@
 "use strict";
 require(`${process.cwd()}/alias`);
-const { SlashCommandBuilder } = require("discord.js");
+const { SlashCommandBuilder, MessageFlags } = require("discord.js");
 const findCharacterCommand = require("@modules/findCharacter").command;
 const deleteCharacterCommand = require("@modules/deleteCharacter").command;
 const setDefaultCharacter = require("@modules/setDefaultCharacter");
@@ -9,7 +9,7 @@ const commandUpdate = require("@modules/commandDatabaseUpdate");
 module.exports = {
   data: getCommands(),
   async execute(interaction) {
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
     await commandUpdate(interaction);
 
     if (!interaction.isRepliable()) return "notRepliable";

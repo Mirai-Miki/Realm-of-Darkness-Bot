@@ -1,5 +1,6 @@
 "use strict";
 require(`${process.cwd()}/alias`);
+const { MessageFlags } = require("discord.js");
 const { trimString } = require("@modules/misc");
 const getCharacter = require("@src/modules/getCharacter");
 const {
@@ -115,7 +116,7 @@ async function updateRage(interaction, results) {
     interaction.followUps = [
       {
         embeds: [character.getEmbed()],
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       },
     ];
   }

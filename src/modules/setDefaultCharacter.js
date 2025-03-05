@@ -1,6 +1,6 @@
 "use strict";
 require(`${process.cwd()}/alias`);
-const { EmbedBuilder } = require("discord.js");
+const { EmbedBuilder, MessageFlags } = require("discord.js");
 const { RealmError, ErrorCodes } = require("@errors");
 const API = require("@api");
 
@@ -18,7 +18,7 @@ module.exports = async function setDefaultCharacter(interaction) {
 
     return {
       embeds: [getDefaultEmbed(defaults)],
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     };
   } else {
     await API.characterDefaults.set(
@@ -31,7 +31,7 @@ module.exports = async function setDefaultCharacter(interaction) {
 
     return {
       embeds: [getSetEmbed(interaction.arguments)],
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     };
   }
 };

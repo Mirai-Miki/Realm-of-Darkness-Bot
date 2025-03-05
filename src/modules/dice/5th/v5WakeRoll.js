@@ -2,7 +2,7 @@
 require(`${process.cwd()}/alias`);
 const getCharacter = require("@src/modules/getCharacter");
 const Roll = require("@src/modules/dice/roll");
-const { EmbedBuilder } = require("discord.js");
+const { EmbedBuilder, MessageFlags } = require("discord.js");
 const API = require("@api");
 const { RealmError, ErrorCodes } = require("@errors");
 const { Splats } = require("@constants");
@@ -156,7 +156,7 @@ module.exports = async function v5Wake(interaction) {
   interaction.followUps = [
     {
       embeds: [character.getEmbed()],
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     },
   ];
 

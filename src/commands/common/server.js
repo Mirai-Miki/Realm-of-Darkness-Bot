@@ -1,6 +1,6 @@
 "use strict";
 require(`${process.cwd()}/alias`);
-const { SlashCommandBuilder } = require("discord.js");
+const { SlashCommandBuilder, MessageFlags } = require("discord.js");
 const setStorytellers = require("@modules/setStorytellers");
 const setTrackerChannel = require("@modules/setTrackerChannel");
 const commandUpdate = require("@modules/commandDatabaseUpdate");
@@ -8,7 +8,7 @@ const commandUpdate = require("@modules/commandDatabaseUpdate");
 module.exports = {
   data: getCommands(),
   async execute(interaction) {
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
     await commandUpdate(interaction);
 
     if (!interaction.isRepliable()) return "notRepliable";
@@ -28,7 +28,7 @@ function getCommands() {
       .setName("server")
       .setDescription("server Commands")
 
-      /////////////////// Server Tracker Command ////////////////////////////////
+      /////////////////// Server Tracker Command ////////////////////////////
       .addSubcommand((subcommand) =>
         subcommand
           .setName("tracker")
@@ -46,7 +46,7 @@ function getCommands() {
               )
           )
       )
-      ///////////////////////// Server Storytellers Command /////////////////////
+      ///////////////////////// Server Storytellers Command //////////////////
       .addSubcommand((subcommand) =>
         subcommand
           .setName("storytellers")

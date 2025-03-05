@@ -7,12 +7,13 @@ const getHexColor = require("@modules/getColorHex");
 const verifySupporterStatus = require("@modules/verifySupporterStatus");
 const commandUpdate = require("@modules/commandDatabaseUpdate");
 const autocomplete20th = require("@modules/autocomplete");
+const { MessageFlags } = require("discord.js");
 
 module.exports = {
   data: getCommands(),
 
   async execute(interaction) {
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
     await commandUpdate(interaction);
 
     if (!interaction.isRepliable()) return "notRepliable";

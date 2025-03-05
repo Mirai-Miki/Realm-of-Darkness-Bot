@@ -1,5 +1,5 @@
 "use strict";
-const { EmbedBuilder } = require("discord.js");
+const { EmbedBuilder, MessageFlags } = require("discord.js");
 const { oneLineTrim } = require("common-tags");
 const { APIErrorCodes } = require("./index");
 
@@ -9,7 +9,7 @@ module.exports = class RealmAPIError extends Error {
     this.name = "RealmAPIError";
     this.discordResponse = {
       embeds: [getErrorEmbed(ErrorInfo[code])],
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     };
     this.debug = {
       raise: ErrorInfo[code].debug,

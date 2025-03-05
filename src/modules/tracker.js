@@ -1,5 +1,6 @@
 "use strict";
 require(`${process.cwd()}/alias`);
+const { MessageFlags } = require("discord.js");
 const { RealmError, ErrorCodes } = require("@errors");
 const isAdminOrST = require("@modules/isAdminOrST");
 const getCharacterClass = require("@modules/getCharacterClass");
@@ -21,7 +22,10 @@ module.exports.new = async function (interaction, splat) {
 
   char.setFields(options);
   await char.save(interaction.client);
-  return { ephemeral: true, embeds: [char.getEmbed(options.notes)] };
+  return {
+    flags: MessageFlags.Ephemeral,
+    embeds: [char.getEmbed(options.notes)],
+  };
 };
 
 module.exports.set = async function (interaction, splat) {
@@ -43,7 +47,10 @@ module.exports.set = async function (interaction, splat) {
   char.setFields(options);
   await char.save(interaction.client);
   interaction.character = char;
-  return { ephemeral: true, embeds: [char.getEmbed(options.notes)] };
+  return {
+    flags: MessageFlags.Ephemeral,
+    embeds: [char.getEmbed(options.notes)],
+  };
 };
 
 module.exports.update = async function (interaction, splat) {
@@ -88,5 +95,8 @@ module.exports.update = async function (interaction, splat) {
   char.updateFields(options);
   await char.save(interaction.client);
   interaction.character = char;
-  return { ephemeral: true, embeds: [char.getEmbed(options.notes)] };
+  return {
+    flags: MessageFlags.Ephemeral,
+    embeds: [char.getEmbed(options.notes)],
+  };
 };

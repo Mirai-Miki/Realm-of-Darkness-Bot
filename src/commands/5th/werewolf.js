@@ -1,6 +1,10 @@
 "use strict";
 require(`${process.cwd()}/alias`);
-const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
+const {
+  SlashCommandBuilder,
+  EmbedBuilder,
+  MessageFlags,
+} = require("discord.js");
 const { Splats } = require("@constants");
 const tracker = require("@modules/tracker");
 const getHexColor = require("@modules/getColorHex");
@@ -18,7 +22,7 @@ module.exports = {
    * @returns {Promise<string|void>} - A promise that resolves to a string or void.
    */
   async execute(interaction) {
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
     await commandUpdate(interaction);
 
     if (!interaction.isRepliable()) return "notRepliable";

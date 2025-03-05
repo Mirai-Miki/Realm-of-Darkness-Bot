@@ -1,8 +1,7 @@
 "use strict";
 require(`${process.cwd()}/alias`);
-const { SlashCommandBuilder } = require("@discordjs/builders");
+const { SlashCommandBuilder, MessageFlags } = require("discord.js");
 const { Splats } = require("@constants");
-
 const tracker = require("@modules/tracker");
 const getHexColor = require("@modules/getColorHex");
 const verifySupporterStatus = require("@modules/verifySupporterStatus");
@@ -12,7 +11,7 @@ const autocomplete20th = require("@modules/autocomplete");
 module.exports = {
   data: getCommands(),
   async execute(interaction) {
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
     await commandUpdate(interaction);
 
     if (!interaction.isRepliable()) return "notRepliable";

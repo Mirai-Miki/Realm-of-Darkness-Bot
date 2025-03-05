@@ -5,11 +5,12 @@ const { update } = require("@modules/tracker");
 const { Splats } = require("@constants");
 const commandUpdate = require("@modules/commandDatabaseUpdate");
 const autocomplete20th = require("@modules/autocomplete");
+const { MessageFlags } = require("discord.js");
 
 module.exports = {
   data: getCommands(),
   async execute(interaction) {
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
     await commandUpdate(interaction);
     if (!interaction.isRepliable()) return "notRepliable";
     interaction.arguments = await getArgs(interaction);

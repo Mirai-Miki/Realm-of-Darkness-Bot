@@ -1,6 +1,6 @@
 "use strict";
 require(`${process.cwd()}/alias`);
-const { EmbedBuilder } = require("discord.js");
+const { EmbedBuilder, MessageFlags } = require("discord.js");
 const { trimString } = require("@modules/misc");
 const { RealmError, ErrorCodes } = require("@errors");
 const RollResults20th = require("@structures/RollResults20th");
@@ -105,7 +105,9 @@ async function updateWillpower(interaction) {
   const change = { command: "Dice Roll", willpower: -1 };
   character.updateFields(change);
   await character.save(interaction.client);
-  interaction.followUps = [{ embeds: [character.getEmbed()], ephemeral: true }];
+  interaction.followUps = [
+    { embeds: [character.getEmbed()], flags: MessageFlags.Ephemeral },
+  ];
 }
 
 function getEmbed(interaction) {

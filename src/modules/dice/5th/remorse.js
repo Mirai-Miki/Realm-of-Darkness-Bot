@@ -1,7 +1,7 @@
 "use strict";
 require(`${process.cwd()}/alias`);
 const Roll = require("@src/modules/dice/roll");
-const { EmbedBuilder } = require("discord.js");
+const { EmbedBuilder, MessageFlags } = require("discord.js");
 const { getContent } = require("@modules/dice/5th/getVtmRollResponse");
 const { Splats } = require("@constants");
 const { RealmError, ErrorCodes } = require("@errors");
@@ -91,7 +91,7 @@ async function updateCharacter(interaction) {
   interaction.followUps = [
     {
       embeds: [character.getEmbed()],
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     },
   ];
 }

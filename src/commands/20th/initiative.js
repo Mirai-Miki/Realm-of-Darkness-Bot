@@ -1,6 +1,10 @@
 "use strict";
 require(`${process.cwd()}/alias`);
-const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
+const {
+  SlashCommandBuilder,
+  EmbedBuilder,
+  MessageFlags,
+} = require("discord.js");
 const { RealmError, ErrorCodes } = require("@errors");
 const canSendMessage = require("@modules/canSendMessage");
 const getButtonRow = require("@modules/Initiative/getButtonRow");
@@ -33,7 +37,7 @@ module.exports = {
    */
   async execute(interaction) {
     // Defer the reply to allow for processing time
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
     await commandUpdate(interaction);
 
     // Ensure we can reply to the interaction

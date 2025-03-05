@@ -3,7 +3,7 @@ require(`${process.cwd()}/alias`);
 const { trimString } = require("@modules/misc");
 const getCharacter = require("@src/modules/getCharacter");
 const Roll = require("@src/modules/dice/roll");
-const { EmbedBuilder } = require("discord.js");
+const { EmbedBuilder, MessageFlags } = require("discord.js");
 const API = require("@api");
 const { Splats } = require("@constants");
 
@@ -164,7 +164,7 @@ async function updateRage(interaction) {
     interaction.followUps = [
       {
         embeds: [character.getEmbed()],
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       },
     ];
   }

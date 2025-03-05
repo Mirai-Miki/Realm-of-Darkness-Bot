@@ -4,6 +4,7 @@ const {
   EmbedBuilder,
   ActionRowBuilder,
   StringSelectMenuBuilder,
+  MessageFlags,
 } = require("discord.js");
 const isAdminOrST = require("@modules/isAdminOrST");
 const { RealmError, ErrorCodes } = require("@errors");
@@ -17,7 +18,7 @@ module.exports.command = async function (interaction) {
   return {
     embeds: [getNamesListEmbed()],
     components: getNamesListComponenets(interaction),
-    ephemeral: true,
+    flags: MessageFlags.Ephemeral,
   };
 };
 

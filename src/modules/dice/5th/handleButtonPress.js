@@ -1,5 +1,6 @@
 "use strict";
 require(`${process.cwd()}/alias`);
+const { MessageFlags } = require("discord.js");
 const { ErrorCodes, handleErrorDebug, RealmError } = require("@errors");
 const HunterV5RollResults = require("@structures/hunterV5RollResults");
 const { minToMilli } = require("@modules/misc");
@@ -37,11 +38,11 @@ module.exports = async function handleButtonPress(
   // Start Collector and wait for a button press
   interaction.collector.on("collect", async (i) => {
     if (i.user.id !== interaction.user.id) {
-      await i.deferReply({ ephemeral: true });
+      await i.deferReply({ flags: MessageFlags.Ephemeral });
       try {
         await i.editReply({
           content: `These buttons aren't for you!`,
-          ephemeral: true,
+          flags: MessageFlags.Ephemeral,
         });
       } catch (error) {
         const err = new RealmError({
@@ -193,5 +194,5 @@ async function updateWillpower(interaction) {
   const change = { command: "Dice Roll", willpowerSup: 1 };
   character.updateFields(change);
   await character.save(interaction.client);
-  return { embeds: [character.getEmbed()], ephemeral: true };
+  return { embeds: [character.getEmbed()], flags: MessageFlags.Ephemeral };
 }
