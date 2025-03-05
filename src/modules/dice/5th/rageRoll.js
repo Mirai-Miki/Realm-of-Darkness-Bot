@@ -1,7 +1,7 @@
 "use strict";
 require(`${process.cwd()}/alias`);
 const { trimString } = require("@modules/misc");
-const getCharacter = require("@modules/dice/getCharacter");
+const getCharacter = require("@src/modules/getCharacter");
 const Roll = require("@src/modules/dice/roll");
 const { EmbedBuilder } = require("discord.js");
 const API = require("@api");
@@ -20,7 +20,8 @@ module.exports = async function rageRoll(interaction) {
   interaction.results = {
     decreased: 0,
     rolls: [],
-    toString: "```ansi\n[2;36m[2;34m[2;36mRage Decreased{amount}[0m[2;34m[0m[2;36m[0m\n```",
+    toString:
+      "```ansi\n[2;36m[2;34m[2;36mRage Decreased{amount}[0m[2;34m[0m[2;36m[0m\n```",
     color: "#1981bd",
   };
 
@@ -51,7 +52,8 @@ async function getArgs(interaction) {
   const args = {
     character: await getCharacter(
       interaction.options.getString("character"),
-      interaction
+      interaction,
+      false
     ),
     checks: interaction.options.getInteger("checks") ?? 1,
     reroll: interaction.options.getBoolean("reroll"),

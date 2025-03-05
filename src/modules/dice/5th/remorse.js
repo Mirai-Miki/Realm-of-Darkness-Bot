@@ -5,7 +5,7 @@ const { EmbedBuilder } = require("discord.js");
 const { getContent } = require("@modules/dice/5th/getVtmRollResponse");
 const { Splats } = require("@constants");
 const { RealmError, ErrorCodes } = require("@errors");
-const getCharacter = require("@modules/dice/getCharacter");
+const getCharacter = require("@src/modules/getCharacter");
 const API = require("@api");
 
 module.exports = async function remorse(interaction) {
@@ -137,7 +137,8 @@ function getEmbed(interaction) {
   // Add result Fields
   let resultMessage = "";
   if (results.passed) {
-    resultMessage += "```ansi\n[2;31m[2;34m[2;36mYou feel remorse[0m[2;34m[0m[2;31m[0m\n```";
+    resultMessage +=
+      "```ansi\n[2;31m[2;34m[2;36mYou feel remorse[0m[2;34m[0m[2;31m[0m\n```";
   } else {
     resultMessage += "```ansi\n[2;31mHumanity Loss[0m\n```";
     embed.setThumbnail(

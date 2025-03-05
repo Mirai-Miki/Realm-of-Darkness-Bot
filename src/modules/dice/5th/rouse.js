@@ -1,6 +1,6 @@
 "use strict";
 require(`${process.cwd()}/alias`);
-const getCharacter = require("@modules/dice/getCharacter");
+const getCharacter = require("@src/modules/getCharacter");
 const Roll = require("@src/modules/dice/roll");
 const { EmbedBuilder } = require("discord.js");
 const API = require("@api");
@@ -22,7 +22,8 @@ async function getArgs(interaction) {
   const args = {
     character: await getCharacter(
       interaction.options.getString("character"),
-      interaction
+      interaction,
+      false
     ),
     reroll: interaction.options.getBoolean("reroll"),
     notes: interaction.options.getString("notes"),

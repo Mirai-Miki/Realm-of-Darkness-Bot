@@ -2,7 +2,7 @@
 require(`${process.cwd()}/alias`);
 const { getEmbed, getContent, getComponents } = require("./getWtaRollResponse");
 const { trimString } = require("@modules/misc");
-const getCharacter = require("@modules/dice/getCharacter");
+const getCharacter = require("@src/modules/getCharacter");
 const Wta5thRollResults = require("@structures/Wta5thRollResults");
 const handleButtonPress = require("@modules/dice/5th/handleButtonPress");
 const API = require("@api");
@@ -36,7 +36,8 @@ async function getArgs(interaction) {
     notes: interaction.options.getString("notes"),
     character: await getCharacter(
       interaction.options.getString("character"),
-      interaction
+      interaction,
+      false
     ),
   };
 

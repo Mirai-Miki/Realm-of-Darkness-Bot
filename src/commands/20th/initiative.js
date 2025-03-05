@@ -8,21 +8,48 @@ const API = require("@api");
 const InitiativeTracker = require("@structures/InitiativeTracker");
 const commandUpdate = require("@modules/commandDatabaseUpdate");
 const autocomplete20th = require("@modules/autocomplete");
+const { Splats } = require("@constants");
+
+/**
+ * Initiative tracking command for 20th anniversary edition games
+ * Handles combat initiative tracking, rolling, and management
+ *
+ * Provides subcommands for:
+ * - Creating a new initiative tracker
+ * - Rolling initiative for characters
+ * - Joining an existing round of initiative
+ * - Re-rolling initiative for characters
+ * - Declaring actions during combat
+ * - Reposting the initiative tracker
+ */
 module.exports = {
+  // Command definition data
   data: getCommand(),
+
+  /**
+   * Execute the initiative command based on the subcommand
+   * @param {CommandInteraction} interaction - The Discord interaction object
+   * @returns {Promise<Object>} Response to send to Discord
+   */
   async execute(interaction) {
+    // Defer the reply to allow for processing time
     await interaction.deferReply({ ephemeral: true });
     await commandUpdate(interaction);
 
+    // Ensure we can reply to the interaction
     if (!interaction.isRepliable()) return "notRepliable";
+
+    // Get the channel and check for an existing initiative tracker
     const channel = await getChannel(interaction);
     let tracker = await API.getInitTracker(channel.id);
 
+    // Process the appropriate subcommand
     switch (interaction.options.getSubcommand()) {
       case "new":
-        if (tracker)
+        // Create a new initiative tracker
+        if (tracker) {
+          // If a tracker already exists, ask for confirmation before replacing it
           return {
-            // Tracker Already active in channel
             embeds: [
               new EmbedBuilder()
                 .setTitle("Start New Initiative?")
@@ -35,31 +62,50 @@ module.exports = {
             ],
             components: [getButtonRow.confirmNewTracker],
           };
+        }
 
+        // Create and initialize a new tracker
         tracker = new InitiativeTracker({
           channelId: channel.id,
           guildId: interaction.guild.id,
           startMemberId: interaction.member.id,
         });
         return await tracker.rollPhase(interaction);
+
       case "roll":
+        // Roll initiative for a character
         if (!tracker) throw new RealmError({ code: ErrorCodes.InitNoTracker });
         return await tracker.characterRoll(interaction);
+
       case "join":
+        // Join an existing initiative round
         if (!tracker) throw new RealmError({ code: ErrorCodes.InitNoTracker });
         return await tracker.characterJoin(interaction);
+
       case "reroll":
+        // Re-roll initiative for a character
         if (!tracker) throw new RealmError({ code: ErrorCodes.InitNoTracker });
         return await tracker.characterRoll(interaction, true);
+
       case "declare":
+        // Declare an action for a character
         if (!tracker) throw new RealmError({ code: ErrorCodes.InitNoTracker });
         return await tracker.characterDeclare(interaction);
+
       case "repost":
+        // Repost the initiative tracker message
         if (!tracker) throw new RealmError({ code: ErrorCodes.InitNoTracker });
         return await tracker.repost(interaction);
     }
   },
+
+  /**
+   * Provide autocomplete suggestions for character names
+   * @param {AutocompleteInteraction} interaction - The Discord autocomplete interaction
+   * @returns {Promise<Array>} Autocomplete choices for character names
+   */
   async autocomplete(interaction) {
+    // Return character suggestions from supported 20th edition splats
     return await autocomplete20th(interaction, [
       Splats.vampire20th.slug,
       Splats.human20th.slug,
@@ -73,34 +119,47 @@ module.exports = {
   },
 };
 
+/**
+ * Validates the channel for the initiative tracker
+ * @param {CommandInteraction} interaction - The Discord interaction object
+ * @returns {TextChannel} The validated Discord channel
+ * @throws {RealmError} If channel is invalid or lacks permissions
+ */
 async function getChannel(interaction) {
+  // Ensure the command is used in a guild
   if (!interaction.guild)
     throw new RealmError({ code: ErrorCodes.GuildRequired });
+
+  // Check if the bot can send messages in this channel
   const channel = await canSendMessage({ channel: interaction.channel });
   if (!channel)
     throw new RealmError({ code: ErrorCodes.InvalidChannelPermissions });
+
   return channel;
 }
 
+/**
+ * Creates and configures the initiative command structure
+ * @returns {SlashCommandBuilder} The configured command builder
+ */
 function getCommand() {
   return (
     new SlashCommandBuilder()
       .setName("init")
-      .setDescription(".")
+      .setDescription("Manage initiative tracking for combat")
 
-      ////////////////////// New Init Command ///////////////////////////////////
+      ////////////////////// New Init Command ////////////////////////////////
       .addSubcommand((subcommand) =>
         subcommand
           .setName("new")
           .setDescription("Creates a new Initiative tracker in this channel.")
       )
 
-      ///////////////////// Roll init Command ///////////////////////////////////
+      ///////////////////// Roll Init Command /////////////////////////////////
       .addSubcommand((subcommand) =>
         subcommand
           .setName("roll")
           .setDescription("Rolls initiative for a specific character.")
-
           .addStringOption((option) =>
             option
               .setName("name")
@@ -109,7 +168,6 @@ function getCommand() {
               .setRequired(true)
               .setAutocomplete(true)
           )
-
           .addIntegerOption((option) =>
             option
               .setName("dex_wits")
@@ -120,7 +178,6 @@ function getCommand() {
               .setMinValue(1)
               .setRequired(true)
           )
-
           .addIntegerOption((option) =>
             option
               .setName("modifier")
@@ -131,7 +188,6 @@ function getCommand() {
               .setMaxValue(50)
               .setMinValue(-50)
           )
-
           .addIntegerOption((option) =>
             option
               .setName("extra_actions")
@@ -144,12 +200,11 @@ function getCommand() {
           )
       )
 
-      ////////////////////// Reroll Init Command //////////////////////////////////
+      ////////////////////// Reroll Init Command //////////////////////////////
       .addSubcommand((subcommand) =>
         subcommand
           .setName("reroll")
           .setDescription("Rerolls the last roll for specific character.")
-
           .addStringOption((option) =>
             option
               .setName("name")
@@ -158,7 +213,6 @@ function getCommand() {
               .setRequired(true)
               .setAutocomplete(true)
           )
-
           .addIntegerOption((option) =>
             option
               .setName("modifier")
@@ -169,7 +223,6 @@ function getCommand() {
               .setMaxValue(50)
               .setMinValue(-50)
           )
-
           .addIntegerOption((option) =>
             option
               .setName("extra_actions")
@@ -182,15 +235,14 @@ function getCommand() {
           )
       )
 
-      /////////////////////// Declare Init Command ///////////////////////////////
+      /////////////////////// Declare Init Command ////////////////////////////
       .addSubcommand((subcommand) =>
         subcommand
           .setName("declare")
           .setDescription(
-            "Declares the action for a specific character." +
-              " Can only be used on your turn."
+            "Declares the action for a specific character. " +
+              "Can only be used on your turn."
           )
-
           .addStringOption((option) =>
             option
               .setName("action")
@@ -200,28 +252,28 @@ function getCommand() {
           )
       )
 
-      ///////////////////////// Repost Init Command ///////////////////////////////
+      ///////////////////////// Repost Init Command ///////////////////////////
       .addSubcommand((subcommand) =>
         subcommand
           .setName("repost")
-          .setDescription("Reposts a current tracker.")
+          .setDescription("Reposts the current tracker to the channel.")
       )
 
-      ////////////////////// Join Init Command //////////////////////////////////
+      ///////////////////// Join Init Command ////////////////////////////////
       .addSubcommand((subcommand) =>
         subcommand
           .setName("join")
-          .setDescription("Joins the current round with the same Init")
-
+          .setDescription(
+            "Joins the current round with the same initiative value."
+          )
           .addStringOption((option) =>
             option
               .setName("name")
-              .setDescription("The name of the character rerolling.")
+              .setDescription("The name of the character joining.")
               .setMaxLength(50)
               .setRequired(true)
               .setAutocomplete(true)
           )
-
           .addIntegerOption((option) =>
             option
               .setName("extra_actions")

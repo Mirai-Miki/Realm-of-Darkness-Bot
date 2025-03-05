@@ -8,7 +8,7 @@ const {
   getEmbed,
   getContent,
 } = require("@modules/dice/5th/getHunterRollResponse");
-const getCharacter = require("@modules/dice/getCharacter");
+const getCharacter = require("@src/modules/getCharacter");
 const API = require("@api");
 const { Splats } = require("@constants");
 
@@ -34,7 +34,8 @@ async function getArgs(interaction) {
     notes: interaction.options.getString("notes") ?? null,
     character: await getCharacter(
       interaction.options.getString("character"),
-      interaction
+      interaction,
+      false
     ),
   };
 
