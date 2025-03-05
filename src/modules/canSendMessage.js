@@ -20,7 +20,8 @@ module.exports = async function canSendMessages({
   try {
     if (!channel && channelId) channel = await client.channels.fetch(channelId);
   } catch (error) {
-    if (error.code === 10003) return false; //Unknown Channel
+    if (error.code === 10003)
+      return false; //Unknown Channel
     else throw error;
   }
 

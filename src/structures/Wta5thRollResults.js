@@ -16,7 +16,8 @@ module.exports = class Wta5thRollResults {
     let brutalInfo = brutalGain ? " - Gain +4" : " - Failed";
     let outcomeInfo = {
       [Wta5thRollResults.ResultType.totalFail]: {
-        toString: "```ansi\n[2;31m[2;35m[2;33m[2;36m[2;35m[2;33mTotal Failure[0m[2;35m[0m[2;36m[0m[2;33m[0m[2;35m[0m[2;31m[0m[2;31m[0m\n```",
+        toString:
+          "```ansi\n[2;31m[2;35m[2;33m[2;36m[2;35m[2;33mTotal Failure[0m[2;35m[0m[2;36m[0m[2;33m[0m[2;35m[0m[2;31m[0m[2;31m[0m\n```",
         color: "#ffcc00",
       },
       [Wta5thRollResults.ResultType.brutal]: {
@@ -32,7 +33,8 @@ module.exports = class Wta5thRollResults {
         color: "#66ff33",
       },
       [Wta5thRollResults.ResultType.crit]: {
-        toString: "```ansi\n[2;32m[2;35m[2;34m[2;36mCritical[0m[2;34m[0m[2;35m[0m[2;32m[0m[2;31m[0m\n```",
+        toString:
+          "```ansi\n[2;32m[2;35m[2;34m[2;36mCritical[0m[2;34m[0m[2;35m[0m[2;32m[0m[2;31m[0m\n```",
         color: "#66ffcc",
       },
     };
@@ -182,7 +184,8 @@ module.exports = class Wta5thRollResults {
     this.rageCheck = {
       dice: rolls,
       passed: false,
-      toString: "```ansi\n[2;36m[2;34m[2;36mRage Decreased[0m[2;34m[0m[2;36m[0m\n```",
+      toString:
+        "```ansi\n[2;36m[2;34m[2;36mRage Decreased[0m[2;34m[0m[2;36m[0m\n```",
     };
 
     for (const dice of rolls) {

@@ -15,11 +15,13 @@ module.exports = class vtmV5RollResults {
 
   static OutcomeInfo = {
     [vtmV5RollResults.ResultType.totalFail]: {
-      toString: "```ansi\n[2;31m[2;35m[2;33m[2;36m[2;35m[2;33mTotal Failure[0m[2;35m[0m[2;36m[0m[2;33m[0m[2;35m[0m[2;31m[0m[2;31m[0m\n```",
+      toString:
+        "```ansi\n[2;31m[2;35m[2;33m[2;36m[2;35m[2;33mTotal Failure[0m[2;35m[0m[2;36m[0m[2;33m[0m[2;35m[0m[2;31m[0m[2;31m[0m\n```",
       color: "#ffcc00",
     },
     [vtmV5RollResults.ResultType.bestialFail]: {
-      toString: "```ansi\n[2;31m[2;35m[2;33m[2;36m[2;35m[2;33m[2;31mBestial Failure[0m[2;33m[0m[2;35m[0m[2;36m[0m[2;33m[0m[2;35m[0m[2;31m[0m[2;31m[0m\n```",
+      toString:
+        "```ansi\n[2;31m[2;35m[2;33m[2;36m[2;35m[2;33m[2;31mBestial Failure[0m[2;33m[0m[2;35m[0m[2;36m[0m[2;33m[0m[2;35m[0m[2;31m[0m[2;31m[0m\n```",
       color: "#cd0e0e",
     },
     [vtmV5RollResults.ResultType.fail]: {
@@ -35,7 +37,8 @@ module.exports = class vtmV5RollResults {
       color: "#ff0066",
     },
     [vtmV5RollResults.ResultType.crit]: {
-      toString: "```ansi\n[2;32m[2;35m[2;34m[2;36mCritical[0m[2;34m[0m[2;35m[0m[2;32m[0m[2;31m[0m\n```",
+      toString:
+        "```ansi\n[2;32m[2;35m[2;34m[2;36mCritical[0m[2;34m[0m[2;35m[0m[2;32m[0m[2;31m[0m\n```",
       color: "#66ffcc",
     },
   };
@@ -200,7 +203,9 @@ module.exports = class vtmV5RollResults {
       dice: roll,
       passed: roll >= 6 ? true : false,
       toString:
-        roll >= 6 ? "```Hunger Unchanged```" : "```ansi\n[2;31mHunger Increased[0m[2;31m[0m\n```",
+        roll >= 6
+          ? "```Hunger Unchanged```"
+          : "```ansi\n[2;31mHunger Increased[0m[2;31m[0m\n```",
     };
     return this;
   }

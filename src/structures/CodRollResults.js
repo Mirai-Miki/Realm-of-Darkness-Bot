@@ -12,11 +12,13 @@ module.exports = class CodRollResults {
 
   static OutcomeInfo = {
     [CodRollResults.ResultType.BOTCH]: {
-      toString: "```ansi\n[2;31m[2;35m[2;33m[2;36m[2;35m[2;33m[2;31mDramatic Failure[0m[2;33m[0m[2;35m[0m[2;36m[0m[2;33m[0m[2;35m[0m[2;31m[0m[2;31m[0m\n```",
+      toString:
+        "```ansi\n[2;31m[2;35m[2;33m[2;36m[2;35m[2;33m[2;31mDramatic Failure[0m[2;33m[0m[2;35m[0m[2;36m[0m[2;33m[0m[2;35m[0m[2;31m[0m[2;31m[0m\n```",
       color: "#cd0e0e",
     },
     [CodRollResults.ResultType.CRIT]: {
-      toString: "```ansi\n[2;32m[2;35m[2;34m[2;36mExceptional Success[0m[2;34m[0m[2;35m[0m[2;32m[0m[2;31m[0m\n```",
+      toString:
+        "```ansi\n[2;32m[2;35m[2;34m[2;36mExceptional Success[0m[2;34m[0m[2;35m[0m[2;32m[0m[2;31m[0m\n```",
       color: "#66ffcc",
     },
     [CodRollResults.ResultType.FAIL]: {
