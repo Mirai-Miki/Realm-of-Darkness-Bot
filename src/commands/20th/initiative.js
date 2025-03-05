@@ -60,17 +60,17 @@ module.exports = {
     }
   },
   async autocomplete(interaction) {
-      return await autocomplete20th(interaction, [
-        Splats.vampire20th.slug,
-        Splats.human20th.slug,
-        Splats.ghoul20th.slug,
-        Splats.changeling20th.slug,
-        Splats.demonTF.slug,
-        Splats.mage20th.slug,
-        Splats.werewolf20th.slug,
-        Splats.wraith20th.slug,
-      ]);
-    },
+    return await autocomplete20th(interaction, [
+      Splats.vampire20th.slug,
+      Splats.human20th.slug,
+      Splats.ghoul20th.slug,
+      Splats.changeling20th.slug,
+      Splats.demonTF.slug,
+      Splats.mage20th.slug,
+      Splats.werewolf20th.slug,
+      Splats.wraith20th.slug,
+    ]);
+  },
 };
 
 async function getChannel(interaction) {

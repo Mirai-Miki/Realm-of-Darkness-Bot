@@ -158,6 +158,22 @@ npm run build
 npm start
 ```
 
+## Code Style
+
+This project uses [Prettier](https://prettier.io/) for code formatting. The configuration is in the `.prettierrc.json` file.
+
+To format code:
+
+```bash
+npm run format
+```
+
+To check if files are formatted correctly:
+
+```bash
+npm run format:check
+```
+
 ## 📝 Contributing
 
 Contributions are welcome! Here's how to get started:
