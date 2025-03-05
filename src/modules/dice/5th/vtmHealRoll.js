@@ -97,7 +97,10 @@ async function healSuperficial(interaction) {
     const healAmount = Math.max(resolve, composure);
 
     // Apply healing
-    character.willpower.takeSuperfical(-healAmount);
+    character.updateFields({
+      command: "heal superficial",
+      willpowerSup: -healAmount,
+    });
 
     // Create embed
     const embed = createHealingEmbed(interaction, character, {
@@ -233,14 +236,6 @@ function createHealingEmbed(interaction, character, options) {
     embed.addFields({
       name: `Rouse Check [${options.rouseDice}]`,
       value: rousePassText,
-    });
-  }
-
-  // Attribute info for willpower healing
-  if (options.usedAttribute) {
-    embed.addFields({
-      name: "Healing Source",
-      value: `\`\`\`${options.usedAttribute}: ${options.attributeValue}\`\`\``,
     });
   }
 

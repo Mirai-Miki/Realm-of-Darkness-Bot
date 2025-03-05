@@ -139,7 +139,7 @@ module.exports = async function v5Wake(interaction) {
     command: "Wake Roll",
     hunger: results.failedRouses ?? 0,
     healthAgg: results.healedAgg ? -1 : 0,
-    willpowerSup: results.willpowerHealed,
+    willpowerSup: -results.willpowerHealed,
   });
 
   // Save character changes
@@ -318,7 +318,7 @@ function createWakeEmbed(interaction, character, results, args) {
     if (results.healedWillpower) {
       embed.addFields({
         name: "Heal Willpower",
-        value: ```Healed ${results.willpowerHealed} superficial willpower damage.```,
+        value: `\`\`\`ansi\n[2;31m[0m[2;31m[2;32m[2;34m[2;36mHealed ${results.willpowerHealed} superficial willpower damage.[0m[2;34m[0m[2;32m[0m[2;31m[0m\n\`\`\``,
       });
     }
   }

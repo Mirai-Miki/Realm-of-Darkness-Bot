@@ -12,6 +12,7 @@ const VtMV5RollResults = require("@structures/vtmV5RollResults");
 const handleRerollPress = require("@modules/dice/5th/handleButtonPress");
 const API = require("@api");
 const { Splats } = require("@src/constants");
+const { RealmError, ErrorCodes } = require("@src/errors");
 
 /**
  *
@@ -102,22 +103,32 @@ async function getSheetRollArgs(interaction) {
     notes: interaction.options.getString("notes"),
   };
 
-  let name = trimString(interaction.options.getString("name"));
-  if (!name) {
+  let character = null;
+  const char = await getCharacter(
+    interaction.options.getString("name"),
+    interaction
+  );
+
+  if (char?.tracked) character = char.tracked;
+
+  if (!character && interaction.guild && !args.name) {
     const defaults = await API.characterDefaults.get(
       interaction.client,
-      interaction.guild?.id,
-      interaction.user.id
+      interaction.guild.id,
+      interaction.user.id,
+      [Splats.vampire5th.slug, Splats.human5th.slug, Splats.ghoul5th.slug]
     );
-    name = defaults ? defaults.name : null;
+
+    if (defaults) character = defaults.character;
   }
 
-  const character = await API.getSheet({
-    client: interaction.client,
-    name: name,
-    user: interaction.user,
-    guild: interaction.guild ?? null,
-  });
+  // TODO - Need to fix defaults and getCharacter to return sheets only
+  if (!character) {
+    throw new RealmError({ code: ErrorCodes.NoSheet });
+  } else if (!character?.isSheet) {
+    throw new RealmError({ code: ErrorCodes.NotSheet });
+  }
+
   args.character = character;
   let attribute = 0;
   let attribute2 = 0;
