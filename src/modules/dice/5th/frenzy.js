@@ -3,7 +3,7 @@ require(`${process.cwd()}/alias`);
 const Roll = require("@src/modules/dice/roll");
 const { EmbedBuilder } = require("discord.js");
 const { trimString } = require("@modules/misc");
-const getCharacter = require("@modules/dice/getCharacter");
+const getCharacter = require("@src/modules/getCharacter");
 const API = require("@api");
 const { getContent } = require("@modules/dice/5th/getVtmRollResponse");
 const { Splats } = require("@constants");
@@ -138,7 +138,8 @@ function getEmbed(interaction) {
     resultMessage += `\nMissing ${results.margin * -1}`;
 
   if (results.passed) {
-    resultMessage += "```ansi\n[2;31m[2;34m[2;36mResisted[0m[2;34m[0m[2;31m[0m\n```";
+    resultMessage +=
+      "```ansi\n[2;31m[2;34m[2;36mResisted[0m[2;34m[0m[2;31m[0m\n```";
   } else {
     resultMessage += "```ansi\n[2;31mFrenzy[0m\n```";
     embed.setThumbnail(

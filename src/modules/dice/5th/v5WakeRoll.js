@@ -1,6 +1,6 @@
 "use strict";
 require(`${process.cwd()}/alias`);
-const getCharacter = require("@modules/dice/getCharacter");
+const getCharacter = require("@src/modules/getCharacter");
 const Roll = require("@src/modules/dice/roll");
 const { EmbedBuilder } = require("discord.js");
 const API = require("@api");
@@ -352,9 +352,11 @@ function createWakeEmbed(interaction, character, results, args) {
   }
 
   if (results.inTorpor) {
-    outcomeText += "```ansi\n[2;31m[0m[2;31mEntered Torpor at Hunger 5![0m\n```";
+    outcomeText +=
+      "```ansi\n[2;31m[0m[2;31mEntered Torpor at Hunger 5![0m\n```";
   } else {
-    outcomeText += "```ansi\n[2;31m[0m[2;31m[2;32m[2;34m[2;36mSuccessfully rose for the night[0m[2;34m[0m[2;32m[0m[2;31m[0m\n```";
+    outcomeText +=
+      "```ansi\n[2;31m[0m[2;31m[2;32m[2;34m[2;36mSuccessfully rose for the night[0m[2;34m[0m[2;32m[0m[2;31m[0m\n```";
   }
 
   embed.addFields({

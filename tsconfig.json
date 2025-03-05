@@ -35,8 +35,7 @@
     "src/commands/**/*",
     "src/modules/**/*",
     "src/errors/**/*",
-    "src/realmAPI/**/*",
-    "scripts/deploy-commands.js"
+    "src/realmAPI/**/*"
   ],
   "exclude": ["node_modules", "dist"]
 }

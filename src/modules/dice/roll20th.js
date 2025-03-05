@@ -5,7 +5,7 @@ const { trimString } = require("@modules/misc");
 const { RealmError, ErrorCodes } = require("@errors");
 const RollResults20th = require("@structures/RollResults20th");
 const { Emoji } = require("@constants");
-const getCharacter = require("@modules/dice/getCharacter");
+const getCharacter = require("@src/modules/getCharacter");
 const API = require("@api");
 
 module.exports = async function roll20th(interaction) {
@@ -27,7 +27,8 @@ async function getArgs(interaction) {
     nightmare: interaction.options.getInteger("nightmare"),
     character: await getCharacter(
       trimString(interaction.options.getString("character")),
-      interaction
+      interaction,
+      false
     ),
     cancelOnes: interaction.options.getBoolean("no_botch"),
   };

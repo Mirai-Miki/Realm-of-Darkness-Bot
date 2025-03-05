@@ -6,48 +6,89 @@ const { RealmError, ErrorCodes } = require("@errors");
 const InitiativeCharacter = require("./InitiativeCharacter");
 const { getInitiativeButtonRow } = require("@modules/Initiative/getButtonRow");
 const { InitPhase } = require("@constants");
+const getCharacter = require("@src/modules/getCharacter");
 
+/**
+ * Initiative Tracker - Manages combat initiative for characters
+ *
+ * Handles all phases of initiative tracking:
+ * - Rolling for initiative
+ * - Revealing initiative order
+ * - Declaring actions in initiative order
+ * - Taking actions
+ * - Starting new rounds
+ */
 module.exports = class InitiativeTracker {
+  /**
+   * Create a new initiative tracker
+   * @param {Object} options - Tracker initialization options
+   * @param {String} options.channelId - Discord channel ID where the tracker will be posted
+   * @param {String} options.guildId - Discord guild ID
+   * @param {String} options.startMemberId - Member ID who started this tracker
+   * @param {Object} options.json - JSON representation to deserialize from
+   */
   constructor({
     channelId = null,
     guildId = null,
     startMemberId = null,
     json = null,
   } = {}) {
+    // Initialize tracker properties
     this.phase = InitPhase.ROLL;
     this.channelId = channelId;
     this.guildId = guildId;
     this.messageId = null;
     this.startMemberId = startMemberId;
 
+    // Character collections and actions
     this.characters = new Collection();
     this.actions = [];
     this.round = 0;
     this.tag = null;
 
+    // Deserialize if JSON is provided
     if (json) this.deserialize(json);
   }
 
-  //////////////////////////// Command Interactions ///////////////////////////
+  //////////////////////////// COMMAND INTERACTIONS ///////////////////////////
+
+  /**
+   * Handle a character rolling for initiative
+   * @param {Interaction} interaction - Discord interaction
+   * @param {Boolean} reroll - Whether this is a reroll
+   * @returns {Object} Response to send to Discord
+   */
   async characterRoll(interaction, reroll = false) {
+    // Validate we're in the correct phase
     if (this.phase > InitPhase.ROLL2) {
       throw new RealmError({ code: ErrorCodes.InitInvalidPhase });
     }
 
-    const name = interaction.options.getString("name");
+    // Get character info from interaction
+    const autocomplete = await getCharacter(
+      interaction.options.getString("name"),
+      interaction,
+      false // Character not required
+    );
+    const name = autocomplete.name;
     let dexWits = interaction.options.getInteger("dex_wits");
     let modifier = interaction.options.getInteger("modifier") ?? 0;
     let extraActions = interaction.options.getInteger("extra_actions") ?? 0;
 
+    // Look up if the character is already in this initiative
     let character = this.characters.get(
       `${interaction.user.id}|${name.toLowerCase()}`
     );
 
-    if (character && this.phase <= InitPhase.JOIN2)
+    // Handle various roll scenarios
+    if (character && this.phase <= InitPhase.JOIN2) {
+      // If character exists and we're in JOIN phase, redirect to join
       return await this.characterJoin(interaction);
-    else if (reroll && !character)
+    } else if (reroll && !character) {
+      // Can't reroll for character that doesn't exist
       throw new RealmError({ code: ErrorCodes.InitNoCharacter });
-    else if (reroll) {
+    } else if (reroll) {
+      // Rerolling for existing character - keep some existing values
       dexWits = character.dexWits;
       modifier =
         interaction.options.getInteger("modifier") ?? character.modifier;
@@ -55,24 +96,28 @@ module.exports = class InitiativeTracker {
         interaction.options.getInteger("extra_actions") ??
         character.extraActions;
     } else if (!character) {
+      // New character for this initiative
       character = new InitiativeCharacter({
         name: name,
         memberId: interaction.member.id,
       });
     }
 
+    // Roll initiative for the character and store in collection
     character.rollInitiative(dexWits, modifier, extraActions);
     this.characters.set(
       `${interaction.user.id}|${name.toLowerCase()}`,
       character
     );
 
+    // Build response message
     let mod = "";
     if (character.modifier) mod = ` and a modifier of <${character.modifier}>`;
     let actionMess = "";
     if (character.extraActions)
       actionMess = `You will also get ${character.extraActions} extra actions.\n`;
 
+    // Check if we should advance to ROLL2 phase (when at least 2 characters have joined)
     if (this.phase != InitPhase.ROLL2) {
       let joined = 0;
       for (const character of this.characters.values()) {
@@ -93,27 +138,43 @@ module.exports = class InitiativeTracker {
     };
   }
 
+  /**
+   * Handle a character joining an existing initiative round
+   * @param {Interaction} interaction - Discord interaction
+   * @returns {Object} Response to send to Discord
+   */
   async characterJoin(interaction) {
+    // Validate we're in the correct phase
     if (this.phase !== InitPhase.JOIN2 && this.phase !== InitPhase.JOIN) {
       throw new RealmError({ code: ErrorCodes.InitInvalidPhase });
     }
 
-    const name = interaction.options.getString("name");
+    // Get character info from interaction
+    const autocomplete = await getCharacter(
+      interaction.options.getString("name"),
+      interaction,
+      false // Character not required
+    );
+    const name = autocomplete.name;
 
+    // Look up the character in this initiative
     let character = this.characters.get(
       `${interaction.user.id}|${name.toLowerCase()}`
     );
 
     if (!character) throw new RealmError({ code: ErrorCodes.InitNoCharacter });
 
+    // Update character properties and mark as joined
     character.extraActions =
       interaction.options.getInteger("extra_actions") ?? character.extraActions;
     character.joinedRound = true;
 
+    // Build response message
     let actionMess = "";
     if (character.extraActions)
       actionMess = `You will also get ${character.extraActions} extra actions.\n`;
 
+    // Check if we should advance to JOIN2 phase (when at least 2 characters have joined)
     if (this.phase !== InitPhase.JOIN2) {
       let joined = 0;
       for (const character of this.characters.values()) {
@@ -131,28 +192,41 @@ module.exports = class InitiativeTracker {
     };
   }
 
+  /**
+   * Handle a character declaring an action
+   * @param {Interaction} interaction - Discord interaction
+   * @returns {Object} Response to send to Discord
+   */
   async characterDeclare(interaction) {
+    // Validate we're in the correct phase
     if (this.phase !== InitPhase.DECLARE)
       throw new RealmError({ code: ErrorCodes.InitInvalidPhase });
 
+    // Look through action order to find current character's turn
     let currentChar;
     let nextChar = null;
     for (const order of this.actions) {
       const character = this.characters.get(order.id);
       if (!currentChar && !order.action) {
+        // Found the current turn - verify it's this user's turn
         if (character.memberId != interaction.member.id)
           throw new RealmError({ code: ErrorCodes.InitInvalidTurn });
+
+        // Record the action
         currentChar = character;
         order.action = interaction.options.getString("action");
       } else if (currentChar) {
+        // Found the next character in order
         nextChar = character;
         this.tag = `<@${nextChar.memberId}>`;
         break;
       }
     }
 
+    // If there are no more characters, advance to DECLARED phase
     if (!nextChar) this.phase = InitPhase.DECLARED;
     this.post(interaction.client);
+
     return {
       content: "Your action has been declared!",
       embeds: [],
@@ -160,43 +234,75 @@ module.exports = class InitiativeTracker {
     };
   }
 
+  /**
+   * Repost the tracker message
+   * @param {Interaction} interaction - Discord interaction
+   * @returns {Object} Response to send to Discord
+   */
   async repost(interaction) {
     await this.post(interaction.client);
     return { content: "Ready to go!", embeds: [], components: [] };
   }
 
-  ////////////////////////// Button Interactions //////////////////////////////
+  ////////////////////////// BUTTON INTERACTIONS //////////////////////////////
+
+  /**
+   * Transition to Roll phase, resetting for a new round
+   * @param {Interaction} interaction - Discord interaction
+   * @param {Boolean} join - Whether to go to JOIN phase instead of ROLL
+   * @returns {Object} Response to send to Discord
+   */
   async rollPhase(interaction, join = false) {
+    // Set appropriate phase
     this.phase = InitPhase.ROLL;
     if (join) this.phase = InitPhase.JOIN;
+
+    // Increment round counter and reset actions
     this.round++;
     this.actions = [];
+
+    // Reset all characters for new round
     for (const character of this.characters.values()) {
       character.newRound();
     }
+
     await this.post(interaction.client);
     return { content: "Ready to go!", embeds: [], components: [] };
   }
 
+  /**
+   * Transition to Reveal phase, showing initiative order
+   * @param {Interaction} interaction - Discord interaction
+   * @returns {Object} Response to send to Discord
+   */
   async revealPhase(interaction) {
     this.phase = InitPhase.REVEAL;
     await this.post(interaction.client);
     return { content: "Ready to go!", embeds: [], components: [] };
   }
 
+  /**
+   * Transition to Declare phase, setting up action order
+   * @param {Interaction} interaction - Discord interaction
+   * @returns {Object} Response to send to Discord
+   */
   async declarePhase(interaction) {
     this.phase = InitPhase.DECLARE;
+
+    // Sort characters by initiative descending
     this.characters.sort(sortInitAscending);
+
+    // Add normal actions in reverse initiative order
     for (const character of this.characters.values()) {
-      // Normal action order in reverse
       if (!character.joinedRound) continue;
       this.actions.unshift({
         id: character.memberId + "|" + character.name.toLowerCase(),
         action: null,
       });
     }
+
+    // Add extra actions for characters that have them
     for (const character of this.characters.values()) {
-      // extra actions
       if (!character.joinedRound) continue;
       let extraActions = character.extraActions;
       for (extraActions; extraActions > 0; extraActions--) {
@@ -206,12 +312,20 @@ module.exports = class InitiativeTracker {
         });
       }
     }
+
+    // Tag the first player whose turn it is
     const character = this.characters.get(this.actions[0].id);
     this.tag = `<@${character.memberId}>`;
+
     await this.post(interaction.client);
     return { content: "Ready to go!", embeds: [], components: [] };
   }
 
+  /**
+   * Transition to Declared phase (all actions declared)
+   * @param {Interaction} interaction - Discord interaction
+   * @returns {Object} Response to send to Discord
+   */
   async declaredPhase(interaction) {
     this.phase = InitPhase.DECLARED;
     await this.post(interaction.client);
@@ -222,46 +336,77 @@ module.exports = class InitiativeTracker {
     };
   }
 
+  /**
+   * Transition to Join phase for a new round
+   * @param {Interaction} interaction - Discord interaction
+   * @returns {Object} Response to send to Discord
+   */
   async joinPhase(interaction) {
     this.phase = InitPhase.JOIN;
     this.round++;
+
+    // Reset character states for new round
     for (const character of this.characters.values()) {
       character.joinedRound = false;
       character.extraActions = 0;
       character.declared = false;
       character.action = null;
     }
+
     await this.post(interaction.client);
     return { content: "Ready to go!", embeds: [], components: [] };
   }
 
+  /**
+   * Skip the current character's action
+   * @param {Interaction} interaction - Discord interaction
+   * @returns {Object} Response to send to Discord
+   */
   async skipAction(interaction) {
+    // Find current action and mark as skipped
     let currentChar;
     let nextChar = null;
     for (const order of this.actions) {
       const character = this.characters.get(order.id);
       if (!currentChar && !order.action) {
+        // Found current action, mark as skipped
         currentChar = character;
         order.action = "Skipped";
       } else if (currentChar) {
+        // Found next character in order
         nextChar = character;
         this.tag = `<@${nextChar.memberId}>`;
         break;
       }
     }
 
+    // If there are no more characters, advance to DECLARED phase
     if (!nextChar) this.phase = InitPhase.DECLARED;
     this.post(interaction.client);
+
     return { content: "The action was skipped", embeds: [], components: [] };
   }
 
-  ///////////////////////////// Utility Methods //////////////////////////////
+  ///////////////////////////// UTILITY METHODS //////////////////////////////
+
+  /**
+   * Save the tracker state to database
+   * @returns {Promise<void>}
+   */
   async save() {
     await API.setInitTracker(this.channelId, this.guildId, this.serialize());
   }
 
+  /**
+   * Post or update the tracker message in the channel
+   * @param {Client} client - Discord client
+   * @returns {Promise<void>}
+   */
   async post(client) {
+    // Get the channel
     const channel = await client.channels.fetch(this.channelId);
+
+    // Try to fetch previous message
     let oldMessage;
     try {
       if (this.messageId)
@@ -270,24 +415,37 @@ module.exports = class InitiativeTracker {
       oldMessage = null;
     }
 
+    // Create response with embed and buttons
     const response = {
       content: null,
       embeds: [await getTrackerEmbed(this, channel.guild.members)],
       components: [getInitiativeButtonRow(this.phase)],
     };
+
+    // Add mention tag for current player if in declare phase
     if (this.phase === InitPhase.DECLARE) response.content = this.tag;
+
+    // Send new message
     const message = await channel.send(response);
     this.messageId = message.id;
 
+    // Save tracker state
     try {
       await this.save();
     } catch (error) {
+      // Delete message if save fails
       message.delete();
       throw error;
     }
+
+    // Delete old message if it exists
     if (oldMessage) oldMessage.delete();
   }
 
+  /**
+   * Convert tracker to serializable object
+   * @returns {Object} Serialized tracker
+   */
   serialize() {
     const characters = [];
     this.characters.forEach((character) => {
@@ -307,8 +465,12 @@ module.exports = class InitiativeTracker {
     };
   }
 
+  /**
+   * Reconstruct tracker from serialized object
+   * @param {Object} json - Serialized tracker data
+   */
   deserialize(json) {
-    // Takes in json tracker and contructs the tracker from it
+    // Restore tracker properties
     this.phase = json.phase;
     this.channelId = json.channel_id;
     this.guildId = json.guild_id;
@@ -318,6 +480,7 @@ module.exports = class InitiativeTracker {
     this.actions = json.actions;
     this.tag = json.tag;
 
+    // Reconstruct characters
     for (const character of json.characters) {
       this.characters.set(
         `${character.member_id}|${character.name.toLowerCase()}`,
@@ -327,27 +490,43 @@ module.exports = class InitiativeTracker {
   }
 };
 
-////////////////////////////////// Private Functions //////////////////////////
+////////////////////////////////// HELPER FUNCTIONS //////////////////////////
 
+/**
+ * Sort function for initiative order (descending)
+ * @param {InitiativeCharacter} a - First character to compare
+ * @param {InitiativeCharacter} b - Second character to compare
+ * @returns {Number} Sort order (-1, 0, 1)
+ */
 function sortInitAscending(a, b) {
   if (a.initiative > b.initiative) return -1;
   else if (a.initiative === b.initiative) {
-    // Handle Tie
+    // Handle ties with Dex+Wits+Modifier
     if (a.dexWits + a.modifier > b.dexWits + b.modifier) return -1;
     else if (a.dexWits + a.modifier === b.dexWits + b.modifier) return 0;
     else return 1;
   } else return 1;
 }
 
-//////////////////////////////////// Embed Shit ///////////////////////////////
+/////////////////////////////// EMBED FUNCTIONS ///////////////////////////////
+
+/**
+ * Create the embed for the tracker
+ * @param {InitiativeTracker} tracker - The tracker to create embed for
+ * @param {GuildMemberManager} members - Guild members to fetch display names
+ * @returns {EmbedBuilder} The created embed
+ */
 async function getTrackerEmbed(tracker, members) {
+  // Get title, description and color based on current phase
   const info = getTrackerEmbedInfo(tracker);
   const embed = new EmbedBuilder()
     .setTitle(info.title)
     .setDescription(info.description)
     .setColor(info.color);
 
+  // The embed content differs based on the phase
   if (tracker.phase <= InitPhase.ROLL2) {
+    // ROLL phase: Show who has rolled
     for (const character of tracker.characters.values()) {
       if (!character.joinedRound) continue;
 
@@ -358,9 +537,10 @@ async function getTrackerEmbed(tracker, members) {
       });
     }
   } else if (tracker.phase === InitPhase.REVEAL) {
+    // REVEAL phase: Show initiative order with values
     let count = 1;
     tracker.characters.sort(sortInitAscending);
-    // Sorts members in order of Initiative
+
     for (const character of tracker.characters.values()) {
       if (!character.joinedRound) continue;
       const member = await members.fetch(character.memberId);
@@ -382,37 +562,49 @@ async function getTrackerEmbed(tracker, members) {
       count++;
     }
   } else if (tracker.phase >= InitPhase.DECLARE) {
+    // DECLARE/DECLARED phase: Show action declarations
     const fields = [];
     let current = false;
+
     for (const order of tracker.actions) {
       const character = tracker.characters.get(order.id);
       const member = await members.fetch(character.memberId);
       if (!character.joinedRound) continue;
-      // Go through and set each member and their action
-      let value = "";
 
+      // Format field value based on action status
+      let value = "";
       if (order.action) value = order.action;
       else if (!order.action && !current) {
         value = "📍 Please decalare your action!";
         current = true;
       } else value = "Undeclared";
 
+      // Add field to beginning of array (reverse order)
       fields.unshift({
         title: `${character.name} (${member.displayName})`,
         value: value,
       });
     }
 
+    // Add all fields to embed
     for (const field of fields) {
       embed.addFields({ name: field.title, value: field.value });
     }
   }
   return embed;
 }
+
+/**
+ * Get appropriate title, description and color for the tracker embed based on phase
+ * @param {InitiativeTracker} tracker - The tracker to get info for
+ * @returns {Object} Object with title, description and color
+ */
 function getTrackerEmbedInfo(tracker) {
+  // Add round number to title if beyond first round
   let round = "";
   if (tracker.round > 1) round = `Turn: ${tracker.round} |`;
 
+  // Return appropriate info based on phase
   switch (tracker.phase) {
     case InitPhase.ROLL:
     case InitPhase.ROLL2:

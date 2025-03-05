@@ -16,5 +16,13 @@ const manager = new ShardingManager(botFile, {
   totalShards: "auto",
 });
 
-manager.on("shardCreate", (shard) => console.log(`Launched shard ${shard.id}`));
-manager.spawn();
+manager.on("shardCreate", (shard) => {
+  console.log(`Launched shard ${shard.id}`);
+  shard.on("error", (error) => {
+    console.error(`Error in shard ${shard.id}:`, error);
+  });
+});
+
+manager.spawn().catch((error) => {
+  console.error("Error while spawning shards:", error);
+});

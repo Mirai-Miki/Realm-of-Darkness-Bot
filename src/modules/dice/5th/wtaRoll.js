@@ -1,7 +1,7 @@
 "use strict";
 require(`${process.cwd()}/alias`);
 const { trimString } = require("@modules/misc");
-const getCharacter = require("@modules/dice/getCharacter");
+const getCharacter = require("@src/modules/getCharacter");
 const {
   getEmbed,
   getContent,
@@ -39,7 +39,8 @@ async function getArgs(interaction) {
     notes: interaction.options.getString("notes"),
     character: await getCharacter(
       interaction.options.getString("character"),
-      interaction
+      interaction,
+      false
     ),
     autoRage: interaction.options.getBoolean("auto_rage") ?? true,
   };

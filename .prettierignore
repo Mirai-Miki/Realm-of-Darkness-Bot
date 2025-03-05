@@ -1,0 +1,9 @@
+# Ignore package.json to preserve custom formatting
+package.json
+
+# Common files to ignore
+node_modules
+.env
+dist
+build
+coverage
