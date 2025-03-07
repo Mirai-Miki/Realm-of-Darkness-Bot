@@ -1,7 +1,55 @@
-*.json
-!package-lock.json
-!package.json
+# Node.js
 node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Database
 database/
+*.sqlite
+*.sqlite3
+*.db
+
+# TypeScript
+dist/
+build/
+*.tsbuildinfo
+
+# Editor directories and files
+.vscode/*
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Project specific
 .VSCodeCounter/
-.*/
+config.json
+secrets.json
+.vscode/
+
+# Allow specific files (start with ! to negate previous rules)
+!package.json
+!package-lock.json
+!tsconfig.json
+!jest.config.js
+!.gitignore
