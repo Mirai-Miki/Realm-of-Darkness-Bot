@@ -8,7 +8,7 @@ const {
   getContent,
   getComponents,
 } = require("@modules/dice/5th/getVtmRollResponse");
-const VtMV5RollResults = require("@structures/vtmV5RollResults");
+const VtMV5RollResults = require("@structures/VtmV5RollResults");
 const handleRerollPress = require("@modules/dice/5th/handleButtonPress");
 const API = require("@api");
 const { Splats } = require("@src/constants");
