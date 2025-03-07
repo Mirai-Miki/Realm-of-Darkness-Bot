@@ -1,7 +1,7 @@
 "use strict";
 require(`${process.cwd()}/alias`);
 const { SlashCommandBuilder } = require("@discordjs/builders");
-const hunterDice = require("@modules/dice/5th/HunterRoll");
+const hunterDice = require("@src/modules/dice/5th/hunterRoll");
 const generalRoll = require("@src/modules/dice/generalRoll");
 const commandUpdate = require("@modules/commandDatabaseUpdate");
 const autocomplete5th = require("@modules/autocomplete");

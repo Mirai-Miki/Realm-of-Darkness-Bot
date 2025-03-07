@@ -1,7 +1,7 @@
 "use strict";
 require(`${process.cwd()}/alias`);
 const { trimString } = require("@modules/misc");
-const HunterV5RollResults = require("@structures/hunterV5RollResults");
+const HunterV5RollResults = require("@structures/HunterV5RollResults");
 const handleRerollPress = require("@modules/dice/5th/handleButtonPress");
 const {
   getComponents,
