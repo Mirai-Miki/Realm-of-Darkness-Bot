@@ -2,7 +2,7 @@
 require(`${process.cwd()}/alias`);
 const { MessageFlags } = require("discord.js");
 const { ErrorCodes, handleErrorDebug, RealmError } = require("@errors");
-const HunterV5RollResults = require("@structures/hunterV5RollResults");
+const HunterV5RollResults = require("@structures/HunterV5RollResults");
 const { minToMilli } = require("@modules/misc");
 
 module.exports = async function handleButtonPress(

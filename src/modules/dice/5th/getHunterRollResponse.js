@@ -8,7 +8,7 @@ const {
   ButtonStyle,
 } = require("discord.js");
 const { Emoji } = require("@constants");
-const HunterV5RollResults = require("@structures/hunterV5RollResults");
+const HunterV5RollResults = require("@structures/HunterV5RollResults");
 
 module.exports.getEmbed = function (interaction) {
   const args = interaction.arguments;
