@@ -16,7 +16,7 @@ module.exports = async function v5Wake(interaction) {
   const args = await getArgs(interaction);
 
   // Get character
-  const character = args.character.tracked;
+  const character = args.character?.tracked;
 
   // Check that character exists and is a vampire
   if (!character) {

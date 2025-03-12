@@ -21,7 +21,7 @@ module.exports = {
 async function healSuperficial(interaction) {
   // Get character from interaction
   const args = await getArgs(interaction);
-  const character = args.character.tracked;
+  const character = args.character?.tracked;
   const changes = { command: "heal superficial" };
   let skip = false;
 
