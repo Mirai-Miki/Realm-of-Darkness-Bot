@@ -25,15 +25,18 @@ module.exports = async function autocomplete(
       interaction.guild?.id
     );
 
-    // Filter discipline names and return plain format
-    const filtered = choices.filter((choice) =>
-      choice.name.toLowerCase().startsWith(focusedValue)
-    );
+    // Filter discipline names based on whether they're strings or objects
+    const filtered = choices.filter((choice) => {
+      return choice.toLowerCase().startsWith(focusedValue);
+    });
+
     // Limit the number of options to 25
     const limitedChoices = filtered.slice(0, 25);
+
+    // Map to the required format
     return limitedChoices.map((choice) => ({
-      name: choice.name,
-      value: choice.name, // Return actual discipline name as value
+      name: choice,
+      value: choice,
     }));
   } else if (
     focusedOption.name === "name" ||
