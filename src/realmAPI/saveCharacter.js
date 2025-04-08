@@ -16,8 +16,10 @@ module.exports = async function saveCharacter(cData) {
     switch (res?.status) {
       case 200: // Saved successfully
         return true;
-      case 406: // Image provided is not valid
+      case 415: // Image provided is not valid
         throw new RealmAPIError({ code: APIErrorCodes.NotAnImage });
+      case 413: // Image is too large
+        throw new RealmAPIError({ code: APIErrorCodes.ImageTooLarge });
       case 304: // Not Modified - Duplicate character name
         throw new RealmAPIError({ code: APIErrorCodes.NameExists });
       case 422: // Unprocessable Entity -- Name contains special characters

@@ -66,6 +66,7 @@ module.exports.APIErrorCodes = {
   NotAnImage: 1004,
   NameExists: 1005,
   NameContainsSpecialCharacter: 1006,
+  ImageTooLarge: 1007,
 };
 
 // Export error classes
