@@ -104,4 +104,14 @@ const ErrorInfo = {
     debug: false,
     cause: false,
   },
+  [APIErrorCodes.ImageTooLarge]: {
+    system: "Realm API - Image provided was too large",
+    embedTitle: "Image provided was too large",
+    embedMessage: oneLineTrim`
+      Sorry, the image you provided is too large. 
+      Please provide an image smaller than 5MB.
+    `,
+    debug: false,
+    cause: false,
+  },
 };
