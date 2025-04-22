@@ -7,8 +7,15 @@ const RollResults20th = require("@structures/RollResults20th");
 const { Emoji } = require("@constants");
 const getCharacter = require("@src/modules/getCharacter");
 const API = require("@api");
+const CombatHandler20th = require("@modules/combat/20th/CombatHandler20th");
+
 
 module.exports = async function roll20th(interaction) {
+  if (interaction.options.getSubcommand() === "attack") {
+    const combatHandler = new CombatHandler20th(interaction);
+    return combatHandler.handleCombat();
+  }
+
   interaction.arguments = await getArgs(interaction);
   applyDicePenalty(interaction);
   interaction.results = new RollResults20th(interaction.arguments);
